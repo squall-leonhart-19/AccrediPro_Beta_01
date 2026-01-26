@@ -25,7 +25,7 @@ import { toast } from "sonner";
 const ASI = {
     name: "AccrediPro Standards Institute",
     division: "Student Success Division",
-    logo: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png",
+    logo: "https://assets.accredipro.academy/migrated/Senza-titolo-Logo-1.png",
 };
 
 // Status configuration

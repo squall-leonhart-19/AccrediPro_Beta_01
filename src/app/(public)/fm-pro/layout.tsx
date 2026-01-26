@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png",
+        url: "https://assets.accredipro.academy/migrated/Senza-titolo-Logo-1.png",
         width: 1200,
         height: 630,
         alt: "Functional Medicine Certification by ASI",

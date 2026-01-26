@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   creator: "AccrediPro Academy",
   publisher: "AccrediPro Academy",
   icons: {
-    icon: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png",
-    apple: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png",
+    icon: "https://assets.accredipro.academy/migrated/Senza-titolo-Logo-1.png",
+    apple: "https://assets.accredipro.academy/migrated/Senza-titolo-Logo-1.png",
   },
   openGraph: {
     type: "website",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     description: "14-module Functional Medicine certification. Earn a certificate for each module completed. 100% online, self-paced, CPD approved.",
     images: [
       {
-        url: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png",
+        url: "https://assets.accredipro.academy/migrated/Senza-titolo-Logo-1.png",
         width: 1200,
         height: 630,
         alt: "AccrediPro Academy - Functional Medicine Certification",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "AccrediPro Academy - Functional Medicine Certifications",
     description: "14 modules. 14 certificates. The most comprehensive functional medicine certification online.",
-    images: ["https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"],
+    images: ["https://assets.accredipro.academy/migrated/Senza-titolo-Logo-1.png"],
   },
   robots: {
     index: true,
@@ -77,7 +77,7 @@ const organizationJsonLd = {
   "@type": "EducationalOrganization",
   name: "AccrediPro Academy",
   url: "https://learn.accredipro.academy",
-  logo: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png",
+  logo: "https://assets.accredipro.academy/migrated/Senza-titolo-Logo-1.png",
   description: "Professional certifications and mini-diplomas in Functional Medicine designed for career advancement.",
   sameAs: [],
   contactPoint: {

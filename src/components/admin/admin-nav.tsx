@@ -118,7 +118,7 @@ export function AdminNav() {
         <div className="flex items-center gap-3 px-6 py-6 border-b border-burgundy-600/30">
           <div className="p-1.5 bg-white rounded-xl shadow-lg">
             <Image
-              src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+              src="https://assets.accredipro.academy/migrated/Senza-titolo-Logo-1.png"
               alt="AccrediPro Academy"
               width={40}
               height={40}
@@ -221,7 +221,7 @@ export function AdminNav() {
           <Link href="/admin" className="flex items-center gap-2">
             <div className="p-1 bg-white rounded-lg shadow-md">
               <Image
-                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                src="https://assets.accredipro.academy/migrated/Senza-titolo-Logo-1.png"
                 alt="AccrediPro"
                 width={28}
                 height={28}

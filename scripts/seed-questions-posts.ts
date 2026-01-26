@@ -82,26 +82,13 @@ async function main() {
     }
 
     // Get the category ID for 'questions'
-    const category = await prisma.category.findFirst({
-        where: {
-            OR: [
-                { slug: "questions" },
-                { name: { contains: "Questions", mode: "insensitive" } }
-            ]
-        }
-    });
-
-    if (!category) {
-        console.error("Questions category not found!");
-        return;
-    }
-
-    console.log(`Using category: ${category.name} (${category.id})`);
+    // Use the legacy string categoryId
+    const categoryId = "questions";
+    console.log(`Using categoryId: "${categoryId}"`);
 
     let createdCount = 0;
 
     // We'll create as many posts as we have matching title/content pairs
-    // (Assuming arrays are synced, which they seem to be visually, but let's be safe with min length)
     const count = Math.min(QUESTION_TITLES.length, QUESTION_CONTENTS.length);
 
     for (let i = 0; i < count; i++) {
@@ -118,7 +105,7 @@ async function main() {
             data: {
                 title,
                 content,
-                categoryId: category.id, // Using the ID we found from DB
+                categoryId: categoryId,
                 authorId: author.id,
                 viewCount: Math.floor(Math.random() * 500) + 50,
                 likeCount: Math.floor(Math.random() * 20),
@@ -131,7 +118,7 @@ async function main() {
         createdCount++;
     }
 
-    console.log(`✅ Created ${createdCount} question posts in category '${category.name}'`);
+    console.log(`✅ Created ${createdCount} question posts in category '${categoryId}'`);
 }
 
 main()

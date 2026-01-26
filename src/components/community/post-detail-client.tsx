@@ -368,8 +368,10 @@ export default function PostDetailClient({
               <div className="flex items-center gap-4">
                 <div className="relative shrink-0">
                   <Avatar className="w-12 h-12 ring-2 ring-burgundy-100">
-                    <AvatarImage src={post.author.avatar} />
-                    <AvatarFallback className="bg-burgundy-100 text-burgundy-700 font-bold">SM</AvatarFallback>
+                    <AvatarImage src={post.author.avatar || undefined} />
+                    <AvatarFallback className="bg-burgundy-100 text-burgundy-700 font-bold">
+                      {(post.author.firstName?.[0] || "")}{(post.author.lastName?.[0] || "")}
+                    </AvatarFallback>
                   </Avatar>
                   {post.author.role === "MENTOR" && (
                     <div className="absolute -bottom-1 -right-1 bg-gradient-to-r from-burgundy-500 to-burgundy-600 text-white p-0.5 rounded-full border-2 border-white shadow-sm" title="Verified Mentor">

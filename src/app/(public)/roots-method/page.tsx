@@ -345,7 +345,7 @@ export default function ROOTSMethodPage() {
 
                     <div className="flex justify-center mb-6">
                         <Image
-                            src="https://coach.accredipro.academy/wp-content/uploads/2025/12/CMA-Accredited-course.jpeg"
+                            src="https://assets.accredipro.academy/migrated/CMA-Accredited-course.jpeg"
                             alt="CMA Accredited Course"
                             width={140}
                             height={70}
@@ -818,7 +818,7 @@ export default function ROOTSMethodPage() {
 
                     <div className="mt-8">
                         <Image
-                            src="https://coach.accredipro.academy/wp-content/uploads/2025/12/CMA-Accredited-course.jpeg"
+                            src="https://assets.accredipro.academy/migrated/CMA-Accredited-course.jpeg"
                             alt="CMA Accredited Course"
                             width={120}
                             height={60}

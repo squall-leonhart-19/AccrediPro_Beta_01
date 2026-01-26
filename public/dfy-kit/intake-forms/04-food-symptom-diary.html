@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7-Day Food & Symptom Diary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background: #fff;
+            font-size: 12px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #8B1538;
+        }
+
+        .logo-placeholder {
+            width: 100px;
+            height: 50px;
+            background: #f5f5f5;
+            border: 2px dashed #ccc;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 11px;
+        }
+
+        h1 {
+            color: #8B1538;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .instructions {
+            background: #FFF8E7;
+            border-left: 4px solid #D4AF37;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .client-info {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .client-info input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .day-section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, #8B1538 0%, #6d1029 100%);
+            color: #fff;
+            padding: 8px 14px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .day-content {
+            border: 1px solid #ddd;
+            border-top: none;
+            padding: 12px;
+        }
+
+        .meal-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .meal-box {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .meal-box h4 {
+            color: #8B1538;
+            font-size: 12px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 4px;
+        }
+
+        .meal-box textarea {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 6px;
+            font-size: 11px;
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .tracking-row {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .tracking-item {
+            text-align: center;
+        }
+
+        .tracking-item label {
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .tracking-item select,
+        .tracking-item input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        .symptoms-row {
+            margin-top: 10px;
+        }
+
+        .symptoms-row label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #444;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .symptoms-row textarea {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 11px;
+            min-height: 40px;
+        }
+
+        .legend {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .legend h4 {
+            color: #8B1538;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            font-size: 11px;
+        }
+
+        @media print {
+            .day-section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-placeholder">Your Logo</div>
+            <h1>7-Day Food & Symptom Diary</h1>
+            <p class="subtitle">Track Your Nutrition, Energy, and Symptoms</p>
+        </div>
+
+        <div class="instructions">
+            <strong>How to Use This Diary:</strong>
+            <ul>
+                <li>Record <strong>everything</strong> you eat and drink, including portion sizes and preparation
+                    methods</li>
+                <li>Note the <strong>time</strong> of each meal/snack</li>
+                <li>Track your <strong>daily metrics</strong>: water, sleep, stress, energy, digestion, mood</li>
+                <li>Document any <strong>symptoms</strong> you experience and when they occur (especially relative to
+                    meals)</li>
+                <li>Be as detailed as possible — this helps identify patterns and triggers</li>
+            </ul>
+        </div>
+
+        <div class="client-info">
+            <input type="text" placeholder="Client Name">
+            <input type="text" placeholder="Week Starting (date)">
+        </div>
+
+        <div class="legend">
+            <h4>Rating Scale Reference</h4>
+            <div class="legend-grid">
+                <div><strong>Energy:</strong> 1=Exhausted, 5=Great</div>
+                <div><strong>Mood:</strong> 1=Very Low, 5=Excellent</div>
+                <div><strong>Stress:</strong> 1=None, 5=Overwhelming</div>
+                <div><strong>Digestion:</strong> 1=Poor, 5=Excellent</div>
+                <div><strong>Sleep:</strong> Hours + quality (1-5)</div>
+                <div><strong>Water:</strong> In glasses (8oz each)</div>
+            </div>
+        </div>
+
+        <!-- DAY 1 -->
+        <div class="day-section">
+            <div class="day-header"><span>Day 1</span><span>Date: _______________</span></div>
+            <div class="day-content">
+                <div class="meal-grid">
+                    <div class="meal-box">
+                        <h4>🌅 Breakfast</h4><textarea placeholder="Time:&#10;Foods eaten:&#10;Portions:"></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌞 Lunch</h4><textarea placeholder="Time:&#10;Foods eaten:&#10;Portions:"></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌆 Dinner</h4><textarea placeholder="Time:&#10;Foods eaten:&#10;Portions:"></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🍎 Snacks</h4><textarea placeholder="Time(s):&#10;Foods eaten:"></textarea>
+                    </div>
+                </div>
+                <div class="tracking-row">
+                    <div class="tracking-item"><label>💧 Water</label><input type="text" placeholder="glasses"></div>
+                    <div class="tracking-item"><label>😴 Sleep</label><input type="text" placeholder="hrs / 1-5"></div>
+                    <div class="tracking-item"><label>⚡ Energy</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😊 Mood</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😰 Stress</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>🫃 Digestion</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                </div>
+                <div class="symptoms-row"><label>Symptoms experienced today (include time and relation to
+                        meals):</label><textarea
+                        placeholder="e.g., 2pm: bloating after lunch, 8pm: headache"></textarea></div>
+            </div>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="day-section">
+            <div class="day-header"><span>Day 2</span><span>Date: _______________</span></div>
+            <div class="day-content">
+                <div class="meal-grid">
+                    <div class="meal-box">
+                        <h4>🌅 Breakfast</h4><textarea placeholder="Time:&#10;Foods eaten:&#10;Portions:"></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌞 Lunch</h4><textarea placeholder="Time:&#10;Foods eaten:&#10;Portions:"></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌆 Dinner</h4><textarea placeholder="Time:&#10;Foods eaten:&#10;Portions:"></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🍎 Snacks</h4><textarea placeholder="Time(s):&#10;Foods eaten:"></textarea>
+                    </div>
+                </div>
+                <div class="tracking-row">
+                    <div class="tracking-item"><label>💧 Water</label><input type="text" placeholder="glasses"></div>
+                    <div class="tracking-item"><label>😴 Sleep</label><input type="text" placeholder="hrs / 1-5"></div>
+                    <div class="tracking-item"><label>⚡ Energy</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😊 Mood</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😰 Stress</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>🫃 Digestion</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                </div>
+                <div class="symptoms-row"><label>Symptoms experienced today:</label><textarea></textarea></div>
+            </div>
+        </div>
+
+        <!-- DAY 3 -->
+        <div class="day-section">
+            <div class="day-header"><span>Day 3</span><span>Date: _______________</span></div>
+            <div class="day-content">
+                <div class="meal-grid">
+                    <div class="meal-box">
+                        <h4>🌅 Breakfast</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌞 Lunch</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌆 Dinner</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🍎 Snacks</h4><textarea></textarea>
+                    </div>
+                </div>
+                <div class="tracking-row">
+                    <div class="tracking-item"><label>💧 Water</label><input type="text"></div>
+                    <div class="tracking-item"><label>😴 Sleep</label><input type="text"></div>
+                    <div class="tracking-item"><label>⚡ Energy</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😊 Mood</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😰 Stress</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>🫃 Digestion</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                </div>
+                <div class="symptoms-row"><label>Symptoms:</label><textarea></textarea></div>
+            </div>
+        </div>
+
+        <!-- DAY 4 -->
+        <div class="day-section">
+            <div class="day-header"><span>Day 4</span><span>Date: _______________</span></div>
+            <div class="day-content">
+                <div class="meal-grid">
+                    <div class="meal-box">
+                        <h4>🌅 Breakfast</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌞 Lunch</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌆 Dinner</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🍎 Snacks</h4><textarea></textarea>
+                    </div>
+                </div>
+                <div class="tracking-row">
+                    <div class="tracking-item"><label>💧 Water</label><input type="text"></div>
+                    <div class="tracking-item"><label>😴 Sleep</label><input type="text"></div>
+                    <div class="tracking-item"><label>⚡ Energy</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😊 Mood</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😰 Stress</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>🫃 Digestion</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                </div>
+                <div class="symptoms-row"><label>Symptoms:</label><textarea></textarea></div>
+            </div>
+        </div>
+
+        <!-- DAY 5 -->
+        <div class="day-section">
+            <div class="day-header"><span>Day 5</span><span>Date: _______________</span></div>
+            <div class="day-content">
+                <div class="meal-grid">
+                    <div class="meal-box">
+                        <h4>🌅 Breakfast</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌞 Lunch</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌆 Dinner</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🍎 Snacks</h4><textarea></textarea>
+                    </div>
+                </div>
+                <div class="tracking-row">
+                    <div class="tracking-item"><label>💧 Water</label><input type="text"></div>
+                    <div class="tracking-item"><label>😴 Sleep</label><input type="text"></div>
+                    <div class="tracking-item"><label>⚡ Energy</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😊 Mood</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😰 Stress</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>🫃 Digestion</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                </div>
+                <div class="symptoms-row"><label>Symptoms:</label><textarea></textarea></div>
+            </div>
+        </div>
+
+        <!-- DAY 6 -->
+        <div class="day-section">
+            <div class="day-header"><span>Day 6</span><span>Date: _______________</span></div>
+            <div class="day-content">
+                <div class="meal-grid">
+                    <div class="meal-box">
+                        <h4>🌅 Breakfast</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌞 Lunch</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌆 Dinner</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🍎 Snacks</h4><textarea></textarea>
+                    </div>
+                </div>
+                <div class="tracking-row">
+                    <div class="tracking-item"><label>💧 Water</label><input type="text"></div>
+                    <div class="tracking-item"><label>😴 Sleep</label><input type="text"></div>
+                    <div class="tracking-item"><label>⚡ Energy</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😊 Mood</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😰 Stress</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>🫃 Digestion</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                </div>
+                <div class="symptoms-row"><label>Symptoms:</label><textarea></textarea></div>
+            </div>
+        </div>
+
+        <!-- DAY 7 -->
+        <div class="day-section">
+            <div class="day-header"><span>Day 7</span><span>Date: _______________</span></div>
+            <div class="day-content">
+                <div class="meal-grid">
+                    <div class="meal-box">
+                        <h4>🌅 Breakfast</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌞 Lunch</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🌆 Dinner</h4><textarea></textarea>
+                    </div>
+                    <div class="meal-box">
+                        <h4>🍎 Snacks</h4><textarea></textarea>
+                    </div>
+                </div>
+                <div class="tracking-row">
+                    <div class="tracking-item"><label>💧 Water</label><input type="text"></div>
+                    <div class="tracking-item"><label>😴 Sleep</label><input type="text"></div>
+                    <div class="tracking-item"><label>⚡ Energy</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😊 Mood</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>😰 Stress</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                    <div class="tracking-item"><label>🫃 Digestion</label><select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select></div>
+                </div>
+                <div class="symptoms-row"><label>Symptoms:</label><textarea></textarea></div>
+            </div>
+        </div>
+
+        <!-- WEEKLY SUMMARY -->
+        <div class="day-section">
+            <div class="day-header"><span>Weekly Summary & Observations</span></div>
+            <div class="day-content">
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-weight: 600; margin-bottom: 6px; display: block;">Patterns or triggers you
+                        noticed:</label>
+                    <textarea
+                        style="width: 100%; min-height: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-weight: 600; margin-bottom: 6px; display: block;">Foods that made you feel
+                        good:</label>
+                    <textarea
+                        style="width: 100%; min-height: 50px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; margin-bottom: 6px; display: block;">Foods that caused
+                        problems:</label>
+                    <textarea
+                        style="width: 100%; min-height: 50px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

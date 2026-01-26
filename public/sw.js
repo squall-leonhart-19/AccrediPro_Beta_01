@@ -83,12 +83,16 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 // Fetch handler - network first, cache fallback
+// Fetch handler - network first, cache fallback
 self.addEventListener('fetch', (event) => {
     // Skip non-GET requests
     if (event.request.method !== 'GET') return;
 
     // Skip API requests
     if (event.request.url.includes('/api/')) return;
+
+    // Skip cross-origin requests (like R2, Analytics, etc.)
+    if (!event.request.url.startsWith(self.location.origin)) return;
 
     event.respondWith(
         fetch(event.request)
@@ -104,7 +108,13 @@ self.addEventListener('fetch', (event) => {
             })
             .catch(() => {
                 // Fallback to cache
-                return caches.match(event.request);
+                return caches.match(event.request).then((response) => {
+                    if (response) return response;
+                    // If not in cache and network failed, we can't return undefined.
+                    // We must return a Response or throw.
+                    // For navigation requests, we could return an offline page, but effectively we just throw here.
+                    throw new Error('Network and Cache failed');
+                });
             })
     );
 });

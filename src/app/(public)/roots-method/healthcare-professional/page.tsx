@@ -362,7 +362,7 @@ export default function HealthcareProfessionalPage() {
 
                     <div className="flex justify-center mb-6">
                         <Image
-                            src="https://coach.accredipro.academy/wp-content/uploads/2025/12/CMA-Accredited-course.jpeg"
+                            src="https://assets.accredipro.academy/migrated/CMA-Accredited-course.jpeg"
                             alt="CMA Accredited Course"
                             width={140}
                             height={70}

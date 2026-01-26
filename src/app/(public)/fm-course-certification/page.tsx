@@ -341,7 +341,7 @@ export default function FMCourseCertificationPage() {
                         {/* Header */}
                         <div className="bg-gradient-to-r from-[#722F37] to-[#5A2435] text-white p-4 flex items-center gap-3">
                             <img
-                                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
+                                src="https://assets.accredipro.academy/migrated/Sarah-M.webp"
                                 alt="Sarah"
                                 className="w-10 h-10 rounded-full border-2 border-[#D4AF37]"
                             />
@@ -394,7 +394,7 @@ export default function FMCourseCertificationPage() {
                                         <div key={i} className={`mb-3 flex ${msg.role === "user" ? "justify-end" : "gap-2"}`}>
                                             {msg.role === "bot" && (
                                                 <img
-                                                    src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
+                                                    src="https://assets.accredipro.academy/migrated/Sarah-M.webp"
                                                     alt="Sarah"
                                                     className="w-7 h-7 rounded-full flex-shrink-0"
                                                 />
@@ -443,7 +443,7 @@ export default function FMCourseCertificationPage() {
                         </button>
                         <div className="flex gap-3 items-start">
                             <img
-                                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
+                                src="https://assets.accredipro.academy/migrated/Sarah-M.webp"
                                 alt="Sarah"
                                 className="w-10 h-10 rounded-full border-2 border-[#D4AF37] flex-shrink-0"
                             />
@@ -468,7 +468,7 @@ export default function FMCourseCertificationPage() {
                 >
                     <div className="absolute inset-[-4px] rounded-full bg-[#722F37] opacity-30 animate-ping"></div>
                     <img
-                        src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
+                        src="https://assets.accredipro.academy/migrated/Sarah-M.webp"
                         alt="Sarah"
                         className="w-11 h-11 rounded-full border-2 border-[#D4AF37]"
                     />

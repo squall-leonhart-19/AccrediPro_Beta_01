@@ -10,7 +10,7 @@ export type ZombiePersonality = "leader" | "struggler" | "questioner" | "buyer";
 export const COACH_SARAH = {
     name: "Coach Sarah M.",
     email: "sarah@accredipro-certificate.com",
-    avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp",
+    avatar: "https://assets.accredipro.academy/migrated/Sarah-M.webp",
 };
 
 // Student avatar URLs (real-looking faces)
@@ -38,14 +38,14 @@ export const ZOMBIE_PROFILES = [
         location: "California",
         personalityType: "leader" as ZombiePersonality,
         backstory: "Started 6 weeks ago, crushing it, very encouraging",
-        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Gina-T.webp",
+        avatar: "https://assets.accredipro.academy/migrated/Gina-T.webp",
     },
     {
         name: "Amber L.",
         location: "Texas",
         personalityType: "leader" as ZombiePersonality,
         backstory: "Supportive, gives great advice about pacing",
-        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Amber-L.webp",
+        avatar: "https://assets.accredipro.academy/migrated/Amber-L.webp",
     },
 
     // QUESTIONER - Cheryl W. from scripts
@@ -54,7 +54,7 @@ export const ZOMBIE_PROFILES = [
         location: "Florida",
         personalityType: "questioner" as ZombiePersonality,
         backstory: "Was nervous at first, loves gut health, asks great questions",
-        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Cheryl-W.webp",
+        avatar: "https://assets.accredipro.academy/migrated/Cheryl-W.webp",
     },
 
     // STRUGGLER - Lisa K. from scripts
@@ -63,7 +63,7 @@ export const ZOMBIE_PROFILES = [
         location: "Oregon",
         personalityType: "struggler" as ZombiePersonality,
         backstory: "Working full-time, slower pace but persistent",
-        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Lisa-K.webp",
+        avatar: "https://assets.accredipro.academy/migrated/Lisa-K.webp",
     },
 
     // BUYER - Denise P. from scripts
@@ -72,7 +72,7 @@ export const ZOMBIE_PROFILES = [
         location: "Colorado",
         personalityType: "buyer" as ZombiePersonality,
         backstory: "Invested in Pro early, gets certified Day 14, first client Day 25",
-        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Denise-P.webp",
+        avatar: "https://assets.accredipro.academy/migrated/Denise-P.webp",
     },
 ];
 

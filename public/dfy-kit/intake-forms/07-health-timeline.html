@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Timeline Worksheet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background: #fff;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 35px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 18px;
+            border-bottom: 3px solid #8B1538;
+        }
+
+        .logo-placeholder {
+            width: 100px;
+            height: 50px;
+            background: #f5f5f5;
+            border: 2px dashed #ccc;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 11px;
+        }
+
+        h1 {
+            color: #8B1538;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .instructions {
+            background: #FFF8E7;
+            border-left: 4px solid #D4AF37;
+            padding: 14px;
+            margin-bottom: 25px;
+            font-size: 12px;
+        }
+
+        .client-info {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .client-info input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #8B1538 0%, #6d1029 100%);
+            color: #fff;
+            padding: 10px 16px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #8B1538, #D4AF37);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+            padding: 18px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 3px solid #8B1538;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 20px;
+            width: 14px;
+            height: 14px;
+            background: #8B1538;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 2px #8B1538;
+        }
+
+        .timeline-item h4 {
+            color: #8B1538;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .timeline-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .timeline-row input,
+        .timeline-row textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .timeline-row textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .timeline-row label {
+            font-size: 11px;
+            color: #666;
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .life-events {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .event-box {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .event-box h5 {
+            color: #8B1538;
+            font-size: 12px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 6px;
+        }
+
+        .event-box input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .event-box textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 11px;
+            min-height: 50px;
+        }
+
+        .blank-timeline {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .blank-timeline table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .blank-timeline th {
+            background: #f5f5f5;
+            padding: 10px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .blank-timeline td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .blank-timeline input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #eee;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .pattern-box {
+            background: linear-gradient(135deg, #FFF8E7 0%, #fff 100%);
+            border: 2px solid #D4AF37;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .pattern-box h4 {
+            color: #8B1538;
+            margin-bottom: 12px;
+        }
+
+        .pattern-box textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 80px;
+            font-size: 13px;
+        }
+
+        @media print {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-placeholder">Your Logo</div>
+            <h1>Health Timeline Worksheet</h1>
+            <p class="subtitle">Mapping Your Health Journey</p>
+        </div>
+
+        <div class="instructions">
+            <strong>Purpose:</strong> This timeline helps us understand the chronological development of your health
+            issues. Tracing when symptoms started and what was happening in your life at that time often reveals
+            important patterns and root causes. Please think back through your life and be as accurate as possible with
+            dates.
+        </div>
+
+        <div class="client-info">
+            <input type="text" placeholder="Client Name">
+            <input type="date" placeholder="Date">
+        </div>
+
+        <!-- CHILDHOOD & EARLY LIFE -->
+        <div class="section">
+            <div class="section-title">Early Life Foundation</div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>🍼 Birth & Infancy</h4>
+                    <div class="timeline-row">
+                        <div style="flex: 1;"><label>Type of delivery:</label><input type="text"
+                                placeholder="Vaginal / C-section"></div>
+                        <div style="flex: 1;"><label>Breastfed?</label><input type="text"
+                                placeholder="Yes/No, how long"></div>
+                        <div style="flex: 1;"><label>Any complications?</label><input type="text"
+                                placeholder="Premature, jaundice, etc."></div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <h4>👶 Childhood (0-12 years)</h4>
+                    <div class="timeline-row">
+                        <div><label>Recurring childhood illnesses:</label><textarea
+                                placeholder="Ear infections, strep throat, asthma, eczema, allergies, etc."></textarea>
+                        </div>
+                    </div>
+                    <div class="timeline-row">
+                        <div style="flex: 1;"><label>Antibiotics (how often):</label><input type="text"
+                                placeholder="Rarely / Several times / Frequently"></div>
+                        <div style="flex: 1;"><label>Major injuries/surgeries:</label><input type="text"></div>
+                    </div>
+                    <div class="timeline-row">
+                        <div><label>Emotional/family environment:</label><textarea
+                                placeholder="Any significant stressors, trauma, or notable family dynamics"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <h4>🎒 Adolescence (13-18 years)</h4>
+                    <div class="timeline-row">
+                        <div><label>Health issues during teen years:</label><textarea
+                                placeholder="Acne, eating issues, mood problems, sports injuries, etc."></textarea>
+                        </div>
+                    </div>
+                    <div class="timeline-row">
+                        <div style="flex: 1;"><label>Diet quality:</label><input type="text"
+                                placeholder="Good / Average / Poor"></div>
+                        <div style="flex: 1;"><label>Activity level:</label><input type="text"
+                                placeholder="Active / Moderate / Sedentary"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAJOR LIFE EVENTS -->
+        <div class="section">
+            <div class="section-title">Major Life Events</div>
+            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Note significant events that may have impacted
+                your health (add approximate year):</p>
+            <div class="life-events">
+                <div class="event-box">
+                    <h5>🎓 Education/Career Changes</h5>
+                    <input type="text" placeholder="Year">
+                    <textarea placeholder="College, job changes, career stress, unemployment..."></textarea>
+                </div>
+                <div class="event-box">
+                    <h5>💑 Relationships</h5>
+                    <input type="text" placeholder="Year">
+                    <textarea placeholder="Marriage, divorce, death of loved one, toxic relationships..."></textarea>
+                </div>
+                <div class="event-box">
+                    <h5>👶 Pregnancies (if applicable)</h5>
+                    <input type="text" placeholder="Years">
+                    <textarea placeholder="Number of pregnancies, complications, postpartum issues..."></textarea>
+                </div>
+                <div class="event-box">
+                    <h5>🏠 Living Environment Changes</h5>
+                    <input type="text" placeholder="Year">
+                    <textarea placeholder="Moves, mold exposure, new construction, different countries..."></textarea>
+                </div>
+                <div class="event-box">
+                    <h5>😰 Major Stressors/Trauma</h5>
+                    <input type="text" placeholder="Year">
+                    <textarea placeholder="Financial stress, accidents, abuse, loss, major life changes..."></textarea>
+                </div>
+                <div class="event-box">
+                    <h5>🦠 Infections/Illnesses</h5>
+                    <input type="text" placeholder="Year">
+                    <textarea placeholder="Mono, Lyme, COVID, food poisoning, hospitalizations..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- SYMPTOM TIMELINE -->
+        <div class="section">
+            <div class="section-title">When Your Symptoms Started</div>
+            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">For each current health concern, trace back to
+                when it first appeared:</p>
+            <div class="blank-timeline">
+                <table>
+                    <tr>
+                        <th style="width: 25%;">Symptom/Condition</th>
+                        <th style="width: 15%;">Year Started</th>
+                        <th style="width: 30%;">What was happening in your life then?</th>
+                        <th style="width: 30%;">How has it changed over time?</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" placeholder="e.g., Fatigue"></td>
+                        <td><input type="text" placeholder="e.g., 2018"></td>
+                        <td><input type="text" placeholder="e.g., Started new stressful job"></td>
+                        <td><input type="text" placeholder="e.g., Gradually worsened"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- MEDICAL INTERVENTIONS TIMELINE -->
+        <div class="section">
+            <div class="section-title">Medical History Timeline</div>
+            <div class="blank-timeline">
+                <table>
+                    <tr>
+                        <th style="width: 12%;">Year</th>
+                        <th style="width: 25%;">Event/Diagnosis</th>
+                        <th style="width: 25%;">Treatment/Medication</th>
+                        <th style="width: 38%;">Outcome/Notes</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text" placeholder="Surgery, diagnosis, hospital stay"></td>
+                        <td><input type="text" placeholder="Meds started, procedures"></td>
+                        <td><input type="text" placeholder="Did it help? Side effects?"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- PATTERNS -->
+        <div class="pattern-box">
+            <h4>🔍 Patterns You've Noticed</h4>
+            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Looking at your timeline, do you notice any
+                connections between life events and health changes?</p>
+            <textarea
+                placeholder="What patterns do you see? Are there common triggers? Times when you felt best vs. worst?"></textarea>
+        </div>
+    </div>
+</body>
+
+</html>
