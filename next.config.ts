@@ -129,7 +129,7 @@ const nextConfig: NextConfig = {
               // Fonts: Google Fonts + self
               "font-src 'self' https://fonts.gstatic.com data:",
               // Connect: APIs + Supabase + Sentry + analytics + Facebook + R2
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.google-analytics.com https://api.stripe.com https://elevenlabs.io https://api.openai.com https://api.anthropic.com https://*.facebook.com https://*.facebook.net https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.google-analytics.com https://api.stripe.com https://elevenlabs.io https://api.openai.com https://api.anthropic.com https://*.facebook.com https://*.facebook.net https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev https://*.accredipro.academy",
               // Frames: Stripe payment + embedded content
               "frame-src 'self' https://js.stripe.com https://www.youtube.com https://player.vimeo.com https://*.facebook.com",
               // Media: self + Supabase storage for audio/video
