@@ -157,7 +157,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "coach.accredipro.academy",
-        pathname: "/wp-content/uploads/**",
+        pathname: "/**",
       },
       {
         protocol: "https",
