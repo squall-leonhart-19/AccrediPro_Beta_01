@@ -16,6 +16,8 @@ const FROM_EMAIL_TRANSACTIONAL = process.env.FROM_EMAIL || "AccrediPro Academy <
 // Marketing/sequence emails - PERSONAL NAME to reach primary inbox
 // Format: "Sarah <email>" looks like a personal email, not marketing
 const FROM_EMAIL_MARKETING = process.env.FROM_EMAIL_MARKETING || "Sarah <info@accredipro-certificate.com>";
+// Personal emails for login credentials - plain, personal, lands in Primary
+const FROM_EMAIL_PERSONAL = "Sarah Mitchell <sarah@accredipro-certificate.com>";
 
 // Use SITE_URL for emails, NOT NEXTAUTH_URL (which can be localhost for auth)
 const BASE_URL = process.env.SITE_URL || "https://learn.accredipro.academy";
@@ -1132,74 +1134,91 @@ interface FreebieWelcomeEmailOptions {
 }
 
 export async function sendFreebieWelcomeEmail({ to, firstName, isExistingUser, nicheName = "Functional Medicine", password = "coach2026", diplomaSlug = "functional-medicine-diploma" }: FreebieWelcomeEmailOptions) {
-  // Direct link to Lesson 1
+  // Direct link to Lesson 1 (use login page for new users to ensure they're logged in first)
   const lesson1Url = `${BASE_URL}/${diplomaSlug}/lesson/1`;
+  const loginUrl = `${BASE_URL}/login`;
 
-  const content = isExistingUser ? `
-    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Welcome Back, ${firstName}!</h2>
+  // Plain text email for better deliverability (lands in Gmail Primary, not Promotions)
+  // NO HTML buttons, minimal formatting, looks like a personal email
+  const plainText = isExistingUser
+    ? `Hey ${firstName}!
 
-    <p style="color: #555; font-size: 16px;">Great news — your free <strong>${nicheName} Mini Diploma</strong> is ready!</p>
+Great news - your free ${nicheName} Mini Diploma is ready!
 
-    <p style="color: #555; font-size: 16px;">Since you already have an account, just log in to start your 9 interactive lessons with me.</p>
+Since you already have an account, just log in to start your 9 interactive lessons with me.
 
-    <div style="background: linear-gradient(135deg, #f8f4f0 0%, #fff 100%); border-left: 4px solid #722F37; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
-      <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">What's Waiting For You:</p>
-      <ul style="margin: 0; padding-left: 20px; color: #555;">
-        <li style="margin: 5px 0;">9 chat-style lessons (~60 min total)</li>
-        <li style="margin: 5px 0;">${nicheName} certificate upon completion</li>
-        <li style="margin: 5px 0;">Personal voice message from me</li>
-      </ul>
-    </div>
+Link: ${loginUrl}
 
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="${lesson1Url}" style="display: inline-block; background: linear-gradient(135deg, #722F37 0%, #8B3A44 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">Start Lesson 1 Now</a>
-    </div>
+You have 7 days to complete all lessons and earn your certificate.
 
-    <p style="color: #888; font-size: 14px; text-align: center;">
-      You have 7 days to complete all lessons and earn your certificate.
-    </p>
+I'll be chatting with you inside the lessons!
 
-    <p style="color: #555; font-size: 16px; margin-top: 25px;">
-      I'll be chatting with you inside the lessons!<br/>
-      <strong>Sarah</strong>
-    </p>
-  ` : `
-    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Welcome, ${firstName}!</h2>
+Sarah
+AccrediPro Academy`
+    : `Hey ${firstName}!
 
-    <p style="color: #555; font-size: 16px;">I'm SO excited you're here! Your <strong>${nicheName} Mini Diploma</strong> is ready.</p>
+I'm so excited you're here! Your ${nicheName} Mini Diploma is ready.
 
-    <p style="color: #555; font-size: 16px;">Here's how to log in:</p>
+Here's how to log in:
 
-    <div style="background: linear-gradient(135deg, #f8f4f0 0%, #fff 100%); border-left: 4px solid #722F37; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
-      <p style="margin: 0 0 10px 0; font-size: 15px; color: #333;">
-        <strong>Email:</strong> ${to}
-      </p>
-      <p style="margin: 0; font-size: 15px; color: #333;">
-        <strong>Password:</strong> ${password}
-      </p>
-    </div>
+Email: ${to}
+Password: ${password}
 
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="${lesson1Url}" style="display: inline-block; background: linear-gradient(135deg, #722F37 0%, #8B3A44 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">Start Lesson 1 Now</a>
-    </div>
+Link: ${loginUrl}
 
-    <p style="color: #888; font-size: 14px; text-align: center;">
-      You have 7 days to complete all 9 lessons and earn your certificate.
-    </p>
+You have 7 days to complete all 9 lessons and earn your certificate.
 
-    <p style="color: #555; font-size: 16px; margin-top: 25px;">
-      I'll be chatting with you inside the lessons!<br/>
-      <strong>Sarah</strong>
-    </p>
-  `;
+I'll be chatting with you inside the lessons!
 
-  return sendEmail({
-    to,
-    subject: isExistingUser
-      ? `${firstName}, your ${nicheName} Mini Diploma is ready!`
-      : `${firstName}, here's your login for AccrediPro`,
-    html: emailWrapper(content, `Your free ${nicheName} Mini Diploma with Sarah is ready!`),
-  });
+Sarah
+AccrediPro Academy`;
+
+  // Minimal HTML version (just for basic formatting in clients that prefer HTML)
+  // NO styled buttons, NO fancy elements, NO footer with unsubscribe
+  const minimalHtml = isExistingUser
+    ? `<p>Hey ${firstName}!</p>
+<p>Great news - your free <b>${nicheName} Mini Diploma</b> is ready!</p>
+<p>Since you already have an account, just log in to start your 9 interactive lessons with me.</p>
+<p>Link: <a href="${loginUrl}">${loginUrl}</a></p>
+<p>You have 7 days to complete all lessons and earn your certificate.</p>
+<p>I'll be chatting with you inside the lessons!</p>
+<p>Sarah<br/>AccrediPro Academy</p>`
+    : `<p>Hey ${firstName}!</p>
+<p>I'm so excited you're here! Your <b>${nicheName} Mini Diploma</b> is ready.</p>
+<p>Here's how to log in:</p>
+<p>
+<b>Email:</b> ${to}<br/>
+<b>Password:</b> ${password}
+</p>
+<p>Link: <a href="${loginUrl}">${loginUrl}</a></p>
+<p>You have 7 days to complete all 9 lessons and earn your certificate.</p>
+<p>I'll be chatting with you inside the lessons!</p>
+<p>Sarah<br/>AccrediPro Academy</p>`;
+
+  // Use Resend directly with personal sender for better deliverability
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL_PERSONAL,
+      to: [to],
+      subject: isExistingUser
+        ? `${firstName}, your ${nicheName} Mini Diploma is ready!`
+        : `${firstName}, here's your login for AccrediPro`,
+      text: plainText,
+      html: minimalHtml,
+      replyTo: "sarah@accredipro-certificate.com",
+    });
+
+    if (error) {
+      console.error("Email send error:", error);
+      throw error;
+    }
+
+    console.log(`[FREEBIE] Plain text welcome email sent to ${to}`);
+    return { success: true, data };
+  } catch (error) {
+    console.error("Failed to send freebie welcome email:", error);
+    return { success: false, error };
+  }
 }
 
 // ============================================
