@@ -16,6 +16,7 @@ const COURSE_SLUGS: Record<string, string> = {
     "holistic-nutrition": "holistic-nutrition-mini-diploma",
     "nurse-coach": "nurse-coach-mini-diploma",
     "health-coach": "health-coach-mini-diploma",
+    "christian-coaching": "christian-coaching-mini-diploma",
 };
 
 // Coach emails by mini diploma type
@@ -28,6 +29,7 @@ const COACH_EMAILS: Record<string, string> = {
     "holistic-nutrition": "sarah_womenhealth@accredipro-certificate.com",
     "nurse-coach": "sarah_womenhealth@accredipro-certificate.com",
     "health-coach": "sarah_womenhealth@accredipro-certificate.com",
+    "christian-coaching": "sarah_womenhealth@accredipro-certificate.com",
 };
 
 // Welcome messages by mini diploma type
@@ -106,6 +108,29 @@ Talk soon,
 Sarah ✨`,
         voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up and wanted to personally welcome you. I'm so excited you're here! Check your dashboard to get started, and message me anytime if you have questions - - Talk soon ${firstName}!.`,
     },
+    "christian-coaching": {
+        text: (firstName: string) => `Hey ${firstName}! 💕
+
+I'm Sarah, your coach for this entire journey - and I just saw your name come through!
+
+Welcome to your Christian Life Coaching Mini Diploma! This is the start of something special, and I'm SO excited you're here!
+
+Inside your dashboard you'll find:
+
+✨ Your 9 faith-based coaching lessons ready to start
+✨ Your Roadmap showing where you're headed
+✨ Direct access to message me anytime
+
+I know God led you here for a reason. Something inside you said YES to this calling. Let's discover together how you can turn your faith into a practice that transforms lives!
+
+Hit reply anytime - tell me a little about yourself! What's your testimony? What's calling you to coach?
+
+I'm here for you every step of the way!
+
+Blessings,
+Sarah ✨`,
+        voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up for the Christian Life Coaching Mini Diploma and wanted to personally welcome you. I'm so excited you're here! God has a plan for you, and I believe coaching is part of it. Check your dashboard to get started, and message me anytime if you have questions. Talk soon ${firstName}!`,
+    },
 };
 
 // ============================================================
@@ -144,6 +169,7 @@ function getCertificationDisplayName(course: string): string {
         "holistic-nutrition": "Holistic Nutrition",
         "nurse-coach": "Nurse Life Coach",
         "health-coach": "Health Coach",
+        "christian-coaching": "Christian Life Coaching",
     };
     return names[course] || "Health Certification";
 }
@@ -426,6 +452,7 @@ export async function POST(request: NextRequest) {
                 "holistic-nutrition": "Holistic Nutrition",
                 "nurse-coach": "Nurse Life Coach",
                 "health-coach": "Health Coach",
+                "christian-coaching": "Christian Life Coaching",
             };
             const nicheName = nicheNames[course] || course;
 
