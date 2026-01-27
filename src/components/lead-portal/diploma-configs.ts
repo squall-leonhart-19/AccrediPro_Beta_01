@@ -296,4 +296,46 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
             },
         ],
     },
+    "christian-coaching-diploma": {
+        slug: "christian-coaching-diploma",
+        name: "Christian Life Coaching Certification",
+        shortName: "Christian Coaching",
+        coachName: "Sarah",
+        coachImage: "/coaches/sarah-coach.webp",
+        modules: [
+            {
+                id: 1,
+                title: "Welcome & Foundation",
+                description: "Introduction to Christian life coaching",
+                icon: "BookOpen",
+                lessons: [
+                    { id: 1, title: "The Coaching Mindset", duration: "7 min" },
+                    { id: 2, title: "Active Listening", duration: "6 min" },
+                    { id: 3, title: "Powerful Questions", duration: "6 min" },
+                ],
+            },
+            {
+                id: 2,
+                title: "The Faith Framework",
+                description: "Biblical principles for coaching",
+                icon: "Target",
+                lessons: [
+                    { id: 4, title: "The FAITH Framework", duration: "8 min" },
+                    { id: 5, title: "Goal Setting with God", duration: "7 min" },
+                    { id: 6, title: "Overcoming Obstacles", duration: "7 min" },
+                ],
+            },
+            {
+                id: 3,
+                title: "Building Your Practice",
+                description: "Turning your calling into a practice",
+                icon: "Award",
+                lessons: [
+                    { id: 7, title: "Finding Your Niche", duration: "7 min" },
+                    { id: 8, title: "Pricing Your Services", duration: "6 min" },
+                    { id: 9, title: "Your Next Steps", duration: "5 min" },
+                ],
+            },
+        ],
+    },
 };
