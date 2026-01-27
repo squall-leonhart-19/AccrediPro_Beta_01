@@ -182,7 +182,7 @@ export function FMExamComponent({
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    text: `Oh my gosh, ${firstName}! ${score} percent! I KNEW you could do it! You are officially in the top 5% of everyone who's ever taken this exam. I am SO incredibly proud of you right now. You've just qualified for our ASI Graduate Scholarship... this is huge! Click below to claim your spot... but hurry, we only have 3 scholarship spots available this month, and your coupon expires in 24 hours. You deserve this, ${firstName}. Let's make this happen!`,
+                    text: `Oh my gosh, ${firstName}! ${score} out of 100! I KNEW you could do it! You are officially in the top 5% of everyone who's ever taken this exam. I am SO incredibly proud of you right now. You've just unlocked access to my exclusive masterclass... this is huge! Click below to watch it now... but hurry, your access expires in 24 hours. You deserve this, ${firstName}. Let's make this happen!`,
                     voice: "sarah",
                 }),
             });
@@ -319,22 +319,21 @@ export function FMExamComponent({
                         </div>
                     </div>
 
-                    {/* Scholarship Info */}
-                    <div className="bg-gradient-to-r from-gold-100 to-gold-50 rounded-xl p-5 mb-6 border-2 border-gold-300 shadow-sm">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Award className="w-6 h-6 text-gold-600" />
-                            <h3 className="font-bold text-gold-800 text-lg">
-                                ASI Graduate Scholarship
-                            </h3>
-                        </div>
-                        <p className="text-gold-700 mb-3">
-                            Complete this assessment and you'll qualify for our exclusive <span className="font-bold text-burgundy-600">$297 Graduate Scholarship</span> - that's <span className="font-bold">$24,358 in savings</span> on full board certification!
-                        </p>
-                        <div className="flex items-center gap-2 text-sm text-gold-600">
-                            <span className="inline-flex items-center gap-1 bg-gold-200 px-2 py-1 rounded-full">
-                                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                                Only 3 spots available this month
-                            </span>
+                    {/* Graduate Testimonials */}
+                    <div className="bg-white rounded-xl p-5 mb-6 border border-gray-200 shadow-sm">
+                        <h3 className="font-bold text-gray-800 text-sm mb-4 flex items-center gap-2">
+                            <GraduationCap className="w-4 h-4 text-burgundy-600" />
+                            What Our Graduates Say
+                        </h3>
+                        <div className="space-y-3">
+                            <div className="bg-gradient-to-r from-burgundy-50 to-gold-50 rounded-lg p-3 border-l-4 border-burgundy-500">
+                                <p className="text-gray-700 text-sm italic">"I was so nervous but the exam covered exactly what we learned. Passed on my first try!"</p>
+                                <p className="text-xs text-burgundy-600 mt-1 font-medium">— Jennifer R., Texas</p>
+                            </div>
+                            <div className="bg-gradient-to-r from-burgundy-50 to-gold-50 rounded-lg p-3 border-l-4 border-gold-500">
+                                <p className="text-gray-700 text-sm italic">"Trust Sarah's lessons. If you paid attention, you already know everything you need."</p>
+                                <p className="text-xs text-gold-600 mt-1 font-medium">— Diana M., Georgia</p>
+                            </div>
                         </div>
                     </div>
 
@@ -434,7 +433,7 @@ export function FMExamComponent({
                             </div>
                             <div>
                                 <h1 className="font-bold text-lg">EXAMINATION PASSED</h1>
-                                <p className="text-burgundy-700 text-xs">Scholarship Qualified!</p>
+                                <p className="text-burgundy-700 text-xs">Masterclass Unlocked!</p>
                             </div>
                         </div>
                         <div className="text-right text-xs">
@@ -481,10 +480,10 @@ export function FMExamComponent({
                                 </button>
                             </div>
                             <p className="text-gray-700 leading-relaxed">
-                                Oh my gosh, {firstName}! <span className="font-bold text-gold-600">{results.score}%</span>! I KNEW you could do it! You are officially in the <span className="font-bold text-burgundy-600">top 5%</span> of everyone who's ever taken this exam.
+                                Oh my gosh, {firstName}! <span className="font-bold text-gold-600">{results.score}/100</span>! I KNEW you could do it! You are officially in the <span className="font-bold text-burgundy-600">top 5%</span> of everyone who's ever taken this exam.
                             </p>
                             <p className="text-burgundy-600 font-semibold mt-2">
-                                You've just qualified for the ASI Graduate Scholarship!
+                                You've unlocked access to the exclusive masterclass!
                             </p>
                         </div>
                     </div>
@@ -499,7 +498,7 @@ export function FMExamComponent({
                         >
                             <div className="text-center">
                                 <span className="text-4xl font-black text-burgundy-800">{results.score}</span>
-                                <span className="text-lg text-burgundy-600">%</span>
+                                <span className="text-sm text-burgundy-600">/100</span>
                             </div>
                         </motion.div>
 
@@ -509,7 +508,7 @@ export function FMExamComponent({
                             transition={{ delay: 0.3 }}
                         >
                             <h2 className="text-3xl md:text-4xl font-bold text-gold-600 mb-2">
-                                SCHOLARSHIP QUALIFIED!
+                                MASTERCLASS UNLOCKED!
                             </h2>
 
                             <div className="flex items-center justify-center gap-4 text-sm text-gray-600 mt-4">
@@ -525,7 +524,7 @@ export function FMExamComponent({
                         </motion.div>
                     </div>
 
-                    {/* Scholarship Box */}
+                    {/* Masterclass Unlocked Box */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -533,20 +532,22 @@ export function FMExamComponent({
                         className="bg-gradient-to-r from-gold-100 via-gold-50 to-gold-100 rounded-xl p-6 mb-6 border-2 border-gold-400 shadow-sm"
                     >
                         <h3 className="text-xl font-bold text-gold-800 mb-3 text-center">
-                            Your ASI Graduate Scholarship is Ready!
+                            Your Exclusive Masterclass is Ready!
                         </h3>
                         <div className="text-center">
-                            <p className="text-2xl font-bold text-burgundy-700">
-                                $24,655 value → <span className="text-gold-600">$297</span>
+                            <p className="text-gray-700 mb-3">
+                                As a top performer, you've earned access to Sarah's exclusive live training where she reveals how our graduates are building 6-figure practices.
                             </p>
-                            <p className="text-sm text-gold-600 font-semibold mt-1">
-                                You save $24,358 (99% off)
-                            </p>
+                            <div className="flex flex-wrap justify-center gap-2 text-xs">
+                                <span className="bg-white px-3 py-1 rounded-full text-burgundy-600 border border-burgundy-200">Live Training</span>
+                                <span className="bg-white px-3 py-1 rounded-full text-burgundy-600 border border-burgundy-200">Q&A Session</span>
+                                <span className="bg-white px-3 py-1 rounded-full text-burgundy-600 border border-burgundy-200">Graduate Secrets</span>
+                            </div>
                         </div>
                         <div className="flex items-center justify-center gap-2 mt-4 text-sm text-burgundy-600">
                             <span className="inline-flex items-center gap-1 bg-burgundy-100 px-3 py-1 rounded-full">
                                 <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                                Coupon expires in 24 hours
+                                Access expires in 24 hours
                             </span>
                         </div>
                     </motion.div>
@@ -556,7 +557,7 @@ export function FMExamComponent({
                         size="lg"
                         className="w-full bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 hover:from-gold-600 hover:via-gold-500 hover:to-gold-600 text-burgundy-900 font-bold text-lg py-6 shadow-lg"
                     >
-                        Claim Your Scholarship Now
+                        Unlock the Masterclass
                         <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
                 </div>

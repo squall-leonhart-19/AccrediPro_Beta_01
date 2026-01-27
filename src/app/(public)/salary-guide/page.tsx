@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "Salary Guide 2026 | Accreditation Standards Institute",
-  description: "Discover earning potential for ASI-certified practitioners. Comprehensive salary data across functional medicine, women's health, nutrition, and more.",
+  title: "Compensation Research 2026 | AccrediPro International Standards Institute",
+  description: "Industry compensation data and career earnings research for certified integrative health professionals across specializations.",
 };
 
 const BRAND = {
@@ -245,32 +245,32 @@ export default function SalaryGuidePage() {
         <div className="relative max-w-7xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ backgroundColor: `${BRAND.gold}20`, border: `1px solid ${BRAND.gold}40` }}>
             <DollarSign className="w-4 h-4" style={{ color: BRAND.gold }} />
-            <span className="text-sm font-medium" style={{ color: BRAND.gold }}>2026 Salary Guide</span>
+            <span className="text-sm font-medium" style={{ color: BRAND.gold }}>Industry Compensation Research</span>
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Health Coach
-            <span className="block" style={{ color: BRAND.gold }}>Salary Guide</span>
+            Professional
+            <span className="block" style={{ color: BRAND.gold }}>Compensation Guide</span>
           </h1>
 
           <p className="text-xl max-w-2xl mx-auto mb-8" style={{ color: "#f5e6e8" }}>
-            Comprehensive salary data and earning potential for ASI-certified practitioners across all specializations.
+            Comprehensive industry data on compensation ranges for certified integrative health professionals across all specializations.
           </p>
 
           <div className="inline-flex items-center gap-6 px-6 py-3 rounded-full bg-white/10">
             <div className="text-center">
               <p className="text-2xl font-bold text-white">$75K - $150K+</p>
-              <p className="text-xs" style={{ color: "#f5e6e8" }}>Avg Annual Income</p>
+              <p className="text-xs" style={{ color: "#f5e6e8" }}>Median Annual Range</p>
             </div>
             <div className="w-px h-10 bg-white/20" />
             <div className="text-center">
               <p className="text-2xl font-bold text-white">+18%</p>
-              <p className="text-xs" style={{ color: "#f5e6e8" }}>Industry Growth</p>
+              <p className="text-xs" style={{ color: "#f5e6e8" }}>Industry Growth Rate</p>
             </div>
             <div className="w-px h-10 bg-white/20" />
             <div className="text-center">
-              <p className="text-2xl font-bold text-white">14 Days</p>
-              <p className="text-xs" style={{ color: "#f5e6e8" }}>Avg to First Client</p>
+              <p className="text-2xl font-bold text-white">20K+</p>
+              <p className="text-xs" style={{ color: "#f5e6e8" }}>Professionals Surveyed</p>
             </div>
           </div>
         </div>
@@ -402,21 +402,21 @@ export default function SalaryGuidePage() {
       <section className="py-20" style={{ backgroundColor: BRAND.burgundyDark }}>
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-            Ready to Start Earning?
+            Begin Your Professional Journey
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: "#f5e6e8" }}>
-            Join 20,000+ ASI-certified practitioners building successful careers in health coaching.
+            Join 20,000+ professionals building recognized careers in integrative health.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/womens-health-mini-diploma">
+            <Link href="/apply">
               <Button size="lg" className="font-bold text-lg px-8 py-6 h-auto" style={{ backgroundColor: BRAND.gold, color: BRAND.burgundyDark }}>
-                Start Free Mini-Diploma
+                Apply for Professional Review
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
             <Link href="/job-board">
               <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 h-auto border-white text-white hover:bg-white/10">
-                Browse Job Board
+                Professional Opportunities
               </Button>
             </Link>
           </div>

@@ -1638,7 +1638,7 @@ export function MessagesClient({
   };
 
   return (
-    <div className="h-full w-full flex bg-white rounded-xl overflow-hidden shadow-xl border border-gray-200/50">
+    <div className="h-full w-full flex bg-white overflow-hidden border-t border-gray-200/50 lg:border-0">
       {/* Hidden file inputs */}
       <input
         type="file"

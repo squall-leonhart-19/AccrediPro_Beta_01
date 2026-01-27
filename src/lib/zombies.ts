@@ -38,14 +38,14 @@ export const ZOMBIE_PROFILES = [
         location: "California",
         personalityType: "leader" as ZombiePersonality,
         backstory: "Started 6 weeks ago, crushing it, very encouraging",
-        avatar: "https://assets.accredipro.academy/fm-certification/Gina-T.webp",
+        avatar: "https://assets.accredipro.academy/fm-certification/T6.webp",
     },
     {
         name: "Amber L.",
         location: "Texas",
         personalityType: "leader" as ZombiePersonality,
         backstory: "Supportive, gives great advice about pacing",
-        avatar: "https://assets.accredipro.academy/fm-certification/Amber-L.webp",
+        avatar: "https://assets.accredipro.academy/fm-certification/T3.webp",
     },
 
     // QUESTIONER - Cheryl W. from scripts
@@ -54,7 +54,7 @@ export const ZOMBIE_PROFILES = [
         location: "Florida",
         personalityType: "questioner" as ZombiePersonality,
         backstory: "Was nervous at first, loves gut health, asks great questions",
-        avatar: "https://assets.accredipro.academy/fm-certification/Cheryl-W.webp",
+        avatar: "https://assets.accredipro.academy/fm-certification/TESTIMONIAL_02.jpg",
     },
 
     // STRUGGLER - Lisa K. from scripts
@@ -63,7 +63,7 @@ export const ZOMBIE_PROFILES = [
         location: "Oregon",
         personalityType: "struggler" as ZombiePersonality,
         backstory: "Working full-time, slower pace but persistent",
-        avatar: "https://assets.accredipro.academy/fm-certification/Lisa-K.webp",
+        avatar: "https://assets.accredipro.academy/fm-certification/TESTIMONIAL_05.jpeg",
     },
 
     // BUYER - Denise P. from scripts
@@ -72,7 +72,7 @@ export const ZOMBIE_PROFILES = [
         location: "Colorado",
         personalityType: "buyer" as ZombiePersonality,
         backstory: "Invested in Pro early, gets certified Day 14, first client Day 25",
-        avatar: "https://assets.accredipro.academy/fm-certification/Denise-P.webp",
+        avatar: "https://assets.accredipro.academy/fm-certification/T2.webp",
     },
 ];
 

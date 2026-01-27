@@ -100,10 +100,40 @@ export default async function CategoryCommunityPage({ params }: PageProps) {
     _count: post._count,
   }));
 
-  // Get category stats
+  // Calculate dynamic stats
+  const realUserCount = await prisma.user.count({
+    where: { isFakeProfile: false }
+  });
+
+  // Stats formulas (approved)
+  const membersBase = 2200;
+  const totalMembers = membersBase + realUserCount;
+  const certified = Math.floor(totalMembers * 0.85);
+
+  // Coaches: deterministic daily number 17-30
+  const today = new Date().toISOString().split('T')[0];
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) {
+    hash = ((hash << 5) - hash) + today.charCodeAt(i);
+    hash = hash & hash;
+  }
+  const coaches = 17 + (Math.abs(hash) % 14);
+
+  // Earnings: $25K per certified
+  const earnings = certified * 25000;
+
+  // Goal progress
+  const goalTarget = 10000;
+  const goalProgress = Math.min(100, Math.floor((certified / goalTarget) * 100));
+
   const stats = {
     totalPosts: posts.length,
-    totalMembers: category.community?.memberCount || 0,
+    totalMembers,
+    certified,
+    coaches,
+    earnings,
+    goalTarget,
+    goalProgress,
   };
 
   return (

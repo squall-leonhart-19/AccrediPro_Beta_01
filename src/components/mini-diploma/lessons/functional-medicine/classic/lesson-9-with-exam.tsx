@@ -4,8 +4,9 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ClassicLessonBase, LessonSection } from "../../shared/classic-lesson-base";
 import { FMExamComponent } from "@/components/mini-diploma/fm-exam-component";
+import { SarahChatPanel } from "@/components/mini-diploma/sarah-chat-panel";
 import { Button } from "@/components/ui/button";
-import { Award, ArrowRight, BookOpen } from "lucide-react";
+import { Award, ArrowRight, BookOpen, MessageCircle, X } from "lucide-react";
 
 interface LessonProps {
     lessonNumber: number;
@@ -18,6 +19,8 @@ interface LessonProps {
 }
 
 type LessonState = "lesson" | "exam-intro" | "exam";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 /**
  * Lesson 9 with integrated final exam
@@ -40,6 +43,7 @@ export function ClassicLessonYourNextStepWithExam({
 }: LessonProps) {
     const router = useRouter();
     const [lessonState, setLessonState] = useState<LessonState>("lesson");
+    const [chatOpen, setChatOpen] = useState(false);
 
     const sections: LessonSection[] = [
         {
@@ -170,12 +174,8 @@ export function ClassicLessonYourNextStepWithExam({
             console.error("Failed to call complete API:", e);
         }
 
-        // Redirect to completion page with score info
-        const params = new URLSearchParams({
-            score: score.toString(),
-            scholarship: scholarshipQualified ? "1" : "0",
-        });
-        router.push(`/functional-medicine-diploma/complete?${params.toString()}`);
+        // Always redirect to scholarship VSL page (masterclass)
+        router.push("/scholarship");
     }, [onComplete, router]);
 
     // Handle proceeding to exam
@@ -188,29 +188,77 @@ export function ClassicLessonYourNextStepWithExam({
     // If showing exam
     if (lessonState === "exam") {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white py-8">
-                <div className="max-w-3xl mx-auto px-4">
-                    {/* Header */}
-                    <div className="text-center mb-8">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-burgundy-100 rounded-full text-burgundy-700 text-sm font-medium mb-4">
-                            <BookOpen className="w-4 h-4" />
-                            Functional Medicine Mini Diploma
+            <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex">
+                {/* Main Content */}
+                <div className="flex-1 py-8">
+                    <div className="max-w-3xl mx-auto px-4">
+                        {/* Header */}
+                        <div className="text-center mb-8">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-burgundy-100 rounded-full text-burgundy-700 text-sm font-medium mb-4">
+                                <BookOpen className="w-4 h-4" />
+                                Functional Medicine Mini Diploma
+                            </div>
+                            <h1 className="text-2xl md:text-3xl font-bold text-slate-900">
+                                Final Assessment
+                            </h1>
+                            <p className="text-slate-600 mt-2">
+                                Lesson 9 of 9 Complete - Now prove your knowledge!
+                            </p>
                         </div>
-                        <h1 className="text-2xl md:text-3xl font-bold text-slate-900">
-                            Final Assessment
-                        </h1>
-                        <p className="text-slate-600 mt-2">
-                            Lesson 9 of 9 Complete - Now prove your knowledge!
-                        </p>
-                    </div>
 
-                    {/* Exam Component */}
-                    <FMExamComponent
-                        firstName={firstName}
-                        userId={userId}
-                        onExamComplete={handleExamComplete}
-                    />
+                        {/* Exam Component */}
+                        <FMExamComponent
+                            firstName={firstName}
+                            userId={userId}
+                            onExamComplete={handleExamComplete}
+                        />
+                    </div>
                 </div>
+
+                {/* RIGHT SIDEBAR - Sarah Chat - Desktop LG+ */}
+                <aside className="hidden lg:flex w-[340px] flex-shrink-0 border-l border-gray-200 flex-col h-screen sticky top-0 bg-white">
+                    <SarahChatPanel userName={firstName} />
+                </aside>
+
+                {/* MOBILE: Floating Chat Button */}
+                <button
+                    onClick={() => setChatOpen(true)}
+                    className="lg:hidden fixed bottom-6 right-6 z-40 bg-gradient-to-r from-burgundy-600 to-rose-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                    style={{ display: chatOpen ? "none" : "flex" }}
+                >
+                    <MessageCircle className="w-6 h-6" />
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">
+                        💬
+                    </span>
+                </button>
+
+                {/* MOBILE: Chat Overlay */}
+                {chatOpen && (
+                    <div
+                        className="lg:hidden fixed inset-0 z-50 bg-black/50"
+                        onClick={() => setChatOpen(false)}
+                    >
+                        <div
+                            className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-burgundy-600 to-rose-600 text-white">
+                                <span className="font-semibold flex items-center gap-2">
+                                    💬 Chat with Sarah
+                                </span>
+                                <button
+                                    onClick={() => setChatOpen(false)}
+                                    className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+                            <div className="flex-1 overflow-hidden">
+                                <SarahChatPanel userName={firstName} onClose={() => setChatOpen(false)} />
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }

@@ -22,8 +22,10 @@ import {
     Timer,
     MessageCircle,
     X,
+    Users,
 } from "lucide-react";
 import { LiveChatPanel } from "@/components/courses/live-chat-panel";
+import { GraduatesChannel } from "@/components/mini-diploma/graduates-channel";
 
 // Countdown component for cohort expiry
 function CohortCountdown({ enrolledAt }: { enrolledAt?: Date | string | null }) {
@@ -200,6 +202,8 @@ export function LeadPortalDashboard({
 
     // Live Chat state
     const [showChat, setShowChat] = useState(false);
+    // Graduates Channel state
+    const [showGraduates, setShowGraduates] = useState(false);
 
     return (
         <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #fdf8f0 0%, #f5efe6 100%)' }}>
@@ -670,6 +674,46 @@ export function LeadPortalDashboard({
                     </Card>
                 )}
             </div>
+
+            {/* Floating Graduates Channel Button */}
+            <button
+                onClick={() => setShowGraduates(true)}
+                className="fixed bottom-20 left-4 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all hover:scale-105"
+                style={{
+                    background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 100%)',
+                    border: '2px solid rgba(212, 175, 55, 0.5)',
+                }}
+            >
+                <Users className="w-5 h-5 text-gold-400" />
+                <span className="text-white font-semibold text-sm">Graduates</span>
+                {!isAllComplete && <Lock className="w-3 h-3 text-gold-400/70" />}
+            </button>
+
+            {/* Graduates Channel Slide-out Panel */}
+            {showGraduates && (
+                <>
+                    {/* Backdrop */}
+                    <div
+                        className="fixed inset-0 bg-black/40 z-40"
+                        onClick={() => setShowGraduates(false)}
+                    />
+                    {/* Panel */}
+                    <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-300">
+                        {/* Close button */}
+                        <button
+                            onClick={() => setShowGraduates(false)}
+                            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors"
+                        >
+                            <X className="w-5 h-5 text-slate-600" />
+                        </button>
+                        <GraduatesChannel
+                            isGraduate={isAllComplete}
+                            diplomaSlug={config.slug}
+                            className="flex-1"
+                        />
+                    </div>
+                </>
+            )}
         </div>
     );
 }

@@ -20,8 +20,8 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "About ASI | Accreditation Standards Institute",
-  description: "Learn about the Accreditation Standards Institute - the global authority in functional medicine and health certification with 20,000+ certified practitioners in 45+ countries.",
+  title: "About | AccrediPro International Standards Institute",
+  description: "AccrediPro ISI is the global standards authority for professional health and wellness credentials with 20,000+ professionals in 45+ countries.",
 };
 
 const BRAND = {
@@ -48,40 +48,40 @@ export default function AboutPage() {
     {
       icon: Shield,
       title: "Rigorous Standards",
-      description: "We don't just issue certificates — we verify competency. Our assessments ensure every practitioner meets real-world practice standards."
+      description: "We don't just issue credentials — we verify competency. Our assessments ensure every professional meets real-world practice standards."
     },
     {
       icon: Heart,
-      title: "Student Success First",
-      description: "We measure our success by your success. That's why we never leave you behind — support until completion, career launch assistance, and lifetime community."
+      title: "Professional Excellence",
+      description: "We measure our success by the recognition of our credentialed professionals. Support, resources, and a global network ensure ongoing success."
     },
     {
       icon: Globe,
-      title: "Global Accessibility",
-      description: "Quality certification shouldn't be limited by geography or finances. We offer flexible learning, fair pricing, and recognition in 45+ countries."
+      title: "Global Recognition",
+      description: "Professional credentials should be recognized worldwide. Our standards are designed for international portability across 45+ countries."
     },
     {
       icon: Lightbulb,
-      title: "Evidence-Based Education",
-      description: "Our curriculum is developed by leading practitioners and updated continuously to reflect the latest research and best practices."
+      title: "Evidence-Based Standards",
+      description: "Our competency frameworks are developed by leading practitioners and updated continuously to reflect the latest research and best practices."
     },
     {
       icon: Users,
-      title: "Community & Connection",
-      description: "Learning is better together. Our study pods, mentorship programs, and practitioner network create lasting professional relationships."
+      title: "Professional Community",
+      description: "A global network of 20,000+ professionals creating connections, collaboration, and ongoing professional development opportunities."
     },
     {
       icon: Trophy,
-      title: "Career Transformation",
-      description: "We're not just educators — we're career architects. From first client to thriving practice, we guide you every step of the way."
+      title: "Institutional Integrity",
+      description: "Independent governance, transparent standards, and stakeholder oversight ensure public trust in every credential we issue."
     },
   ];
 
   const stats = [
-    { value: "20,000+", label: "Certified Practitioners" },
+    { value: "20,000+", label: "Credentialed Professionals" },
     { value: "45+", label: "Countries" },
-    { value: "50+", label: "Specializations" },
-    { value: "94%", label: "Would Recommend" },
+    { value: "50+", label: "Professional Standards" },
+    { value: "2026", label: "University Partnership" },
   ];
 
   return (
@@ -427,21 +427,21 @@ export default function AboutPage() {
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: BRAND.burgundy }}>
-            Ready to Join the ASI Community?
+            Join the Global Professional Network
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Become part of a global network of 20,000+ certified practitioners committed to excellence.
+            Become part of a worldwide network of credentialed professionals committed to excellence in integrative health.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/certifications">
+            <Link href="/apply">
               <Button size="lg" className="font-bold text-lg px-8 py-6 h-auto hover:opacity-90" style={{ backgroundColor: BRAND.burgundy, color: "white" }}>
-                Explore Certifications
+                Apply for Professional Review
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Link href="/leadership">
+            <Link href="/governance">
               <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 h-auto" style={{ borderColor: BRAND.burgundy, color: BRAND.burgundy }}>
-                Meet Our Leadership
+                View Governance
               </Button>
             </Link>
           </div>

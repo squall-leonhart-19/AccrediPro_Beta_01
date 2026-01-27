@@ -16,8 +16,8 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "Success Stories | Accreditation Standards Institute",
-  description: "Read inspiring success stories from ASI-certified practitioners who transformed their careers. Real people, real results.",
+  title: "Professional Journeys | AccrediPro International Standards Institute",
+  description: "Hear from credentialed professionals who transformed their careers with ISI recognition. Real professionals, real impact.",
 };
 
 const BRAND = {
@@ -116,10 +116,10 @@ const quickWins = [
 ];
 
 const stats = [
-  { value: "$2,400", label: "Avg First Month Income" },
-  { value: "14 Days", label: "Avg Time to First Client" },
+  { value: "20K+", label: "Credentialed Professionals" },
+  { value: "45+", label: "Countries Represented" },
   { value: "94%", label: "Would Recommend" },
-  { value: "73%", label: "Complete Within 30 Days" },
+  { value: "500+", label: "Employer Partners" },
 ];
 
 export default function SuccessStoriesPage() {
@@ -205,16 +205,16 @@ export default function SuccessStoriesPage() {
         <div className="relative max-w-7xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ backgroundColor: `${BRAND.gold}20`, border: `1px solid ${BRAND.gold}40` }}>
             <Star className="w-4 h-4" style={{ color: BRAND.gold }} />
-            <span className="text-sm font-medium" style={{ color: BRAND.gold }}>Real People, Real Results</span>
+            <span className="text-sm font-medium" style={{ color: BRAND.gold }}>Professional Journeys</span>
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Success
-            <span className="block" style={{ color: BRAND.gold }}>Stories</span>
+            Professional
+            <span className="block" style={{ color: BRAND.gold }}>Journeys</span>
           </h1>
 
           <p className="text-xl max-w-2xl mx-auto mb-8" style={{ color: "#f5e6e8" }}>
-            Hear from practitioners who transformed their careers with ASI certification.
+            Hear from professionals who advanced their careers with ISI recognition and credentials.
           </p>
         </div>
       </section>
@@ -332,21 +332,21 @@ export default function SuccessStoriesPage() {
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: BRAND.burgundy }}>
-            Ready to Write Your Success Story?
+            Begin Your Professional Journey
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join 20,000+ practitioners who've transformed their careers with ASI certification.
+            Join 20,000+ professionals building recognized careers in integrative health.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/apply">
               <Button size="lg" className="font-bold text-lg px-8 py-6 h-auto hover:opacity-90" style={{ backgroundColor: BRAND.burgundy, color: "white" }}>
-                Apply Now
+                Apply for Professional Review
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Link href="/certifications">
+            <Link href="/directory">
               <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 h-auto" style={{ borderColor: BRAND.burgundy, color: BRAND.burgundy }}>
-                Explore Certifications
+                Find Professionals
               </Button>
             </Link>
           </div>

@@ -1,325 +1,226 @@
+import prisma from "../src/lib/prisma";
+
 /**
- * Seed Script: Migrate static community posts and comments to database
- *
- * This script:
- * 1. Creates fake user profiles for comment authors (isFakeProfile: true)
- * 2. Creates Coach Sarah as MENTOR
- * 3. Creates all static community posts in the database
- * 4. Imports all comments from refined_comments.json
- *
- * Run with: npx ts-node --compiler-options '{"module":"CommonJS"}' scripts/seed-community-posts.ts
+ * Seed community posts across all categories
+ * Distribution: More wins, fewer questions/tips
+ * Uses zombie profiles as authors
  */
 
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import * as fs from 'fs';
-import * as path from 'path';
-import 'dotenv/config';
+// Post distribution per category (random-looking numbers)
+const POST_DISTRIBUTION: Record<string, { wins: number; graduates: number; questions: number; tips: number }> = {
+  fm: { wins: 187, graduates: 89, questions: 73, tips: 41 },
+  wh: { wins: 173, graduates: 84, questions: 68, tips: 39 },
+  mh: { wins: 168, graduates: 81, questions: 67, tips: 38 },
+  mb: { wins: 159, graduates: 77, questions: 63, tips: 36 },
+  tr: { wins: 143, graduates: 69, questions: 58, tips: 32 },
+  pf: { wins: 136, graduates: 66, questions: 54, tips: 31 },
+  gw: { wins: 128, graduates: 62, questions: 51, tips: 29 },
+  se: { wins: 124, graduates: 60, questions: 49, tips: 28 },
+  hb: { wins: 112, graduates: 54, questions: 44, tips: 26 },
+  pw: { wins: 97, graduates: 47, questions: 38, tips: 22 },
+};
 
-// Prisma 7 requires driver adapters
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-const prisma = new PrismaClient({ adapter });
+// Category names for context
+const CATEGORY_NAMES: Record<string, string> = {
+  fm: "Functional Medicine",
+  wh: "Women's Health",
+  mh: "Mental Health",
+  mb: "Mind & Body",
+  tr: "Trauma Recovery",
+  pf: "Parenting & Family",
+  gw: "General Wellness",
+  se: "Spiritual & Energy",
+  hb: "Herbalism",
+  pw: "Pet Wellness",
+};
 
-// Read the refined comments JSON
-const refinedCommentsPath = path.join(process.cwd(), 'refined_comments.json');
-const refinedComments = JSON.parse(fs.readFileSync(refinedCommentsPath, 'utf-8'));
-
-// Static post data
-const STATIC_POSTS = [
-  {
-    id: 'pinned-introductions',
-    title: '👋 Welcome! Introduce Yourself Here',
-    content: `<p>Welcome to our amazing community of future Functional Medicine Practitioners! 🌟</p>
-<p>This is YOUR space to connect, share, and grow together. We'd love to get to know you!</p>
-<p><strong>Share a bit about yourself:</strong></p>
-<ul>
-<li>Where are you from?</li>
-<li>What's your background? (nursing, teaching, corporate, stay-at-home parent, etc.)</li>
-<li>What drew you to Functional Medicine?</li>
-<li>What's your biggest goal for this year?</li>
-</ul>
-<p>Don't be shy - we're all here to support each other on this incredible journey! 💕</p>
-<p><em>P.S. Make sure to welcome others who introduce themselves. A simple "Welcome!" can make someone's day!</em></p>`,
-    category: 'introductions',
-    isPinned: true,
-    viewCount: 15847,
-    authorId: 'coach-sarah', // Will be replaced with actual ID
-  },
-  {
-    id: 'official-graduation-thread',
-    title: '🎓 Officially Certified? Share Your Graduation News Here!',
-    content: `<p>To our newest Certified Functional Medicine Practitioners:</p>
-<p><strong>CONGRATULATIONS!</strong> 🎉</p>
-<p>You have put in the hours, mastered the material, and proven your dedication to transforming healthcare. We are incredibly proud of you.</p>
-<p>This thread is dedicated to celebrating YOUR achievement. Share:</p>
-<ul>
-<li>📸 Your certificate photo</li>
-<li>🎯 Your next steps</li>
-<li>💡 Advice for those still on their journey</li>
-<li>🙏 Who supported you along the way</li>
-</ul>
-<p>Let's celebrate together! 🎊</p>`,
-    category: 'graduates',
-    isPinned: true,
-    viewCount: 8934,
-    authorId: 'coach-sarah',
-  },
+// Win post templates
+const WIN_TEMPLATES = [
+  { title: "Just got my first client! 🎉", content: "<p>After months of studying, I finally landed my first paying client! They found me through my Instagram and loved my approach. So grateful for this community!</p>" },
+  { title: "Reached $5K/month! 💰", content: "<p>I can't believe it - this month I hit $5,000 in revenue! Started from zero just 8 months ago. The strategies I learned here really work!</p>" },
+  { title: "Client transformation story 🌟", content: "<p>One of my clients just messaged me with incredible results. She's been following my protocol for 3 months and has completely changed her life. This is why I do what I do!</p>" },
+  { title: "Booked out for next month!", content: "<p>For the first time ever, I'm completely booked out! Had to start a waitlist. Never thought I'd be saying this when I started.</p>" },
+  { title: "Left my 9-5 today 🙌", content: "<p>It's official - I resigned from my corporate job! My practice is finally generating enough income to support me full-time. Scared but SO excited!</p>" },
+  { title: "First 5-star review!", content: "<p>My first Google review came in and it's 5 stars! Client said working with me was 'life-changing'. I'm literally crying happy tears right now.</p>" },
+  { title: "Landed a corporate contract 💼", content: "<p>Just signed a contract with a local company to provide wellness services to their employees! This is a game-changer for my practice.</p>" },
+  { title: "Client referral chain working!", content: "<p>3 new clients this week - all referrals from one happy client! Word of mouth is finally kicking in. Proof that doing great work pays off.</p>" },
+  { title: "Featured in local news! 📰", content: "<p>A local journalist interviewed me about holistic wellness and the article just came out! Already getting inquiries from people who read it.</p>" },
+  { title: "Passive income milestone 🎯", content: "<p>My online course made $2,000 this month while I was on vacation! Finally understanding what passive income feels like.</p>" },
+  { title: "Workshop sold out in 2 days!", content: "<p>I launched my first in-person workshop and it sold out in 48 hours! 25 people eager to learn. My heart is so full.</p>" },
+  { title: "Client signed 12-month package!", content: "<p>Just closed my biggest sale ever - a 12-month coaching package! Client didn't even flinch at the price. Know your worth, people!</p>" },
+  { title: "Insurance reimbursement approved", content: "<p>Finally got my services approved for insurance reimbursement! This opens up so many more clients who couldn't afford out-of-pocket before.</p>" },
+  { title: "Podcast interview happened! 🎙️", content: "<p>Was interviewed on a wellness podcast today! The host loved my story and approach. Cannot wait for it to air next month.</p>" },
+  { title: "Moved to bigger office space", content: "<p>My practice has grown so much that I needed a bigger space! Just signed the lease on a beautiful new office. Pinch me!</p>" },
 ];
 
-// Tips posts content (30 posts)
-const TIPS_POSTS = [
-  { id: 'tips-daily-1', title: '💡 Daily Tip #1: The Power of Morning Routines', content: 'Start your day with intention. A consistent morning routine sets the tone for success in your practice and personal life.', date: new Date('2025-11-14') },
-  { id: 'tips-daily-2', title: '💡 Daily Tip #2: Active Listening is Your Superpower', content: 'Your clients need to feel heard. Practice active listening - it builds trust faster than any certification.', date: new Date('2025-11-15') },
-  { id: 'tips-daily-3', title: '💡 Daily Tip #3: Document Everything', content: 'Keep detailed notes on every client interaction. Future you will thank present you.', date: new Date('2025-11-16') },
-  { id: 'tips-daily-4', title: '💡 Daily Tip #4: Boundaries Create Freedom', content: 'Set clear boundaries with clients from day one. It protects your energy and their expectations.', date: new Date('2025-11-17') },
-  { id: 'tips-daily-5', title: '💡 Daily Tip #5: Progress Over Perfection', content: 'Don\'t wait until you feel "ready". Start helping people now and improve as you go.', date: new Date('2025-11-18') },
-  { id: 'tips-daily-6', title: '💡 Daily Tip #6: Your Story is Your Strength', content: 'Your personal health journey is what makes you relatable. Share it authentically.', date: new Date('2025-11-19') },
-  { id: 'tips-daily-7', title: '💡 Daily Tip #7: Invest in Continuing Education', content: 'The best practitioners never stop learning. Stay curious and keep growing.', date: new Date('2025-11-20') },
-  { id: 'tips-daily-8', title: '💡 Daily Tip #8: Build Systems Early', content: 'Create templates, workflows, and processes. Systems free you to focus on what matters - your clients.', date: new Date('2025-11-21') },
-  { id: 'tips-daily-9', title: '💡 Daily Tip #9: Celebrate Small Wins', content: 'Every client success, no matter how small, deserves recognition. Celebrate progress!', date: new Date('2025-11-22') },
-  { id: 'tips-daily-10', title: '💡 Daily Tip #10: Network with Other Practitioners', content: 'Collaboration over competition. Build relationships with others in your field.', date: new Date('2025-11-23') },
-  { id: 'tips-daily-11', title: '💡 Daily Tip #11: Self-Care Isn\'t Selfish', content: 'You can\'t pour from an empty cup. Prioritize your own health and wellness.', date: new Date('2025-11-24') },
-  { id: 'tips-daily-12', title: '💡 Daily Tip #12: Simplify Your Message', content: 'Speak in terms your clients understand. Avoid jargon - clarity creates confidence.', date: new Date('2025-11-25') },
-  { id: 'tips-daily-13', title: '💡 Daily Tip #13: Follow Up is Everything', content: 'The fortune is in the follow-up. Check in with past clients - it shows you care.', date: new Date('2025-11-26') },
-  { id: 'tips-daily-14', title: '💡 Daily Tip #14: Embrace Technology', content: 'Use tools that save you time. Automation is your friend, not your enemy.', date: new Date('2025-11-27') },
-  { id: 'tips-daily-15', title: '💡 Daily Tip #15: Know Your Numbers', content: 'Track your business metrics. What gets measured gets improved.', date: new Date('2025-11-28') },
-  { id: 'tips-daily-16', title: '💡 Daily Tip #16: Create Content That Helps', content: 'Share valuable content regularly. Position yourself as the expert you are.', date: new Date('2025-11-29') },
-  { id: 'tips-daily-17', title: '💡 Daily Tip #17: Ask for Testimonials', content: 'Happy clients are your best marketing. Don\'t be shy about asking for reviews.', date: new Date('2025-11-30') },
-  { id: 'tips-daily-18', title: '💡 Daily Tip #18: Set Realistic Expectations', content: 'Under-promise and over-deliver. Realistic expectations lead to satisfied clients.', date: new Date('2025-12-01') },
-  { id: 'tips-daily-19', title: '💡 Daily Tip #19: Stay Organized', content: 'A cluttered space equals a cluttered mind. Keep your workspace and systems tidy.', date: new Date('2025-12-02') },
-  { id: 'tips-daily-20', title: '💡 Daily Tip #20: Practice Gratitude Daily', content: 'Start or end each day noting what you\'re grateful for. It transforms your perspective.', date: new Date('2025-12-03') },
-  { id: 'tips-daily-21', title: '💡 Daily Tip #21: Learn to Say No', content: 'Not every client is your ideal client. It\'s okay to refer out when needed.', date: new Date('2025-12-04') },
-  { id: 'tips-daily-22', title: '💡 Daily Tip #22: Batch Similar Tasks', content: 'Group similar activities together. Batching increases efficiency and reduces mental fatigue.', date: new Date('2025-12-05') },
-  { id: 'tips-daily-23', title: '💡 Daily Tip #23: Pricing Reflects Value', content: 'Don\'t undercharge. Your pricing communicates the value of your expertise.', date: new Date('2025-12-06') },
-  { id: 'tips-daily-24', title: '💡 Daily Tip #24: Rest is Productive', content: 'Taking breaks isn\'t lazy - it\'s strategic. Rest allows for greater creativity and focus.', date: new Date('2025-12-07') },
-  { id: 'tips-daily-25', title: '💡 Daily Tip #25: Focus on Root Causes', content: 'Symptoms are clues, not destinations. Always dig deeper to find the root cause.', date: new Date('2025-12-08') },
-  { id: 'tips-daily-26', title: '💡 Daily Tip #26: Build Your Email List', content: 'Social media followers are rented. Email subscribers are owned. Build your list!', date: new Date('2025-12-09') },
-  { id: 'tips-daily-27', title: '💡 Daily Tip #27: Imposter Syndrome is Normal', content: 'Every successful practitioner has felt like a fraud at some point. Push through it.', date: new Date('2025-12-10') },
-  { id: 'tips-daily-28', title: '💡 Daily Tip #28: Consistency Beats Intensity', content: 'Small daily actions compound over time. Consistency always wins long-term.', date: new Date('2025-12-11') },
-  { id: 'tips-daily-29', title: '💡 Daily Tip #29: Your Energy is Contagious', content: 'Clients pick up on your energy. Show up with enthusiasm and positive intentions.', date: new Date('2025-12-12') },
-  { id: 'tips-daily-30', title: '💡 Daily Tip #30: Remember Your Why', content: 'On hard days, reconnect with why you started this journey. Your purpose is your fuel.', date: new Date('2025-12-13') },
+// Graduate post templates
+const GRADUATE_TEMPLATES = [
+  { title: "Just received my certification! 🎓", content: "<p>I'm officially certified! After months of hard work, late nights, and dedication, I did it. So proud of myself and grateful for this amazing program.</p>" },
+  { title: "Officially a certified practitioner! ✨", content: "<p>The certificate is in my hands! This has been such an incredible journey. Can't wait to start helping people with what I've learned.</p>" },
+  { title: "Passed my final exam! 📜", content: "<p>100% on my final exam! All those study sessions paid off. Thank you to everyone who supported me along the way.</p>" },
+  { title: "Completed the program today 🙌", content: "<p>Just submitted my last assignment and got my completion notification. This program changed my life and I'm so excited for what's next!</p>" },
+  { title: "Got my credentials! 🏆", content: "<p>Finally have those letters after my name! It was worth every hour of study. Now it's time to make a difference.</p>" },
+  { title: "Certification journey complete 💫", content: "<p>From day 1 to certification - what a ride! This community helped me through the tough times. Forever grateful.</p>" },
+  { title: "Passed with distinction!", content: "<p>Not only did I pass, I passed with distinction! Hard work really does pay off. Time to celebrate!</p>" },
+  { title: "Certificate finally arrived! 📬", content: "<p>The physical certificate came in the mail today and I'm framing it immediately! This is going right on my office wall.</p>" },
 ];
+
+// Question post templates
+const QUESTION_TEMPLATES = [
+  { title: "How do you handle difficult clients?", content: "<p>I have a client who's been really challenging lately. They're not following the protocol but expecting results. How do you handle situations like this?</p>" },
+  { title: "Best way to price packages?", content: "<p>Struggling with pricing my service packages. What's worked for you? Hourly vs. package pricing?</p>" },
+  { title: "Insurance billing question", content: "<p>Has anyone successfully billed insurance for their services? What codes do you use? Any tips for getting started?</p>" },
+  { title: "Marketing on a budget?", content: "<p>I'm just starting out and don't have much for marketing. What free or low-cost strategies have worked for you?</p>" },
+  { title: "Virtual vs. in-person sessions", content: "<p>Do you prefer virtual or in-person client sessions? Pros and cons of each? Thinking of going fully virtual.</p>" },
+  { title: "Handling no-shows", content: "<p>Had 3 no-shows this week alone! What policies do you have in place to prevent this?</p>" },
+  { title: "CRM recommendations?", content: "<p>Looking for a good CRM to manage my clients. What software do you use and recommend?</p>" },
+  { title: "How to get more reviews?", content: "<p>I know reviews are important but I feel awkward asking. How do you approach getting testimonials from clients?</p>" },
+  { title: "Liability insurance help", content: "<p>New practitioner here - what liability insurance do you recommend? Is it really necessary?</p>" },
+  { title: "Burnout prevention tips?", content: "<p>Finding myself exhausted lately. How do you maintain work-life balance while growing your practice?</p>" },
+];
+
+// Tip post templates
+const TIP_TEMPLATES = [
+  { title: "Game-changing intake form tip", content: "<p>Pro tip: Add a section on your intake form asking about past practitioners they've worked with. Tells you so much about what hasn't worked and what they're looking for!</p>" },
+  { title: "Best booking software I've found", content: "<p>After trying 5 different booking apps, I finally found THE one. Calendly + Stripe integration = seamless booking and payment. Total game changer.</p>" },
+  { title: "How I doubled my prices", content: "<p>Here's exactly how I raised my rates 100% without losing clients: 1) Added more value 2) Got testimonials 3) Rebranded my packages. Happy to share more details!</p>" },
+  { title: "Email template that converts", content: "<p>My discovery call confirmation email has a 90% show-up rate. Secret? I include a prep worksheet they fill out before the call. Invested clients show up!</p>" },
+  { title: "Social media strategy that works", content: "<p>Stopped trying to be everywhere. Pick ONE platform and dominate it. My Instagram went from 500 to 5,000 followers in 6 months by posting consistently.</p>" },
+  { title: "Free resource for client handouts", content: "<p>Just discovered Canva has free health and wellness templates! My client handouts look so professional now and it cost me nothing.</p>" },
+  { title: "Boundary-setting script", content: "<p>Here's my script for when clients text outside hours: 'Thanks for reaching out! I'll respond during my business hours (9-5 M-F). For emergencies, please call...'</p>" },
+  { title: "Referral program that works", content: "<p>Started offering 20% off next session for referrals. Already got 8 new clients this month from existing ones! Simple but effective.</p>" },
+];
+
+// Helper to get random element
+function randomElement<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// Helper to get random date in last 6 months
+function randomDate(): Date {
+  const now = new Date();
+  const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+  return new Date(sixMonthsAgo.getTime() + Math.random() * (now.getTime() - sixMonthsAgo.getTime()));
+}
+
+// Helper to generate random view/like counts
+function randomViews(): number {
+  return Math.floor(Math.random() * 500) + 50;
+}
+
+function randomLikes(): number {
+  return Math.floor(Math.random() * 50) + 5;
+}
 
 async function main() {
-  console.log('🚀 Starting community posts migration...\n');
+  console.log("🚀 Starting community post seeding...\n");
 
-  // Step 1: Create or get Coach Sarah
-  console.log('👩‍⚕️ Creating Coach Sarah...');
-  let coachSarah = await prisma.user.findFirst({
-    where: {
-      OR: [
-        { email: 'sarah@accredipro.com' },
-        { firstName: 'Sarah', lastName: 'M.', role: 'MENTOR' }
-      ]
-    }
+  // Get all zombie profiles
+  const zombies = await prisma.user.findMany({
+    where: { isFakeProfile: true },
+    select: { id: true, firstName: true, lastName: true },
   });
 
-  if (!coachSarah) {
-    coachSarah = await prisma.user.create({
-      data: {
-        email: 'sarah@accredipro.com',
-        firstName: 'Sarah',
-        lastName: 'M.',
-        avatar: '/coaches/sarah-coach.webp',
-        role: 'MENTOR',
-        isFakeProfile: false,
-        isActive: true,
-      }
-    });
-    console.log('  ✅ Coach Sarah created:', coachSarah.id);
-  } else {
-    console.log('  ✅ Coach Sarah already exists:', coachSarah.id);
+  console.log(`📊 Found ${zombies.length} zombie profiles to use as authors\n`);
+
+  if (zombies.length === 0) {
+    console.log("❌ No zombie profiles found! Run zombie creation script first.");
+    return;
   }
 
-  // Step 2: Create fake user profiles for all comment authors
-  console.log('\n👥 Creating fake user profiles for comment authors...');
-  const userMap = new Map<string, string>(); // oldId -> newId
-  userMap.set('coach-sarah', coachSarah.id);
+  let totalCreated = 0;
 
-  const comments = refinedComments['pinned-introductions'] || [];
+  for (const [categorySlug, distribution] of Object.entries(POST_DISTRIBUTION)) {
+    const categoryName = CATEGORY_NAMES[categorySlug];
+    console.log(`\n📁 Seeding ${categoryName} (${categorySlug})...`);
 
-  for (const comment of comments) {
-    const author = comment.author;
-    if (!author || userMap.has(author.id)) continue;
+    // Create Wins posts
+    for (let i = 0; i < distribution.wins; i++) {
+      const template = randomElement(WIN_TEMPLATES);
+      const author = randomElement(zombies);
 
-    // Check if user already exists with this fake profile
-    const existingUser = await prisma.user.findFirst({
-      where: {
-        firstName: author.firstName?.trim(),
-        lastName: author.lastName?.trim(),
-        isFakeProfile: true,
-      }
-    });
-
-    if (existingUser) {
-      userMap.set(author.id, existingUser.id);
-      continue;
-    }
-
-    // Create new fake user
-    const newUser = await prisma.user.create({
-      data: {
-        firstName: author.firstName?.trim() || 'Anonymous',
-        lastName: author.lastName?.trim() || '',
-        avatar: author.avatar,
-        role: author.role === 'MENTOR' ? 'MENTOR' : 'STUDENT',
-        isFakeProfile: true,
-        isActive: true,
-      }
-    });
-    userMap.set(author.id, newUser.id);
-
-    // Also handle reply authors
-    if (comment.replies) {
-      for (const reply of comment.replies) {
-        if (reply.author && !userMap.has(reply.author.id)) {
-          if (reply.author.id === 'coach-sarah') {
-            userMap.set(reply.author.id, coachSarah.id);
-          } else {
-            const existingReplyUser = await prisma.user.findFirst({
-              where: {
-                firstName: reply.author.firstName?.trim(),
-                lastName: reply.author.lastName?.trim(),
-                isFakeProfile: true,
-              }
-            });
-
-            if (existingReplyUser) {
-              userMap.set(reply.author.id, existingReplyUser.id);
-            } else {
-              const newReplyUser = await prisma.user.create({
-                data: {
-                  firstName: reply.author.firstName?.trim() || 'Anonymous',
-                  lastName: reply.author.lastName?.trim() || '',
-                  avatar: reply.author.avatar,
-                  role: reply.author.role === 'MENTOR' ? 'MENTOR' : 'STUDENT',
-                  isFakeProfile: true,
-                  isActive: true,
-                }
-              });
-              userMap.set(reply.author.id, newReplyUser.id);
-            }
-          }
-        }
-      }
-    }
-  }
-  console.log(`  ✅ Created ${userMap.size} user profiles`);
-
-  // Step 3: Create the pinned-introductions post
-  console.log('\n📝 Creating pinned-introductions post...');
-
-  // Delete existing post if it exists (to avoid duplicates)
-  await prisma.communityPost.deleteMany({
-    where: { id: { startsWith: 'static-' } }
-  });
-
-  const introPost = await prisma.communityPost.create({
-    data: {
-      title: '👋 Welcome! Introduce Yourself Here',
-      content: STATIC_POSTS[0].content,
-      categoryId: 'introductions',
-      isPinned: true,
-      viewCount: 15847,
-      authorId: coachSarah.id,
-    }
-  });
-  console.log('  ✅ Created pinned-introductions post:', introPost.id);
-
-  // Step 4: Import all comments
-  console.log('\n💬 Importing comments...');
-  let commentCount = 0;
-  let replyCount = 0;
-  const commentIdMap = new Map<string, string>(); // oldCommentId -> newCommentId
-
-  for (const comment of comments) {
-    const authorId = userMap.get(comment.author?.id) || coachSarah.id;
-
-    try {
-      const newComment = await prisma.postComment.create({
+      await prisma.communityPost.create({
         data: {
-          content: comment.content,
-          postId: introPost.id,
-          authorId: authorId,
-          likeCount: comment.likeCount || 0,
-          createdAt: new Date(comment.createdAt),
-        }
+          title: template.title,
+          content: template.content.replace("<p>", `<p>[${categoryName}] `),
+          categoryId: "wins",
+          authorId: author.id,
+          createdAt: randomDate(),
+          viewCount: randomViews(),
+          likeCount: randomLikes(),
+        },
       });
-      commentIdMap.set(comment.id, newComment.id);
-      commentCount++;
-
-      // Import replies
-      if (comment.replies && comment.replies.length > 0) {
-        for (const reply of comment.replies) {
-          const replyAuthorId = userMap.get(reply.author?.id) || coachSarah.id;
-
-          await prisma.postComment.create({
-            data: {
-              content: reply.content,
-              postId: introPost.id,
-              authorId: replyAuthorId,
-              parentId: newComment.id,
-              likeCount: reply.likeCount || 0,
-              createdAt: new Date(reply.createdAt),
-            }
-          });
-          replyCount++;
-        }
-      }
-    } catch (error) {
-      console.error(`  ❌ Error creating comment ${comment.id}:`, error);
     }
-  }
-  console.log(`  ✅ Imported ${commentCount} comments and ${replyCount} replies`);
+    console.log(`  ✅ Created ${distribution.wins} wins posts`);
+    totalCreated += distribution.wins;
 
-  // Step 5: Create graduation thread post
-  console.log('\n📝 Creating graduation thread post...');
-  const gradPost = await prisma.communityPost.create({
-    data: {
-      title: '🎓 Officially Certified? Share Your Graduation News Here!',
-      content: STATIC_POSTS[1].content,
-      categoryId: 'graduates',
-      isPinned: true,
-      viewCount: 8934,
-      authorId: coachSarah.id,
+    // Create Graduates posts
+    for (let i = 0; i < distribution.graduates; i++) {
+      const template = randomElement(GRADUATE_TEMPLATES);
+      const author = randomElement(zombies);
+
+      await prisma.communityPost.create({
+        data: {
+          title: template.title,
+          content: template.content.replace("<p>", `<p>[${categoryName}] `),
+          categoryId: "graduates",
+          authorId: author.id,
+          createdAt: randomDate(),
+          viewCount: randomViews(),
+          likeCount: randomLikes(),
+        },
+      });
     }
-  });
-  console.log('  ✅ Created graduation thread post:', gradPost.id);
+    console.log(`  ✅ Created ${distribution.graduates} graduate posts`);
+    totalCreated += distribution.graduates;
 
-  // Step 6: Create tips posts
-  console.log('\n📝 Creating 30 tips posts...');
-  for (const tip of TIPS_POSTS) {
-    await prisma.communityPost.create({
-      data: {
-        title: tip.title,
-        content: `<p>${tip.content}</p>`,
-        categoryId: 'tips',
-        isPinned: false,
-        viewCount: 5000 + Math.floor(Math.random() * 5000),
-        authorId: coachSarah.id,
-        createdAt: tip.date,
-      }
-    });
+    // Create Questions posts
+    for (let i = 0; i < distribution.questions; i++) {
+      const template = randomElement(QUESTION_TEMPLATES);
+      const author = randomElement(zombies);
+
+      await prisma.communityPost.create({
+        data: {
+          title: template.title,
+          content: template.content.replace("<p>", `<p>[${categoryName}] `),
+          categoryId: "questions",
+          authorId: author.id,
+          createdAt: randomDate(),
+          viewCount: randomViews(),
+          likeCount: randomLikes(),
+        },
+      });
+    }
+    console.log(`  ✅ Created ${distribution.questions} question posts`);
+    totalCreated += distribution.questions;
+
+    // Create Tips posts
+    for (let i = 0; i < distribution.tips; i++) {
+      const template = randomElement(TIP_TEMPLATES);
+      const author = randomElement(zombies);
+
+      await prisma.communityPost.create({
+        data: {
+          title: template.title,
+          content: template.content.replace("<p>", `<p>[${categoryName}] `),
+          categoryId: "tips",
+          authorId: author.id,
+          createdAt: randomDate(),
+          viewCount: randomViews(),
+          likeCount: randomLikes(),
+        },
+      });
+    }
+    console.log(`  ✅ Created ${distribution.tips} tip posts`);
+    totalCreated += distribution.tips;
   }
-  console.log('  ✅ Created 30 tips posts');
 
-  // Output summary
-  console.log('\n' + '='.repeat(50));
-  console.log('✅ Migration Complete!');
-  console.log('='.repeat(50));
-  console.log(`📝 Posts created: ${2 + TIPS_POSTS.length}`);
-  console.log(`💬 Comments imported: ${commentCount}`);
-  console.log(`↩️ Replies imported: ${replyCount}`);
-  console.log(`👥 Fake profiles created: ${userMap.size - 1}`);
-  console.log('\n📌 Important Post IDs:');
-  console.log(`  - Pinned Introductions: ${introPost.id}`);
-  console.log(`  - Graduation Thread: ${gradPost.id}`);
-  console.log('\n⚠️ Update your page routes to use these new database IDs!');
+  console.log(`\n🎉 DONE! Created ${totalCreated} total posts across all categories!`);
 }
 
 main()
   .catch((e) => {
-    console.error('Error:', e);
+    console.error(e);
     process.exit(1);
   })
   .finally(async () => {

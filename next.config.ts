@@ -120,20 +120,20 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              // Scripts: self + inline for Next.js + Sentry + analytics + Facebook Pixel + Trustpilot
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.google-analytics.com https://*.googletagmanager.com https://js.stripe.com https://connect.facebook.net https://widget.trustpilot.com",
+              // Scripts: self + inline for Next.js + Sentry + analytics + Facebook Pixel + Trustpilot + Wistia
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.google-analytics.com https://*.googletagmanager.com https://js.stripe.com https://connect.facebook.net https://widget.trustpilot.com https://fast.wistia.com https://*.wistia.com",
               // Styles: self + inline for dynamic styles
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               // Images: various CDNs and blob for local processing + Facebook
               "img-src 'self' data: blob: https: http: https://*.accredipro.academy",
               // Fonts: Google Fonts + self
               "font-src 'self' https://fonts.gstatic.com data:",
-              // Connect: APIs + ... + Trustpilot
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.google-analytics.com https://api.stripe.com https://elevenlabs.io https://api.openai.com https://api.anthropic.com https://*.facebook.com https://*.facebook.net https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev https://*.accredipro.academy https://fonts.googleapis.com https://fonts.gstatic.com https://images.unsplash.com https://i.pravatar.cc https://api.dicebear.com https://randomuser.me https://widget.trustpilot.com",
-              // Frames: Stripe + ... + Trustpilot
-              "frame-src 'self' https://js.stripe.com https://www.youtube.com https://player.vimeo.com https://*.facebook.com https://widget.trustpilot.com",
-              // Media: self + Supabase storage for audio/video
-              "media-src 'self' blob: https://*.supabase.co",
+              // Connect: APIs + ... + Trustpilot + Wistia
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.google-analytics.com https://api.stripe.com https://elevenlabs.io https://api.openai.com https://api.anthropic.com https://*.facebook.com https://*.facebook.net https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev https://*.accredipro.academy https://fonts.googleapis.com https://fonts.gstatic.com https://images.unsplash.com https://i.pravatar.cc https://api.dicebear.com https://randomuser.me https://widget.trustpilot.com https://*.wistia.com https://*.wistia.net",
+              // Frames: Stripe + ... + Trustpilot + Wistia
+              "frame-src 'self' https://js.stripe.com https://www.youtube.com https://player.vimeo.com https://*.facebook.com https://widget.trustpilot.com https://fast.wistia.net https://*.wistia.net https://*.wistia.com",
+              // Media: self + Supabase storage for audio/video + Wistia
+              "media-src 'self' blob: https://*.supabase.co https://*.wistia.com https://*.wistia.net https://embed-ssl.wistia.com",
               // Workers: allow blob for PWA and other workers
               "worker-src 'self' blob:",
               // Objects: none (no Flash, etc)

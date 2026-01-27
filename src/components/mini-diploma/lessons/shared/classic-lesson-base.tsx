@@ -11,7 +11,7 @@ import {
     Award, ChevronRight, Quote, DollarSign, Sparkles,
     MessageCircle, X,
 } from "lucide-react";
-import { LiveChatPanel } from "@/components/courses/live-chat-panel";
+import { SarahChatPanel } from "@/components/mini-diploma/sarah-chat-panel";
 
 const SARAH_AVATAR = "/coaches/sarah-coach.webp";
 
@@ -340,29 +340,25 @@ export function ClassicLessonBase({
                 </div>
             </div>
 
-            {/* RIGHT SIDEBAR - Student Lounge - Desktop LG+ */}
-            {courseSlug && (
-                <aside className="hidden lg:flex w-[340px] flex-shrink-0 border-l border-gray-200 flex-col h-screen sticky top-0">
-                    <LiveChatPanel courseSlug={courseSlug} />
-                </aside>
-            )}
+            {/* RIGHT SIDEBAR - Sarah Chat - Desktop LG+ */}
+            <aside className="hidden lg:flex w-[340px] flex-shrink-0 border-l border-gray-200 flex-col h-screen sticky top-0">
+                <SarahChatPanel userName={firstName} />
+            </aside>
 
             {/* MOBILE: Floating Chat Button - Only on smaller screens */}
-            {courseSlug && (
-                <button
-                    onClick={() => setChatOpen(true)}
-                    className="lg:hidden fixed bottom-6 right-6 z-40 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                    style={{ display: chatOpen ? "none" : "flex" }}
-                >
-                    <MessageCircle className="w-6 h-6" />
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold animate-pulse">
-                        🔴
-                    </span>
-                </button>
-            )}
+            <button
+                onClick={() => setChatOpen(true)}
+                className="lg:hidden fixed bottom-6 right-6 z-40 bg-gradient-to-r from-burgundy-600 to-rose-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                style={{ display: chatOpen ? "none" : "flex" }}
+            >
+                <MessageCircle className="w-6 h-6" />
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">
+                    💬
+                </span>
+            </button>
 
             {/* MOBILE: Chat Overlay */}
-            {courseSlug && chatOpen && (
+            {chatOpen && (
                 <div
                     className="lg:hidden fixed inset-0 z-50 bg-black/50"
                     onClick={() => setChatOpen(false)}
@@ -372,9 +368,9 @@ export function ClassicLessonBase({
                         onClick={e => e.stopPropagation()}
                     >
                         {/* Chat Header */}
-                        <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+                        <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-burgundy-600 to-rose-600 text-white">
                             <span className="font-semibold flex items-center gap-2">
-                                🔴 Student Lounge
+                                💬 Chat with Sarah
                             </span>
                             <button
                                 onClick={() => setChatOpen(false)}
@@ -385,7 +381,7 @@ export function ClassicLessonBase({
                         </div>
                         {/* Chat Panel */}
                         <div className="flex-1 overflow-hidden">
-                            <LiveChatPanel courseSlug={courseSlug} onClose={() => setChatOpen(false)} />
+                            <SarahChatPanel userName={firstName} onClose={() => setChatOpen(false)} />
                         </div>
                     </div>
                 </div>

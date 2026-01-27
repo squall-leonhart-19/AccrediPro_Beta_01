@@ -197,13 +197,7 @@ export default async function DashboardLayout({
                   </div>
                 </main>
 
-                {/* Floating Coach Sarah Widget */}
-                <FloatingCoachWidget
-                  userName={userName}
-                  userId={session.user.id}
-                  currentLessonCount={lessonCount}
-                  nextMilestone={nextMilestone}
-                />
+                {/* No floating widget for mini diploma - they have Sarah Chat in sidebar */}
               </div>
             </AchievementProvider>
           </NotificationProvider>

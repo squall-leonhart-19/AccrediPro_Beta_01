@@ -6,7 +6,7 @@ import { MessagesClientWrapper } from "./messages-client-wrapper";
 
 export default function MessagesPage() {
   return (
-    <div className="-m-4 lg:-m-8 h-[calc(100vh-3.5rem)] lg:h-[calc(100vh-2rem)]">
+    <div className="-mx-4 -my-4 lg:-mx-8 lg:-my-8 h-[calc(100vh-3.5rem)] lg:h-[calc(100vh-2rem)] w-[calc(100%+2rem)] lg:w-[calc(100%+4rem)]">
       <Suspense fallback={<MessagesLoadingSkeleton />}>
         <MessagesClientWrapper />
       </Suspense>
@@ -17,7 +17,7 @@ export default function MessagesPage() {
 // Loading skeleton - shows instantly
 function MessagesLoadingSkeleton() {
   return (
-    <div className="flex h-full w-full bg-white rounded-xl overflow-hidden shadow-xl border border-gray-200/50">
+    <div className="flex h-full w-full bg-white overflow-hidden shadow-xl border border-gray-200/50">
       {/* Sidebar skeleton */}
       <div className="w-80 flex-shrink-0 border-r bg-slate-50 flex flex-col">
         <div className="p-4 border-b bg-burgundy-700">

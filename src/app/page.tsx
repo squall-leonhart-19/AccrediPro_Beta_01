@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { FloatingChatWidget } from "@/components/lead-portal/floating-chat-widget";
+import { ISIHeader } from "@/components/layout/isi-header";
+import { ISIFooter } from "@/components/layout/isi-footer";
 import {
   Award,
   BookOpen,
@@ -59,10 +61,10 @@ const BRAND = {
 
 export default function HomePage() {
   const stats = [
-    { value: "20,000+", label: "Certified Practitioners", icon: Users },
-    { value: "45+", label: "Countries Worldwide", icon: Globe },
-    { value: "50+", label: "Certification Specializations", icon: Award },
-    { value: "4.9/5", label: "From 1,000+ Reviews", icon: Star },
+    { value: "20,000+", label: "Professionals Operating Under ISI Standards", icon: Users },
+    { value: "45+", label: "Countries Represented", icon: Globe },
+    { value: "50+", label: "Professional Specializations", icon: Award },
+    { value: "2026", label: "Swiss University Partnership", icon: GraduationCap },
   ];
 
   const certificationCategories = [
@@ -189,29 +191,29 @@ export default function HomePage() {
   const howItWorks = [
     {
       step: "1",
-      title: "Choose Your Path",
-      description: "Take our 2-minute quiz or explore 50+ specializations to find the certification that matches your goals.",
+      title: "Apply for Review",
+      description: "Submit your application for professional review. Our standards committee evaluates your background and goals.",
       icon: Target,
       image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop",
     },
     {
       step: "2",
-      title: "Learn at Your Pace",
-      description: "Complete evidence-based modules online. Most practitioners finish in 4-8 weeks while working full-time.",
+      title: "Complete Your Education",
+      description: "Access evidence-based curriculum developed by industry experts. Study at your own pace with full support.",
       icon: BookOpen,
       image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=300&fit=crop",
     },
     {
       step: "3",
-      title: "Pass Your Assessment",
-      description: "Demonstrate competency through our rigorous exam. 89% first-attempt pass rate with unlimited retakes.",
+      title: "Pass Assessment",
+      description: "Demonstrate competency through rigorous evaluation. Our standards ensure professional credibility.",
       icon: CheckCircle,
       image: "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=400&h=300&fit=crop",
     },
     {
       step: "4",
-      title: "Get Certified & Earn",
-      description: "Receive your verified credential, join our directory, and start attracting clients immediately.",
+      title: "Receive Your Credential",
+      description: "Earn your ISI-verified credential, join the global professional directory, and access continuing opportunities.",
       icon: Award,
       image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=300&fit=crop",
     },
@@ -346,193 +348,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Urgency Countdown Banner */}
-      <div className="text-white py-2.5 px-4 text-center text-sm" style={{ background: BRAND.goldMetallic }}>
-        <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 flex-wrap">
-          <span className="font-bold" style={{ color: BRAND.burgundyDark }}>
-            🎓 January Cohort Enrollment Open
-          </span>
-          <span style={{ color: BRAND.burgundyDark }}>•</span>
-          <span style={{ color: BRAND.burgundyDark }}>
-            <strong>47 spots remaining</strong> — Classes start Jan 20th
-          </span>
-          <Link href="/apply" className="font-bold underline hover:no-underline ml-2" style={{ color: BRAND.burgundyDark }}>
-            Secure Your Spot →
-          </Link>
-        </div>
-      </div>
-
-      {/* Sticky CTA Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden" style={{ backgroundColor: BRAND.burgundy }}>
-        <div className="px-4 py-3 flex items-center justify-between">
-          <div className="text-white">
-            <p className="text-sm font-bold">Start Free Today</p>
-            <p className="text-xs opacity-80">No credit card required</p>
-          </div>
-          <Link href="/womens-health-mini-diploma">
-            <Button size="sm" className="font-bold shadow-lg" style={{ backgroundColor: BRAND.gold, color: BRAND.burgundyDark }}>
-              Get Started
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-
-      {/* Live Activity Toast - Fixed Position */}
-      <div className="fixed bottom-24 left-4 z-40 hidden md:block">
-        <div className="bg-white rounded-xl shadow-2xl border border-gray-100 p-4 max-w-xs animate-pulse">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${BRAND.gold}20` }}>
-              <Sparkles className="w-5 h-5" style={{ color: BRAND.gold }} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-800">
-                <span className="font-semibold">{recentActivity[0].name}</span> from {recentActivity[0].location}
-              </p>
-              <p className="text-xs text-gray-500">
-                {recentActivity[0].action} <span className="font-medium" style={{ color: BRAND.burgundy }}>{recentActivity[0].cert}</span>
-              </p>
-              <p className="text-xs text-gray-400 mt-1">2 minutes ago</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Top Bar */}
-      <div style={{ backgroundColor: BRAND.burgundyDark }} className="text-white py-2 px-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center text-sm">
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-2">
-              <MapPin className="w-3 h-3" style={{ color: BRAND.gold }} />
-              🇺🇸 USA Headquarters
-            </span>
-            <span className="flex items-center gap-2">
-              <MapPin className="w-3 h-3" style={{ color: BRAND.gold }} />
-              🇦🇪 Dubai Office
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/verify" className="hover:opacity-80 transition-opacity" style={{ color: BRAND.gold }}>
-              Verify Credential
-            </Link>
-            <Link href="/directory" className="hover:opacity-80 transition-opacity" style={{ color: BRAND.gold }}>
-              Find a Practitioner
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-3">
-              <Image
-                src="/ASI_LOGO-removebg-preview.png"
-                alt="Accreditation Standards Institute"
-                width={160}
-                height={48}
-                className="h-12 w-auto"
-              />
-            </Link>
-
-            <div className="hidden lg:flex items-center gap-1">
-              {/* Certifications Dropdown */}
-              <div className="relative group">
-                <button className="px-4 py-2 font-medium hover:opacity-70 transition-all flex items-center gap-1 cursor-pointer" style={{ color: BRAND.burgundy }}>
-                  Certifications <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-                </button>
-                <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                  <div className="bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[250px]">
-                    <Link href="/certifications" className="block px-4 py-2 text-sm hover:bg-gray-50 font-medium" style={{ color: BRAND.burgundy }}>All Certifications</Link>
-                    <div className="border-t border-gray-100 my-1" />
-                    <Link href="/certifications/functional-medicine" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Functional Medicine</Link>
-                    <Link href="/certifications/womens-health" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Women's Health</Link>
-                    <Link href="/certifications/gut-health" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Gut Health</Link>
-                    <Link href="/certifications/nutrition" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Nutrition & Coaching</Link>
-                    <Link href="/certifications/mind-body" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Mind-Body & Longevity</Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Careers Dropdown */}
-              <div className="relative group">
-                <button className="px-4 py-2 font-medium hover:opacity-70 transition-all flex items-center gap-1 cursor-pointer" style={{ color: BRAND.burgundy }}>
-                  Careers <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-                </button>
-                <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                  <div className="bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[200px]">
-                    <Link href="/careers" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Career Paths</Link>
-                    <Link href="/success-stories" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Success Stories</Link>
-                    <Link href="/salary-guide" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Salary Guide</Link>
-                    <Link href="/job-board" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Job Board</Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Standards Dropdown */}
-              <div className="relative group">
-                <button className="px-4 py-2 font-medium hover:opacity-70 transition-all flex items-center gap-1 cursor-pointer" style={{ color: BRAND.burgundy }}>
-                  Standards <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-                </button>
-                <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                  <div className="bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[220px]">
-                    <Link href="/standards" className="block px-4 py-2 text-sm hover:bg-gray-50 font-medium" style={{ color: BRAND.burgundy }}>Our Standards</Link>
-                    <Link href="/standards/competency-framework" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Competency Framework</Link>
-                    <Link href="/standards/assessment" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Assessment Process</Link>
-                    <Link href="/standards/recertification" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Recertification</Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* About Dropdown */}
-              <div className="relative group">
-                <button className="px-4 py-2 font-medium hover:opacity-70 transition-all flex items-center gap-1 cursor-pointer" style={{ color: BRAND.burgundy }}>
-                  About <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-                </button>
-                <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                  <div className="bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[200px]">
-                    <Link href="/about" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>About ASI</Link>
-                    <Link href="/leadership" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Leadership Team</Link>
-                    <Link href="/code-of-ethics" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Code of Ethics</Link>
-                    <Link href="/accreditation" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Accreditation</Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Articles & Ideas Dropdown */}
-              <div className="relative group">
-                <button className="px-4 py-2 font-medium hover:opacity-70 transition-all flex items-center gap-1 cursor-pointer" style={{ color: BRAND.burgundy }}>
-                  Articles <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-                </button>
-                <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                  <div className="bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[220px]">
-                    <Link href="/blog" className="block px-4 py-2 text-sm hover:bg-gray-50 font-medium" style={{ color: BRAND.burgundy }}>All Articles</Link>
-                    <Link href="/blog?category=coaching" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Industry Leading Coaching</Link>
-                    <Link href="/blog?category=wellness" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Total Health + Wellness</Link>
-                    <Link href="/blog?category=alumni" className="block px-4 py-2 text-sm hover:bg-gray-50" style={{ color: BRAND.burgundy }}>Alumni + Experts</Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Directory & Verify - Direct Links */}
-              <Link href="/directory" className="px-4 py-2 font-medium hover:opacity-70 transition-all" style={{ color: BRAND.burgundy }}>Directory</Link>
-              <Link href="/verify" className="px-4 py-2 font-medium hover:opacity-70 transition-all" style={{ color: BRAND.burgundy }}>Verify</Link>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Link href="/login">
-                <Button variant="ghost" style={{ color: BRAND.burgundy }}>Log In</Button>
-              </Link>
-              <Link href="/apply">
-                <Button style={{ backgroundColor: BRAND.burgundy, color: "white" }} className="hover:opacity-90">
-                  Apply Now
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      {/* ISI Mega Menu Header */}
+      <ISIHeader />
 
       {/* Hero Section */}
       <section className="relative text-white overflow-hidden" style={{ backgroundColor: BRAND.burgundyDark }}>
@@ -553,55 +370,55 @@ export default function HomePage() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8" style={{ backgroundColor: `${BRAND.gold}20`, border: `1px solid ${BRAND.gold}40` }}>
               <Shield className="w-4 h-4" style={{ color: BRAND.gold }} />
-              <span className="text-sm font-medium" style={{ color: BRAND.gold }}>Est. 2026 • Globally Recognized</span>
+              <span className="text-sm font-medium" style={{ color: BRAND.gold }}>International Standards Authority</span>
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1] tracking-tight">
-              <span className="text-white">The Global Authority in</span>
+              <span className="text-white">A Global Standards Authority for</span>
               <span className="block mt-2" style={{ color: BRAND.gold }}>
-                Functional Medicine
+                Professional & Academic
               </span>
-              <span className="block mt-2 text-white">& Health Certification</span>
+              <span className="block mt-2 text-white">Health Careers</span>
             </h1>
 
-            <p className="text-xl md:text-2xl mb-10 max-w-2xl leading-relaxed" style={{ color: "#f5e6e8" }}>
-              Join <strong className="text-white">20,000+</strong> certified practitioners in <strong className="text-white">45+ countries</strong>.
-              Our rigorous, competency-based certifications are recognized by employers worldwide.
+            <p className="text-xl md:text-2xl mb-10 max-w-3xl leading-relaxed" style={{ color: "#f5e6e8" }}>
+              AccrediPro International Standards Institute defines professional standards and board recognition,
+              while offering optional academic degree pathways through university partners for those seeking formal academic capital.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Link href="/certifications">
+              <Link href="/apply">
                 <Button size="lg" className="font-bold text-lg px-8 py-6 h-auto rounded-xl shadow-xl hover:opacity-90 transition-opacity" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                  Explore Certifications
+                  Apply for Professional Review
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
-              <Link href="/verify">
+              <Link href="/university-degrees">
                 <Button size="lg" className="font-bold text-lg px-8 py-6 h-auto rounded-xl hover:opacity-90 transition-opacity" style={{
                   backgroundColor: "transparent",
                   border: "2px solid rgba(255,255,255,0.6)",
                   color: "white",
                   boxShadow: "0 0 20px rgba(255,255,255,0.1)"
                 }}>
-                  <Search className="w-5 h-5 mr-2" />
-                  Verify a Credential
+                  <GraduationCap className="w-5 h-5 mr-2" />
+                  Explore Academic Pathways
                 </Button>
               </Link>
             </div>
 
-            {/* Trust Indicators */}
+            {/* Trust Indicators - Institutional Tone */}
             <div className="flex flex-wrap items-center gap-8 text-sm" style={{ color: "#f5e6e8" }}>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5" style={{ color: BRAND.gold }} />
-                <span>20,000+ Certified</span>
+                <Users className="w-5 h-5" style={{ color: BRAND.gold }} />
+                <span>20,000+ Professionals Worldwide</span>
               </div>
               <div className="flex items-center gap-2">
                 <Globe className="w-5 h-5" style={{ color: BRAND.gold }} />
                 <span>45+ Countries</span>
               </div>
               <div className="flex items-center gap-2">
-                <Star className="w-5 h-5" style={{ color: BRAND.gold }} />
-                <span>4.9/5 Rating</span>
+                <Building2 className="w-5 h-5" style={{ color: BRAND.gold }} />
+                <span>University Partners</span>
               </div>
             </div>
           </div>
@@ -625,6 +442,62 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Ecosystem Explainer - NEW SECTION */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ backgroundColor: `${BRAND.burgundy}10` }}>
+              <Building2 className="w-4 h-4" style={{ color: BRAND.burgundy }} />
+              <span className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>The AccrediPro Ecosystem</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: BRAND.burgundy }}>
+              How It All Works Together
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              A structured pathway from education to professional recognition to academic credentials
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Academy */}
+            <div className="bg-gray-50 rounded-2xl p-8 text-center border border-gray-100">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6" style={{ backgroundColor: `${BRAND.burgundy}10` }}>
+                <BookOpen className="w-8 h-8" style={{ color: BRAND.burgundy }} />
+              </div>
+              <h3 className="text-xl font-bold mb-3" style={{ color: BRAND.burgundy }}>AccrediPro Academy</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Education & preparation. Evidence-based curriculum designed by industry experts to build real-world competency.
+              </p>
+            </div>
+
+            {/* Institute */}
+            <div className="rounded-2xl p-8 text-center border-2 relative" style={{ backgroundColor: `${BRAND.gold}10`, borderColor: BRAND.gold }}>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: BRAND.gold, color: BRAND.burgundyDark }}>
+                CORE
+              </div>
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6" style={{ backgroundColor: BRAND.burgundy }}>
+                <Shield className="w-8 h-8" style={{ color: BRAND.gold }} />
+              </div>
+              <h3 className="text-xl font-bold mb-3" style={{ color: BRAND.burgundy }}>AccrediPro ISI</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Professional standards & board recognition. The authority that defines competency benchmarks and issues verified credentials.
+              </p>
+            </div>
+
+            {/* University Partners */}
+            <div className="bg-gray-50 rounded-2xl p-8 text-center border border-gray-100">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6" style={{ backgroundColor: `${BRAND.gold}20` }}>
+                <GraduationCap className="w-8 h-8" style={{ color: BRAND.gold }} />
+              </div>
+              <h3 className="text-xl font-bold mb-3" style={{ color: BRAND.burgundy }}>University Partners</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Optional academic degrees. Bachelor's & Master's programs through Swiss academic institutions, fully online.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4">
@@ -637,7 +510,7 @@ export default function HomePage() {
               How It Works
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              From enrollment to earning — your path to a certified career in health & wellness
+              A structured pathway to professional recognition and board certification
             </p>
           </div>
 
@@ -685,20 +558,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Certification Categories */}
+      {/* Professional Standards Areas */}
       <section className="py-20 md:py-28" style={{ backgroundColor: BRAND.cream }}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ backgroundColor: `${BRAND.burgundy}10` }}>
               <Award className="w-4 h-4" style={{ color: BRAND.burgundy }} />
-              <span className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>50+ Certification Specializations</span>
+              <span className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>Professional Standards Areas</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: BRAND.burgundy }}>
-              What We Certify
+              Areas of Professional Recognition
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              ASI sets the global standard for health and wellness practitioners.
-              Choose your specialization and build your career.
+              AccrediPro ISI defines competency standards and professional benchmarks
+              across key health and wellness disciplines.
             </p>
           </div>
 
@@ -720,7 +593,7 @@ export default function HomePage() {
                     ))}
                   </ul>
                   <div className="flex items-center gap-2 font-semibold group-hover:gap-3 transition-all" style={{ color: BRAND.burgundy }}>
-                    View Programs <ArrowRight className="w-4 h-4" />
+                    View Standards <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
               </Link>
@@ -730,7 +603,7 @@ export default function HomePage() {
           <div className="text-center mt-12">
             <Link href="/certifications">
               <Button size="lg" variant="outline" className="hover:text-white transition-all" style={{ borderColor: BRAND.burgundy, color: BRAND.burgundy, ["--hover-bg" as string]: BRAND.burgundy }}>
-                View All 50+ Certifications
+                Explore All Standards Areas
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
@@ -771,107 +644,52 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Comparison Table - IIN Style */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ backgroundColor: `${BRAND.gold}20` }}>
-              <Trophy className="w-4 h-4" style={{ color: BRAND.gold }} />
-              <span className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>The ASI Advantage</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: BRAND.burgundy }}>
-              How ASI Compares
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              See why smart practitioners choose ASI over other certification bodies
-            </p>
+      {/* Academic Degree Pathways - NEW SECTION */}
+      <section className="py-20 md:py-28" style={{ backgroundColor: BRAND.burgundyDark }}>
+        <div className="max-w-5xl mx-auto px-4 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8" style={{ backgroundColor: `${BRAND.gold}20`, border: `1px solid ${BRAND.gold}40` }}>
+            <GraduationCap className="w-4 h-4" style={{ color: BRAND.gold }} />
+            <span className="text-sm font-medium" style={{ color: BRAND.gold }}>Optional Academic Pathway</span>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 mt-6">
-            {/* Header Row with Competitor Names */}
-            <div className="grid grid-cols-5 text-center font-bold border-b border-gray-200 rounded-t-2xl overflow-hidden">
-              <div className="p-4 bg-gray-50 text-gray-600 text-left">Feature</div>
-              {competitors.map((comp, i) => (
-                <div
-                  key={i}
-                  className="p-4 relative pt-6"
-                  style={{
-                    background: comp.highlight ? BRAND.burgundyMetallic : "transparent",
-                    color: comp.highlight ? "white" : BRAND.burgundy,
-                  }}
-                >
-                  {comp.highlight && (
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg whitespace-nowrap z-10" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                      ⭐ Best Choice
-                    </div>
-                  )}
-                  <span className={comp.highlight ? "text-lg font-bold" : "text-sm"}>{comp.name}</span>
-                </div>
-              ))}
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            Academic Degree Pathways
+          </h2>
+
+          <p className="text-xl mb-12 max-w-3xl mx-auto leading-relaxed" style={{ color: "#f5e6e8" }}>
+            For professionals seeking formal academic capital, AccrediPro offers optional online university degree pathways
+            through Swiss academic institutions. These degrees are issued directly by partner universities,
+            fully online, and documented for international recognition.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <div className="rounded-xl p-6 text-center" style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <Globe className="w-8 h-8 mx-auto mb-4" style={{ color: BRAND.gold }} />
+              <h3 className="font-semibold text-white mb-2">Internationally Recognized</h3>
+              <p className="text-sm" style={{ color: "#f5e6e8" }}>Accredited Swiss institution with global validity</p>
             </div>
-            {/* Feature Rows */}
-            {comparisonData.map((row, i) => (
-              <div key={i} className="grid grid-cols-5 text-center border-t border-gray-100 hover:bg-gray-50/50 transition-colors">
-                <div className="p-4 text-left text-gray-700 font-medium text-sm">{row.feature}</div>
-                {/* ASI */}
-                <div className="p-4 flex items-center justify-center" style={{ backgroundColor: `${BRAND.burgundy}08` }}>
-                  {row.asi ? (
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: BRAND.goldMetallic }}>
-                      <CheckCheck className="w-5 h-5" style={{ color: BRAND.burgundyDark }} />
-                    </div>
-                  ) : (
-                    <X className="w-5 h-5 text-gray-300" />
-                  )}
-                </div>
-                {/* IIN */}
-                <div className="p-4 flex items-center justify-center">
-                  {row.iin ? (
-                    <CheckCircle className="w-5 h-5 text-gray-400" />
-                  ) : (
-                    <X className="w-5 h-5 text-gray-300" />
-                  )}
-                </div>
-                {/* MindBody Green */}
-                <div className="p-4 flex items-center justify-center">
-                  {row.mbg ? (
-                    <CheckCircle className="w-5 h-5 text-gray-400" />
-                  ) : (
-                    <X className="w-5 h-5 text-gray-300" />
-                  )}
-                </div>
-                {/* Health Coach Institute */}
-                <div className="p-4 flex items-center justify-center">
-                  {row.hci ? (
-                    <CheckCircle className="w-5 h-5 text-gray-400" />
-                  ) : (
-                    <X className="w-5 h-5 text-gray-300" />
-                  )}
-                </div>
-              </div>
-            ))}
-            {/* Summary Row */}
-            <div className="grid grid-cols-5 text-center border-t-2 border-gray-200 bg-gray-50 font-bold rounded-b-2xl overflow-hidden">
-              <div className="p-4 text-left text-gray-700">Total Features</div>
-              <div className="p-4" style={{ backgroundColor: `${BRAND.burgundy}15`, color: BRAND.burgundy }}>
-                <span className="text-2xl">10/10</span>
-              </div>
-              <div className="p-4 text-gray-500">3/10</div>
-              <div className="p-4 text-gray-500">0/10</div>
-              <div className="p-4 text-gray-500">3/10</div>
+            <div className="rounded-xl p-6 text-center" style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <MapPin className="w-8 h-8 mx-auto mb-4" style={{ color: BRAND.gold }} />
+              <h3 className="font-semibold text-white mb-2">Study From Anywhere</h3>
+              <p className="text-sm" style={{ color: "#f5e6e8" }}>No relocation required. Fully online delivery.</p>
+            </div>
+            <div className="rounded-xl p-6 text-center" style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <Award className="w-8 h-8 mx-auto mb-4" style={{ color: BRAND.gold }} />
+              <h3 className="font-semibold text-white mb-2">Physical Diploma</h3>
+              <p className="text-sm" style={{ color: "#f5e6e8" }}>Official university degree mailed to your home</p>
             </div>
           </div>
 
-          <div className="text-center mt-10">
-            <p className="text-gray-500 text-sm mb-6">
-              Based on publicly available information as of 2024. Features may vary.
-            </p>
-            <Link href="/apply">
-              <Button size="lg" className="font-bold hover:opacity-90 shadow-lg" style={{ background: BRAND.burgundyMetallic, color: "white" }}>
-                Apply Now — See the Difference
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
-          </div>
+          <Link href="/university-degrees">
+            <Button size="lg" className="font-bold text-lg px-8 py-6 h-auto rounded-xl shadow-xl hover:opacity-90 transition-opacity" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+              Explore Academic Pathways
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </Link>
+
+          <p className="mt-6 text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            By invitation only • Limited enrollment
+          </p>
         </div>
       </section>
 
@@ -1401,86 +1219,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="text-white py-16" style={{ backgroundColor: BRAND.burgundyDark }}>
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid md:grid-cols-5 gap-8 mb-12">
-            {/* Logo & Info */}
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: BRAND.gold }}>
-                    <Shield className="w-7 h-7" style={{ color: BRAND.burgundyDark }} />
-                  </div>
-                  <div>
-                    <div className="font-bold text-lg tracking-tight text-white">ACCREDITATION STANDARDS</div>
-                    <div className="text-xs tracking-widest" style={{ color: BRAND.gold }}>INSTITUTE</div>
-                  </div>
-                </div>
-              </div>
-              <p className="mb-6 max-w-sm" style={{ color: "#f5e6e8" }}>
-                The global authority in functional medicine and health certification.
-                Setting standards. Building careers.
-              </p>
-              <div className="space-y-2 text-sm" style={{ color: "#f5e6e8" }}>
-                <p className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" style={{ color: BRAND.gold }} />
-                  🇺🇸 USA Headquarters
-                </p>
-                <p className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" style={{ color: BRAND.gold }} />
-                  🇦🇪 Dubai Office
-                </p>
-              </div>
-            </div>
-
-            {/* Links */}
-            <div>
-              <h4 className="font-bold mb-4" style={{ color: BRAND.gold }}>Certifications</h4>
-              <ul className="space-y-2 text-sm" style={{ color: "#f5e6e8" }}>
-                <li><Link href="/certifications" className="hover:text-white transition-colors">All Certifications</Link></li>
-                <li><Link href="/certifications/functional-medicine" className="hover:text-white transition-colors">Functional Medicine</Link></li>
-                <li><Link href="/certifications/womens-health" className="hover:text-white transition-colors">Women's Health</Link></li>
-                <li><Link href="/certifications/gut-health" className="hover:text-white transition-colors">Gut Health</Link></li>
-                <li><Link href="/certifications/nutrition" className="hover:text-white transition-colors">Nutrition</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold mb-4" style={{ color: BRAND.gold }}>Company</h4>
-              <ul className="space-y-2 text-sm" style={{ color: "#f5e6e8" }}>
-                <li><Link href="/about" className="hover:text-white transition-colors">About ASI</Link></li>
-                <li><Link href="/standards" className="hover:text-white transition-colors">Our Standards</Link></li>
-                <li><Link href="/leadership" className="hover:text-white transition-colors">Leadership</Link></li>
-                <li><Link href="/code-of-ethics" className="hover:text-white transition-colors">Code of Ethics</Link></li>
-                <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold mb-4" style={{ color: BRAND.gold }}>Resources</h4>
-              <ul className="space-y-2 text-sm" style={{ color: "#f5e6e8" }}>
-                <li><Link href="/verify" className="hover:text-white transition-colors">Verify Credential</Link></li>
-                <li><Link href="/directory" className="hover:text-white transition-colors">Find a Practitioner</Link></li>
-                <li><Link href="/employers" className="hover:text-white transition-colors">For Employers</Link></li>
-                <li><Link href="/partners" className="hover:text-white transition-colors">Partner With Us</Link></li>
-                <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-            <p className="text-sm" style={{ color: "#f5e6e8" }}>
-              © 2026 Accreditation Standards Institute. All rights reserved.
-            </p>
-            <div className="flex gap-6 text-sm" style={{ color: "#f5e6e8" }}>
-              <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-              <Link href="/refund" className="hover:text-white transition-colors">Refund Policy</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* ISI Footer */}
+      <ISIFooter />
 
       {/* Live Chat Widget */}
       <FloatingChatWidget

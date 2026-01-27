@@ -187,6 +187,11 @@ model User {
   // Audit Logs (actions performed by this user)
   auditLogs AuditLog[] @relation("AuditLogs")
 
+  // Mini Diploma CRO System
+  graduatePosts  GraduatePost[]     @relation("UserGraduatePosts")
+  vslSessions    LiveVSLSession[]   @relation("UserVSLSessions")
+  smartNudges    SmartNudge[]       @relation("UserSmartNudges")
+
   @@index([email])
   @@index([role])
   @@index([assignedCoachId])
@@ -2547,13 +2552,23 @@ model ZombieProfile {
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
 
+  // CRO System fields
+  background   String? // "nurse", "pharmacist", "mom", "teacher", "corporate"
+  incomeLevel  String? // "$6.2K/mo" for graduates
+  tier         Int     @default(2) // 1=active chatter, 2=moderate, 3=occasional
+  isGraduate   Boolean @default(false) // For graduates channel
+
   // Relations
   podMemberships PodMember[]
   podMessages    PodMessage[]
   successEvents  SuccessEvent[]
+  chatMessages   ZombieChatMessage[]
+  graduatePosts  GraduatePost[]
 
   @@index([personalityType])
   @@index([isActive])
+  @@index([tier])
+  @@index([isGraduate])
 }
 
 // Study Pods - 5-person accountability groups
@@ -3171,4 +3186,132 @@ enum AuditAction {
   ENROLLMENT_DELETE
   DATA_EXPORT
   STATUS_CHANGE
+}
+
+// ==================== MINI DIPLOMA CRO SYSTEM ====================
+
+// Timed chat messages for Live VSL page (synced to video)
+model ZombieChatMessage {
+  id          String  @id @default(cuid())
+  videoTime   Int     // Seconds into video when message appears
+  messageType String  // "chat", "sarah", "enrollment", "alert", "system"
+  content     String  @db.Text
+  isActive    Boolean @default(true)
+
+  // For chat messages - link to zombie profile
+  profileId String?
+  profile   ZombieProfile? @relation(fields: [profileId], references: [id])
+
+  // For enrollment messages - name and location displayed
+  enrolleeName     String?
+  enrolleeLocation String?
+
+  createdAt DateTime @default(now())
+
+  @@index([videoTime])
+  @@index([messageType])
+  @@index([isActive])
+}
+
+// Graduate channel posts (zombie + real users)
+model GraduatePost {
+  id       String  @id @default(cuid())
+  postType String  // "certificate", "first_client", "income_milestone", "transformation", "tip"
+  content  String  @db.Text
+  imageUrl String? // Certificate image, etc.
+  likes    Int     @default(0)
+  comments Json    @default("[]") // Array of { name, content, createdAt }
+
+  isActive Boolean @default(true)
+  isPinned Boolean @default(false)
+
+  // Zombie posts (profileId set, userId null)
+  profileId String?
+  profile   ZombieProfile? @relation(fields: [profileId], references: [id])
+
+  // Real user posts (userId set, profileId null)
+  userId String?
+  user   User?   @relation("UserGraduatePosts", fields: [userId], references: [id])
+
+  postedAt  DateTime @default(now()) // Can be backdated for zombies
+  createdAt DateTime @default(now())
+
+  @@index([postType])
+  @@index([isActive])
+  @@index([postedAt])
+  @@index([userId])
+}
+
+// Live VSL session tracking
+model LiveVSLSession {
+  id        String  @id @default(cuid())
+  visitorId String  // Anonymous fingerprint or cuid
+  userId    String? // If logged in
+
+  // Video progress
+  videoProgress Int @default(0) // Current position in seconds
+  maxProgress   Int @default(0) // Furthest point reached
+
+  // Engagement
+  chatMessagesSent Int     @default(0)
+  checkoutViewed   Boolean @default(false)
+  checkoutViewedAt DateTime?
+
+  // Conversion
+  enrolled   Boolean   @default(false)
+  enrolledAt DateTime?
+
+  // Timestamps
+  joinedAt DateTime  @default(now())
+  leftAt   DateTime?
+  lastActivity DateTime @default(now())
+
+  // Relations
+  user         User?                  @relation("UserVSLSessions", fields: [userId], references: [id])
+  chatMessages LiveVSLUserMessage[]
+
+  @@index([userId])
+  @@index([visitorId])
+  @@index([joinedAt])
+  @@index([enrolled])
+}
+
+// Real user chat messages in Live VSL
+model LiveVSLUserMessage {
+  id        String @id @default(cuid())
+  sessionId String
+  session   LiveVSLSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  userName String
+  message  String @db.Text
+
+  // Sarah AI response
+  sarahResponse String?   @db.Text
+  respondedAt   DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
+// Smart nudges tracking (Sarah messages based on behavior)
+model SmartNudge {
+  id      String @id @default(cuid())
+  userId  String
+  user    User   @relation("UserSmartNudges", fields: [userId], references: [id], onDelete: Cascade)
+
+  // Nudge details
+  triggerType String // "inactive_24h", "stuck_lesson", "halfway", "exam_eligible", etc.
+  channel     String // "dm", "email", "sms"
+  message     String @db.Text
+
+  // Tracking
+  sentAt    DateTime  @default(now())
+  openedAt  DateTime?
+  clickedAt DateTime?
+
+  @@index([userId])
+  @@index([triggerType])
+  @@index([sentAt])
 }

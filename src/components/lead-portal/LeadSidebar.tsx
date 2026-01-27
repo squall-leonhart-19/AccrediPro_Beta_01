@@ -11,17 +11,12 @@ import {
     Award,
     Target,
     ChevronRight,
-    ChevronDown,
     TrendingUp,
     LogOut,
-    Home,
-    Hand,
-    Megaphone,
     Menu,
     X,
     Shield,
     DollarSign,
-    Sparkles,
     GraduationCap,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
@@ -65,9 +60,6 @@ export function LeadSidebar({
 }: LeadSidebarProps) {
     const pathname = usePathname();
     const [onlineCount] = useState(Math.floor(Math.random() * 30) + 35);
-    const [communityOpen, setCommunityOpen] = useState(
-        pathname?.startsWith("/community") || false
-    );
     const [mobileOpen, setMobileOpen] = useState(false);
 
     // Close sidebar on route change (mobile)
@@ -273,53 +265,19 @@ export function LeadSidebar({
                         )}
                     </Link>
 
-                    {/* Community - Expandable */}
-                    <div>
-                        <button
-                            onClick={() => setCommunityOpen(!communityOpen)}
-                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all w-full ${pathname?.startsWith("/community")
-                                ? "text-white shadow-lg"
-                                : "text-white/70 hover:text-white hover:bg-white/5"
-                                }`}
-                            style={pathname?.startsWith("/community") ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
-                        >
-                            <Users className="w-5 h-5 flex-shrink-0" />
-                            <span className="font-medium">Student Lounge</span>
-                            {communityOpen ? (
-                                <ChevronDown className="w-4 h-4 ml-auto" />
-                            ) : (
-                                <ChevronRight className="w-4 h-4 ml-auto" />
-                            )}
-                        </button>
-
-                        {communityOpen && (
-                            <div className="ml-4 mt-1 space-y-1 pl-4" style={{ borderLeft: `2px solid ${BRAND.gold}30` }}>
-                                <Link
-                                    href="/community"
-                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === "/community"
-                                        ? "text-white"
-                                        : "text-white/60 hover:text-white"
-                                        }`}
-                                    style={pathname === "/community" ? { backgroundColor: `${BRAND.gold}15` } : {}}
-                                >
-                                    <Home className="w-4 h-4 flex-shrink-0" />
-                                    <span>Community Hub</span>
-                                </Link>
-
-                                <Link
-                                    href="/community/cmktszaw30000fqm97xx6xrck"
-                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === "/community/cmktszaw30000fqm97xx6xrck"
-                                        ? "text-white"
-                                        : "text-white/60 hover:text-white"
-                                        }`}
-                                    style={pathname === "/community/cmktszaw30000fqm97xx6xrck" ? { backgroundColor: `${BRAND.gold}15` } : {}}
-                                >
-                                    <Hand className="w-4 h-4 flex-shrink-0" />
-                                    <span>👋 Introduce Yourself</span>
-                                </Link>
-                            </div>
-                        )}
-                    </div>
+                    {/* Graduates Channel - Read-only feed of success stories */}
+                    <Link
+                        href={`${basePath}/graduates`}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${isActive(`${basePath}/graduates`)
+                            ? "text-white shadow-lg"
+                            : "text-white/70 hover:text-white hover:bg-white/5"
+                            }`}
+                        style={isActive(`${basePath}/graduates`) ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
+                    >
+                        <Users className="w-5 h-5 flex-shrink-0" />
+                        <span className="font-medium">Graduate Stories</span>
+                        <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500 text-white">NEW</span>
+                    </Link>
 
                     {/* Ask Coach Sarah - Premium CTA Style */}
                     <Link

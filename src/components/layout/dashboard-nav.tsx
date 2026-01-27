@@ -36,6 +36,8 @@ import {
   Users2,
   ChevronDown,
   Gift,
+  Hand,
+  Lightbulb,
 } from "lucide-react";
 import { InstallAppButton } from "@/components/pwa/install-app-button";
 import { useState } from "react";
@@ -100,31 +102,172 @@ const fullNavItems: NavItem[] = [
   // 6. My Pod - TEMPORARILY HIDDEN
   // { href: "/my-circle", label: "My Pod", icon: Users2, tourId: "my-pod" },
 
-  // 7. Community - EXPANDABLE GROUP with sub-items for all 10 categories
-  // Links to category pages with channel tabs (Intros, Wins, Q&A, Tips)
+  // 7. Community - EXPANDABLE GROUP with categories, each category has channel sub-items
+  // Skool-style: click category to expand channels
   {
-    href: "/community",
+    href: "/community/c/fm",
     label: "Community",
     icon: Users,
     tourId: "community",
     children: [
-      { href: "/community", label: "🏠 Community Hub", icon: Users, tourId: "community-hub" },
-      // Category Community Pages (10 categories)
-      { href: "/community/c/fm", label: "🩺 Functional Medicine", icon: Users, tourId: "cat-fm" },
-      { href: "/community/c/tr", label: "💔 Trauma Recovery", icon: Users, tourId: "cat-tr" },
-      { href: "/community/c/mh", label: "🧠 Mental Health", icon: Users, tourId: "cat-mh" },
-      { href: "/community/c/se", label: "✨ Spiritual & Energy", icon: Users, tourId: "cat-se" },
-      { href: "/community/c/pf", label: "👨‍👩‍👧 Parenting & Family", icon: Users, tourId: "cat-pf" },
-      { href: "/community/c/mb", label: "🧘 Mind & Body", icon: Users, tourId: "cat-mb" },
-      { href: "/community/c/pw", label: "🐾 Pet Wellness", icon: Users, tourId: "cat-pw" },
-      { href: "/community/c/hb", label: "🌿 Herbalism", icon: Users, tourId: "cat-hb" },
-      { href: "/community/c/wh", label: "💕 Women's Health", icon: Users, tourId: "cat-wh" },
-      { href: "/community/c/gw", label: "💚 General Wellness", icon: Users, tourId: "cat-gw" },
+      // 1. Functional Medicine - Hero category
+      {
+        href: "/community/c/fm",
+        label: "🩺 Functional Medicine",
+        icon: Users,
+        tourId: "cat-fm",
+        children: [
+          { href: "/community/c/fm/introductions", label: "👋 Introductions", icon: Hand, tourId: "fm-intro" },
+          { href: "/community/c/fm/wins", label: "🏆 Wins", icon: Trophy, tourId: "fm-wins" },
+          { href: "/community/c/fm/graduates", label: "🎓 Graduates", icon: GraduationCap, tourId: "fm-grads" },
+          { href: "/community/c/fm/questions", label: "❓ Questions", icon: HelpCircle, tourId: "fm-questions" },
+          { href: "/community/c/fm/tips", label: "💡 Tips", icon: Lightbulb, tourId: "fm-tips" },
+          { href: "/community/c/fm/business", label: "💼 Business Academy", icon: Briefcase, tourId: "fm-biz" },
+        ]
+      },
+      // 2. Women's Health - Second priority
+      {
+        href: "/community/c/wh",
+        label: "💕 Women's Health",
+        icon: Users,
+        tourId: "cat-wh",
+        children: [
+          { href: "/community/c/wh/introductions", label: "👋 Introductions", icon: Hand, tourId: "wh-intro" },
+          { href: "/community/c/wh/wins", label: "🏆 Wins", icon: Trophy, tourId: "wh-wins" },
+          { href: "/community/c/wh/graduates", label: "🎓 Graduates", icon: GraduationCap, tourId: "wh-grads" },
+          { href: "/community/c/wh/questions", label: "❓ Questions", icon: HelpCircle, tourId: "wh-questions" },
+          { href: "/community/c/wh/tips", label: "💡 Tips", icon: Lightbulb, tourId: "wh-tips" },
+          { href: "/community/c/wh/business", label: "💼 Business Academy", icon: Briefcase, tourId: "wh-biz" },
+        ]
+      },
+      // 3. Mental Health
+      {
+        href: "/community/c/mh",
+        label: "🧠 Mental Health",
+        icon: Users,
+        tourId: "cat-mh",
+        children: [
+          { href: "/community/c/mh/introductions", label: "👋 Introductions", icon: Hand, tourId: "mh-intro" },
+          { href: "/community/c/mh/wins", label: "🏆 Wins", icon: Trophy, tourId: "mh-wins" },
+          { href: "/community/c/mh/graduates", label: "🎓 Graduates", icon: GraduationCap, tourId: "mh-grads" },
+          { href: "/community/c/mh/questions", label: "❓ Questions", icon: HelpCircle, tourId: "mh-questions" },
+          { href: "/community/c/mh/tips", label: "💡 Tips", icon: Lightbulb, tourId: "mh-tips" },
+          { href: "/community/c/mh/business", label: "💼 Business Academy", icon: Briefcase, tourId: "mh-biz" },
+        ]
+      },
+      // 4. Mind & Body
+      {
+        href: "/community/c/mb",
+        label: "🧘 Mind & Body",
+        icon: Users,
+        tourId: "cat-mb",
+        children: [
+          { href: "/community/c/mb/introductions", label: "👋 Introductions", icon: Hand, tourId: "mb-intro" },
+          { href: "/community/c/mb/wins", label: "🏆 Wins", icon: Trophy, tourId: "mb-wins" },
+          { href: "/community/c/mb/graduates", label: "🎓 Graduates", icon: GraduationCap, tourId: "mb-grads" },
+          { href: "/community/c/mb/questions", label: "❓ Questions", icon: HelpCircle, tourId: "mb-questions" },
+          { href: "/community/c/mb/tips", label: "💡 Tips", icon: Lightbulb, tourId: "mb-tips" },
+          { href: "/community/c/mb/business", label: "💼 Business Academy", icon: Briefcase, tourId: "mb-biz" },
+        ]
+      },
+      // 5. Trauma Recovery
+      {
+        href: "/community/c/tr",
+        label: "💔 Trauma Recovery",
+        icon: Users,
+        tourId: "cat-tr",
+        children: [
+          { href: "/community/c/tr/introductions", label: "👋 Introductions", icon: Hand, tourId: "tr-intro" },
+          { href: "/community/c/tr/wins", label: "🏆 Wins", icon: Trophy, tourId: "tr-wins" },
+          { href: "/community/c/tr/graduates", label: "🎓 Graduates", icon: GraduationCap, tourId: "tr-grads" },
+          { href: "/community/c/tr/questions", label: "❓ Questions", icon: HelpCircle, tourId: "tr-questions" },
+          { href: "/community/c/tr/tips", label: "💡 Tips", icon: Lightbulb, tourId: "tr-tips" },
+          { href: "/community/c/tr/business", label: "💼 Business Academy", icon: Briefcase, tourId: "tr-biz" },
+        ]
+      },
+      // 6. Parenting & Family
+      {
+        href: "/community/c/pf",
+        label: "👨‍👩‍👧 Parenting & Family",
+        icon: Users,
+        tourId: "cat-pf",
+        children: [
+          { href: "/community/c/pf/introductions", label: "👋 Introductions", icon: Hand, tourId: "pf-intro" },
+          { href: "/community/c/pf/wins", label: "🏆 Wins", icon: Trophy, tourId: "pf-wins" },
+          { href: "/community/c/pf/graduates", label: "🎓 Graduates", icon: GraduationCap, tourId: "pf-grads" },
+          { href: "/community/c/pf/questions", label: "❓ Questions", icon: HelpCircle, tourId: "pf-questions" },
+          { href: "/community/c/pf/tips", label: "💡 Tips", icon: Lightbulb, tourId: "pf-tips" },
+          { href: "/community/c/pf/business", label: "💼 Business Academy", icon: Briefcase, tourId: "pf-biz" },
+        ]
+      },
+      // 7. General Wellness
+      {
+        href: "/community/c/gw",
+        label: "💚 General Wellness",
+        icon: Users,
+        tourId: "cat-gw",
+        children: [
+          { href: "/community/c/gw/introductions", label: "👋 Introductions", icon: Hand, tourId: "gw-intro" },
+          { href: "/community/c/gw/wins", label: "🏆 Wins", icon: Trophy, tourId: "gw-wins" },
+          { href: "/community/c/gw/graduates", label: "🎓 Graduates", icon: GraduationCap, tourId: "gw-grads" },
+          { href: "/community/c/gw/questions", label: "❓ Questions", icon: HelpCircle, tourId: "gw-questions" },
+          { href: "/community/c/gw/tips", label: "💡 Tips", icon: Lightbulb, tourId: "gw-tips" },
+          { href: "/community/c/gw/business", label: "💼 Business Academy", icon: Briefcase, tourId: "gw-biz" },
+        ]
+      },
+      // 8. Spiritual & Energy
+      {
+        href: "/community/c/se",
+        label: "✨ Spiritual & Energy",
+        icon: Users,
+        tourId: "cat-se",
+        children: [
+          { href: "/community/c/se/introductions", label: "👋 Introductions", icon: Hand, tourId: "se-intro" },
+          { href: "/community/c/se/wins", label: "🏆 Wins", icon: Trophy, tourId: "se-wins" },
+          { href: "/community/c/se/graduates", label: "🎓 Graduates", icon: GraduationCap, tourId: "se-grads" },
+          { href: "/community/c/se/questions", label: "❓ Questions", icon: HelpCircle, tourId: "se-questions" },
+          { href: "/community/c/se/tips", label: "💡 Tips", icon: Lightbulb, tourId: "se-tips" },
+          { href: "/community/c/se/business", label: "💼 Business Academy", icon: Briefcase, tourId: "se-biz" },
+        ]
+      },
+      // 9. Herbalism
+      {
+        href: "/community/c/hb",
+        label: "🌿 Herbalism",
+        icon: Users,
+        tourId: "cat-hb",
+        children: [
+          { href: "/community/c/hb/introductions", label: "👋 Introductions", icon: Hand, tourId: "hb-intro" },
+          { href: "/community/c/hb/wins", label: "🏆 Wins", icon: Trophy, tourId: "hb-wins" },
+          { href: "/community/c/hb/graduates", label: "🎓 Graduates", icon: GraduationCap, tourId: "hb-grads" },
+          { href: "/community/c/hb/questions", label: "❓ Questions", icon: HelpCircle, tourId: "hb-questions" },
+          { href: "/community/c/hb/tips", label: "💡 Tips", icon: Lightbulb, tourId: "hb-tips" },
+          { href: "/community/c/hb/business", label: "💼 Business Academy", icon: Briefcase, tourId: "hb-biz" },
+        ]
+      },
+      // 10. Pet Wellness
+      {
+        href: "/community/c/pw",
+        label: "🐾 Pet Wellness",
+        icon: Users,
+        tourId: "cat-pw",
+        children: [
+          { href: "/community/c/pw/introductions", label: "👋 Introductions", icon: Hand, tourId: "pw-intro" },
+          { href: "/community/c/pw/wins", label: "🏆 Wins", icon: Trophy, tourId: "pw-wins" },
+          { href: "/community/c/pw/graduates", label: "🎓 Graduates", icon: GraduationCap, tourId: "pw-grads" },
+          { href: "/community/c/pw/questions", label: "❓ Questions", icon: HelpCircle, tourId: "pw-questions" },
+          { href: "/community/c/pw/tips", label: "💡 Tips", icon: Lightbulb, tourId: "pw-tips" },
+          { href: "/community/c/pw/business", label: "💼 Business Academy", icon: Briefcase, tourId: "pw-biz" },
+        ]
+      },
       { href: "/community/announcements", label: "📢 Announcements", icon: MessageSquare, tourId: "announcements" },
     ]
   },
 
-  // 8. My Credentials - standalone (certificates, achievements, verify)
+  // 8. University Degrees - Premium standalone
+  { href: "/university-degrees", label: "🏛️ University Degrees", icon: GraduationCap, tourId: "university-degrees", isPremium: true },
+
+  // 9. My Credentials - standalone (certificates, achievements, verify)
   { href: "/my-credentials", label: "My Credentials", icon: Award, notificationKey: "certificates", tourId: "credentials" },
 
   // 9. Career Center - MEGA-PAGE (career, programs, tools, directory)
@@ -440,8 +583,63 @@ export function DashboardNav() {
                   {isGroupExpanded && (
                     <div className="ml-4 pl-3 border-l border-burgundy-600/30 space-y-0.5">
                       {item.children?.map((child) => {
+                        const hasGrandchildren = child.children && child.children.length > 0;
                         const isChildActive = pathname === child.href || pathname.startsWith(child.href + "/");
                         const childNotificationCount = getNotificationCount(child.notificationKey);
+                        const isChildGroupExpanded = expandedGroups.includes(child.tourId || child.href);
+                        const isGrandchildActive = hasGrandchildren && child.children?.some(gc =>
+                          pathname === gc.href || pathname.startsWith(gc.href + "/")
+                        );
+
+                        // If child has grandchildren (category with channels), render as expandable
+                        if (hasGrandchildren) {
+                          return (
+                            <div key={child.href} className="space-y-0.5">
+                              <button
+                                onClick={() => toggleGroup(child.tourId || child.href)}
+                                className={cn(
+                                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 relative",
+                                  isChildActive || isGrandchildActive
+                                    ? "bg-gold-400/10 text-gold-300 font-medium"
+                                    : "text-white/70 hover:bg-burgundy-600/30 hover:text-white"
+                                )}
+                              >
+                                <span className="flex-1 text-left text-sm">{child.label}</span>
+                                <ChevronDown className={cn(
+                                  "w-3.5 h-3.5 transition-transform duration-200",
+                                  isChildGroupExpanded ? "rotate-180" : "",
+                                  isChildActive || isGrandchildActive ? "text-gold-400" : "text-white/40"
+                                )} />
+                              </button>
+
+                              {/* Grandchildren (channels) */}
+                              {isChildGroupExpanded && (
+                                <div className="ml-3 pl-3 border-l border-burgundy-600/20 space-y-0.5">
+                                  {child.children?.map((grandchild) => {
+                                    const isGcActive = pathname === grandchild.href;
+                                    return (
+                                      <Link
+                                        key={grandchild.href}
+                                        href={grandchild.href}
+                                        prefetch={true}
+                                        className={cn(
+                                          "w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs transition-all duration-150",
+                                          isGcActive
+                                            ? "bg-gold-400/10 text-gold-300 font-medium"
+                                            : "text-white/60 hover:bg-burgundy-600/20 hover:text-white"
+                                        )}
+                                      >
+                                        <span className="flex-1 text-left">{grandchild.label}</span>
+                                      </Link>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        }
+
+                        // Regular child link (no grandchildren)
                         return (
                           <Link
                             key={child.href}

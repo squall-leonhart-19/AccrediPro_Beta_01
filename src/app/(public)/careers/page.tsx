@@ -24,8 +24,8 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "Career Paths | Accreditation Standards Institute",
-  description: "Discover rewarding career paths in functional medicine and health coaching. See salary ranges, job opportunities, and success stories from ASI-certified practitioners.",
+  title: "Professional Pathways | AccrediPro International Standards Institute",
+  description: "Explore professional pathways in integrative health with ISI credentials. Discover where credentialed professionals work and career opportunities.",
 };
 
 const BRAND = {
@@ -106,10 +106,10 @@ export default function CareersPage() {
   ];
 
   const outcomes = [
-    { value: "$2,400", label: "Avg First Month Income", icon: DollarSign },
-    { value: "14 Days", label: "Avg Time to First Client", icon: Calendar },
-    { value: "73%", label: "Complete Within 30 Days", icon: Target },
-    { value: "94%", label: "Would Recommend ASI", icon: Star },
+    { value: "20K+", label: "Credentialed Professionals", icon: Users },
+    { value: "500+", label: "Employer Partners", icon: Building2 },
+    { value: "45+", label: "Countries Represented", icon: Target },
+    { value: "94%", label: "Would Recommend ISI", icon: Star },
   ];
 
   const employers = [
@@ -197,16 +197,16 @@ export default function CareersPage() {
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8" style={{ backgroundColor: `${BRAND.gold}20`, border: `1px solid ${BRAND.gold}40` }}>
               <TrendingUp className="w-4 h-4" style={{ color: BRAND.gold }} />
-              <span className="text-sm font-medium" style={{ color: BRAND.gold }}>Your Career Transformation Starts Here</span>
+              <span className="text-sm font-medium" style={{ color: BRAND.gold }}>Professional Pathways</span>
             </div>
 
             <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              Career Paths in
-              <span className="block" style={{ color: BRAND.gold }}>Functional Medicine & Health</span>
+              Professional Pathways in
+              <span className="block" style={{ color: BRAND.gold }}>Integrative Health</span>
             </h1>
 
             <p className="text-xl md:text-2xl leading-relaxed mb-8" style={{ color: "#f5e6e8" }}>
-              Turn your passion for health into a thriving career. Discover your path and see what's possible with ASI certification.
+              Discover where ISI credentialed professionals work and the career opportunities available to you.
             </p>
           </div>
         </div>
@@ -424,21 +424,21 @@ export default function CareersPage() {
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: BRAND.burgundy }}>
-            Ready to Start Your Career Transformation?
+            Begin Your Professional Journey
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join 20,000+ practitioners who've built thriving careers with ASI certification.
+            Join 20,000+ professionals building recognized careers in integrative health.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/certifications">
+            <Link href="/apply">
               <Button size="lg" className="font-bold text-lg px-8 py-6 h-auto hover:opacity-90" style={{ backgroundColor: BRAND.burgundy, color: "white" }}>
-                Explore Certifications
+                Apply for Professional Review
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Link href="/apply">
+            <Link href="/directory">
               <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 h-auto" style={{ borderColor: BRAND.burgundy, color: BRAND.burgundy }}>
-                Apply Now
+                Find Professionals
               </Button>
             </Link>
           </div>

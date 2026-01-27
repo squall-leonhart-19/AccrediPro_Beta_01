@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import { CommunityClient } from "@/components/community/community-client";
 
 // Force dynamic rendering - never cache community posts
@@ -138,6 +139,9 @@ async function getAllCommunities() {
 export default async function CommunityPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return null;
+
+  // Redirect to default category community (FM)
+  redirect("/community/c/fm");
 
   const isAdmin = session.user.role === "ADMIN" || session.user.role === "MENTOR";
 
