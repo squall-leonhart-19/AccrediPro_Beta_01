@@ -10,6 +10,7 @@ import {
   GraduationCap,
   BookOpen,
   Heart,
+  ArrowRight,
 } from "lucide-react";
 import { ISIHeader } from "@/components/layout/isi-header";
 import { ISIFooter } from "@/components/layout/isi-footer";
