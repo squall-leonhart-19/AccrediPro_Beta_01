@@ -19,10 +19,38 @@ Use this template when creating a new Mini Diploma. Copy this file and rename it
 
 ## 1. PRE-LAUNCH SETUP
 
-- [ ] Tag/segment created in database
+### Database
+- [ ] Course created in DB with slug: `[slug]-mini-diploma`
+- [ ] 9 lessons created and linked to course
+- [ ] Tag/segment created: `mini_diploma_[slug]`
+
+### Meta/Tracking
 - [ ] Meta Pixel configured
 - [ ] UTM parameters documented
-- [ ] Course slug registered in API
+- [ ] GA4 events configured
+
+---
+
+## 1B. API CONFIGURATION
+
+**File:** `src/app/api/mini-diploma/optin/route.ts`
+
+All of these MUST be updated when adding a new Mini Diploma:
+
+| Location | What to Add | Example |
+|----------|-------------|---------|
+| `COURSE_SLUGS` | Course slug mapping | `"christian-coaching": "christian-coaching-mini-diploma"` |
+| `COACH_EMAILS` | Assigned coach email | `"christian-coaching": "sarah_womenhealth@accredipro-certificate.com"` |
+| `WELCOME_MESSAGES` | Text + voice script | Personalized welcome message template |
+| `getCertificationDisplayName()` | Display name | `"christian-coaching": "Christian Life Coaching"` |
+| `nicheNames` (line ~450) | Email niche name | `"christian-coaching": "Christian Life Coaching"` |
+
+**Checklist:**
+- [ ] Added to `COURSE_SLUGS`
+- [ ] Added to `COACH_EMAILS`
+- [ ] Added to `WELCOME_MESSAGES` (text + voiceScript)
+- [ ] Added to `getCertificationDisplayName()`
+- [ ] Added to `nicheNames` for email
 
 ---
 
