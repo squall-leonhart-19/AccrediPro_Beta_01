@@ -213,13 +213,6 @@ export default function CertificationsPage() {
     },
   ];
 
-  const whyASI = [
-    { icon: Shield, text: "Competency-based assessment" },
-    { icon: Users, text: "20,000+ certified practitioners" },
-    { icon: Award, text: "Lifetime credential" },
-    { icon: Star, text: "4.9/5 rating" },
-  ];
-
   return (
     <div className="min-h-screen bg-white">
       <ISIHeader />
