@@ -1140,20 +1140,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* As Seen In - Media Logos */}
-      <section className="py-16 bg-white border-y border-gray-100">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-center text-sm text-gray-500 mb-8 uppercase tracking-widest">As Featured In</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
-            {mediaFeatures.map((media, i) => (
-              <div key={i} className="text-gray-400 font-bold text-xl md:text-2xl tracking-tight hover:text-gray-600 transition-colors cursor-default">
-                {media.name}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* FAQ Section */}
       <section className="py-20 md:py-28" style={{ backgroundColor: BRAND.cream }}>
         <div className="max-w-4xl mx-auto px-4">
@@ -1188,34 +1174,6 @@ export default function HomePage() {
               </Button>
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-20 md:py-28 text-white text-center" style={{ background: BRAND.burgundyMetallic }}>
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to Transform Your Career?
-          </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: "#f5e6e8" }}>
-            Join 20,000+ practitioners who chose ASI. Start with our free Mini-Diploma today.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/womens-health-mini-diploma">
-              <Button size="lg" className="font-bold text-lg px-10 py-6 h-auto shadow-xl hover:opacity-90" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                Start Free Mini-Diploma
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
-            <Link href="/apply">
-              <Button size="lg" className="font-bold text-lg px-10 py-6 h-auto hover:opacity-90" style={{ backgroundColor: "transparent", border: "2px solid white", color: "white" }}>
-                Apply for Full Certification
-              </Button>
-            </Link>
-          </div>
-          <p className="text-sm mt-6" style={{ color: "#f5e6e8" }}>
-            0% APR financing available • HSA/FSA accepted • From $99/month
-          </p>
         </div>
       </section>
 
