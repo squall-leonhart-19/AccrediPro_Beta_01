@@ -19,6 +19,7 @@ const DIPLOMA_TAG_PREFIX: Record<string, string> = {
     "nurse-coach-diploma": "nurse-coach-lesson-complete",
     "holistic-nutrition-diploma": "holistic-nutrition-lesson-complete",
     "hormone-health-diploma": "hormone-health-lesson-complete",
+    "christian-coaching-diploma": "christian-coaching-lesson-complete",
 };
 
 async function getLeadData(userId: string, diplomaSlug: string) {
