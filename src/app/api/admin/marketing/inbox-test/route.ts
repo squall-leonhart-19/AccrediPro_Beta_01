@@ -5130,7 +5130,7 @@ Sarah`,
 
   // === STORY SEQUENCE (Day 1-10) ===
   {
-    id: 400,
+    id: 600,
     name: "Story Day 1: Kitchen Floor",
     day: 1,
     section: "buyer_nurturing",
@@ -5165,7 +5165,7 @@ With love,
 Sarah 💕`,
   },
   {
-    id: 401,
+    id: 601,
     name: "Story Day 3: 3am Discovery",
     day: 3,
     section: "buyer_nurturing",
@@ -5202,7 +5202,7 @@ Trust that feeling. 💕
 Sarah`,
   },
   {
-    id: 402,
+    id: 602,
     name: "Story Day 5: First Breakthrough",
     day: 5,
     section: "buyer_nurturing",
@@ -5237,7 +5237,7 @@ Keep going. This matters more than you know. 🌟
 Sarah`,
   },
   {
-    id: 403,
+    id: 603,
     name: "Story Day 7: Daughter Noticed",
     day: 7,
     section: "buyer_nurturing",
@@ -5275,7 +5275,7 @@ I see you. I believe in you.
 Sarah 💕`,
   },
   {
-    id: 404,
+    id: 604,
     name: "Story Day 10: Why I Do This",
     day: 10,
     section: "buyer_nurturing",
@@ -5316,7 +5316,7 @@ P.S. How's the course going? Hit reply and let me know — I read every single r
 
   // === PROOF SEQUENCE (Day 12-21) ===
   {
-    id: 410,
+    id: 610,
     name: "Proof Day 12: Diane (62, RN)",
     day: 12,
     section: "buyer_nurturing",
@@ -5349,7 +5349,7 @@ It's never too late.
 Sarah`,
   },
   {
-    id: 411,
+    id: 611,
     name: "Proof Day 15: Maria (Single Mom)",
     day: 15,
     section: "buyer_nurturing",
@@ -5384,7 +5384,7 @@ That's the whole secret.
 Sarah`,
   },
   {
-    id: 412,
+    id: 612,
     name: "Proof Day 18: Vicki (Yoga Teacher)",
     day: 18,
     section: "buyer_nurturing",
@@ -5419,7 +5419,7 @@ So can you.
 Sarah`,
   },
   {
-    id: 413,
+    id: 613,
     name: "Proof Day 21: The Common Thread",
     day: 21,
     section: "buyer_nurturing",
@@ -5458,7 +5458,7 @@ P.S. How are you doing with the course? Reply and let me know — I'm here for y
 
   // === PAIN SEED SEQUENCE (Day 24-28) ===
   {
-    id: 420,
+    id: 620,
     name: "Pain Day 24: Then What?",
     day: 24,
     section: "buyer_nurturing",
@@ -5497,7 +5497,7 @@ I have something I'm working on that might help. More soon.
 Sarah`,
   },
   {
-    id: 421,
+    id: 621,
     name: "Pain Day 26: Two Types",
     day: 26,
     section: "buyer_nurturing",
@@ -5535,7 +5535,7 @@ Something to think about.
 Sarah`,
   },
   {
-    id: 422,
+    id: 622,
     name: "Pain Day 28: What If?",
     day: 28,
     section: "buyer_nurturing",
@@ -5576,7 +5576,7 @@ Sarah`,
 
   // === DFY LAUNCH SEQUENCE (Day 30-35) ===
   {
-    id: 430,
+    id: 630,
     name: "DFY Day 30: Coming Tomorrow",
     day: 30,
     section: "buyer_nurturing",
@@ -5612,7 +5612,7 @@ I'll send you the link in the morning.
 Sarah`,
   },
   {
-    id: 431,
+    id: 631,
     name: "DFY Day 31: DOORS OPEN",
     day: 31,
     section: "buyer_nurturing",
@@ -5651,7 +5651,7 @@ Sarah
 P.S. The website ALONE is worth more than $397. You're getting that PLUS everything else.`,
   },
   {
-    id: 432,
+    id: 632,
     name: "DFY Day 33: 7 Spots Left",
     day: 33,
     section: "buyer_nurturing",
@@ -5684,7 +5684,7 @@ Claim one of the remaining spots: https://learn.accredipro.academy/dfy-kit
 Sarah`,
   },
   {
-    id: 433,
+    id: 633,
     name: "DFY Day 35: FINAL CALL",
     day: 35,
     section: "buyer_nurturing",
@@ -5730,7 +5730,7 @@ P.S. After tonight, this page disappears. Don't be the person who comes back wis
 
   // === MILESTONE UPSELLS (Pro Accelerator) ===
   {
-    id: 440,
+    id: 640,
     name: "Milestone 50%: Pro Accelerator",
     day: 0,
     section: "buyer_nurturing",
@@ -5776,7 +5776,7 @@ Sarah
 P.S. Michelle (49) was THIS close to skipping this. Now she's at $18,000/month handling complex cases she would have referred out before.`,
   },
   {
-    id: 441,
+    id: 641,
     name: "Milestone 100%: What's Next?",
     day: 0,
     section: "buyer_nurturing",
