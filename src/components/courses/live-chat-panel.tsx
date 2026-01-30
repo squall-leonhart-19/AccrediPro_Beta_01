@@ -51,25 +51,39 @@ const STYLES = {
         color: "#166534",
         flexShrink: 0
     },
-    joinNotification: {
+    joinNotificationContainer: {
+        height: "28px",
+        overflow: "hidden",
+        flexShrink: 0
+    },
+    joinNotification: (visible: boolean) => ({
         padding: "8px 14px",
         background: "#fef3c7",
         borderBottom: "1px solid #fde68a",
         fontSize: "12px",
         color: "#92400e",
         textAlign: "center" as const,
-        animation: "fadeIn 0.3s ease"
-    },
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.3s ease",
+        height: visible ? "28px" : "0",
+        padding: visible ? "8px 14px" : "0 14px"
+    }),
     messagesContainer: { flex: 1, overflowY: "auto" as const, padding: "12px", background: "#fafafa", position: "relative" as const },
     messagesInner: { display: "flex", flexDirection: "column" as const, gap: "10px" },
     loadingText: { textAlign: "center" as const, color: "#999", padding: "40px 0" },
     emptyState: { textAlign: "center" as const, color: "#999", padding: "40px 0" },
     emptyEmoji: { fontSize: "40px", marginBottom: "12px" },
     emptyText: { fontSize: "13px" },
-    typingIndicator: {
-        display: "flex", gap: "8px", alignItems: "center",
-        padding: "4px 0", color: "#666", fontSize: "12px"
+    typingIndicatorContainer: {
+        minHeight: "24px",
+        flexShrink: 0
     },
+    typingIndicator: (visible: boolean) => ({
+        display: "flex", gap: "8px", alignItems: "center",
+        padding: "4px 0", color: "#666", fontSize: "12px",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.2s ease"
+    }),
     typingDots: { display: "flex", gap: "3px" },
     inputContainer: { borderTop: "1px solid #eee", padding: "12px", flexShrink: 0 },
     inputInner: { display: "flex", gap: "8px" },
@@ -550,12 +564,12 @@ function LiveChatPanelInner({ courseId, courseSlug, isMobile = false, onClose }:
                 👋 Welcome! Share your wins, ask questions, cheer each other on!
             </div>
 
-            {/* Join Notification */}
-            {joinNotification && (
-                <div style={STYLES.joinNotification}>
-                    ✨ {joinNotification} just joined the chat
+            {/* Join Notification - Fixed height to prevent layout shift */}
+            <div style={STYLES.joinNotificationContainer}>
+                <div style={STYLES.joinNotification(!!joinNotification)}>
+                    {joinNotification ? `✨ ${joinNotification} just joined the chat` : "\u00A0"}
                 </div>
-            )}
+            </div>
 
             {/* Messages */}
             <div
@@ -582,17 +596,17 @@ function LiveChatPanelInner({ courseId, courseSlug, isMobile = false, onClose }:
                             />
                         ))}
 
-                        {/* Typing Indicator */}
-                        {typingName && (
-                            <div style={STYLES.typingIndicator}>
+                        {/* Typing Indicator - Fixed height to prevent layout shift */}
+                        <div style={STYLES.typingIndicatorContainer}>
+                            <div style={STYLES.typingIndicator(!!typingName)}>
                                 <div style={STYLES.typingDots}>
                                     <span style={{ animation: "bounce 1s infinite 0s" }}>•</span>
                                     <span style={{ animation: "bounce 1s infinite 0.2s" }}>•</span>
                                     <span style={{ animation: "bounce 1s infinite 0.4s" }}>•</span>
                                 </div>
-                                <span>{typingName} is typing...</span>
+                                <span>{typingName ? `${typingName} is typing...` : "\u00A0"}</span>
                             </div>
-                        )}
+                        </div>
                     </div>
                 )}
 
