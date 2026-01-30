@@ -34,15 +34,19 @@ export interface CourseContext {
 }
 
 // ============================================
-// SIGNATURE - Warm & Personal for 35/40+ women
+// SIGNATURE - Hyper Professional Authority
 // ============================================
 
 const SARAH_SIGNATURE = `
 Warmly,
 
-Sarah
+Sarah Mitchell, CFMP, BCMP
+Chief Education Officer
+AccrediPro Standards Institute
 
-P.S. I'm always here if you need anything. Just hit reply.`;
+Direct Line: support@accredipro-certificate.com
+1,247+ Certified Practitioners | 9 International Accreditations
+New York | Dubai | London`;
 
 
 // ============================================
