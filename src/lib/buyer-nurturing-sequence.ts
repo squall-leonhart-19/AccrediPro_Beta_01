@@ -202,28 +202,34 @@ Sarah`,
         order: 6,
         day: 12,
         phase: 'pro_accelerator',
-        subject: "Re: the gap between learning and earning",
-        preheader: "This is what separates the top 10%",
+        subject: "Re: Maria's first session",
+        preheader: "She was shaking before the call",
         hasCta: false,
         content: `{{firstName}},
 
-Can I be honest with you about something?
+Maria sent me a message last week that made me tear up.
 
-There's a gap I see with almost every student.
+<strong>"Sarah, I just booked my first $500 session."</strong>
 
-They're learning. Doing the modules. Taking notes. <strong>But they're not BUILDING.</strong>
+Three months ago, she was terrified to charge $50.
 
-Learning without implementation = frustration.
+She kept saying she wasn't ready. That she needed more training. That no one would pay her.
 
-It's like studying recipes for a year but never cooking.
+<strong>I hear this all the time.</strong>
 
-The practitioners making $5k, $10k, $15k/month? They closed this gap fast.
+The fear. The doubt. The voice that says "who are you to help people?"
 
-They didn't just learn — they <strong>accelerated</strong>.
+But here's what I've learned after working with hundreds of women just like you:
 
-Tomorrow I'll show you what they did differently.
+<strong>The ones who succeed aren't the ones who wait until they're ready.</strong>
 
-Sarah`,
+They're the ones who start before they feel qualified.
+
+What was her secret? Tomorrow I'll tell you exactly what she did differently.
+
+Sarah
+
+P.S. Maria was a single mom with two kids. If she could find time, you can too.`,
     },
 
     {
@@ -231,38 +237,34 @@ Sarah`,
         order: 7,
         day: 13,
         phase: 'pro_accelerator',
-        subject: "Re: the pattern I keep seeing",
-        preheader: "The stack that changes everything",
+        subject: "Re: what Maria did differently",
+        preheader: "The 4 things she had that most don't",
         hasCta: false,
         content: `{{firstName}},
 
-Yesterday I told you about the gap between learning and earning.
+Yesterday I told you about Maria booking her first premium session.
 
-Today, let me show you how the top 10% close it.
+Today I want to share what she did differently.
 
-<strong>They get 4 things that most students don't:</strong>
+<strong>It wasn't talent. It wasn't luck. It wasn't connections.</strong>
 
-<strong>1. Advanced Protocols</strong>
-Not the basics — the stuff I paid $27k to learn over years. Complex cases. Premium clients. Real results.
-<em>Value: $500 minimum</em>
+She got help with 4 things most students try to figure out alone:
 
-<strong>2. Business Building Framework</strong>
-How Kelly went from 0 followers to a WAITLIST in 90 days. The exact system.
-<em>Value: $997</em>
+<strong>1. Advanced protocols</strong> - not the basics, the stuff that actually gets results with complex cases
 
-<strong>3. Live Q&A Access</strong>
-Stuck on something? Ask me directly. Get answers the same day. No more spinning your wheels alone.
-<em>Value: $200/month</em>
+<strong>2. Business building</strong> - how Kelly went from zero followers to a WAITLIST in 90 days
 
-<strong>4. Priority Support</strong>
-Skip the line. Get unstuck fast. Have someone in your corner who's been there.
-<em>Priceless</em>
+<strong>3. Live Q&A access</strong> - when she got stuck, she asked me directly. Same day answers.
 
-<strong>Total value: $2,000+</strong>
+<strong>4. Someone in her corner</strong> - priority support when doubts crept in
 
-Tomorrow I'll tell you how to get all of it.
+<strong>She didn't wait until she felt ready. She got the right support and started.</strong>
 
-Sarah`,
+Tomorrow I'll tell you how to get access to all of it.
+
+Sarah
+
+P.S. Kelly told me last week she has more clients than she can handle. She started 6 months ago.`,
     },
 
     {
@@ -277,32 +279,37 @@ Sarah`,
         ctaLink: "https://sarah.accredipro.academy/up-masters",
         content: `{{firstName}},
 
-Remember everything I shared yesterday?
+<strong>The women who join Pro Accelerator always tell me the same thing.</strong>
 
-- Advanced Protocols ($500 value)
-- Business Building Framework ($997 value)
-- Live Q&A Access ($200/month value)
-- Priority Support (priceless)
+Not "I wish I had more information."
+Not "I wish I had more time to decide."
 
-<strong>Total: $2,000+ in value</strong>
+They say: <strong>"I wish I had done this sooner."</strong>
 
-I bundled it all into one thing: <strong>Pro Accelerator</strong>.
+Every. Single. One.
 
-And you can join for <strong>$297</strong>.
+Because the cost of waiting isn't just money. It's time. It's another month of figuring things out alone. It's watching others build momentum while you stay stuck.
 
-One payment. Lifetime access. Everything you need to go from learning to earning — fast.
+<strong>What You Get</strong>
 
-This isn't for everyone. It's for the students who are SERIOUS. The ones who don't want to spend 2 years figuring it out on their own.
+- Advanced protocols for complex cases
+- Business building framework (Kelly's waitlist system)
+- Live Q&A access - ask me directly
+- Priority support when doubts creep in
 
-If that's you: https://sarah.accredipro.academy/up-masters
+<strong>Investment: $297</strong>
 
-If not, no pressure. Keep going with the course. You'll still get results — just slower.
+One payment. Lifetime access. Everything Maria and Kelly used to accelerate.
 
-But if you want to accelerate... the door is open.
+If you want to move faster: https://sarah.accredipro.academy/up-masters
+
+If not, no pressure. Keep going with the course. You'll still get there — just slower.
+
+I hope you choose yourself.
 
 Sarah
 
-P.S. Kelly, Maria, Diane — they all did Pro Accelerator. Just saying.`,
+P.S. The perfect moment doesn't exist. This moment is good enough.`,
     },
 
     // ========================================
@@ -314,38 +321,38 @@ P.S. Kelly, Maria, Diane — they all did Pro Accelerator. Just saying.`,
         order: 9,
         day: 16,
         phase: 'dfy_stack',
-        subject: "Re: what I wish someone told me",
-        preheader: "You're here to heal, not build websites",
+        subject: "Re: Diane almost gave up",
+        preheader: "She was drowning in tech for 4 months",
         hasCta: false,
         content: `{{firstName}},
 
-Let me ask you something.
+Diane sent me a message that broke my heart.
 
-<strong>Did you sign up for this to build websites? Design logos? Figure out email sequences?</strong>
+<strong>"Sarah, I've been trying to figure out the website for 4 months. I'm ready to quit."</strong>
 
-No.
+4 months. Just on the website.
 
-You signed up to <strong>help people</strong>. To transform lives. To finally use your gifts.
+She hadn't seen a single client yet. All that knowledge, all that training... and she was stuck on tech.
 
-But here's what happens to most practitioners:
+<strong>I see this happen over and over.</strong>
 
-They finish learning... then spend 6 MONTHS on tech.
+Women who are meant to heal people. Women who have something real to offer the world.
 
-"I need a website first."
-"I need to figure out my branding."
-"I need to set up my booking system."
+But they spend months drowning in:
+- Website builders
+- Booking systems
+- Logo design
+- "Just one more thing before I can start"
 
-And 6 months later? Still no clients. Still "getting ready."
+<strong>You didn't sign up for this to become a web developer.</strong>
 
-<strong>Imagine a store without a storefront.</strong> No sign. No window. Hidden in an alley. Would anyone find it?
+You signed up to help people.
 
-That's what you are without a business presence.
+Tomorrow I'll tell you what happened with Diane.
 
-But what if someone built everything FOR you?
+Sarah
 
-More on that tomorrow.
-
-Sarah`,
+P.S. Spoiler: she didn't quit. And she's doing amazing now.`,
     },
 
     {
@@ -353,36 +360,37 @@ Sarah`,
         order: 10,
         day: 17,
         phase: 'dfy_stack',
-        subject: "Re: quick thought about visibility",
-        preheader: "What a real website does for you",
+        subject: "Re: what happened with Diane",
+        preheader: "She stopped building and started healing",
         hasCta: false,
         content: `{{firstName}},
 
-Let's talk about your storefront.
+Remember Diane? The one who almost quit?
 
-When someone hears about you, what do they do?
+<strong>Here's what she told me:</strong>
 
-<strong>They Google you.</strong>
+"I realized I was hiding behind the tech. As long as I was 'setting things up,' I didn't have to actually put myself out there."
 
-And if there's nothing there? No website? Just an Instagram with 47 followers?
+She was terrified of rejection. So she stayed busy with things that felt productive.
 
-<strong>They move on.</strong>
+But here's the truth:
 
-A professional website does three things:
+<strong>A potential client Googles you. If there's nothing professional there... they move on.</strong>
 
-1. <strong>Builds instant credibility</strong> — You look established, even if you're just starting
-2. <strong>Works 24/7</strong> — People find you, learn about you, and book while you sleep
-3. <strong>Commands premium prices</strong> — A $500/session practitioner LOOKS like a $500/session practitioner
+That person you could have helped? Gone.
 
-Know what a good website costs if you hire a designer?
+Diane made a decision. She stopped trying to build everything herself.
 
-<strong>$2,000 - $5,000.</strong>
+<strong>Within 2 weeks, she had:</strong>
+- A professional website (her own domain, her own brand)
+- A booking system that worked while she slept
+- Visual identity that commanded respect
 
-And that's before the revisions, the back-and-forth, the "that's not what I meant."
+She didn't build any of it. Someone built it for her.
 
-Imagine waking up to booking requests. From people who found you. Who already trust you. Who are ready to pay.
+Now she wakes up to booking requests from people who already trust her.
 
-That's what a real website does.
+Tomorrow I'll tell you more about how that happened.
 
 Sarah`,
     },
@@ -392,36 +400,34 @@ Sarah`,
         order: 11,
         day: 18,
         phase: 'dfy_stack',
-        subject: "Re: what if clients booked themselves?",
-        preheader: "No more chasing clients",
+        subject: "Re: Kelly's first client while she slept",
+        preheader: "She woke up to a booking",
         hasCta: false,
         content: `{{firstName}},
 
-Here's what most practitioners do:
+Kelly texted me at 6am.
 
-Someone expresses interest → They message back and forth for days → They manually send pricing → They wait for a response → They follow up → They follow up again → Client disappears
+<strong>"Sarah. I just woke up to a booking. WHILE I WAS ASLEEP."</strong>
 
-<strong>Exhausting.</strong>
+I remember exactly how that feels. The first time someone books without you lifting a finger.
 
-Now here's what a real CLIENT SYSTEM does:
+Here's what happened:
 
-Someone expresses interest → They book a call automatically → They fill out intake forms before the call → They pay before you even meet → They show up ready
+Someone found Kelly's website → Saw she was legit → Booked a session → Filled out intake forms → Paid in advance
 
-<strong>No chasing. No awkward money conversations. No ghosting.</strong>
+<strong>No back-and-forth messaging. No chasing. No awkward "so here's my pricing" conversations.</strong>
 
-The system does the work.
+The system did the work.
 
-Know what a proper client system costs to set up?
+Most practitioners don't have this. They chase leads manually. They follow up 3 times. They ghost and get ghosted.
 
-- Software: $50-200/month
-- Setup and configuration: $500-$1,000
-- Integration with your calendar, payments, forms: Another $500
+<strong>Kelly has a system that works while she lives her life.</strong>
 
-<strong>Total: $1,500+ to get it right</strong>
+Her kids don't know when mommy is "working." Because the system handles the admin.
 
-Or... you don't do it yourself.
+She's with them. And clients are booking.
 
-More tomorrow.
+Tomorrow I'll tell you what else she has.
 
 Sarah`,
     },
@@ -431,41 +437,33 @@ Sarah`,
         order: 12,
         day: 19,
         phase: 'dfy_stack',
-        subject: "Re: first impressions matter",
-        preheader: "Premium pricing requires premium presence",
+        subject: "Re: Maria's first impression",
+        preheader: "Her clients thought she'd been doing this for years",
         hasCta: false,
         content: `{{firstName}},
 
-Quick question:
+Maria told me something that made me smile.
 
-Would you pay $500/hr to someone whose Instagram looks like it was made in 5 minutes?
+<strong>"My first client asked how long I'd been in practice. She thought I'd been doing this for years."</strong>
 
-Whose "logo" is just text in a basic font?
+Maria had been certified for 3 months.
 
-Whose posts look like every other generic wellness account?
+But her website looked established. Her branding commanded respect. Her social media looked like someone who knew what they were doing.
 
-<strong>Neither would your clients.</strong>
+<strong>First impressions matter.</strong>
 
-Premium pricing requires premium presence.
+When someone lands on your page, they decide in seconds:
+- Is this person legit?
+- Can I trust them?
+- Will they help me?
 
-That means:
-- A real logo (not Canva's default)
-- Consistent visual identity
-- Professional social media templates
-- Marketing materials that command respect
+Maria looked like someone worth paying premium prices to. Because she presented herself that way from day one.
 
-Know what that costs?
+<strong>She didn't spend months figuring out design.</strong>
 
-- Logo design: $300-$1,000
-- Brand identity: $500-$2,000
-- Social media templates: $200-$500
-- Marketing materials: $300-$500
+Someone built it for her. Branding that communicates trust. Before she even finished her certification.
 
-<strong>Total: $1,000+ minimum</strong>
-
-And that's before the time you spend explaining what you want to designers who don't understand functional medicine.
-
-<strong>What if you looked like you'd been doing this for years... from day one?</strong>
+Tomorrow I'll show you the full picture of what she had.
 
 Sarah`,
     },
@@ -475,46 +473,37 @@ Sarah`,
         order: 13,
         day: 20,
         phase: 'dfy_stack',
-        subject: "Re: what changed for Maria",
-        preheader: "The full stack revealed",
+        subject: "Re: the day Maria finished",
+        preheader: "She was already booked",
         hasCta: false,
         content: `{{firstName}},
 
-Remember Maria? Single mom, two kids, $12k/month now?
+I'll never forget the day Maria finished her certification.
 
-Here's what she had when she launched:
+She wasn't stressed. She wasn't scrambling to "get ready."
 
-<strong>Professional Website</strong>
-Her own domain, her own brand, her own presence.
-<em>Value: $3,000</em>
+<strong>She already had 3 clients booked.</strong>
 
-<strong>Client System</strong>
-Booking, intake forms, payments — all automated.
-<em>Value: $1,500</em>
+Because while she was studying, someone was building her business in the background.
 
-<strong>Marketing Materials</strong>
-Logo, brand identity, social templates.
-<em>Value: $1,000</em>
+- Her website was live
+- Her booking system was working
+- Her branding looked professional
+- Clients were finding her
 
-<strong>Launch Strategy</strong>
-Step-by-step plan to get her first clients.
-<em>Value: $500</em>
+<strong>The day she finished studying was the day she started earning.</strong>
 
-<strong>Total value: $6,000+</strong>
+No 6-month "setup phase." No tech overwhelm. No excuses.
 
-She didn't build any of it. We built it FOR her.
+She went from single mom working 60 hours to running a practice on her terms.
 
-While she was finishing the certification, her business was being built in the background.
+<strong>Same training you have access to. Same path that's open to you.</strong>
 
-Day she finished? She was READY. No 6-month "setup" phase. No tech overwhelm.
+Tomorrow I'll tell you exactly how to get what Maria got.
 
-<strong>How much did she pay for all of this?</strong>
+Sarah
 
-<strong>$397.</strong>
-
-Tomorrow I'll tell you how to get the same thing.
-
-Sarah`,
+P.S. Maria now makes more in a week than she used to make in two.`,
     },
 
     {
@@ -522,40 +511,45 @@ Sarah`,
         order: 14,
         day: 21,
         phase: 'dfy_stack',
-        subject: "Re: your business, built this week",
-        preheader: "Everything done for you",
+        subject: "Re: for those who want to focus on healing",
+        preheader: "Let us handle the rest",
         hasCta: true,
         ctaText: "Get DFY Business Kit",
         ctaLink: "https://sarah.accredipro.academy/up-3",
         content: `{{firstName}},
 
-Let me make this simple.
+<strong>The women who let us build their business always tell me the same thing.</strong>
 
-<strong>The DFY Business Kit includes:</strong>
+Not "I wish I had more information."
+Not "I wish I had more time to decide."
 
-✓ Professional website (your name, your brand)
-✓ Client booking + intake system
-✓ Logo and visual identity
-✓ Social media templates
-✓ Marketing materials
-✓ Launch strategy
+They say: <strong>"I wish I had done this sooner."</strong>
 
-<strong>Value: $6,000+</strong>
-<strong>Your investment: $397</strong>
+Every. Single. One.
+
+Because the cost of waiting isn't just money. It's 6 months of tech headaches. It's another season of getting ready instead of getting clients.
+
+<strong>What You Get</strong>
+
+- Your own professional website
+- Client booking and intake system
+- Branding that commands respect
+- Marketing materials ready to use
+- Launch strategy to get your first clients
+
+<strong>Investment: $397</strong>
 
 We build it. You focus on learning. By the time you're certified, your business is READY.
 
-No tech headaches. No 6-month setup. No excuses.
+If you want us to handle the tech: https://sarah.accredipro.academy/up-3
 
-If you want us to build everything for you: https://sarah.accredipro.academy/up-3
+You're here to heal people. Let us handle the rest.
 
-<strong>We only take a limited number of DFY clients each month</strong> (because we actually build everything by hand). So if this is calling to you, don't wait.
-
-You're here to heal. Let us handle the rest.
+I hope you choose yourself.
 
 Sarah
 
-P.S. Maria, Kelly, Diane — they all got DFY. Their businesses were ready before they finished studying.`,
+P.S. The perfect moment doesn't exist. This moment is good enough.`,
     },
 
     // ========================================
