@@ -2254,6 +2254,58 @@ export async function sendDFYWelcomeEmail({
 }
 
 /**
+ * Send DFY intake form reminder email - nudges customer to complete the form
+ */
+export async function sendDFYIntakeReminderEmail({
+  to,
+  firstName,
+  productName,
+  intakeUrl,
+}: {
+  to: string;
+  firstName: string;
+  productName: string;
+  intakeUrl: string;
+}) {
+  const content = `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Quick Reminder! 👋</h2>
+
+    <p style="color: #555; font-size: 16px;">Hey ${firstName}!</p>
+
+    <p style="color: #555; font-size: 16px;">I noticed you haven't filled out your intake form yet — <strong>I'm ready and waiting to start on your ${productName}!</strong></p>
+
+    ${highlightBox(`
+      <p style="margin: 0; font-size: 14px; color: #722F37; font-weight: bold;">⏰ ACTION NEEDED</p>
+      <p style="margin: 8px 0 0 0; font-size: 15px; color: #555;">Complete your intake form so I can get started!</p>
+    `, 'amber')}
+
+    <p style="color: #555; font-size: 16px;">The intake form only takes about <strong>15 minutes</strong> and includes questions about your:</p>
+    <ul style="color: #555; font-size: 15px; padding-left: 20px;">
+      <li style="margin: 8px 0;">Brand colors and style preferences</li>
+      <li style="margin: 8px 0;">Your story and what makes you unique</li>
+      <li style="margin: 8px 0;">Your ideal clients</li>
+      <li style="margin: 8px 0;">Program details and pricing</li>
+    </ul>
+
+    ${primaryButton('Complete My Intake Form →', intakeUrl)}
+
+    <p style="color: #555; font-size: 16px;">Once I have this, I'll start working on your website right away and have it ready within 7 days!</p>
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
+      <p style="margin: 0; font-size: 14px; color: #666;">Questions? Just hit reply — I'm here to help!</p>
+    </div>
+
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">Excited to get started!<br/><strong>Jessica Parker</strong><br/><span style="color: #888; font-size: 13px;">DFY Fulfillment Specialist, AccrediPro Academy</span></p>
+  `;
+
+  return sendEmail({
+    to,
+    subject: `Reminder: Fill Out Your ${productName} Intake Form 📝`,
+    html: emailWrapper(content, `Hey ${firstName}! Quick reminder to complete your intake form so I can start on your DFY package.`),
+  });
+}
+
+/**
  * Send DFY delivery complete email - notifies customer that their package is ready
  */
 export async function sendDFYDeliveryEmail({

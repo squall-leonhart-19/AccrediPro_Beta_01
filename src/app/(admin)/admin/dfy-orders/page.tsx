@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { format, differenceInDays } from "date-fns";
 import {
     Package, Download, Loader2, ChevronDown, ChevronRight,
     Clock, CheckCircle2, Truck, AlertCircle, Search, User,
-    Mail, Phone, Camera, BookOpen, DollarSign, Target, Palette
+    Mail, Phone, Camera, BookOpen, DollarSign, Target, Palette,
+    Send, AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -84,6 +85,28 @@ export default function DFYOrdersPage() {
             setEditingNotes(null);
         },
     });
+
+    // Send reminder mutation
+    const sendReminder = useMutation({
+        mutationFn: async (orderId: string) => {
+            const res = await fetch(`/api/admin/dfy-orders/${orderId}/remind`, {
+                method: "POST",
+            });
+            if (!res.ok) throw new Error("Failed to send reminder");
+            return res.json();
+        },
+        onSuccess: () => {
+            toast.success("Reminder email sent!");
+        },
+        onError: () => {
+            toast.error("Failed to send reminder");
+        },
+    });
+
+    // Calculate days since purchase
+    const getDaysSincePurchase = (createdAt: string) => {
+        return differenceInDays(new Date(), new Date(createdAt));
+    };
 
     const orders: DFYOrder[] = data?.orders || [];
     const stats = data?.stats || { pending: 0, intakeReceived: 0, inProgress: 0, delivered: 0, total: 0 };
@@ -247,9 +270,11 @@ export default function DFYOrdersPage() {
                     {orders.map(order => {
                         const isExpanded = expandedId === order.id;
                         const StatusIcon = STATUS_CONFIG[order.fulfillmentStatus].icon;
+                        const daysSince = getDaysSincePurchase(order.createdAt);
+                        const isPendingTooLong = order.fulfillmentStatus === "PENDING" && daysSince >= 2;
 
                         return (
-                            <Card key={order.id} className="overflow-hidden">
+                            <Card key={order.id} className={`overflow-hidden ${isPendingTooLong ? "border-orange-300 bg-orange-50/30" : ""}`}>
                                 {/* Order Header Row */}
                                 <div
                                     className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
@@ -264,9 +289,17 @@ export default function DFYOrdersPage() {
 
                                         {/* Customer Info */}
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-semibold text-gray-900 truncate">
-                                                {order.user.firstName} {order.user.lastName}
-                                            </p>
+                                            <div className="flex items-center gap-2">
+                                                <p className="font-semibold text-gray-900 truncate">
+                                                    {order.user.firstName} {order.user.lastName}
+                                                </p>
+                                                {isPendingTooLong && (
+                                                    <span className="flex items-center gap-1 text-xs text-orange-600 font-medium">
+                                                        <AlertTriangle className="w-3 h-3" />
+                                                        {daysSince}d waiting
+                                                    </span>
+                                                )}
+                                            </div>
                                             <p className="text-sm text-gray-500 truncate">{order.user.email}</p>
                                         </div>
 
@@ -281,9 +314,10 @@ export default function DFYOrdersPage() {
                                             {STATUS_CONFIG[order.fulfillmentStatus].label}
                                         </Badge>
 
-                                        {/* Date */}
-                                        <div className="hidden lg:block text-sm text-gray-500">
-                                            {format(new Date(order.createdAt), "MMM d, yyyy")}
+                                        {/* Days + Date */}
+                                        <div className="hidden lg:flex flex-col items-end text-sm">
+                                            <span className="text-gray-500">{format(new Date(order.createdAt), "MMM d, yyyy")}</span>
+                                            <span className="text-xs text-gray-400">{daysSince === 0 ? "Today" : `${daysSince}d ago`}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -291,6 +325,30 @@ export default function DFYOrdersPage() {
                                 {/* Expanded Content */}
                                 {isExpanded && (
                                     <div className="border-t bg-gray-50/50 p-4 space-y-4">
+                                        {/* Send Reminder for Pending */}
+                                        {order.fulfillmentStatus === "PENDING" && (
+                                            <div className="flex items-center gap-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                                                <AlertTriangle className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-medium text-orange-800">Waiting for intake form</p>
+                                                    <p className="text-xs text-orange-600">Purchased {daysSince} day{daysSince !== 1 ? "s" : ""} ago</p>
+                                                </div>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="border-orange-300 text-orange-700 hover:bg-orange-100"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        sendReminder.mutate(order.id);
+                                                    }}
+                                                    disabled={sendReminder.isPending}
+                                                >
+                                                    <Send className="w-4 h-4 mr-1" />
+                                                    Send Reminder
+                                                </Button>
+                                            </div>
+                                        )}
+
                                         {/* Quick Actions */}
                                         <div className="flex flex-wrap gap-2">
                                             <span className="text-sm text-gray-500">Update Status:</span>
