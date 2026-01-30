@@ -95,6 +95,7 @@ export function LessonPlayer({
     const [chatLoading, setChatLoading] = useState(false);
     const [sendingMessage, setSendingMessage] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const contentInitializedRef = useRef<string | null>(null); // Track initialized content to prevent re-renders from wiping DOM state
 
     const coachId = course.coach?.id;
     const coachName = course.coach
@@ -659,7 +660,11 @@ export function LessonPlayer({
                 <main
                     style={{ flex: 1 }}
                     ref={(el) => {
-                        if (el) {
+                        // CRITICAL: Only set innerHTML if content hasn't been initialized yet
+                        // or if the content prop has changed. This prevents re-renders from
+                        // wiping out user-revealed quiz answers and other DOM state.
+                        if (el && contentInitializedRef.current !== lesson.content) {
+                            contentInitializedRef.current = lesson.content;
                             el.innerHTML = lesson.content || "";
                             // Execute inline scripts EXCEPT toggleAnswer (we override it)
                             const scripts = el.querySelectorAll("script");
