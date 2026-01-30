@@ -73,7 +73,7 @@ So here's what I want you to do right now:
 
 1. Log into your dashboard: {{dashboardUrl}}
 2. Click "Start Module 1"
-3. Watch the first lesson (12 minutes)
+3. Complete the first lesson (12 minutes)
 
 That's it. Just one lesson.
 
@@ -175,7 +175,7 @@ The women who are now earning $5,000-$10,000/month as certified practitioners? T
 
 Here's my challenge for you:
 
-Open Module 1. Watch one lesson. Just one.
+Open Module 1. Complete one lesson. Just one.
 
 It's 12 minutes that could change everything.
 
