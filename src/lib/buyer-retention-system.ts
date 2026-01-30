@@ -34,11 +34,15 @@ export interface CourseContext {
 }
 
 // ============================================
-// SIGNATURE - Simple for inbox delivery
+// SIGNATURE - Warm & Personal for 35/40+ women
 // ============================================
 
 const SARAH_SIGNATURE = `
-Sarah`;
+Warmly,
+
+Sarah
+
+P.S. I'm always here if you need anything. Just hit reply.`;
 
 
 // ============================================
