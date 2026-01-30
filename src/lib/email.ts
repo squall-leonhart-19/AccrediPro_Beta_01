@@ -2301,3 +2301,93 @@ export async function sendDFYDeliveryEmail({
     html: emailWrapper(content, `${firstName}, your DFY package is ready and waiting in your dashboard!`),
   });
 }
+
+/**
+ * Send internal email to Jessica when a customer submits DFY intake form
+ */
+export async function sendDFYIntakeReceivedEmail({
+  customerName,
+  customerEmail,
+  productName,
+  intakeData,
+  adminDashboardUrl,
+}: {
+  customerName: string;
+  customerEmail: string;
+  productName: string;
+  intakeData: Record<string, any>;
+  adminDashboardUrl: string;
+}) {
+  // Format intake data into readable sections
+  const formatField = (key: string, value: any): string => {
+    if (!value) return "";
+    const label = key.replace(/([A-Z])/g, " $1").replace(/^./, s => s.toUpperCase());
+    const displayValue = Array.isArray(value) ? value.join(", ") : String(value);
+    return `
+      <tr>
+        <td style="padding: 8px 12px; border-bottom: 1px solid #eee; font-weight: 600; color: #555; width: 30%; vertical-align: top;">${label}</td>
+        <td style="padding: 8px 12px; border-bottom: 1px solid #eee; color: #333;">${displayValue}</td>
+      </tr>
+    `;
+  };
+
+  const contactFields = ["firstName", "lastName", "email", "phone"];
+  const programFields = ["coachingTitle", "certifications", "programName", "programDetails", "price"];
+  const brandingFields = ["websiteFeel", "colors", "howToStart", "schedulingTool", "socialMedia"];
+  const storyFields = ["story", "idealClient", "differentiation", "successStories", "websiteGoal", "anythingElse"];
+
+  const content = `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">🎉 New DFY Intake Received!</h2>
+
+    <p style="color: #555; font-size: 16px;"><strong>${customerName}</strong> (${customerEmail}) just submitted their intake form for <strong>${productName}</strong>.</p>
+
+    ${primaryButton('View in Dashboard →', adminDashboardUrl)}
+
+    <div style="margin-top: 30px;">
+      <h3 style="color: #722F37; font-size: 18px; margin-bottom: 10px;">📋 Contact Info</h3>
+      <table style="width: 100%; border-collapse: collapse; background: #fafafa; border-radius: 8px; overflow: hidden;">
+        ${contactFields.map(f => formatField(f, intakeData[f])).join("")}
+      </table>
+    </div>
+
+    <div style="margin-top: 25px;">
+      <h3 style="color: #722F37; font-size: 18px; margin-bottom: 10px;">📦 Program Details</h3>
+      <table style="width: 100%; border-collapse: collapse; background: #fafafa; border-radius: 8px; overflow: hidden;">
+        ${programFields.map(f => formatField(f, intakeData[f])).join("")}
+      </table>
+    </div>
+
+    <div style="margin-top: 25px;">
+      <h3 style="color: #722F37; font-size: 18px; margin-bottom: 10px;">🎨 Branding Preferences</h3>
+      <table style="width: 100%; border-collapse: collapse; background: #fafafa; border-radius: 8px; overflow: hidden;">
+        ${brandingFields.map(f => formatField(f, intakeData[f])).join("")}
+      </table>
+    </div>
+
+    <div style="margin-top: 25px;">
+      <h3 style="color: #722F37; font-size: 18px; margin-bottom: 10px;">📖 Story & Goals</h3>
+      <table style="width: 100%; border-collapse: collapse; background: #fafafa; border-radius: 8px; overflow: hidden;">
+        ${storyFields.map(f => formatField(f, intakeData[f])).join("")}
+      </table>
+    </div>
+
+    ${intakeData.photoUrls?.length ? `
+      <div style="margin-top: 25px;">
+        <h3 style="color: #722F37; font-size: 18px; margin-bottom: 10px;">📸 Uploaded Photos</h3>
+        <p style="color: #555; font-size: 14px;">${intakeData.photoUrls.length} photo(s) uploaded - view in dashboard</p>
+      </div>
+    ` : ""}
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
+      <p style="margin: 0; font-size: 14px; color: #666;">Remember: Target delivery within 7 days. Reply to this email if you need help!</p>
+    </div>
+  `;
+
+  // Send to Jessica's email
+  return sendEmail({
+    to: "jessica@accredipro-certificate.com",
+    subject: `🎉 New DFY Intake: ${customerName} - ${productName}`,
+    html: emailWrapper(content, `New DFY intake received from ${customerName}`),
+  });
+}
+

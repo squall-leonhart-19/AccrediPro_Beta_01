@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { sendDFYIntakeReceivedEmail } from "@/lib/email";
 
 // Submit DFY intake form
 export async function POST(request: NextRequest) {
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
             update: {
                 metadata: {
                     purchaseId,
-                    productName: purchase.product.name,
+                    productName: purchase.product.title,
                     submittedAt: new Date().toISOString(),
                 }
             },
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
                 value: purchaseId,
                 metadata: {
                     purchaseId,
-                    productName: purchase.product.name,
+                    productName: purchase.product.title,
                     submittedAt: new Date().toISOString(),
                 }
             }
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) {
                 userId: jessica?.id || session.user.id,
                 type: "DFY_INTAKE_RECEIVED",
                 title: "New DFY Intake Received",
-                message: `${purchase.user.firstName} submitted intake for ${purchase.product.name}`,
+                message: `${purchase.user.firstName} submitted intake for ${purchase.product.title}`,
                 data: { purchaseId, userId: purchase.userId },
             },
         });
@@ -95,10 +96,26 @@ export async function POST(request: NextRequest) {
                 data: {
                     senderId: jessica.id,
                     receiverId: purchase.userId,
-                    content: `Got your intake form! 🎉 I'm starting on your ${purchase.product.name} right now. You'll hear from me within 7 days with everything ready. Let me know if you have any questions in the meantime!`,
+                    content: `Got your intake form! 🎉 I'm starting on your ${purchase.product.title} right now. You'll hear from me within 7 days with everything ready. Let me know if you have any questions in the meantime!`,
                     messageType: "DIRECT",
                 },
             });
+        }
+
+        // Send email to Jessica with full intake details
+        try {
+            const customerName = `${purchase.user.firstName || ""} ${purchase.user.lastName || ""}`.trim() || "Customer";
+            await sendDFYIntakeReceivedEmail({
+                customerName,
+                customerEmail: purchase.user.email || "",
+                productName: purchase.product.title,
+                intakeData,
+                adminDashboardUrl: `${process.env.NEXT_PUBLIC_BASE_URL || "https://learn.accredipro.academy"}/admin/dfy-orders`,
+            });
+            console.log(`[DFY Intake] Email sent to Jessica for ${customerName}`);
+        } catch (emailError) {
+            console.error("[DFY Intake] Email to Jessica failed:", emailError);
+            // Don't fail the request if email fails
         }
 
         return NextResponse.json({ success: true });
