@@ -74,6 +74,7 @@ model User {
   miniDiplomaCompletedAt DateTime? // When they completed the mini diploma
   graduateOfferDeadline  DateTime? // 3-day countdown for graduate discount
   hasCertificateBadge    Boolean   @default(false) // Has mini diploma badge
+  formVariant            String? // A/B testing: which form variant was shown (A, B, etc.)
 
   // Profile/Onboarding Data
   healthBackground  String? // Their health journey
@@ -141,6 +142,7 @@ model User {
   coachedCommunities     CategoryCommunity[]     @relation("CommunityCoach")
   wishlist               Wishlist[]
   dfyPurchases           DFYPurchase[]
+  dfyAssignments         DFYPurchase[]           @relation("DFYAssignments") // DFY orders assigned to this user (e.g. Jonathan)
   lessonNotes            LessonNote[]
   quizAttempts           QuizAttempt[]
   quizProgress           QuizProgress[]
@@ -2258,29 +2260,47 @@ model DFYProductFile {
 }
 
 model DFYPurchase {
-  id              String         @id @default(cuid())
+  id              String            @id @default(cuid())
   userId          String
   productId       String
-  purchasePrice   Decimal        @db.Decimal(10, 2)
-  discountApplied Decimal?       @db.Decimal(10, 2)
+  purchasePrice   Decimal           @db.Decimal(10, 2)
+  discountApplied Decimal?          @db.Decimal(10, 2)
   promoCode       String?
-  status          PurchaseStatus @default(COMPLETED)
+  status          PurchaseStatus    @default(COMPLETED)
+
+  // Fulfillment tracking
+  fulfillmentStatus FulfillmentStatus @default(PENDING)
+  assignedToId      String?           // Coach/team member handling fulfillment (e.g. Jonathan)
+  intakeData        Json?             // Customer's intake form responses
+  deliveredAt       DateTime?         // When the DFY package was delivered
+  notes             String?           @db.Text // Internal notes for fulfillment team
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product DFYProduct @relation(fields: [productId], references: [id])
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product    DFYProduct @relation(fields: [productId], references: [id])
+  assignedTo User?      @relation("DFYAssignments", fields: [assignedToId], references: [id])
 
   @@unique([userId, productId])
   @@index([userId])
   @@index([productId])
   @@index([status])
+  @@index([fulfillmentStatus])
+  @@index([assignedToId])
 }
 
 enum PurchaseStatus {
   PENDING
   COMPLETED
   REFUNDED
+}
+
+enum FulfillmentStatus {
+  PENDING      // Just purchased, awaiting intake
+  INTAKE_RECEIVED // Customer filled intake form
+  IN_PROGRESS  // Being worked on
+  DELIVERED    // Completed and delivered
 }
 
 // Coach Program Templates (unlocked via DFY purchases)

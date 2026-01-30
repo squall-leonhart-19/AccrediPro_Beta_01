@@ -222,6 +222,108 @@ export async function GET(request: NextRequest) {
         const lessonCompletes = events.filter(e => e.event === "lesson_completed").length;
         const certificates = events.filter(e => e.event === "certificate_downloaded").length;
 
+        // Qualification form funnel metrics
+        const formStarted = events.filter(e => e.event === "qualification_form_started").length;
+        const formCompleted = events.filter(e => e.event === "qualification_form_completed").length;
+        const formAbandoned = events.filter(e => e.event === "qualification_form_abandoned").length;
+
+        // Step-by-step analysis
+        const stepViews: Record<number, number> = {};
+        const stepCompletes: Record<number, number> = {};
+        const abandonmentByStep: Record<number, number> = {};
+
+        events.forEach(e => {
+            const props = e.properties as any;
+            if (e.event === "qualification_step_view" && props?.step) {
+                stepViews[props.step] = (stepViews[props.step] || 0) + 1;
+            }
+            if (e.event === "qualification_step_complete" && props?.step) {
+                stepCompletes[props.step] = (stepCompletes[props.step] || 0) + 1;
+            }
+            if (e.event === "qualification_form_abandoned" && props?.lastStep) {
+                abandonmentByStep[props.lastStep] = (abandonmentByStep[props.lastStep] || 0) + 1;
+            }
+        });
+
+        // ===== A/B TESTING: Variant Metrics =====
+        // Query leads grouped by formVariant
+        const variantStats = await prisma.user.groupBy({
+            by: ["formVariant"],
+            where: {
+                userType: "LEAD",
+                miniDiplomaOptinAt: { gte: startDate },
+            },
+            _count: { id: true },
+        });
+
+        // Get diploma completion counts per variant
+        const variantCompletions = await prisma.user.groupBy({
+            by: ["formVariant"],
+            where: {
+                userType: "LEAD",
+                miniDiplomaOptinAt: { gte: startDate },
+                miniDiplomaCompletedAt: { not: null },
+            },
+            _count: { id: true },
+        });
+
+        // Get diploma start counts per variant (has at least 1 lesson progress)
+        const variantStarts = await prisma.$queryRaw<{ formVariant: string | null; count: bigint }[]>`
+            SELECT u."formVariant", COUNT(DISTINCT u.id) as count
+            FROM "User" u
+            INNER JOIN "LessonProgress" lp ON lp."userId" = u.id
+            WHERE u."userType" = 'LEAD'
+              AND u."miniDiplomaOptinAt" >= ${startDate}
+            GROUP BY u."formVariant"
+        `;
+
+        const variantMetrics: Record<string, {
+            optins: number;
+            diplomaStarts: number;
+            diplomaCompletions: number;
+            formCompletionRate: string;
+            diplomaStartRate: string;
+            diplomaCompletionRate: string;
+        }> = {};
+
+        // Populate with form completions (optins)
+        variantStats.forEach(v => {
+            const variant = v.formVariant || "A";
+            variantMetrics[variant] = {
+                optins: v._count.id,
+                diplomaStarts: 0,
+                diplomaCompletions: 0,
+                formCompletionRate: "0%",
+                diplomaStartRate: "0%",
+                diplomaCompletionRate: "0%",
+            };
+        });
+
+        // Add diploma completions
+        variantCompletions.forEach(v => {
+            const variant = v.formVariant || "A";
+            if (variantMetrics[variant]) {
+                variantMetrics[variant].diplomaCompletions = v._count.id;
+            }
+        });
+
+        // Add diploma starts
+        variantStarts.forEach(v => {
+            const variant = v.formVariant || "A";
+            if (variantMetrics[variant]) {
+                variantMetrics[variant].diplomaStarts = Number(v.count);
+            }
+        });
+
+        // Calculate rates
+        Object.keys(variantMetrics).forEach(variant => {
+            const m = variantMetrics[variant];
+            m.diplomaStartRate = m.optins > 0 ? ((m.diplomaStarts / m.optins) * 100).toFixed(1) + "%" : "0%";
+            m.diplomaCompletionRate = m.diplomaStarts > 0 ? ((m.diplomaCompletions / m.diplomaStarts) * 100).toFixed(1) + "%" : "0%";
+            // Form completion rate would require form_started events - using 100% as placeholder since optins = completions
+            m.formCompletionRate = "100%";
+        });
+
         return NextResponse.json({
             events: events.slice(0, 100), // Return last 100
             metrics: {
@@ -233,6 +335,17 @@ export async function GET(request: NextRequest) {
                 startRate: optins > 0 ? ((lessonStarts / optins) * 100).toFixed(1) + "%" : "0%",
                 completionRate: lessonStarts > 0 ? ((certificates / lessonStarts) * 100).toFixed(1) + "%" : "0%"
             },
+            qualificationFunnel: {
+                started: formStarted,
+                completed: formCompleted,
+                abandoned: formAbandoned,
+                completionRate: formStarted > 0 ? ((formCompleted / formStarted) * 100).toFixed(1) + "%" : "0%",
+                dropOffRate: formStarted > 0 ? ((formAbandoned / formStarted) * 100).toFixed(1) + "%" : "0%",
+                stepViews,
+                stepCompletes,
+                abandonmentByStep
+            },
+            variantMetrics, // A/B testing variant comparison
             period: `${days} days`
         });
     } catch (error) {

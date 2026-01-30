@@ -73,8 +73,9 @@ const navGroups: NavGroup[] = [
   {
     title: "Support & Chat",
     items: [
-      { href: "/support", label: "Support Desk", icon: Ticket, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] },
-      { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] },
+      { href: "/admin/messages", label: "Direct Messages", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/support", label: "Support Desk", icon: Ticket, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
     ],
   },
   {

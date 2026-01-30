@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,17 @@ import {
     Clock, CheckCircle2, ArrowRight, ArrowLeft,
     GraduationCap, BookOpen, Target, Lightbulb,
     Award, ChevronRight, Quote, DollarSign, Sparkles,
-    MessageCircle, X,
+    MessageCircle, X, Volume2, VolumeX, Keyboard
 } from "lucide-react";
 import { SarahChatPanel } from "@/components/mini-diploma/sarah-chat-panel";
+import { GamificationBar } from "@/components/mini-diploma/gamification-bar";
+import { WelcomeAudio } from "@/components/mini-diploma/welcome-audio";
+import { CommitmentCheckpoint } from "@/components/mini-diploma/commitment-checkpoint";
+import { CertificatePreview } from "@/components/mini-diploma/certificate-preview";
+import { DarkModeToggle } from "@/components/mini-diploma/dark-mode-toggle";
+import { TextToSpeech } from "@/components/mini-diploma/text-to-speech";
+import { LessonNotes } from "@/components/mini-diploma/lesson-notes";
+
 
 const SARAH_AVATAR = "/coaches/sarah-coach.webp";
 
@@ -38,6 +46,7 @@ interface ClassicLessonBaseProps {
     nicheLabel: string;
     baseUrl: string;
     courseSlug?: string; // For Live Chat - uses course slug instead of ID
+    showChat?: boolean; // Whether to show Sarah chat panel (default: true)
 }
 
 /**
@@ -60,14 +69,114 @@ export function ClassicLessonBase({
     nicheLabel,
     baseUrl,
     courseSlug,
+    showChat = false, // Disabled by default - no mentor chat in mini diploma
 }: ClassicLessonBaseProps) {
     const [completed, setCompleted] = useState(isCompleted);
     const [chatOpen, setChatOpen] = useState(false);
+    const [justCompleted, setJustCompleted] = useState(false);
+    const [readingProgress, setReadingProgress] = useState(0);
+    const [darkMode, setDarkMode] = useState(false);
+    const [showCommitmentModal, setShowCommitmentModal] = useState(false);
+    const contentRef = useRef<HTMLDivElement>(null);
+
+    // Check if should show commitment checkpoint (after completing L3)
+    useEffect(() => {
+        if (lessonNumber === 3 && justCompleted) {
+            const hasCommitted = localStorage.getItem("mini_diploma_committed");
+            if (!hasCommitted) {
+                setTimeout(() => setShowCommitmentModal(true), 1500);
+            }
+        }
+    }, [lessonNumber, justCompleted]);
+
+    // Track scroll/reading progress
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!contentRef.current) return;
+            const element = contentRef.current;
+            const scrollTop = window.scrollY;
+            const elementTop = element.offsetTop;
+            const elementHeight = element.scrollHeight;
+            const windowHeight = window.innerHeight;
+
+            const scrolled = scrollTop - elementTop + windowHeight;
+            const progress = Math.min(100, Math.max(0, (scrolled / elementHeight) * 100));
+            setReadingProgress(progress);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Initial check
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Keyboard navigation
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Don't trigger if user is typing in an input
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+            if (e.key === 'ArrowRight' && lessonNumber < totalLessons) {
+                window.location.href = `${baseUrl}/lesson/${lessonNumber + 1}`;
+            } else if (e.key === 'ArrowLeft' && lessonNumber > 1) {
+                window.location.href = `${baseUrl}/lesson/${lessonNumber - 1}`;
+            } else if (e.key === ' ' && !completed) {
+                e.preventDefault();
+                handleComplete();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [lessonNumber, totalLessons, baseUrl, completed]);
+
+    // Keywords to highlight throughout lessons
+    const HIGHLIGHT_KEYWORDS = [
+        'root cause', 'ROOT CAUSE', 'functional medicine', 'certified', 'certification',
+        '$', 'income', 'clients', 'transform', 'results', 'protocol', 'gut health',
+        'inflammation', 'toxins', 'stress', 'hormones', 'practitioner', 'waitlist',
+        '5R Protocol', 'HPA axis', 'cortisol', 'microbiome'
+    ];
+
+    // Highlight important keywords in text
+    const highlightText = (text: string): React.ReactNode => {
+        if (!text) return text;
+        // Replace {name} with firstName
+        let processed = text.replace(/{name}/g, firstName);
+
+        // Create regex for keywords (case insensitive for some, exact for others)
+        const parts: React.ReactNode[] = [];
+        let lastIndex = 0;
+
+        // Find money amounts like $150, $6,200/month, etc.
+        const moneyRegex = /\$[\d,]+(?:\/\w+)?(?:\s*[-–]\s*\$[\d,]+(?:\/\w+)?)?/g;
+        let match;
+
+        while ((match = moneyRegex.exec(processed)) !== null) {
+            if (match.index > lastIndex) {
+                parts.push(processed.slice(lastIndex, match.index));
+            }
+            parts.push(
+                <span key={match.index} className="text-emerald-600 font-semibold bg-emerald-50 px-1 rounded">
+                    {match[0]}
+                </span>
+            );
+            lastIndex = match.index + match[0].length;
+        }
+
+        if (parts.length === 0) return processed;
+        if (lastIndex < processed.length) {
+            parts.push(processed.slice(lastIndex));
+        }
+        return parts;
+    };
 
     const handleComplete = async () => {
         if (!completed) {
             await onComplete?.();
             setCompleted(true);
+            setJustCompleted(true);
+            // Reset after animation
+            setTimeout(() => setJustCompleted(false), 4500);
         }
         onNext?.();
     };
@@ -88,7 +197,7 @@ export function ClassicLessonBase({
                         />
                         <div>
                             <p className="text-sm text-burgundy-600 font-medium mb-1">From Sarah, Your Health Coach</p>
-                            <p className="text-slate-700 leading-relaxed">{section.content.replace('{name}', firstName)}</p>
+                            <p className="text-slate-700 leading-relaxed">{highlightText(section.content)}</p>
                         </div>
                     </div>
                 );
@@ -104,7 +213,7 @@ export function ClassicLessonBase({
             case 'text':
                 return (
                     <p key={index} className="text-slate-700 leading-relaxed mb-4">
-                        {section.content.replace('{name}', firstName)}
+                        {highlightText(section.content)}
                     </p>
                 );
 
@@ -114,7 +223,7 @@ export function ClassicLessonBase({
                         {section.items?.map((item, i) => (
                             <li key={i} className="flex items-start gap-3">
                                 <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                                <span className="text-slate-700">{item}</span>
+                                <span className="text-slate-700">{highlightText(item)}</span>
                             </li>
                         ))}
                     </ul>
@@ -125,7 +234,7 @@ export function ClassicLessonBase({
                     <blockquote key={index} className="border-l-4 border-burgundy-400 pl-4 py-2 my-6 bg-burgundy-50/50 rounded-r-lg">
                         <div className="flex items-start gap-2">
                             <Quote className="w-5 h-5 text-burgundy-400 flex-shrink-0 mt-1" />
-                            <p className="text-slate-700 italic">{section.content}</p>
+                            <p className="text-slate-700 italic">{highlightText(section.content)}</p>
                         </div>
                     </blockquote>
                 );
@@ -175,31 +284,61 @@ export function ClassicLessonBase({
         <div className="min-h-screen bg-gray-50 flex">
             {/* MAIN CONTENT - scrollable */}
             <div className="flex-1 min-w-0 overflow-auto">
+                {/* Gamification Bar */}
+                <GamificationBar
+                    lessonNumber={lessonNumber}
+                    totalLessons={totalLessons}
+                    firstName={firstName}
+                    justCompleted={justCompleted}
+                />
+
+                {/* Reading Progress Bar - Sticky */}
+                <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b">
+                    <div className="max-w-4xl mx-auto px-4 py-2">
+                        <div className="flex items-center gap-3">
+                            <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-300 rounded-full"
+                                    style={{ width: `${readingProgress}%` }}
+                                />
+                            </div>
+                            <span className="text-xs font-medium text-gray-500 min-w-[3rem]">
+                                {Math.round(readingProgress)}% read
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Header */}
-                <div className="bg-white border-b sticky top-0 z-10">
-                    <div className="max-w-3xl mx-auto px-4 py-3">
-                        <div className="flex items-center justify-between mb-2">
-                            <Link
-                                href={baseUrl}
-                                className="flex items-center gap-2 text-gray-600 hover:text-burgundy-600 transition-colors"
-                            >
-                                <ArrowLeft className="w-4 h-4" />
-                                <span className="text-sm font-medium">Back to {nicheLabel}</span>
-                            </Link>
+                <div className="bg-white border-b">
+                    <div className="max-w-4xl mx-auto px-4 py-3">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <Image
+                                    src="/ASI_LOGO-removebg-preview.png"
+                                    alt="AccrediPro"
+                                    width={36}
+                                    height={36}
+                                    className="rounded-lg"
+                                />
+                                <Link
+                                    href={baseUrl}
+                                    className="flex items-center gap-2 text-gray-600 hover:text-burgundy-600 transition-colors"
+                                >
+                                    <ArrowLeft className="w-4 h-4" />
+                                    <span className="text-sm font-medium">Back to {nicheLabel}</span>
+                                </Link>
+                            </div>
                             <div className="flex items-center gap-2 text-sm text-slate-500">
                                 <Clock className="w-4 h-4" />
                                 <span>{readingTime} read</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <Progress value={progressPercent} className="flex-1 h-2" />
-                            <span className="text-sm font-medium text-slate-600">{lessonNumber}/{totalLessons}</span>
-                        </div>
                     </div>
                 </div>
 
                 {/* Main Content */}
-                <div className="max-w-3xl mx-auto px-4 py-8">
+                <div ref={contentRef} className="max-w-4xl mx-auto px-4 py-8">
                     {/* Lesson Title */}
                     <div className="mb-8">
                         <div className="flex items-center gap-2 text-sm text-burgundy-600 font-medium mb-2">
@@ -208,7 +347,40 @@ export function ClassicLessonBase({
                         </div>
                         <h1 className="text-3xl font-bold text-slate-900 mb-2">{lessonTitle}</h1>
                         <p className="text-lg text-slate-600">{lessonSubtitle}</p>
+
+                        {/* Tools bar */}
+                        <div className="flex items-center gap-2 mt-4 pt-4 border-t">
+                            <TextToSpeech
+                                textContent={sections.map(s => s.content + (s.items?.join(' ') || '')).join(' ')}
+                            />
+                            <LessonNotes lessonNumber={lessonNumber} niche={niche} />
+                            <DarkModeToggle />
+                            <div className="ml-auto flex items-center gap-1 text-xs text-gray-400">
+                                <Keyboard className="w-3 h-3" />
+                                <span>←  →  Space</span>
+                            </div>
+                        </div>
                     </div>
+
+                    {/* Welcome Audio - Only on Lesson 1 */}
+                    {lessonNumber === 1 && (
+                        <WelcomeAudio firstName={firstName} nicheLabel={nicheLabel} />
+                    )}
+
+                    {/* Certificate Preview - Only on Lesson 1 (creates goal visualization) */}
+                    {lessonNumber === 1 && (
+                        <div className="mb-8">
+                            <h3 className="text-center text-sm font-medium text-gray-500 mb-4">
+                                🎯 This is what you're working toward...
+                            </h3>
+                            <CertificatePreview
+                                firstName={firstName}
+                                nicheLabel={nicheLabel}
+                                lessonNumber={lessonNumber}
+                                totalLessons={totalLessons}
+                            />
+                        </div>
+                    )}
 
                     {/* Content */}
                     <div className="bg-white rounded-2xl shadow-sm border p-6 md:p-8 mb-8">
@@ -267,18 +439,27 @@ export function ClassicLessonBase({
                         </div>
                     )}
 
-                    {/* Completion Card */}
-                    <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
-                        <div className="bg-gradient-to-r from-burgundy-600 to-rose-600 px-6 py-4 text-white">
+                    {/* Completion Card - Gold/Burgundy Branded */}
+                    <div className="bg-white rounded-2xl shadow-lg border-2 border-amber-300 overflow-hidden">
+                        <div className="px-6 py-4" style={{ backgroundColor: '#722F37' }}>
                             <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-burgundy-100 text-sm">Lesson {lessonNumber} of {totalLessons}</p>
-                                    <p className="font-semibold">{lessonTitle}</p>
+                                <div className="flex items-center gap-3">
+                                    <Image
+                                        src="/ASI_LOGO-removebg-preview.png"
+                                        alt="AccrediPro"
+                                        width={44}
+                                        height={44}
+                                        className="rounded-lg bg-white p-1"
+                                    />
+                                    <div>
+                                        <p className="text-amber-300 text-sm font-medium">Lesson {lessonNumber} of {totalLessons}</p>
+                                        <p className="text-white font-bold text-lg">{lessonTitle}</p>
+                                    </div>
                                 </div>
                                 {completed && (
-                                    <div className="flex items-center gap-2 bg-white/20 rounded-full px-3 py-1">
+                                    <div className="flex items-center gap-2 bg-amber-400 text-amber-900 rounded-full px-3 py-1">
                                         <CheckCircle2 className="w-4 h-4" />
-                                        <span className="text-sm font-medium">Completed</span>
+                                        <span className="text-sm font-bold">Completed</span>
                                     </div>
                                 )}
                             </div>
@@ -292,7 +473,7 @@ export function ClassicLessonBase({
                             {lessonNumber < totalLessons ? (
                                 <Button
                                     onClick={handleComplete}
-                                    className="w-full bg-gradient-to-r from-burgundy-600 to-rose-600 hover:from-burgundy-700 hover:to-rose-700 text-white font-semibold py-4 rounded-xl"
+                                    className="w-full bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-burgundy-900 font-bold py-4 rounded-xl shadow-md"
                                 >
                                     <span className="flex items-center justify-center gap-2">
                                         {completed ? 'Continue to Lesson ' : 'Complete & Continue to Lesson '}
@@ -307,7 +488,7 @@ export function ClassicLessonBase({
                                 >
                                     <span className="flex items-center justify-center gap-2">
                                         <GraduationCap className="w-5 h-5" />
-                                        {completed ? 'View Your Certificate' : 'Complete & Get Your Certificate!'}
+                                        {completed ? 'Take Final Exam →' : 'Complete & Take Final Exam! →'}
                                     </span>
                                 </Button>
                             )}
@@ -337,28 +518,39 @@ export function ClassicLessonBase({
                             </div>
                         </div>
                     </div>
+
+                    {/* Copyright Footer */}
+                    <div className="text-center mt-8 py-4 border-t border-gray-200">
+                        <p className="text-xs text-gray-500">
+                            © {new Date().getFullYear()} AccrediPro International Standards Institute. All rights reserved.
+                        </p>
+                    </div>
                 </div>
             </div>
 
             {/* RIGHT SIDEBAR - Sarah Chat - Desktop LG+ */}
-            <aside className="hidden lg:flex w-[340px] flex-shrink-0 border-l border-gray-200 flex-col h-screen sticky top-0">
-                <SarahChatPanel userName={firstName} />
-            </aside>
+            {showChat && (
+                <aside className="hidden lg:flex w-[340px] flex-shrink-0 border-l border-gray-200 flex-col h-screen sticky top-0">
+                    <SarahChatPanel userName={firstName} />
+                </aside>
+            )}
 
             {/* MOBILE: Floating Chat Button - Only on smaller screens */}
-            <button
-                onClick={() => setChatOpen(true)}
-                className="lg:hidden fixed bottom-6 right-6 z-40 bg-gradient-to-r from-burgundy-600 to-rose-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                style={{ display: chatOpen ? "none" : "flex" }}
-            >
-                <MessageCircle className="w-6 h-6" />
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">
-                    💬
-                </span>
-            </button>
+            {showChat && (
+                <button
+                    onClick={() => setChatOpen(true)}
+                    className="lg:hidden fixed bottom-6 right-6 z-40 bg-gradient-to-r from-burgundy-600 to-rose-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                    style={{ display: chatOpen ? "none" : "flex" }}
+                >
+                    <MessageCircle className="w-6 h-6" />
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">
+                        💬
+                    </span>
+                </button>
+            )}
 
             {/* MOBILE: Chat Overlay */}
-            {chatOpen && (
+            {showChat && chatOpen && (
                 <div
                     className="lg:hidden fixed inset-0 z-50 bg-black/50"
                     onClick={() => setChatOpen(false)}
@@ -385,6 +577,21 @@ export function ClassicLessonBase({
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Commitment Checkpoint Modal - After L3 */}
+            {showCommitmentModal && (
+                <CommitmentCheckpoint
+                    firstName={firstName}
+                    lessonNumber={lessonNumber}
+                    totalLessons={totalLessons}
+                    onCommit={() => {
+                        setShowCommitmentModal(false);
+                        // Navigate to next lesson
+                        window.location.href = `${baseUrl}/lesson/${lessonNumber + 1}`;
+                    }}
+                    onDismiss={() => setShowCommitmentModal(false)}
+                />
             )}
         </div>
     );

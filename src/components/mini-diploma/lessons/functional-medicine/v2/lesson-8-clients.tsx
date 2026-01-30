@@ -261,33 +261,40 @@ One graduate filled 6 client spots from her first workshop.`,
         {
             id: 15,
             type: 'coach',
-            content: `Now you might be thinking: "But Sarah, I'm not even fully certified yet. Can I really take on clients?"`,
+            content: `Now you might be thinking: "But Sarah, I'm not even fully certified yet. Should I wait?"`,
         },
         {
             id: 16,
             type: 'system',
             content: `**"But I'm Not Certified Yet..."**
 
-Here's what you need to understand:
+Here's the truth about certification:
 
-**You don't need permission to help people.**
+**Your certification IS your competitive advantage.**
 
-Personal trainers start training friends before certification.
-Life coaches coach before they're "official."
-Nutrition educators share knowledge while learning.
+While others make excuses, certified practitioners:
+- Command higher fees ($150-300/hour vs $50-75)
+- Get taken seriously by clients AND other professionals
+- Have confidence to market themselves
+- Build credibility that attracts referrals
+- Stand out in a crowded wellness space
 
-**What matters is:**
-- Being honest about where you are
-- Staying within your scope (education, not diagnosis)
-- Delivering value
-- Continuing to learn
+**The good news?**
 
-**The honest approach:**
-"I'm completing my certification in functional medicine. I'm taking on a few clients to build my practice. I'm not a doctor, but I can educate you on nutrition and lifestyle factors that affect your health."
+You can START building your practice while completing your certification. This is actually the SMART approach:
 
-Most clients don't care about certificates. They care about results.
+✅ Take on 2-3 practice clients NOW (as you finish the course)
+✅ Be honest: "I'm completing my certification in functional medicine"
+✅ Gain real experience while learning
+✅ Graduate with testimonials AND credentials
 
-A graduate said: "I told my first client I wasn't fully certified yet. She said 'I don't care. You know more than my doctor about this stuff.' She was right."`,
+**But don't stop here.**
+
+This Mini Diploma gives you a foundation. The FULL certification is what separates hobbyists from professionals who earn $5,000-$15,000/month.
+
+A graduate said: "I started with 2 practice clients during training. By the time I got certified, I had testimonials, confidence, AND credentials. My first 'real' client said: 'I chose you because you're certified AND have proven results.'"
+
+**Complete your certification. It's your ticket to premium pricing.**`,
             systemStyle: 'comparison',
         },
 

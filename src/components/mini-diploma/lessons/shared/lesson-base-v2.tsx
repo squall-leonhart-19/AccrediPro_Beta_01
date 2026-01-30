@@ -185,7 +185,7 @@ export function LessonBaseV2({
         }, typingDelay);
 
         return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentMessageIndex, messages.length, waitingForInteraction]);
 
     useEffect(() => {
@@ -243,8 +243,9 @@ export function LessonBaseV2({
             stats: 'bg-gradient-to-br from-amber-50 to-yellow-50 border-amber-200',
             takeaway: 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-300',
             exercise: 'bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200',
-            'income-hook': 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-300',
+            'income-hook': 'bg-gradient-to-br from-green-100 via-emerald-50 to-teal-50 border-green-400 shadow-lg shadow-green-100',
             'career-tip': 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-300',
+            testimonial: 'bg-gradient-to-br from-rose-50 via-white to-pink-50 border-rose-300 shadow-lg shadow-rose-100 relative overflow-hidden',
         };
 
         const iconStyles: Record<string, JSX.Element> = {
@@ -254,8 +255,9 @@ export function LessonBaseV2({
             stats: <TrendingUp className="h-5 w-5 text-amber-600" />,
             takeaway: <Heart className="h-5 w-5 text-emerald-600" />,
             exercise: <CheckCircle2 className="h-5 w-5 text-blue-600" />,
-            'income-hook': <DollarSign className="h-5 w-5 text-green-600" />,
+            'income-hook': <DollarSign className="h-6 w-6 text-green-600 bg-green-100 rounded-full p-0.5" />,
             'career-tip': <Award className="h-5 w-5 text-amber-600" />,
+            testimonial: <MessageCircle className="h-5 w-5 text-rose-500" />,
         };
 
         const style = msg.systemStyle || 'info';
@@ -366,7 +368,7 @@ export function LessonBaseV2({
                         >
                             <span className="flex items-center justify-center gap-2">
                                 <GraduationCap className="h-5 w-5" />
-                                Complete & Get Your Certificate!
+                                Complete & Take Final Exam! →
                             </span>
                         </Button>
                     )}
@@ -405,11 +407,10 @@ export function LessonBaseV2({
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => msg.audioUrl && playPreRecordedAudio(msg.id, msg.audioUrl)}
-                                        className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
-                                            playingAudioId === msg.id
-                                                ? 'bg-burgundy-600 text-white'
-                                                : 'bg-white text-burgundy-600 hover:bg-burgundy-50 border border-burgundy-200'
-                                        }`}
+                                        className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${playingAudioId === msg.id
+                                            ? 'bg-burgundy-600 text-white'
+                                            : 'bg-white text-burgundy-600 hover:bg-burgundy-50 border border-burgundy-200'
+                                            }`}
                                     >
                                         {playingAudioId === msg.id ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 ml-0.5" />}
                                     </button>
@@ -418,9 +419,8 @@ export function LessonBaseV2({
                                             {[3, 5, 8, 4, 7, 9, 5, 6, 8, 4, 6, 3, 5, 7, 4].map((h, i) => (
                                                 <div
                                                     key={i}
-                                                    className={`w-1 rounded-full transition-colors ${
-                                                        playingAudioId === msg.id ? 'bg-burgundy-500 animate-pulse' : 'bg-burgundy-300'
-                                                    }`}
+                                                    className={`w-1 rounded-full transition-colors ${playingAudioId === msg.id ? 'bg-burgundy-500 animate-pulse' : 'bg-burgundy-300'
+                                                        }`}
                                                     style={{ height: `${h * 2}px` }}
                                                 />
                                             ))}
@@ -451,12 +451,12 @@ export function LessonBaseV2({
                 return null;
 
             default:
-                // Coach message
+                // Coach message - warmer, more engaging style
                 return (
                     <div className="flex items-start gap-3">
-                        <Image src={SARAH_AVATAR} alt="Sarah" width={36} height={36} className="w-9 h-9 rounded-full object-cover shrink-0 shadow-sm" />
+                        <Image src={SARAH_AVATAR} alt="Sarah" width={36} height={36} className="w-9 h-9 rounded-full object-cover shrink-0 shadow-md ring-2 ring-burgundy-100" />
                         <div className="max-w-[85%]">
-                            <div className="bg-white rounded-2xl rounded-tl-md px-4 py-3 shadow-sm border border-slate-100">
+                            <div className="bg-gradient-to-br from-white via-white to-burgundy-50/50 rounded-2xl rounded-tl-md px-4 py-3 shadow-md border border-burgundy-100/60">
                                 <p className="text-slate-800 text-[15px] leading-relaxed">
                                     {msg.content.replace('{name}', firstName)}
                                 </p>

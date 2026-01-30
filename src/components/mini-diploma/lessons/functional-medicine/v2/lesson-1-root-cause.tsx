@@ -24,31 +24,61 @@ export function Lesson1RootCause({
     const [score, setScore] = useState(0);
 
     const messages: Message[] = [
-        // HOOK - Personal & Emotional
+        // HOOK - Personal & Emotional - Sarah's Full Story
         {
             id: 1,
             type: 'coach',
-            content: `Hey {name}! I'm Sarah, and I'm genuinely SO excited you're here.`,
+            content: `Hey {name}! I'm Sarah, and I'm genuinely SO excited you're here. Before we dive in, I want to share something personal with you...`,
         },
         {
             id: 2,
             type: 'coach',
-            content: `Can I be honest with you? 4 years ago, I was exactly where you might be right now - curious about health coaching, but terrified I wasn't "qualified enough."`,
+            content: `Four years ago, I was a 43-year-old single mom of two, barely holding it together. My husband had passed away 18 months earlier - a heart attack at 46. No warning. Just... gone.`,
         },
         {
             id: 3,
             type: 'coach',
-            content: `I wasn't a doctor. I didn't have a science degree. I was a 43-year-old mom who'd struggled with my OWN health issues and finally found answers.`,
+            content: `I fell apart. Grief, stress, anxiety. I gained 35 pounds. Couldn't sleep. Had panic attacks dropping my kids at school. My doctor put me on antidepressants and sleeping pills. "Give it time," she said.`,
         },
         {
             id: 4,
             type: 'coach',
-            content: `Today? I work 15 hours a week, earn $6,200/month, and I've helped 200+ women transform their health. And I'm going to show you exactly how.`,
+            content: `But I wasn't getting better. I was getting WORSE. And I couldn't afford to fall apart - my kids needed me. I was all they had.`,
+        },
+        {
+            id: 5,
+            type: 'coach',
+            content: `That's when a friend mentioned functional medicine. I was skeptical - it sounded like "woo-woo" stuff. But I was desperate. So I tried it.`,
+        },
+        {
+            id: 6,
+            type: 'coach',
+            content: `Within 2 months, I discovered my cortisol was through the roof. My gut was a mess. I had nutrient deficiencies. Things my doctor never checked. Things that EXPLAINED why I felt so broken.`,
+        },
+        {
+            id: 7,
+            type: 'coach',
+            content: `6 months later? I was off the pills. Lost the weight. Sleeping again. I had my LIFE back. And more importantly - I could finally be the mom my kids deserved.`,
+        },
+        {
+            id: 8,
+            type: 'coach',
+            content: `That's when I thought: "How many other women are suffering like I was? How many are being given pills instead of answers?"`,
+        },
+        {
+            id: 9,
+            type: 'coach',
+            content: `I got certified. I started helping other women. And now? I work 15 hours a week from home, earn $6,200/month, and I've helped 200+ women transform their health - just like I did mine.`,
+        },
+        {
+            id: 10,
+            type: 'coach',
+            content: `I'm telling you this because I want you to know: I'm not some perfect wellness guru. I'm a regular woman who hit rock bottom and found a way out. And I'm going to show you exactly how to help others do the same.`,
         },
 
         // THE PROBLEM - Healthcare Crisis
         {
-            id: 5,
+            id: 11,
             type: 'system',
             content: `**The Healthcare Crisis Nobody Talks About**
 
@@ -65,14 +95,14 @@ This isn't about replacing doctors. It's about filling a massive gap they can't 
             systemStyle: 'stats',
         },
         {
-            id: 6,
+            id: 12,
             type: 'coach',
             content: `Here's what I want you to understand: The world doesn't need more doctors. It needs more HEALTH GUIDES - people who can help others navigate their health journey.`,
         },
 
         // OBJECTION CRUSHER #1: "Am I qualified?"
         {
-            id: 7,
+            id: 13,
             type: 'system',
             content: `**"But Sarah, I'm not a doctor..."**
 
@@ -96,24 +126,32 @@ As a certified health coach, you legally provide EDUCATION and SUPPORT - not med
             systemStyle: 'comparison',
         },
         {
-            id: 8,
+            id: 14,
             type: 'coach',
             content: `Think about it - your friends already ask YOU for health advice, right? They trust you MORE than their doctor because you actually LISTEN.`,
         },
 
         // REAL TESTIMONIAL #1
         {
-            id: 9,
+            id: 15,
             type: 'system',
             content: `**Meet Linda, 52 - Former Accountant**
 
-"I spent 25 years in corporate accounting. When I started this program, I thought 'Who will listen to me? I'm not a health professional.'
+"I need to be honest - I was TERRIFIED to start.
 
-My first client was my sister-in-law who'd struggled with fatigue for years. After 3 months working together, she was off her afternoon energy drinks and lost 18 pounds.
+I'd already wasted $2,000 on a life coaching certification that led nowhere. My husband gave me 'the look' when I mentioned this program. My sister literally said 'Another course? Really?'
 
-She told me: 'You helped me more in 3 months than my doctor did in 3 years.'
+I spent 25 years in corporate accounting. I had no health background. I wasn't thin or fit. I struggled with my OWN weight and energy. Who was I to help anyone?
 
-I quit my corporate job 8 months ago. I now work 20 hours/week and earned $4,800 last month. Not bad for someone who 'isn't qualified.'"
+But something felt different this time. I actually understood what Sarah was teaching. The root cause stuff - it clicked.
+
+My first client was my sister-in-law who'd struggled with fatigue for years. After 3 months, she was off her afternoon energy drinks and lost 18 pounds. She cried when she told me: 'You helped me more in 3 months than my doctor did in 3 years.'
+
+I cried too. Because for the first time, I felt like I was doing something that MATTERED.
+
+Today: I work 20 hours/week from home. Last month I earned $4,800. My husband now brags about me to his friends. And my sister? She's my client now.
+
+To anyone feeling like an imposter: You don't need to be perfect. You just need to START."
 
 - Linda M., Ohio | ASI Graduate 2024`,
             systemStyle: 'testimonial',
@@ -121,17 +159,17 @@ I quit my corporate job 8 months ago. I now work 20 hours/week and earned $4,800
 
         // THE ROOT CAUSE CONCEPT
         {
-            id: 10,
+            id: 16,
             type: 'coach',
             content: `Now let me teach you the most important concept in functional medicine - the thing that separates average health coaches from practitioners who get REAL results...`,
         },
         {
-            id: 11,
+            id: 17,
             type: 'coach',
             content: `It's called ROOT CAUSE thinking. And once you understand it, you'll never look at health the same way.`,
         },
         {
-            id: 12,
+            id: 18,
             type: 'system',
             content: `**Symptom Treatment vs. Root Cause**
 
@@ -155,12 +193,12 @@ When you fix the ROOT CAUSE, the symptoms disappear - permanently.`,
 
         // SELF-ASSESSMENT
         {
-            id: 13,
+            id: 19,
             type: 'coach',
             content: `Before we go deeper, I want you to see something powerful. Let's check how many of these root causes affect YOU or people you know...`,
         },
         {
-            id: 14,
+            id: 20,
             type: 'custom-component',
             content: '',
             componentProps: { points: 20 },
@@ -182,14 +220,14 @@ When you fix the ROOT CAUSE, the symptoms disappear - permanently.`,
             ),
         },
         {
-            id: 15,
+            id: 21,
             type: 'coach',
             content: `See? You just identified potential root causes like a practitioner. This is EXACTLY what you'll do with clients - and why they'll pay you for your expertise.`,
         },
 
         // THE 5 ROOT CAUSES
         {
-            id: 16,
+            id: 22,
             type: 'system',
             content: `**The 5 Root Causes of Chronic Disease**
 
@@ -209,7 +247,7 @@ This is what you'll learn to identify and address. Not with prescriptions - with
 
         // OBJECTION CRUSHER #2: "Who will trust me?"
         {
-            id: 17,
+            id: 23,
             type: 'user-choice',
             content: `Quick question: Do people already ask you for health advice?`,
             choices: [
@@ -220,12 +258,12 @@ This is what you'll learn to identify and address. Not with prescriptions - with
             showReaction: true,
         },
         {
-            id: 18,
+            id: 24,
             type: 'coach',
             content: `Here's the truth nobody tells you: Your lived experience with health struggles makes you MORE relatable than a doctor, not less.`,
         },
         {
-            id: 19,
+            id: 25,
             type: 'system',
             content: `**Why People Trust Health Coaches**
 
@@ -245,19 +283,29 @@ Your personal health journey? It's not a weakness. It's your SUPERPOWER.`,
 
         // REAL TESTIMONIAL #2
         {
-            id: 20,
+            id: 26,
             type: 'system',
             content: `**Meet Patricia, 47 - Former Teacher**
 
-"I taught high school for 20 years. Zero health background. When my own thyroid issues led me down the functional medicine rabbit hole, I finally felt better for the first time in a decade.
+"I was exhausted. Not 'tired' - EXHAUSTED. For years.
 
-I thought: 'I have to share this with other women.'
+My doctor tested my thyroid and said 'Everything looks fine.' But I knew something was wrong. I was gaining weight, losing hair, couldn't get out of bed. I felt like I was watching my life from behind a fog.
 
-The certification gave me the structure and credibility I needed. Now I specialize in helping women with thyroid and hormone issues.
+I spent 3 years and thousands of dollars on doctors who dismissed me. 'Have you tried exercise?' they'd say. I wanted to scream.
 
-Last month: 8 clients, $3,400 in income, working from home while my kids are at school.
+Then I found functional medicine. I learned that 'normal' thyroid labs don't mean optimal. I learned about T3, reverse T3, antibodies. Things my doctors NEVER mentioned.
 
-The best part? I'm HELPING people. That never happened in the classroom."
+For the first time in a decade, I felt better.
+
+And I thought: 'How many other women are being dismissed right now? How many are hearing 'you're fine' when they're SUFFERING?'
+
+I had to do something.
+
+Today I specialize in helping women with thyroid and hormone issues. Last month: 8 clients, $3,400 income, working from home while my kids are at school.
+
+My students ask me: 'What made you qualified to do this?'
+
+I tell them: 'My suffering. My frustration. My refusal to give up. That's my qualification.'"
 
 - Patricia K., Texas | ASI Graduate 2023`,
             systemStyle: 'testimonial',
@@ -265,12 +313,12 @@ The best part? I'm HELPING people. That never happened in the classroom."
 
         // DAY IN THE LIFE
         {
-            id: 21,
+            id: 27,
             type: 'coach',
             content: `Let me paint a picture of what your life could look like as a certified practitioner...`,
         },
         {
-            id: 22,
+            id: 28,
             type: 'system',
             content: `**A Day in the Life: Sarah (Me!)**
 
@@ -294,7 +342,7 @@ This is what "part-time practitioner" looks like.`,
 
         // INCOME HOOK (Unique to this lesson)
         {
-            id: 23,
+            id: 29,
             type: 'system',
             content: `**The Root Cause Premium**
 
@@ -320,17 +368,17 @@ One graduate told us: "I raised my rates to $225 and STILL have a waitlist."`,
 
         // PREVIEW & CLOSE
         {
-            id: 24,
+            id: 30,
             type: 'coach',
             content: `{name}, you just learned more about functional medicine in 10 minutes than most people learn in months. And this is just Lesson 1.`,
         },
         {
-            id: 25,
+            id: 31,
             type: 'coach',
             content: `In the next lesson, we're diving into the GUT - because Hippocrates said "All disease begins in the gut" 2,000 years ago. And science is proving he was RIGHT.`,
         },
         {
-            id: 26,
+            id: 32,
             type: 'system',
             content: `**Coming Up: The Gut Connection**
 

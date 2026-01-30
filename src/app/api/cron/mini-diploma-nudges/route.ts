@@ -150,14 +150,26 @@ export async function GET(request: NextRequest) {
                     some: {
                         OR: [
                             { tag: "lead:functional-medicine-mini-diploma" },
-                            { tag: "lead:fm-healthcare-mini-diploma" }
+                            { tag: "lead:fm-healthcare-mini-diploma" },
+                            { tag: "lead:christian-coaching-mini-diploma" },
+                            { tag: "lead:gut-health-mini-diploma" },
+                            { tag: "lead:reiki-healing-mini-diploma" },
+                            { tag: "lead:pet-nutrition-mini-diploma" }
                         ]
                     }
                 },
                 // Exclude those who have completed lesson 1
                 NOT: {
                     tags: {
-                        some: { tag: { startsWith: "functional-medicine-lesson-complete:" } }
+                        some: {
+                            OR: [
+                                { tag: { startsWith: "functional-medicine-lesson-complete:" } },
+                                { tag: { startsWith: "christian-coaching-lesson-complete:" } },
+                                { tag: { startsWith: "gut-health-lesson-complete:" } },
+                                { tag: { startsWith: "reiki-healing-lesson-complete:" } },
+                                { tag: { startsWith: "pet-nutrition-lesson-complete:" } }
+                            ]
+                        }
                     }
                 }
             },

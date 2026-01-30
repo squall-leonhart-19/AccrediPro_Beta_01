@@ -146,9 +146,9 @@ export default function WomensHealthMiniDiplomaPage() {
                     lastName: lastName.trim(),
                     email: email.toLowerCase().trim(),
                 }));
-                window.location.href = "/womens-health-mini-diploma/thank-you";
+                window.location.href = "/portal/womens-health";
             } else {
-                window.location.href = "/womens-health-mini-diploma/thank-you";
+                window.location.href = "/portal/womens-health";
             }
 
         } catch (err: any) {

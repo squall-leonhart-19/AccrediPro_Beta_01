@@ -10,7 +10,15 @@ import {
     AlertCircle,
     Mail,
     Trash2,
+    CheckCircle2,
 } from "lucide-react";
+
+interface ConvertedLead {
+    email: string;
+    name: string;
+    convertedAt: string;
+    value: number | null;
+}
 
 interface AnalyticsData {
     totalLeads: number;
@@ -21,6 +29,7 @@ interface AnalyticsData {
     pendingReplies: number;
     avgResponseTimeMin: number;
     todayChats: number;
+    convertedLeads?: ConvertedLead[];
 }
 
 interface Props {
@@ -31,6 +40,7 @@ interface Props {
 export function ChatAnalyticsCards({ onCleanup, cleaningLeads }: Props) {
     const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
+    const [showConverted, setShowConverted] = useState(false);
 
     useEffect(() => {
         async function fetchAnalytics() {
@@ -78,9 +88,11 @@ export function ChatAnalyticsCards({ onCleanup, cleaningLeads }: Props) {
         {
             title: "Converted",
             value: analytics.converted,
-            icon: TrendingUp,
+            icon: CheckCircle2,
             color: "text-green-600",
             bgColor: "bg-green-50",
+            clickable: analytics.converted > 0,
+            onClick: () => setShowConverted(!showConverted),
         },
         {
             title: "Conversion",
@@ -117,61 +129,106 @@ export function ChatAnalyticsCards({ onCleanup, cleaningLeads }: Props) {
     ];
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
-            {cards.map((card, idx) => {
-                const Icon = card.icon;
-                return (
-                    <div
-                        key={idx}
-                        className={`bg-white rounded-lg border ${card.highlight ? "border-red-300 shadow-sm" : "border-gray-200"
-                            } p-3 hover:shadow-md transition-shadow`}
-                    >
-                        <div className="flex items-center justify-between mb-1">
-                            <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
-                                {card.title}
-                            </span>
-                            <div className={`${card.bgColor} p-1 rounded`}>
-                                <Icon className={`w-3.5 h-3.5 ${card.color}`} />
+        <div className="mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                {cards.map((card, idx) => {
+                    const Icon = card.icon;
+                    return (
+                        <div
+                            key={idx}
+                            onClick={card.onClick}
+                            className={`bg-white rounded-lg border ${card.highlight ? "border-red-300 shadow-sm" : "border-gray-200"
+                                } p-3 hover:shadow-md transition-shadow ${card.clickable ? "cursor-pointer" : ""}`}
+                        >
+                            <div className="flex items-center justify-between mb-1">
+                                <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
+                                    {card.title}
+                                </span>
+                                <div className={`${card.bgColor} p-1 rounded`}>
+                                    <Icon className={`w-3.5 h-3.5 ${card.color}`} />
+                                </div>
                             </div>
-                        </div>
-                        <div className={`text-xl font-bold ${card.color}`}>
-                            {card.value}
-                        </div>
-                        {card.subtitle && (
-                            <div className="text-[10px] text-gray-400 mt-0.5">
-                                {card.subtitle}
+                            <div className={`text-xl font-bold ${card.color}`}>
+                                {card.value}
                             </div>
-                        )}
-                    </div>
-                );
-            })}
+                            {card.subtitle && (
+                                <div className="text-[10px] text-gray-400 mt-0.5">
+                                    {card.subtitle}
+                                </div>
+                            )}
+                            {card.clickable && (
+                                <div className="text-[9px] text-green-600 mt-0.5">
+                                    Click to view →
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
 
-            {/* Cleanup Card */}
-            {analytics.leadsWithoutEmail > 0 && onCleanup && (
-                <div className="bg-amber-50 rounded-lg border border-amber-200 p-3 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-1">
-                        <span className="text-[10px] font-medium text-amber-700 uppercase tracking-wide">
-                            No Email
-                        </span>
-                        <div className="bg-amber-100 p-1 rounded">
-                            <Users className="w-3.5 h-3.5 text-amber-600" />
+                {/* Cleanup Card */}
+                {analytics.leadsWithoutEmail > 0 && onCleanup && (
+                    <div className="bg-amber-50 rounded-lg border border-amber-200 p-3 hover:shadow-md transition-shadow">
+                        <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] font-medium text-amber-700 uppercase tracking-wide">
+                                No Email
+                            </span>
+                            <div className="bg-amber-100 p-1 rounded">
+                                <Users className="w-3.5 h-3.5 text-amber-600" />
+                            </div>
                         </div>
+                        <div className="text-xl font-bold text-amber-600">
+                            {analytics.leadsWithoutEmail}
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={onCleanup}
+                            disabled={cleaningLeads}
+                            className="text-[10px] h-5 px-1.5 mt-1 text-red-600 hover:text-red-700 hover:bg-red-50 p-0"
+                        >
+                            <Trash2 className="w-3 h-3 mr-1" />
+                            {cleaningLeads ? "..." : "Remove"}
+                        </Button>
                     </div>
-                    <div className="text-xl font-bold text-amber-600">
-                        {analytics.leadsWithoutEmail}
+                )}
+            </div>
+
+            {/* Converted Leads Drawer */}
+            {showConverted && analytics.convertedLeads && analytics.convertedLeads.length > 0 && (
+                <div className="mt-3 bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-green-800 flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4" />
+                            Converted Leads ({analytics.convertedLeads.length})
+                        </h3>
+                        <button
+                            onClick={() => setShowConverted(false)}
+                            className="text-green-600 text-xs hover:text-green-800"
+                        >
+                            Close ×
+                        </button>
                     </div>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={onCleanup}
-                        disabled={cleaningLeads}
-                        className="text-[10px] h-5 px-1.5 mt-1 text-red-600 hover:text-red-700 hover:bg-red-50 p-0"
-                    >
-                        <Trash2 className="w-3 h-3 mr-1" />
-                        {cleaningLeads ? "..." : "Remove"}
-                    </Button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {analytics.convertedLeads.map((lead, i) => (
+                            <div key={i} className="bg-white rounded-md p-2 border border-green-100 text-xs">
+                                <div className="font-medium text-gray-900 truncate">{lead.name}</div>
+                                <div className="text-gray-500 truncate">{lead.email}</div>
+                                <div className="flex items-center justify-between mt-1">
+                                    <span className="text-green-600">
+                                        {new Date(lead.convertedAt).toLocaleDateString()}
+                                    </span>
+                                    {lead.value && (
+                                        <span className="font-semibold text-green-700">
+                                            ${lead.value}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
     );
 }
+

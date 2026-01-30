@@ -9,6 +9,8 @@ const DEFAULT_PIXEL_ID = '1287915349067829'; // Royal Certified (Backend/Global)
 export const PIXEL_CONFIG = {
     ROYAL_CERTIFIED: '1287915349067829',
     FUNCTIONAL_MEDICINE: '1829815637745689',
+    HEALTH_COACH: '891230473365293', // SarahIntegrativeMedicine
+    ADHD_COACHING: '1385545802948983', // OliviaNeurodiversity
 };
 
 // Extend window type for Facebook Pixel

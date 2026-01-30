@@ -82,6 +82,7 @@ export function LessonPlayer({
     const [isCompleted, setIsCompleted] = useState(progress.isCompleted);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [chatOpen, setChatOpen] = useState(false);
+    const [chatHidden, setChatHidden] = useState(false); // Desktop chat hide preference
 
     // Notes state
     const [note, setNote] = useState("");
@@ -103,6 +104,14 @@ export function LessonPlayer({
     useEffect(() => {
         setIsCompleted(progress.isCompleted);
     }, [progress.isCompleted]);
+
+    // Load chat hidden preference from localStorage
+    useEffect(() => {
+        const hidden = localStorage.getItem("lesson-chat-hidden");
+        if (hidden === "true") {
+            setChatHidden(true);
+        }
+    }, []);
 
     // Prefetch next lesson for instant navigation
     useEffect(() => {
@@ -387,6 +396,27 @@ export function LessonPlayer({
                             borderRadius: "50%",
                             fontSize: "18px",
                             cursor: "pointer"
+                        }}
+                    >
+                        ✕
+                    </button>
+                )}
+                {!isMobile && (
+                    <button
+                        onClick={() => {
+                            setChatHidden(true);
+                            localStorage.setItem("lesson-chat-hidden", "true");
+                        }}
+                        title="Hide chat panel"
+                        style={{
+                            width: "28px",
+                            height: "28px",
+                            background: "#f5f5f5",
+                            border: "none",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            cursor: "pointer",
+                            color: "#666"
                         }}
                     >
                         ✕
@@ -860,17 +890,53 @@ export function LessonPlayer({
             </div>
 
             {/* RIGHT CHAT PANEL - Desktop XL only - Sarah Mentor Chat */}
-            <aside className="desktop-chat" style={{
-                width: "340px",
-                flexShrink: 0,
-                borderLeft: "1px solid #eee",
-                height: "100vh",
-                display: "flex",
-                flexDirection: "column"
-            }}>
-                {/* Sarah Private Mentor Chat */}
-                <ChatPanel />
-            </aside>
+            {!chatHidden ? (
+                <aside className="desktop-chat" style={{
+                    width: "340px",
+                    flexShrink: 0,
+                    borderLeft: "1px solid #eee",
+                    height: "100vh",
+                    display: "flex",
+                    flexDirection: "column"
+                }}>
+                    {/* Sarah Private Mentor Chat */}
+                    <ChatPanel />
+                </aside>
+            ) : (
+                <aside className="desktop-chat" style={{
+                    width: "48px",
+                    flexShrink: 0,
+                    borderLeft: "1px solid #eee",
+                    height: "100vh",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    paddingTop: "16px",
+                    background: "#fafafa"
+                }}>
+                    <button
+                        onClick={() => {
+                            setChatHidden(false);
+                            localStorage.setItem("lesson-chat-hidden", "false");
+                        }}
+                        title="Show chat panel"
+                        style={{
+                            width: "36px",
+                            height: "36px",
+                            background: "#722f37",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontSize: "18px",
+                            cursor: "pointer"
+                        }}
+                    >
+                        💬
+                    </button>
+                    <span style={{ fontSize: "10px", color: "#999", marginTop: "4px", writingMode: "vertical-rl" }}>Chat</span>
+                </aside>
+            )}
 
             {/* Mobile Chat Overlay */}
             {chatOpen && (

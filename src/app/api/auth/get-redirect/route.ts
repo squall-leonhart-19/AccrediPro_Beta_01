@@ -28,12 +28,36 @@ export async function GET() {
         // INSTRUCTOR/MENTOR: Same as SUPERUSER
         // They can navigate to /admin if needed
 
-        // Check if user has the womens-health-mini-diploma enrollment (lead)
+        // Mini diploma course slugs mapped to portal slugs
+        const miniDiplomaMap: Record<string, string> = {
+            "womens-health-mini-diploma": "womens-health",
+            "womens-hormone-health-mini-diploma": "womens-hormone-health",
+            "functional-medicine-mini-diploma": "functional-medicine",
+            "gut-health-mini-diploma": "gut-health",
+            "hormone-health-mini-diploma": "hormone-health",
+            "holistic-nutrition-mini-diploma": "holistic-nutrition",
+            "nurse-coach-mini-diploma": "nurse-coach",
+            "health-coach-mini-diploma": "health-coach",
+            "spiritual-healing-mini-diploma": "spiritual-healing",
+            "energy-healing-mini-diploma": "energy-healing",
+            "christian-coaching-mini-diploma": "christian-coaching",
+            "reiki-healing-mini-diploma": "reiki-healing",
+            "adhd-coaching-mini-diploma": "adhd-coaching",
+            "pet-nutrition-mini-diploma": "pet-nutrition",
+        };
+
+        const miniDiplomaSlugs = Object.keys(miniDiplomaMap);
+
+        // Check if user has a mini diploma enrollment (lead)
         const leadEnrollment = await prisma.enrollment.findFirst({
             where: {
                 userId: session.user.id,
-                course: { slug: "womens-health-mini-diploma" },
+                course: { slug: { in: miniDiplomaSlugs } },
             },
+            include: {
+                course: { select: { slug: true } },
+            },
+            orderBy: { enrolledAt: 'desc' }, // Get most recent enrollment
         });
 
         // Check if user has any other paid enrollments
@@ -41,14 +65,16 @@ export async function GET() {
             where: {
                 userId: session.user.id,
                 course: {
-                    slug: { not: "womens-health-mini-diploma" }
+                    slug: { notIn: miniDiplomaSlugs }
                 },
             },
         });
 
-        // If user ONLY has the lead enrollment (mini-diploma), redirect to lead portal
+        // If user ONLY has a lead enrollment (mini-diploma), redirect to that portal
         if (leadEnrollment && paidEnrollments === 0) {
-            return NextResponse.json({ redirectUrl: "/womens-health-diploma" });
+            const courseSlug = leadEnrollment.course?.slug || "womens-health-mini-diploma";
+            const portalSlug = miniDiplomaMap[courseSlug] || "womens-health";
+            return NextResponse.json({ redirectUrl: `/portal/${portalSlug}` });
         }
 
         // Otherwise, redirect to main dashboard

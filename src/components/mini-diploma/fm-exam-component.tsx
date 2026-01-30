@@ -207,29 +207,40 @@ export function FMExamComponent({
         }
     };
 
-    // Professional Exam Header Component
+    // Premium Gold Gradient for exam styling
+    const goldGradient = "linear-gradient(135deg, #D4AF37 0%, #F7E7A0 25%, #D4AF37 50%, #B8860B 75%, #D4AF37 100%)";
+
+    // Professional Exam Header Component - PREMIUM GOLD DESIGN
     const ExamHeader = ({ showLogo = true }: { showLogo?: boolean }) => (
-        <div className="bg-gradient-to-r from-burgundy-900 via-burgundy-800 to-burgundy-900 text-white px-6 py-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    {showLogo && (
-                        <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-                            <GraduationCap className="w-6 h-6 text-burgundy-700" />
+        <div className="relative overflow-hidden">
+            {/* Gold metallic gradient header */}
+            <div
+                className="px-6 py-4"
+                style={{ background: goldGradient }}
+            >
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        {showLogo && (
+                            <div className="w-12 h-12 bg-burgundy-900 rounded-xl flex items-center justify-center shadow-lg border-2 border-amber-300">
+                                <GraduationCap className="w-7 h-7 text-amber-300" />
+                            </div>
+                        )}
+                        <div>
+                            <h1 className="font-bold text-xl text-burgundy-900 drop-shadow-sm">ASI Board Examination</h1>
+                            <p className="text-burgundy-800 text-sm font-medium">Functional Medicine Mini Diploma</p>
                         </div>
-                    )}
-                    <div>
-                        <h1 className="font-bold text-lg">ASI Board Examination</h1>
-                        <p className="text-burgundy-200 text-xs">Functional Medicine Mini Diploma</p>
                     </div>
-                </div>
-                <div className="text-right text-xs">
-                    <div className="flex items-center gap-1 text-burgundy-200">
-                        <FileText className="w-3 h-3" />
-                        <span>Exam ID: <span className="text-white font-mono">{examId}</span></span>
-                    </div>
-                    <div className="flex items-center gap-1 text-burgundy-200 mt-1">
-                        <User className="w-3 h-3" />
-                        <span>Student: <span className="text-white font-mono">{studentId}</span></span>
+                    <div className="text-right">
+                        <div className="bg-burgundy-900/90 rounded-lg px-3 py-2 text-xs space-y-1">
+                            <div className="flex items-center gap-1.5 text-amber-100">
+                                <FileText className="w-3 h-3" />
+                                <span>Exam: <span className="text-white font-mono font-bold">{examId}</span></span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-amber-100">
+                                <User className="w-3 h-3" />
+                                <span>Student: <span className="text-white font-mono font-bold">{studentId}</span></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -565,25 +576,28 @@ export function FMExamComponent({
         );
     }
 
-    // Taking Exam Screen
+    // Taking Exam Screen - PREMIUM GOLD DESIGN
     return (
-        <div className="rounded-2xl overflow-hidden border-2 border-burgundy-200 shadow-xl">
+        <div className="rounded-2xl overflow-hidden border-4 shadow-2xl" style={{ borderColor: '#D4AF37' }}>
             <ExamHeader />
 
-            {/* Progress Section */}
-            <div className="bg-burgundy-50 px-4 py-3 border-b border-burgundy-100">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-burgundy-700">
+            {/* Progress Section - Gold themed */}
+            <div className="px-5 py-4" style={{ background: 'linear-gradient(to right, #FDF6E3, #FFFBEB)' }}>
+                <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-bold text-burgundy-800">
                         Question {currentQuestion + 1} of {totalQuestions}
                     </span>
-                    <span className="text-sm text-burgundy-600">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: goldGradient, color: '#4E1F24' }}>
                         {answeredCount}/{totalQuestions} answered
                     </span>
                 </div>
-                <div className="w-full bg-burgundy-100 rounded-full h-2.5">
+                <div className="w-full bg-amber-100 rounded-full h-3 overflow-hidden shadow-inner">
                     <div
-                        className="bg-gradient-to-r from-burgundy-600 to-burgundy-500 h-2.5 rounded-full transition-all duration-300"
-                        style={{ width: `${((currentQuestion + 1) / totalQuestions) * 100}%` }}
+                        className="h-3 rounded-full transition-all duration-500"
+                        style={{
+                            width: `${((currentQuestion + 1) / totalQuestions) * 100}%`,
+                            background: goldGradient
+                        }}
                     />
                 </div>
             </div>
@@ -650,58 +664,64 @@ export function FMExamComponent({
                 </AnimatePresence>
             </div>
 
-            {/* Navigation */}
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+            {/* Navigation - Premium Styling */}
+            <div className="px-6 py-5" style={{ background: 'linear-gradient(to right, #FDF6E3, #FFFBEB)' }}>
                 <div className="flex items-center justify-between">
                     <Button
                         variant="outline"
                         onClick={handlePrevious}
                         disabled={currentQuestion === 0}
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 border-2 border-burgundy-300 hover:bg-burgundy-50"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         Previous
                     </Button>
 
                     {currentQuestion === totalQuestions - 1 ? (
-                        <Button
+                        <button
                             onClick={handleSubmit}
                             disabled={!allAnswered}
                             className={cn(
-                                "flex items-center gap-2 px-6",
+                                "flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-sm transition-all",
                                 allAnswered
-                                    ? "bg-burgundy-600 hover:bg-burgundy-700 shadow-sm"
-                                    : "bg-gray-300"
+                                    ? "text-burgundy-900 shadow-lg hover:shadow-xl hover:scale-105"
+                                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
                             )}
+                            style={allAnswered ? { background: goldGradient } : undefined}
                         >
                             Submit Exam
-                            <CheckCircle2 className="w-4 h-4" />
-                        </Button>
+                            <CheckCircle2 className="w-5 h-5" />
+                        </button>
                     ) : (
-                        <Button
+                        <button
                             onClick={handleNext}
-                            className="flex items-center gap-2 bg-burgundy-600 hover:bg-burgundy-700"
+                            className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-burgundy-900 shadow-md hover:shadow-lg hover:scale-105 transition-all"
+                            style={{ background: goldGradient }}
                         >
                             Next
                             <ArrowRight className="w-4 h-4" />
-                        </Button>
+                        </button>
                     )}
                 </div>
 
-                {/* Question Navigator */}
-                <div className="mt-4 flex flex-wrap gap-2 justify-center">
+                {/* Question Navigator - Gold accents */}
+                <div className="mt-5 flex flex-wrap gap-2 justify-center">
                     {questions.map((q, idx) => (
                         <button
                             key={q.id}
                             onClick={() => setCurrentQuestion(idx)}
                             className={cn(
-                                "w-9 h-9 rounded-lg text-sm font-semibold transition-all",
-                                currentQuestion === idx
-                                    ? "bg-burgundy-600 text-white shadow-sm"
-                                    : answers[q.id]
-                                    ? "bg-burgundy-100 text-burgundy-700 ring-2 ring-burgundy-200"
-                                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                "w-10 h-10 rounded-xl text-sm font-bold transition-all shadow-sm",
+                                answers[q.id] && currentQuestion !== idx
+                                    ? "ring-2 ring-amber-400"
+                                    : ""
                             )}
+                            style={currentQuestion === idx
+                                ? { background: goldGradient, color: '#4E1F24' }
+                                : answers[q.id]
+                                    ? { background: '#FEF3C7', color: '#92400E' }
+                                    : { background: '#F3F4F6', color: '#6B7280' }
+                            }
                         >
                             {idx + 1}
                         </button>

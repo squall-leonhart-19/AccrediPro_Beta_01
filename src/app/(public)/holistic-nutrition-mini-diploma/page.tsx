@@ -146,9 +146,9 @@ export default function WomensHealthMiniDiplomaPage() {
                     lastName: lastName.trim(),
                     email: email.toLowerCase().trim(),
                 }));
-                window.location.href = "/holistic-nutrition-mini-diploma/thank-you";
+                window.location.href = "/portal/holistic-nutrition";
             } else {
-                window.location.href = "/holistic-nutrition-mini-diploma/thank-you";
+                window.location.href = "/portal/holistic-nutrition";
             }
 
         } catch (err: any) {

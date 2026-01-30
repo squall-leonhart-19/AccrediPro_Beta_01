@@ -85,6 +85,31 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Redirect old diploma URLs to new unified portal
+  async redirects() {
+    const diplomaSlugs = [
+      'functional-medicine',
+      'womens-health',
+      'womens-hormone-health',
+      'gut-health',
+      'hormone-health',
+      'holistic-nutrition',
+      'nurse-coach',
+      'health-coach',
+      'spiritual-healing',
+      'energy-healing',
+      'christian-coaching',
+      'reiki-healing',
+      'adhd-coaching',
+      'pet-nutrition',
+    ];
+
+    return diplomaSlugs.map(slug => ({
+      source: `/${slug}-diploma/:path*`,
+      destination: `/portal/${slug}/:path*`,
+      permanent: true,
+    }));
+  },
   // Security headers for all routes
   async headers() {
     return [

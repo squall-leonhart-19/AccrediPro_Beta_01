@@ -215,77 +215,62 @@ The ones who succeed? They start before they feel ready.`,
             systemStyle: 'comparison',
         },
 
-        // THE FULL CERTIFICATION
+        // CELEBRATING THE JOURNEY
         {
             id: 14,
             type: 'coach',
-            content: `{name}, this mini diploma gave you the foundation. But to actually PRACTICE at a professional level, charge premium rates, and have the credibility you need, you need the full certification.`,
+            content: `{name}, I want to pause here and really acknowledge what you've done. You didn't just "complete a course." You invested in yourself when it would have been easier to scroll social media or binge Netflix.`,
         },
         {
             id: 15,
-            type: 'system',
-            content: `**What the Full Certification Includes**
-
-**Complete Training (Not Just 9 Lessons):**
-- 12 comprehensive modules
-- Advanced protocols for every condition
-- Real case studies with solutions
-- Business & marketing training
-- Pricing and packaging strategies
-
-**Professional Tools:**
-- Client intake forms (customizable)
-- Protocol templates
-- Lab interpretation guides
-- Marketing materials
-- Website copy templates
-
-**Credentials That Matter:**
-- ASI Certified Functional Medicine Practitioner
-- Digital badge for LinkedIn and website
-- Listed in our practitioner directory
-- Verification system for clients
-
-**Ongoing Support:**
-- Live Q&A calls monthly
-- Private practitioner community
-- Continuing education
-- Mentor support
-- Referral network
-
-Everything you need to launch and grow your practice.`,
-            systemStyle: 'info',
+            type: 'coach',
+            content: `Most people TALK about wanting to change their life. You actually DID something about it. That takes courage. Don't underestimate that.`,
         },
-
-        // URGENCY - Why Now
         {
             id: 16,
             type: 'system',
-            content: `**Why NOW Matters**
+            content: `**What This Says About You**
 
-The market reality:
+- You're someone who follows through
+- You care enough about helping others to learn
+- You're willing to invest time in yourself
+- You don't give up when things get complex
 
-**Demand is EXPLODING:**
-- 60% of Americans have chronic disease
-- Trust in conventional medicine at all-time low
-- "Wellness" is the #1 searched health topic
-- Functional medicine searches up 340% since 2020
+These qualities are EXACTLY what make successful health coaches. The knowledge is important, but the character you've shown? That's what clients feel when they work with you.
 
-**Competition is coming:**
-- More people discovering this opportunity every day
-- Early movers establish themselves first
-- Your local market has limited capacity
+You have something special, {name}. Don't let anyone (including yourself) tell you otherwise.`,
+            systemStyle: 'info',
+        },
 
-**Your situation:**
-- You just completed this mini diploma
-- The knowledge is fresh
-- Your motivation is high
-- The path is clear
+        // REFLECTION - What's Changed
+        {
+            id: 17,
+            type: 'coach',
+            content: `Think about who you were when you started Lesson 1. You might have been skeptical. Maybe you wondered if this was "another course that wouldn't work." Maybe you questioned if you were "smart enough" or "qualified enough."`,
+        },
+        {
+            id: 18,
+            type: 'system',
+            content: `**Then vs. Now**
 
-Every day you wait, someone else is starting.
+**When You Started:**
+- "I don't know if I can do this"
+- "I'm not a doctor"
+- "Who would pay me?"
+- "What if I'm not good enough?"
 
-The best time to plant a tree was 20 years ago. The second best time is TODAY.`,
-            systemStyle: 'stats',
+**After 9 Lessons:**
+- You understand root cause medicine
+- You can analyze case studies
+- You know the 5R gut protocol
+- You recognize inflammation patterns
+- You understand labs
+- You can build protocols
+
+The doubts didn't disappear because someone told you "you can do this." They faded because you PROVED it to yourself, lesson by lesson, quiz by quiz.
+
+That's real confidence. The kind that lasts.`,
+            systemStyle: 'comparison',
         },
 
         // THE TESTIMONIAL THAT HITS DIFFERENT
@@ -380,39 +365,31 @@ What will you do with it?`,
             systemStyle: 'comparison',
         },
 
-        // FINAL MESSAGE
+        // REFLECTION - What's Possible
         {
             id: 21,
             type: 'coach',
-            content: `{name}, I believe in you. I've watched you complete this entire mini diploma. I've seen you answer case studies correctly. I've seen you engage with the material.`,
+            content: `{name}, what happens next is completely up to you. There's no pressure. No countdown timer. No artificial urgency.`,
         },
         {
             id: 22,
             type: 'coach',
-            content: `You have what it takes. The question isn't "Can I do this?" - you just proved you can. The question is "Will I do this?"`,
+            content: `Your certificate is waiting. You earned it. And if you ever want to take this further - turn this foundation into a full practice - that path exists whenever you're ready.`,
         },
         {
             id: 23,
-            type: 'coach',
-            content: `Your certificate is ready. Your next step is waiting. I'll be here cheering you on, whatever you decide.`,
-        },
-        {
-            id: 24,
             type: 'system',
             content: `**Your Certificate is Ready!**
 
 You've completed all 9 lessons of the ASI Functional Medicine Foundation.
 
-Your completion certificate is waiting for you.
+🎓 Your completion certificate is waiting for you.
 
-Click below to:
-- Download your certificate
-- See your full certification options
-- Take the next step in your journey
+This is YOUR achievement, {name}. You showed up. You learned. You completed.
 
-This is your moment, {name}.
+Whatever you do next - whether it's helping a friend, exploring this as a career, or simply keeping this knowledge for yourself - you've already done something most people never do.
 
-What comes next is up to you.`,
+You invested in yourself. And that matters.`,
             systemStyle: 'takeaway',
         },
         {

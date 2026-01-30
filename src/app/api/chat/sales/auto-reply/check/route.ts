@@ -127,110 +127,112 @@ export async function GET() {
             }
         }
 
-        // ===== 24-HOUR RE-ENGAGEMENT =====
-        // Check for conversations that went silent 24+ hours ago
-        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        const twentyFiveHoursAgo = new Date(Date.now() - 25 * 60 * 60 * 1000);
-        const reengagementsSent: string[] = [];
+        // ===== HORMOZI 5-STEP FOLLOW-UP SEQUENCE =====
+        // Step 0: Immediate AI reply (handled above)
+        // Step 1: 24h "Checking in" bump
+        // Step 2: 48h Value drop (testimonial)
+        // Step 3: 72h Scarcity ("discount ends soon")
+        // Step 4: Day 7 Breakup email
+        // STOP: No more follow-ups after step 4
 
-        for (const [key, msgs] of conversationsMap.entries()) {
-            const sortedMsgs = msgs.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
-            const lastMsg = sortedMsgs[sortedMsgs.length - 1];
+        const followUpsSent: string[] = [];
 
-            // Check if:
-            // 1. Last message was from coach (not visitor)
-            // 2. Last message was 24-25 hours ago (only send once)
-            // 3. No response from visitor since
-            if (
-                !lastMsg.isFromVisitor &&
-                lastMsg.createdAt < twentyFourHoursAgo &&
-                lastMsg.createdAt > twentyFiveHoursAgo
-            ) {
-                // Check if we have visitor name/email for personalization
-                const optin = optinMap.get(lastMsg.visitorId);
-                const firstName = optin?.name || lastMsg.visitorName || "there";
+        // Get all optins that might need follow-up (have email, not purchased, sequence not complete)
+        const optinsForFollowUp = await prisma.chatOptin.findMany({
+            where: {
+                email: { not: null },
+                emailsSent: { lt: 5 }, // Haven't completed sequence
+            },
+        });
 
-                // Send re-engagement message
-                const reengagementMessage = `Hey ${firstName}! Just checking in - I noticed we were chatting yesterday but didn't finish our conversation.
+        // Check which users have purchased (to exclude from follow-up)
+        const optinEmails = optinsForFollowUp.map(o => o.email!.toLowerCase());
+        const purchasedUsers = await prisma.user.findMany({
+            where: {
+                email: { in: optinEmails },
+                OR: [
+                    { enrollments: { some: {} } },
+                    { payments: { some: { status: "COMPLETED" } } },
+                ],
+            },
+            select: { email: true },
+        });
+        const purchasedEmailsSet = new Set(purchasedUsers.map(u => u.email!.toLowerCase()));
 
-Did you have any other questions I can help with? I'm here if you need me!
+        const now = Date.now();
 
-No pressure - just wanted to make sure you didn't miss anything. 😊`;
+        for (const optin of optinsForFollowUp) {
+            // Skip if they purchased
+            if (purchasedEmailsSet.has(optin.email!.toLowerCase())) {
+                // Mark as complete so we don't check again
+                await prisma.chatOptin.update({
+                    where: { id: optin.id },
+                    data: { emailsSent: 5 },
+                });
+                continue;
+            }
 
-                try {
-                    const detectorPersona = detectPersona(lastMsg.page);
-                    const isWH = (lastMsg.page || "").toLowerCase().includes("womens-health") || (lastMsg.page || "").toLowerCase().includes("women-health");
-                    const coachEmail = isWH ? "sarah_womenhealth@accredipro-certificate.com" : PERSONA_EMAILS[detectorPersona];
+            const optinTime = optin.createdAt.getTime();
+            const lastEmailTime = optin.lastEmailSentAt?.getTime() || optinTime;
+            const hoursSinceOptin = (now - optinTime) / (1000 * 60 * 60);
+            const hoursSinceLastEmail = (now - lastEmailTime) / (1000 * 60 * 60);
 
-                    // Lookup coach user ID
-                    const coach = await prisma.user.findFirst({
-                        where: { email: coachEmail },
-                        select: { id: true }
-                    });
+            let shouldSendStep: number | null = null;
+            let minHoursRequired = 0;
 
-                    if (coach) {
-                        await prisma.salesChat.create({
-                            data: {
-                                visitorId: lastMsg.visitorId,
-                                visitorName: lastMsg.visitorName,
-                                visitorEmail: lastMsg.visitorEmail,
-                                page: lastMsg.page,
-                                message: reengagementMessage,
-                                isFromVisitor: false,
-                                isRead: true,
-                                repliedBy: coach.id, // Use ID, not name
-                            },
-                        });
-                        reengagementsSent.push(lastMsg.visitorId);
-                        console.log(`[AUTO-REPLY] 🔔 Sent 24h re-engagement to ${lastMsg.visitorId}`);
-
-                        // SEND EMAIL NOTIFICATION
-                        if (optin?.email) {
-                            try {
-                                // Check suppression
-                                const suppressedUser = await prisma.user.findFirst({
-                                    where: {
-                                        email: optin.email.toLowerCase(),
-                                        marketingTags: { some: { tag: { slug: { in: ["suppress_bounced", "suppress_complained", "suppress_unsubscribed", "suppress_do_not_contact"] } } } }
-                                    },
-                                    select: { id: true }
-                                });
-
-                                if (!suppressedUser) {
-                                    const persona = getPersonaByKey(detectorPersona);
-                                    const emailContent = `
-                                      <h2 style="color: #722F37; margin-bottom: 20px;">Checking in...</h2>
-                                      <div style="background: #f8f4f4; padding: 20px; border-radius: 8px; border-left: 4px solid #722F37; margin: 20px 0;">
-                                        <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #333;">
-                                          "${reengagementMessage.replace(/\n/g, '<br>')}"
-                                        </p>
-                                      </div>
-                                      <div style="background: #f0f7f0; padding: 15px 20px; border-radius: 8px; margin: 25px 0;">
-                                        <p style="margin: 0; font-size: 15px; color: #333;">
-                                          <strong>💬 To reply:</strong> Just reply to this email!
-                                        </p>
-                                      </div>
-                                    `;
-
-                                    await sendEmail({
-                                        to: optin.email,
-                                        subject: `${persona.name} sent you a message`,
-                                        html: emailWrapper(emailContent, "Checking in on your progress"),
-                                        replyTo: "chat@accredipro-certificate.com",
-                                    });
-                                    console.log(`[AUTO-REPLY] 📧 Sent re-engagement email to ${optin.email}`);
-                                }
-                            } catch (err) {
-                                console.error(`[AUTO-REPLY] ❌ Failed to send re-engagement email:`, err);
-                            }
-                        }
-
-                    } else {
-                        console.error(`[AUTO-REPLY] ❌ Coach not found for email ${coachEmail} (Re-engagement)`);
+            // Determine which step to send based on emailsSent and time
+            switch (optin.emailsSent) {
+                case 0:
+                    // Step 1: 24h bump (only if AI already replied and 24h passed)
+                    if (hoursSinceOptin >= 24) {
+                        shouldSendStep = 1;
+                        minHoursRequired = 24;
                     }
+                    break;
+                case 1:
+                    // Step 2: 48h value drop
+                    if (hoursSinceOptin >= 48 && hoursSinceLastEmail >= 20) {
+                        shouldSendStep = 2;
+                        minHoursRequired = 48;
+                    }
+                    break;
+                case 2:
+                    // Step 3: 72h scarcity
+                    if (hoursSinceOptin >= 72 && hoursSinceLastEmail >= 20) {
+                        shouldSendStep = 3;
+                        minHoursRequired = 72;
+                    }
+                    break;
+                case 3:
+                    // Step 4: Day 7 breakup
+                    if (hoursSinceOptin >= 168 && hoursSinceLastEmail >= 48) { // 168h = 7 days
+                        shouldSendStep = 4;
+                        minHoursRequired = 168;
+                    }
+                    break;
+                case 4:
+                    // Mark as complete
+                    await prisma.chatOptin.update({
+                        where: { id: optin.id },
+                        data: { emailsSent: 5 },
+                    });
+                    break;
+            }
 
+            if (shouldSendStep !== null) {
+                try {
+                    await sendFollowUpEmail(optin, shouldSendStep);
+                    await prisma.chatOptin.update({
+                        where: { id: optin.id },
+                        data: {
+                            emailsSent: shouldSendStep,
+                            lastEmailSentAt: new Date(),
+                        },
+                    });
+                    followUpsSent.push(`${optin.email}:step${shouldSendStep}`);
+                    console.log(`[FOLLOW-UP] ✅ Sent step ${shouldSendStep} to ${optin.email}`);
                 } catch (error) {
-                    console.error(`Failed to send re-engagement for ${lastMsg.visitorId}:`, error);
+                    console.error(`[FOLLOW-UP] ❌ Failed step ${shouldSendStep} for ${optin.email}:`, error);
                 }
             }
         }
@@ -238,8 +240,9 @@ No pressure - just wanted to make sure you didn't miss anything. 😊`;
         return NextResponse.json({
             success: true,
             repliesSent: repliesSent.length,
-            reengagementsSent: reengagementsSent.length,
+            followUpsSent: followUpsSent.length,
             details: repliesSent,
+            followUps: followUpsSent,
         });
     } catch (error) {
         console.error("Auto-reply check failed:", error);
@@ -391,3 +394,147 @@ INSTRUCTIONS:
     return personaKey;
 }
 
+// Hormozi 5-Step Follow-up Email Templates
+async function sendFollowUpEmail(optin: { email: string | null; name: string; page: string }, step: number): Promise<void> {
+    if (!optin.email) return;
+
+    // Check suppression
+    const suppressedUser = await prisma.user.findFirst({
+        where: {
+            email: optin.email.toLowerCase(),
+            marketingTags: { some: { tag: { slug: { in: ["suppress_bounced", "suppress_complained", "suppress_unsubscribed", "suppress_do_not_contact"] } } } }
+        },
+        select: { id: true }
+    });
+
+    if (suppressedUser) return;
+
+    const firstName = optin.name || "there";
+    const personaKey = detectPersona(optin.page);
+    const persona = getPersonaByKey(personaKey);
+
+    let subject = "";
+    let emailContent = "";
+
+    switch (step) {
+        case 1:
+            // 24h Bump - "Checking in"
+            subject = `${firstName}, quick question...`;
+            emailContent = `
+                <h2 style="color: #722F37; margin-bottom: 20px;">Hey ${firstName}! 👋</h2>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    I noticed we were chatting yesterday but didn't get to finish our conversation.
+                </p>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    Did you have any other questions about getting certified? I'm here if you need me!
+                </p>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 25px;">
+                    No pressure - just wanted to make sure you didn't miss anything. 😊
+                </p>
+                <div style="background: #f0f7f0; padding: 15px 20px; border-radius: 8px; margin: 25px 0;">
+                    <p style="margin: 0; font-size: 15px; color: #333;">
+                        <strong>💬 To reply:</strong> Just reply to this email!
+                    </p>
+                </div>
+                <p style="color: #999; font-size: 13px;">- ${persona.name}</p>
+            `;
+            break;
+
+        case 2:
+            // 48h Value Drop - Testimonial
+            subject = `This woman went from skeptical to certified in 8 weeks`;
+            emailContent = `
+                <h2 style="color: #722F37; margin-bottom: 20px;">Hey ${firstName},</h2>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    I wanted to share something with you that I think you'll find valuable...
+                </p>
+                <div style="background: #f8f4f4; padding: 20px; border-radius: 8px; border-left: 4px solid #722F37; margin: 20px 0;">
+                    <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 1.6; color: #333; font-style: italic;">
+                        "I was SO skeptical at first. I'd looked at other certifications that cost $3,000-$5,000 and weren't even accredited. Then I found AccrediPro..."
+                    </p>
+                    <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 1.6; color: #333; font-style: italic;">
+                        "8 weeks later, I'm certified, I've already helped 3 paying clients, and I finally feel confident charging what I'm worth."
+                    </p>
+                    <p style="margin: 0; font-size: 14px; color: #666;">
+                        — Jennifer M., Certified Functional Medicine Practitioner
+                    </p>
+                </div>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    Jennifer started exactly where you are now. Curious but unsure.
+                </p>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 25px;">
+                    If you have any questions about the program, just reply to this email. I read every single one.
+                </p>
+                <p style="color: #999; font-size: 13px;">- ${persona.name}</p>
+            `;
+            break;
+
+        case 3:
+            // 72h Scarcity
+            subject = `[Reminder] The 80% discount ends soon`;
+            emailContent = `
+                <h2 style="color: #722F37; margin-bottom: 20px;">Hey ${firstName},</h2>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    I wanted to give you a quick heads up...
+                </p>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    The <strong>80% enrollment discount</strong> we discussed is ending soon. I'd hate for you to miss it if you were still thinking about joining.
+                </p>
+                <div style="background: #fff3cd; padding: 15px 20px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 20px 0;">
+                    <p style="margin: 0; font-size: 15px; color: #856404;">
+                        ⏰ Regular price: <strike>$1,497</strike> → Your price: <strong>$297</strong>
+                    </p>
+                </div>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    This includes:
+                </p>
+                <ul style="font-size: 15px; line-height: 1.8; color: #333; margin-bottom: 25px;">
+                    <li>Full accredited certification</li>
+                    <li>50+ CEU hours</li>
+                    <li>1-on-1 onboarding call</li>
+                    <li>Lifetime access + updates</li>
+                </ul>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 25px;">
+                    If you have any last questions, just reply. Otherwise, <a href="https://sarah.accredipro.academy/checkout-fm-certification" style="color: #722F37; font-weight: bold;">click here to lock in your spot</a>.
+                </p>
+                <p style="color: #999; font-size: 13px;">- ${persona.name}</p>
+            `;
+            break;
+
+        case 4:
+            // Day 7 Breakup
+            subject = `Closing your file, ${firstName}`;
+            emailContent = `
+                <h2 style="color: #722F37; margin-bottom: 20px;">Hey ${firstName},</h2>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    I wanted to reach out one last time.
+                </p>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    It looks like now might not be the right time for you to pursue certification, and that's completely okay. I get it - life gets busy, priorities shift.
+                </p>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    I'm going to close your file for now, but I want you to know: <strong>the door is always open.</strong>
+                </p>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 20px;">
+                    If things change and you decide you want to help people transform their health through root-cause medicine, just reply to any of my emails. I'll be here.
+                </p>
+                <p style="font-size: 16px; line-height: 1.7; color: #333; margin-bottom: 25px;">
+                    Wishing you all the best, whatever path you choose. 💛
+                </p>
+                <p style="color: #999; font-size: 13px;">- ${persona.name}</p>
+            `;
+            break;
+
+        default:
+            return;
+    }
+
+    await sendEmail({
+        to: optin.email,
+        subject,
+        html: emailWrapper(emailContent, subject),
+        replyTo: "chat@accredipro-certificate.com",
+    });
+
+    console.log(`[FOLLOW-UP] 📧 Sent step ${step} email to ${optin.email}`);
+}

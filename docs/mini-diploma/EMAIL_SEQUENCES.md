@@ -1,6 +1,26 @@
 # Mini Diploma Email Sequences
 
+**Universal Templates with Niche Placeholders**
+
 All email templates for the mini diploma nurturing funnel. Hormozi-style: value-first, proof stacking, pattern interrupts.
+
+## 🔑 PLACEHOLDER REFERENCE:
+| Placeholder | Example |
+|-------------|---------|
+| `{{nicheName}}` | Reiki Healing, Spiritual Healing, ADHD Coaching |
+| `{{nicheSlug}}` | reiki-healing, spiritual-healing, adhd-coaching |
+| `{{nicheDisplayName}}` | Certified Reiki Practitioner |
+| `{{boardCertName}}` | Board Certified {{nicheName}} Specialist |
+| `{{firstName}}` | Dynamic - user's first name |
+
+## 💎 ACCREDITATION BLOCK (Use in emails):
+> **ASI-Verified & Internationally Recognized**
+> Backed by: CMA • IPHM • CPD • IAOTH • ICAHP • IGCT • CTAA • IHTCP • IIOHT
+
+## 💰 CURRENT PRICING:
+- Mini Diploma: FREE
+- Board Certification Scholarship: **$397** (was $997)
+- Payment Plan: 2x $199
 
 ---
 
@@ -20,20 +40,22 @@ Hey {{firstName}},
 
 You just made a decision that could change everything.
 
-I'm not being dramatic. I've watched 2,400+ women go from "just browsing" to building $5K-$10K/month practices. It all started with what you're about to learn.
+I'm not being dramatic. I've watched 2,400+ women go from "just browsing" to building $5K-$10K/month {{nicheName}} practices. It all started with what you're about to learn.
 
-**Your Mini Diploma access is now active.**
+**Your {{nicheName}} Mini Diploma access is now active.**
 
 Here's what to do next:
 
 1. [Click here to start Lesson 1]({{lessonLink}}) — takes 5 minutes
 2. Complete all 9 lessons within 48 hours
 3. Pass the final quiz
-4. Get your ASI-Verified Certificate
+4. Get your **ASI-Verified {{nicheName}} Certificate**
+
+**This isn't just a certificate.** It's backed by 9 international accreditation bodies including CMA, IPHM, CPD, and more. Real credentials that clients recognize.
 
 Most people finish in a single sitting. It's designed that way.
 
-One more thing — after you complete the Mini Diploma, I have something special for you. A scholarship that's only available to graduates.
+One more thing — after you complete the Mini Diploma, I have something special for you. A **$397 scholarship** (normally $997) for full Board Certification. Only available to graduates.
 
 But first: lesson 1.
 
@@ -42,7 +64,7 @@ But first: lesson 1.
 Talk soon,
 
 **Sarah Mitchell**
-*Your Coach*
+*Your {{nicheName}} Coach*
 
 P.S. 89% of our students finish the same day they start. You've got this.
 
@@ -216,15 +238,313 @@ P.S. If something came up and you genuinely need more time, reply to this email.
 
 ---
 
+## PART 1B: MILESTONE & PROGRESS EMAILS
+
+Goal: Celebrate progress and push through to completion. Triggered by lesson completions.
+
+---
+
+### QUICK WIN: +1 Hour Nudge (If not started)
+
+**Subject:** 5 minutes — that's all Lesson 1 takes
+
+**Trigger:** +1 hour after signup, lesson 1 NOT started
+
+**Body:**
+
+{{firstName}},
+
+Quick check-in.
+
+You signed up an hour ago but haven't started Lesson 1 yet.
+
+I get it — life is busy. But here's the thing:
+
+**Lesson 1 takes 5 minutes.** Literally.
+
+You could:
+- Watch half a TikTok
+- Scroll Instagram for 5 min
+- OR start something that could change your life
+
+47 other women started their {{nicheName}} journey today. You could be #48.
+
+**[START LESSON 1 NOW (5 min) →]({{lessonLink}})**
+
+The hardest part is clicking "Start." Everything after that is easy.
+
+— Sarah
+
+---
+
+### MILESTONE 1: Lesson 1 Complete 🎉
+
+**Subject:** You did it! 🎉 Lesson 1 complete
+
+**Trigger:** Lesson 1 marked complete
+
+**Body:**
+
+{{firstName}}!! 
+
+You started! That's huge.
+
+Most people never get past thinking about it. You actually DID something.
+
+Here's where you are:
+
+✅ Lesson 1 — COMPLETE
+⬜ Lesson 2
+⬜ Lesson 3
+⬜ Lesson 4
+⬜ Lesson 5
+⬜ Lesson 6
+⬜ Lesson 7
+⬜ Lesson 8
+⬜ Lesson 9
+⬜ Final Exam
+
+**Only 8 lessons left.** Each one takes ~7 minutes.
+
+The momentum is on your side now. Keep going!
+
+**[CONTINUE TO LESSON 2 →]({{lesson2Link}})**
+
+Proud of you,
+
+— Sarah
+
+P.S. 89% of students who complete L1 finish the whole thing. You're already in the winner's circle.
+
+---
+
+### MILESTONE 3: Lesson 3 Complete (One-Third Done!)
+
+**Subject:** 1/3 done! You're on fire 🔥
+
+**Trigger:** Lesson 3 marked complete
+
+**Body:**
+
+{{firstName}},
+
+You just hit a milestone: **33% complete!**
+
+✅ Lesson 1 — DONE
+✅ Lesson 2 — DONE
+✅ Lesson 3 — DONE
+⬜ Lesson 4
+⬜ Lesson 5
+⬜ Lesson 6
+⬜ Lesson 7
+⬜ Lesson 8
+⬜ Lesson 9
+
+You're building real knowledge now. The concepts from Lessons 1-3 are foundational — everything builds on them.
+
+Quick question: **What's clicked for you so far?**
+
+(Seriously — reply and tell me. I read every response.)
+
+**[KEEP GOING → LESSON 4]({{lesson4Link}})**
+
+Only 6 more lessons between you and that certificate.
+
+— Sarah
+
+---
+
+### MILESTONE 5: Lesson 5 Complete (Halfway!)
+
+**Subject:** HALFWAY THERE! 🎉
+
+**Trigger:** Lesson 5 marked complete
+
+**Body:**
+
+{{firstName}},
+
+**YOU'RE HALFWAY DONE!**
+
+✅ Lessons 1-5 — COMPLETE
+⬜ Lessons 6-9 — TO GO
+
+I want you to pause and celebrate this for a second.
+
+You've already learned more about {{nicheName}} than 95% of people who "think about" getting certified.
+
+You're not thinking anymore. You're DOING.
+
+**Here's what's coming in the next 4 lessons:**
+- How to actually work with clients
+- Building your practice from scratch
+- The certification exam (don't worry — you're ready)
+
+The finish line is in sight.
+
+**[PUSH THROUGH → LESSON 6]({{lesson6Link}})**
+
+You've got this!
+
+— Sarah
+
+P.S. Fun fact: The average time from Lesson 5 to certificate is 47 minutes. You could be certified before dinner.
+
+---
+
+### MILESTONE 7: Lesson 7 Complete (Almost Done!)
+
+**Subject:** ONLY 2 LESSONS LEFT! 🏃‍♀️
+
+**Trigger:** Lesson 7 marked complete
+
+**Body:**
+
+{{firstName}},
+
+You're so close I can taste it.
+
+✅ Lessons 1-7 — COMPLETE
+⬜ Lesson 8
+⬜ Lesson 9
+⬜ Final Exam
+
+**Just 2 lessons + the exam.** That's it.
+
+In the next 30 minutes, you could be:
+- A certified {{nicheDisplayName}}
+- Downloading your official ASI-verified certificate
+- Posting on LinkedIn that you're certified
+- Getting DMs asking how you did it
+
+30 minutes, {{firstName}}. Don't stop now.
+
+**[FINISH STRONG → LESSON 8]({{lesson8Link}})**
+
+I'm literally cheering for you right now. 🎉
+
+— Sarah
+
+---
+
+### MILESTONE 9: Lesson 9 Complete (Exam Time!)
+
+**Subject:** EXAM TIME! 🎓 You're ready.
+
+**Trigger:** Lesson 9 marked complete
+
+**Body:**
+
+{{firstName}},
+
+Holy shit. (Can I say that in an email? Whatever, I'm saying it.)
+
+**You just finished all 9 lessons.**
+
+✅ Lessons 1-9 — ALL COMPLETE
+
+All that's left is the final exam. And I want you to know:
+
+**You're going to pass.**
+
+The exam is 20 questions based on what you just learned. It's not a trick. If you paid attention (you did), you've got this.
+
+If you don't pass the first time? You can retake it unlimited times. No pressure.
+
+But honestly? You're going to nail it.
+
+**[TAKE THE EXAM NOW →]({{examLink}})**
+
+Your certificate is waiting on the other side. 🎓
+
+GO GET IT!
+
+— Sarah
+
+---
+
+### STALLED 1: Started But Stuck (+8 hours after last lesson)
+
+**Subject:** Hey {{firstName}} — you left off at Lesson {{lastLesson}}
+
+**Trigger:** 8+ hours since last lesson completed, NOT finished
+
+**Body:**
+
+{{firstName}},
+
+I noticed you stopped at Lesson {{lastLesson}}.
+
+Life happens. No judgment.
+
+But I also know how easy it is to let momentum slip away. You were on a roll, and now... pause.
+
+Here's the truth: **The gap between "almost certified" and "actually certified" is huge.**
+
+"Almost" doesn't go on your LinkedIn.
+"Almost" doesn't give you confidence to charge clients.
+"Almost" doesn't change your life.
+
+You're {{lessonsRemaining}} lessons away from "actually."
+
+**[PICK UP WHERE YOU LEFT OFF →]({{lessonLink}})**
+
+The lessons aren't going anywhere. But your motivation might.
+
+Don't let this become another "I'll get back to it" situation.
+
+— Sarah
+
+P.S. You have {{hoursRemaining}} hours left before access expires. Finish what you started.
+
+---
+
+### STALLED 2: Been 24+ Hours Since Last Lesson
+
+**Subject:** {{firstName}}, I'm concerned
+
+**Trigger:** 24+ hours since last lesson, NOT finished
+
+**Body:**
+
+{{firstName}},
+
+I don't normally send emails like this.
+
+But you were making great progress — Lessons {{completedLessons}} done — and then... nothing.
+
+I want to ask you something real:
+
+**What happened?**
+
+- Did something come up in your life? (Totally valid)
+- Did you hit a confusing concept? (I can help)
+- Did you just... forget? (Also valid, no judgment)
+- Did you decide this isn't for you? (I respect that)
+
+I'm not asking to guilt you. I'm asking because I care.
+
+If there's something blocking you, tell me. Reply to this email. I'll personally help.
+
+If you just need a push: **[CONTINUE YOUR TRAINING →]({{lessonLink}})**
+
+You've already done the hard part (starting). Don't let that effort go to waste.
+
+{{hoursRemaining}} hours left on your access.
+
+— Sarah
+
+---
+
 ## PART 2: POST-COMPLETION SEQUENCE
 
-Goal: Convert Mini Diploma graduates to Board Certification ($997)
+Goal: Convert Mini Diploma graduates to Board Certification ($397 scholarship)
 
 ---
 
 ### EMAIL 1: Congrats + Certificate (Immediately after exam pass)
 
-**Subject:** 🎓 You're officially certified, {{firstName}}
+**Subject:** 🎓 You're officially a {{nicheDisplayName}}, {{firstName}}
 
 **Body:**
 
@@ -232,21 +552,30 @@ Goal: Convert Mini Diploma graduates to Board Certification ($997)
 
 YOU DID IT.
 
-You just joined 2,400+ certified functional medicine graduates. This is real.
+You just joined 2,400+ {{nicheName}} certified practitioners. This is real.
 
 **[DOWNLOAD YOUR CERTIFICATE →]({{certificateLink}})**
 
 Add it to LinkedIn. Frame it. Send it to your mom. Whatever you do — celebrate this.
 
+🏆 **Your certificate is backed by:**
+CMA • IPHM • CPD • IAOTH • ICAHP • IGCT • CTAA • IHTCP • IIOHT
+
+**What this means for you:**
+- ✅ You can call yourself a {{nicheDisplayName}}
+- ✅ You can list credentials on your website & social media
+- ✅ You can accept paying clients
+- ✅ You're listed in the ASI Graduate Directory
+
 Now... about that scholarship I mentioned.
 
-Because you completed the Mini Diploma, you qualify for something most people never see: my Board Certification Scholarship.
+Because you completed the Mini Diploma, you qualify for something most people never see: my **$397 Board Certification Scholarship** (normally $997).
 
-It's how our graduates go from "foundation knowledge" to "$5K-$10K/month practice."
+It's what separates "I completed a course" from "I'm a real practitioner earning $5K-$10K/month."
 
 I'll send you the details in a few hours. But for now — just sit with this moment.
 
-You're certified.
+You're certified. **You're a real {{nicheDisplayName}} now.**
 
 Proud of you,
 
@@ -254,42 +583,46 @@ Proud of you,
 
 ---
 
-### EMAIL 2: Value Calculator (+6 hours)
+### EMAIL 2: The Transformation (+6 hours)
 
-**Subject:** The math behind $8K/month (spreadsheet attached)
+**Subject:** The gap between "interested" and "earning"
 
 **Body:**
 
 {{firstName}},
 
-I made you something.
+Let me paint two pictures:
 
-**[DOWNLOAD: Income Calculator Spreadsheet]({{calculatorLink}})**
+**BEFORE (Where you were 48 hours ago):**
+- Interested in {{nicheName}} but no credentials
+- No way to prove your knowledge
+- Couldn't charge clients without feeling like a fraud
+- Stuck in the "someday I'll do this" loop
 
-It's the exact spreadsheet I use with my Board Certified graduates. Plug in your numbers and see what's possible.
+**NOW (Where you are today):**
+- ✅ {{nicheDisplayName}} (ASI-Verified)
+- ✅ Credentials backed by 9 international bodies
+- ✅ Certificate you can display publicly
+- ✅ Foundation knowledge to help real people
 
-Here's how the math works:
+**AFTER BOARD CERTIFICATION (Where you could be in 8 weeks):**
+- 🏆 {{boardCertName}}
+- 🏆 Done-for-you website with your name on it
+- 🏆 Client acquisition system
+- 🏆 5 clients = $5K/month (part-time hours)
+- 🏆 Listed in ASI Directory (clients find YOU)
 
-- Average session rate: $150-200
-- Average package: $800-1,500 (3-5 sessions)
-- Clients needed for $5K/month: 4-6
-- Hours worked: 15-20/week
+The gap between "interested" and "earning" isn't talent. It's not luck.
 
-That's it. 5 clients paying $1,000 each = $5K/month. Part-time hours.
+**It's credentials + confidence + a system.**
 
-**But here's what the spreadsheet won't tell you:**
+The Mini Diploma gave you credentials. Board Certification gives you the confidence AND the system.
 
-Clients pay *Board Certified* practitioners more.
-They trust them faster.
-They refer them to friends.
-
-The Mini Diploma gave you knowledge. The Board Certification gives you CREDIBILITY.
-
-Tomorrow, I'll show you what's included in the scholarship. For now, play with the spreadsheet.
+**Your $397 scholarship** makes this possible. Tomorrow I'll show you exactly what's included.
 
 — Sarah
 
-P.S. One of our graduates hit $11K in month 4. She started exactly where you are right now.
+P.S. One of our {{nicheName}} graduates hit $11K in month 4. She started exactly where you are right now.
 
 ---
 
@@ -379,13 +712,19 @@ Let me guess what's going through your head:
 
 Good. That's why I mentor you UNTIL you're certified and confident. Not 4 calls. Not a group session. One-on-one with me until you're ready. That's the deal.
 
-**"I can't afford $997 right now."**
+**"I can't afford it right now."**
 
-I get it. That's why there's a 3-payment option: $397/month. The average first client pays $800-1,500. One client covers the entire investment.
+The scholarship is **$397** (normally $997). That's less than one client session pays. And there's a 2-payment option: **2x $199**.
 
 **"What if I fail the Board exam?"**
 
 You can retake it unlimited times. And I'll personally work with you until you pass. I've never had someone NOT pass who actually did the work.
+
+**"Will this actually make me a real practitioner?"**
+
+Yes. Board Certification is backed by **9 international accreditation bodies**: CMA, IPHM, CPD, IAOTH, ICAHP, IGCT, CTAA, IHTCP, IIOHT.
+
+You'll be listed in the ASI Directory. Clients will find YOU. It's real.
 
 Every objection you have, I've heard before. And I've solved for it.
 
@@ -393,11 +732,11 @@ Still have one I didn't mention? Reply to this email. I'll answer personally.
 
 Or, if you're ready:
 
-**[CLAIM YOUR SCHOLARSHIP →]({{scholarshipLink}})**
+**[CLAIM YOUR $397 SCHOLARSHIP →]({{scholarshipLink}})**
 
 — Sarah
 
-P.S. The scholarship expires in 30 hours. After that, the price goes up to $1,997. This isn't a marketing trick — I only offer this to fresh graduates while their momentum is high.
+P.S. The scholarship expires in 30 hours. After that, the price goes to $997. This isn't a marketing trick — I only offer this to fresh graduates while their momentum is high.
 
 ---
 
@@ -467,9 +806,9 @@ The scholarship closes tomorrow. This is my second-to-last email about it.
 
 ---
 
-### EMAIL 8: Payment Plan + Last Chance (+78 hours)
+### EMAIL 8: Final Offer + Last Chance (+78 hours)
 
-**Subject:** $397/month payment plan (final hours)
+**Subject:** Last chance: $397 {{nicheName}} Board Certification
 
 **Body:**
 
@@ -477,36 +816,38 @@ The scholarship closes tomorrow. This is my second-to-last email about it.
 
 I've sent you a lot of emails. This is the last one about the scholarship.
 
-Quick recap of what you get:
-- ✅ Full Board Certification (12 modules) — $2,997 value
+Quick recap of what you get as a **{{boardCertName}}**:
+- ✅ Full Board Certification (12 modules) — become a REAL practitioner
 - ✅ 1-on-1 mentorship with me until certified — UNLIMITED
-- ✅ Done-for-you website — $997 value
-- ✅ Client acquisition kit — $697 value
-- ✅ 30-day content calendar — $297 value
-- ✅ Legal contract templates — $197 value
-- ✅ ASI Directory listing — $197 value
+- ✅ Done-for-you website with YOUR name on it
+- ✅ Client acquisition kit — get clients in 30 days
+- ✅ 30-day content calendar
+- ✅ Legal contract templates
+- ✅ **ASI Directory listing** — clients find YOU
+- ✅ **Backed by 9 international bodies**: CMA, IPHM, CPD, IAOTH, ICAHP, IGCT, CTAA, IHTCP, IIOHT
 
 **Total value: $8,576**
 
-**Your scholarship price:** $997 (or 3x $397)
+**Your scholarship price:** **$397** (or 2x $199)
 
 **Scholarship expires:** Tonight at midnight
 
-After that, the investment goes to $1,997. I'm not going to extend it or "find" another discount. This is it.
+After that, the investment goes to $997. I'm not going to extend it or "find" another discount. This is it.
 
 If you're in, I'll see you on the other side:
 
-**[FULL PAYMENT: $997 →]({{checkoutFullLink}})**
+**[ONE PAYMENT: $397 →]({{checkoutFullLink}})**
 
-**[PAYMENT PLAN: 3x $397 →]({{checkoutPlanLink}})**
+**[PAYMENT PLAN: 2x $199 →]({{checkoutPlanLink}})**
 
 If you're not ready, that's okay too. I'll still be here if you change your mind later (at the higher price).
 
-Either way — thank you for completing the Mini Diploma. You earned that certificate.
+Either way — thank you for completing the {{nicheName}} Mini Diploma. You earned that certificate.
 
 With respect,
 
 **Sarah Mitchell**
+*Board Certified {{nicheName}} Specialist*
 
 P.S. 100% money-back guarantee. If you don't love it in 30 days, I'll refund every penny. No questions. You have nothing to lose.
 
@@ -606,12 +947,133 @@ Did you see my note about the scholarship? Just wanted to make sure it didn't ge
 ```
 Totally get it if the timing isn't right!
 
-Just wanted you to know there's a 3-payment option — $397/month instead of $997 upfront. Makes it easier for a lot of people.
+Just wanted you to know the {{nicheName}} scholarship is only $397 (normally $997). And there's a 2-payment option: 2x $199.
 
-Either way, your certificate is yours forever 💛
+Your certificate is yours forever 💛
 ```
 
 **Why:** Remove price objection. Remove pressure. Leave door open.
+
+---
+
+## PART 3B: MILESTONE DMs (Pre-Completion)
+
+Goal: Celebrate progress and nudge stalled users via DM.
+
+---
+
+### DM-M1: Quick Start Nudge (+2 hours, not started)
+
+**Trigger:** 2 hours after signup, L1 NOT started
+
+**Message:**
+```
+Hey! 👋 Just checking in — did you get a chance to start Lesson 1 yet?
+
+It's only 5 minutes and honestly pretty cool. Here's the link if you lost it: {{lessonLink}}
+```
+
+**Why:** Personal touch. Remove friction.
+
+---
+
+### DM-M2: Lesson 1 Complete 🎉
+
+**Trigger:** Lesson 1 marked complete
+
+**Message:**
+```
+You started! 🎉
+
+That's literally the hardest part. The rest is easy. Keep that momentum going! 💪
+```
+
+**Why:** Celebrate the start. Build momentum.
+
+---
+
+### DM-M3: Lesson 3 Complete (Already have this as DM 2)
+
+*(Use existing DM 2 above)*
+
+---
+
+### DM-M4: Halfway Point (Lesson 5)
+
+**Trigger:** Lesson 5 marked complete
+
+**Message:**
+```
+HALFWAY! 🔥
+
+Only 4 more lessons to go. You're doing amazing.
+
+What's been your favorite lesson so far?
+```
+
+**Why:** Celebrate milestone. Start conversation.
+
+---
+
+### DM-M5: Almost Done (Lesson 7)
+
+**Trigger:** Lesson 7 marked complete
+
+**Message:**
+```
+So close! Just 2 lessons + the exam left.
+
+You're about to be a certified {{nicheDisplayName}}. How does that feel? 😊
+```
+
+**Why:** Build excitement for finish line.
+
+---
+
+### DM-M6: Exam Ready (Lesson 9)
+
+**Trigger:** Lesson 9 marked complete
+
+**Message:**
+```
+All 9 lessons DONE! 🙌
+
+The exam is waiting for you. 20 questions, totally doable. You've got this!
+
+{{examLink}}
+```
+
+**Why:** Push to final step.
+
+---
+
+### DM-Stall1: Stuck Mid-Course (+6 hours)
+
+**Trigger:** 6+ hours since last lesson, NOT finished
+
+**Message:**
+```
+Hey! Noticed you paused at Lesson {{lastLesson}}.
+
+Everything okay? Happy to help if you're stuck on anything!
+```
+
+**Why:** Catch dropoffs early. Shows you care.
+
+---
+
+### DM-Stall2: Really Stuck (+18 hours)
+
+**Trigger:** 18+ hours since last lesson, NOT finished
+
+**Message:**
+```
+{{firstName}}, just wanted to check — are you still working on the {{nicheName}} training?
+
+No judgment either way! Just want to make sure you didn't hit a snag I can help with.
+```
+
+**Why:** Last DM attempt before email takeover.
 
 ---
 
@@ -659,66 +1121,6 @@ Hey {{firstName}}! Your Mini Diploma is ready 🎓 Start now while it's fresh: {
 **Message:**
 ```
 {{firstName}}, I sent you something special — a scholarship for Board Certification. Check your inbox! Expires in 48h.
-```
-
----
-
-## PART 5: VOICE NOTE SCRIPTS
-
-### Voice Note 1: 24-Hour Check-in (Pre-Completion)
-
-*Duration: 47 seconds*
-
-```
-"Hey {{firstName}}, it's Sarah. I noticed you started the Mini Diploma but haven't finished yet, and I just wanted to check in.
-
-Look, I know life gets busy. I get it. But I also know that sometimes we get in our own way. We tell ourselves we'll do it later, and later becomes never.
-
-You signed up for a reason. Something made you click that button. Don't let that moment pass.
-
-You've got about 24 hours left. The lessons take maybe an hour total. And what's waiting on the other side... I really think it could change things for you.
-
-Okay, that's it. Go finish. I'm rooting for you."
-```
-
----
-
-### Voice Note 2: "What's Holding You Back" (Post-Completion)
-
-*Duration: 52 seconds*
-
-```
-"Hey {{firstName}}, it's Sarah.
-
-I'm just going to be straight with you. You completed the Mini Diploma. You passed the exam. I know you're interested in the Board Certification — you've opened every email I've sent.
-
-So what's the holdup? I'm genuinely asking.
-
-Is it the money? Because we have payment plans. Is it time? Because it's self-paced. Is it fear of failing? Because I literally mentor you until you pass.
-
-I'm not trying to pressure you. I just hate seeing people stay stuck when the thing they need is right in front of them.
-
-If something's holding you back that I can help with, just reply. Tell me. Let's figure it out.
-
-You've already proven you can do hard things. Don't stop now.
-
-Okay. That's it. Talk soon."
-```
-
----
-
-### Voice Note 3: DM Check-in (Post-Completion)
-
-*Duration: 28 seconds*
-
-```
-"Hey {{firstName}}, quick question — is it the price, the time, or something else that's making you hesitate?
-
-I'm not trying to sell you anything right now. I just want to understand. If there's something I can help with, let me know.
-
-And if the answer is 'it's just not the right time,' that's totally okay too. No pressure.
-
-Just let me know what's going on. Talk soon."
 ```
 
 ---
@@ -1250,18 +1652,418 @@ P.S. The people who reply are the ones who eventually succeed. Be one of those p
 
 ---
 
+## PART 10: HORMOZI WARMING EMAILS (CRO Boosters)
+
+Goal: Warm leads deeply before closing calls. Build emotional connection. Stack transformations.
+
+---
+
+### HORMOZI 1: Sarah's Origin Story (Day 10 Nurture)
+
+**Subject:** The day I almost gave up (the real story)
+
+**Body:**
+
+{{firstName}},
+
+I've never shared this publicly.
+
+In 2019, I was sitting in my car in a hospital parking lot, crying.
+
+I'd just finished a 14-hour shift. My feet ached. My back was screaming. And I'd just been told I was "too expensive to keep full-time" after 8 years of service.
+
+$62,000 a year. That's what I was "worth" after a decade of nursing.
+
+But that's not why I was crying.
+
+I was crying because I'd missed my daughter's school play. Again. The third one that year.
+
+And when I called to apologize, she said: *"It's okay mommy. I'm used to it."*
+
+Those words broke something in me.
+
+I didn't know what I was going to do. But I knew I couldn't keep living like this.
+
+That night, I found {{nicheName}}. I thought it would be a "hobby." Something interesting to learn.
+
+Three months later, I had my first client. Six months later, I quit nursing. Today, I work 20 hours a week and make more than I ever did.
+
+But the real win? I haven't missed a single school event in 4 years.
+
+**I started this program because I don't want other women to hit rock bottom like I did.**
+
+You deserve to find this path BEFORE you're crying in a parking lot.
+
+**[Your path starts here →]({{scholarshipLink}})**
+
+With love,
+
+**Sarah**
+
+P.S. If you're reading this and you're in that dark place right now — I see you. It gets better. I promise.
+
+---
+
+### HORMOZI 2: Tragic → Triumph (Deep Case Study)
+
+**Subject:** From $47K in debt to $9K/month (Patricia's story)
+
+**Body:**
+
+{{firstName}},
+
+Let me tell you about Patricia.
+
+**BEFORE (Where she started):**
+- 47, single mom, two kids in high school
+- Worked as an admin assistant for 12 years
+- $47,000 in credit card debt from her divorce
+- Couldn't sleep. Gained 30 lbs from stress eating.
+- Applied to 23 jobs. Got rejected from all of them.
+- Her exact words: *"I felt invisible. Like my life was over."*
+
+**THE MOMENT:**
+She saw our {{nicheName}} Mini Diploma ad at 11pm while doom-scrolling.
+
+"I almost didn't click," she told me later. "I was convinced free things were scams."
+
+But something made her click.
+
+**THE TRANSFORMATION:**
+- Completed the Mini Diploma in one night (couldn't stop)
+- Joined Board Certification the next day ($397)
+- Got her first paying client in week 3 (her hairdresser)
+- Month 1: $1,200
+- Month 3: $4,800
+- Month 6: **$9,200/month**
+
+Today, Patricia is debt-free. Her kids are proud of her. She works from her kitchen table.
+
+**Her words to me last week:**
+
+*"I'm 48 years old and for the first time in my life, I feel like I matter. My daughter told her friends that her mom is a {{nicheDisplayName}}. She's PROUD of me, Sarah. I didn't even know that was possible."*
+
+Patricia started exactly where you are. Mini Diploma graduate. Unsure. Scared.
+
+The only difference? She took the next step.
+
+**[Take your next step →]({{scholarshipLink}})**
+
+— Sarah
+
+---
+
+### HORMOZI 3: Screenshot Stack (Pure Proof Dump)
+
+**Subject:** I'll just let the screenshots speak...
+
+**Body:**
+
+{{firstName}},
+
+No words from me today. Just proof.
+
+**[SCREENSHOT 1]** DM from Jennifer: "Sarah, I just booked my 5th client this month. This is insane."
+
+**[SCREENSHOT 2]** Stripe notification: Michelle received $1,850.00
+
+**[SCREENSHOT 3]** DM from Patricia: "I quit my job today. Thank you doesn't even begin to cover it."
+
+**[SCREENSHOT 4]** Calendar showing 14 booked client sessions
+
+**[SCREENSHOT 5]** Instagram comment: "Wait, you're a {{nicheDisplayName}} too?! I need your help!"
+
+**[SCREENSHOT 6]** Stripe notification: Angela received $2,400.00
+
+**[SCREENSHOT 7]** DM: "I'm crying. My first client just paid me $800. This is REAL."
+
+**[SCREENSHOT 8]** LinkedIn post: "Excited to announce I'm now Board Certified in {{nicheName}}!"
+
+**[SCREENSHOT 9]** Stripe notification: Jennifer received $3,200.00
+
+**[SCREENSHOT 10]** DM: "Sarah, I just hit $5K this month. I still can't believe this is my life."
+
+---
+
+These are real women. Real results. Real transformations.
+
+None of them had special skills. None of them had connections. None of them were "lucky."
+
+They just decided to bet on themselves.
+
+**Your turn: [Claim your $397 scholarship →]({{scholarshipLink}})**
+
+— Sarah
+
+---
+
+### HORMOZI 4: "This Isn't For You If..." (Filter Email)
+
+**Subject:** Please don't join if this describes you
+
+**Body:**
+
+{{firstName}},
+
+Real talk: the {{nicheName}} Board Certification isn't for everyone.
+
+**Don't join if:**
+
+❌ You're looking for a "get rich quick" scheme
+(This takes work. Real work. Usually 2-3 months before consistent income.)
+
+❌ You're not willing to put yourself out there
+(You'll need to post on social media, talk to people, and be visible.)
+
+❌ You want someone to do everything for you
+(I mentor you, but YOU do the work.)
+
+❌ You're not willing to invest $397 in yourself
+(If this feels "too expensive," you're not ready. Come back when you are.)
+
+❌ You just want another certificate to collect
+(This is about building a PRACTICE, not decorating your wall.)
+
+**DO join if:**
+
+✅ You're tired of trading time for money
+✅ You want to help people while helping yourself
+✅ You're ready to be uncomfortable for 90 days to change the next 10 years
+✅ You're coachable and will actually implement what I teach
+✅ You want something REAL, with internationally-recognized credentials
+
+Still here? Good. That means you're the right fit.
+
+**[Join the right people →]({{scholarshipLink}})**
+
+— Sarah
+
+---
+
+### HORMOZI 5: Cost of Inaction
+
+**Subject:** The real cost of "I'll think about it"
+
+**Body:**
+
+{{firstName}},
+
+Close your eyes. (Not literally. Keep reading.)
+
+Picture yourself 5 years from now:
+
+**SCENARIO A: You didn't take action.**
+
+It's 2030. You're still in the same job. Maybe a small raise. Maybe not.
+
+You're still scrolling Instagram, seeing other women posting about their {{nicheName}} practices. Still thinking "I should have done that."
+
+Your alarm still goes off at 6am. Your boss still controls your calendar. Your potential is still untapped.
+
+The worst part? You KNEW there was another path. You just didn't take it.
+
+---
+
+**SCENARIO B: You took action.**
+
+It's 2030. You wake up without an alarm. No commute.
+
+Your phone buzzes — it's Stripe: $1,200 deposit from a client.
+
+You check your schedule: 3 client calls today, then free by 2pm to pick up your kids.
+
+Your bank account shows $7K+ from last month. Your LinkedIn says "{{boardCertName}}."
+
+Other women DM you asking how you did it.
+
+---
+
+The difference between these scenarios isn't talent. It's not luck.
+
+**It's a decision you make TODAY.**
+
+The woman in Scenario B wasn't smarter than you. She wasn't luckier. She was just willing to feel uncomfortable for 90 days.
+
+**That's the real cost of "I'll think about it."** Not $397. Not the time. It's the LIFE you don't get to live.
+
+How many more years will you spend thinking about it?
+
+**[Stop thinking. Start doing. →]({{scholarshipLink}})**
+
+— Sarah
+
+---
+
+### HORMOZI 6: Failed Alternatives
+
+**Subject:** Why free YouTube doesn't work (the honest truth)
+
+**Body:**
+
+{{firstName}},
+
+Let me guess what you've already tried:
+
+✅ Watched free YouTube videos on {{nicheName}}
+✅ Read articles and blog posts
+✅ Maybe bought a $47 ebook
+✅ Followed some coaches on Instagram
+✅ Told yourself you'd "figure it out on your own"
+
+How's that working?
+
+I'm not being mean. I'm being honest.
+
+Here's why the free route doesn't work:
+
+**Problem 1: No credentials.**
+You can watch 1,000 hours of YouTube. Nobody will pay you without a certificate.
+
+**Problem 2: No system.**
+Random information creates confusion, not clarity. You need a PATH.
+
+**Problem 3: No accountability.**
+When it gets hard (it will), you quit. There's no one to push you through.
+
+**Problem 4: No proof.**
+"I learned from YouTube" vs. "I'm Board Certified with credentials from 9 international bodies."
+
+Which one would YOU pay $150/hour for?
+
+I spent 3 years trying the free route before I invested in real training. Those 3 years cost me easily $150,000 in income I didn't earn.
+
+The $397 Board Certification? It paid for itself in my first client.
+
+**Math:**
+- Free route: $0 cost, $0 income, years of frustration
+- Board Certification: $397 cost, $1,000+ first client, lifetime of earning
+
+**[Do the math. Join now. →]({{scholarshipLink}})**
+
+— Sarah
+
+---
+
+### HORMOZI 7: "I Almost Quit" (Vulnerability)
+
+**Subject:** The email I almost didn't send
+
+**Body:**
+
+{{firstName}},
+
+I need to be honest with you.
+
+Last year, I almost shut down this whole program.
+
+Here's what happened:
+
+I had a student — I'll call her Maria — who joined Board Certification and... gave up after week 2.
+
+She sent me an angry email: "This doesn't work. You're a scam. I want my money back."
+
+I refunded her immediately. But her words stuck with me.
+
+For three days, I couldn't sleep. I questioned everything.
+
+*"Maybe I'm not meant to do this."*
+*"Maybe I'm fooling myself."*
+*"Maybe I should just go back to nursing."*
+
+Then, that Friday, I got a different email.
+
+It was from Patricia (the woman who went from $47K debt to $9K/month).
+
+She wrote:
+
+*"Sarah, I just want you to know that you saved my life. Not exaggerating. Last year I was planning my exit. I felt worthless. This program gave me purpose. My kids have their mom back. Thank you."*
+
+I cried for an hour.
+
+That's when I realized: I can't help everyone. Some people will quit. Some people will blame me.
+
+**But the ones who don't quit? Their lives will never be the same.**
+
+Maria quit after 2 weeks. Patricia pushed through.
+
+Same program. Same mentor. Different outcomes.
+
+The only variable? **Commitment.**
+
+{{firstName}}, I can't promise you'll succeed. No one can.
+
+But I CAN promise that if you commit — really commit — I'll be with you until you do.
+
+That's the deal.
+
+**[Take it or leave it →]({{scholarshipLink}})**
+
+With respect,
+
+**Sarah**
+
+---
+
 ## SEQUENCE SUMMARY
 
-| Sequence | Emails | Timing | Goal |
-|----------|--------|--------|------|
+### EMAILS:
+| Sequence | Count | Timing | Goal |
+|----------|-------|--------|------|
 | Pre-Completion | 6 | 0-48 hours | Get them to FINISH |
-| Post-Completion | 8 | 0-78 hours | Convert to $997 |
+| **Milestone & Progress** | 8 | Lesson triggers | **Celebrate + prevent stalls** |
+| Post-Completion | 8 | 0-78 hours | Convert to **$397 scholarship** |
 | Winback | 4 | 24h - 90 days | Recover non-buyers |
 | Downsell | 3 | 84h - 7 days | Capture price-sensitive |
 | Long-Term Nurture | 7 | 7-90 days | Stay top of mind |
 | Revival | 1 | After "interested" click | Personalized close |
+| **Hormozi Warming** | 7 | Days 10-60 | **Deep CRO for closing calls** |
 
-**TOTAL: 29 EMAIL TEMPLATES**
+**TOTAL EMAILS: 44**
+
+### DMs:
+| Sequence | Count | Timing | Goal |
+|----------|-------|--------|------|
+| Post-Completion DMs | 7 | 0-48 hours post-exam | Convert/engage |
+| **Milestone DMs** | 7 | Lesson triggers | **Progress celebration** |
+
+**TOTAL DMs: 14**
+
+### SMS:
+| Count | Purpose |
+|-------|---------|
+| 4 | Welcome, reminder, celebration, scholarship |
+
+**GRAND TOTAL: 44 Emails + 14 DMs + 4 SMS = 62 MESSAGE TEMPLATES**
+
+---
+
+## KEY ENHANCEMENTS
+
+### Niche Placeholders
+- `{{nicheName}}` - Topic name (Reiki Healing, ADHD Coaching, etc.)
+- `{{nicheDisplayName}}` - Credential title (Certified Reiki Practitioner)
+- `{{boardCertName}}` - Full title (Board Certified {{nicheName}} Specialist)
+
+### Pricing ($397 Scholarship)
+- Scholarship: **$397** (was $997)
+- Payment plan: **2x $199**
+- Post-scholarship: $997
+
+### Accreditation Backing
+**ASI-Verified & Internationally Recognized**
+CMA • IPHM • CPD • IAOTH • ICAHP • IGCT • CTAA • IHTCP • IIOHT
+
+### Transformation Messaging
+- BEFORE: Interested but no credentials, feeling like a fraud
+- NOW: {{nicheDisplayName}} with ASI-verified certificate
+- AFTER: {{boardCertName}} earning $5K-$10K/month
+
+### What They Can Do After ASI Certification
+- ✅ Call yourself a {{nicheDisplayName}}
+- ✅ List credentials on website & social media
+- ✅ Accept paying clients
+- ✅ Get listed in ASI Graduate Directory
+- ✅ Use certificate in marketing
 
 ---
 

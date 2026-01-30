@@ -22,7 +22,39 @@ export function ClassicLessonRootCauseMedicine({
     const sections: LessonSection[] = [
         {
             type: 'intro',
-            content: `Hey {name}! I'm Sarah, and I'm genuinely SO excited you're here. Can I be honest with you? 4 years ago, I was exactly where you might be right now - curious about health coaching, but terrified I wasn't "qualified enough." I wasn't a doctor. I didn't have a science degree. I was a 43-year-old mom who'd struggled with my OWN health issues and finally found answers. Today? I work 15 hours a week, earn $6,200/month, and I've helped 200+ women transform their health. And I'm going to show you exactly how.`,
+            content: `Hey {name}! I'm Sarah, and I'm genuinely SO excited you're here. Before we dive in, I want to share something personal with you...`,
+        },
+        {
+            type: 'text',
+            content: `Four years ago, I was a 43-year-old single mom of two, barely holding it together. My husband had passed away 18 months earlier - a heart attack at 46. No warning. Just... gone.`,
+        },
+        {
+            type: 'text',
+            content: `I fell apart. Grief, stress, anxiety. I gained 35 pounds. Couldn't sleep. Had panic attacks dropping my kids at school. My doctor put me on antidepressants and sleeping pills. "Give it time," she said.`,
+        },
+        {
+            type: 'text',
+            content: `But I wasn't getting better. I was getting WORSE. And I couldn't afford to fall apart - my kids needed me. I was all they had.`,
+        },
+        {
+            type: 'text',
+            content: `That's when a friend mentioned functional medicine. I was skeptical - it sounded like "woo-woo" stuff. But I was desperate. So I tried it.`,
+        },
+        {
+            type: 'text',
+            content: `Within 2 months, I discovered my cortisol was through the roof. My gut was a mess. I had nutrient deficiencies. Things my doctor never checked. Things that EXPLAINED why I felt so broken.`,
+        },
+        {
+            type: 'text',
+            content: `6 months later? I was off the pills. Lost the weight. Sleeping again. I had my LIFE back. And more importantly - I could finally be the mom my kids deserved.`,
+        },
+        {
+            type: 'text',
+            content: `That's when I thought: "How many other women are suffering like I was? How many are being given pills instead of answers?"`,
+        },
+        {
+            type: 'key-point',
+            content: `I got certified. I started helping other women. And now? I work 15 hours a week from home, earn $6,200/month, and I've helped 200+ women transform their health - just like I did mine. I'm not some perfect wellness guru. I'm a regular woman who hit rock bottom and found a way out. And I'm going to show you exactly how to help others do the same.`,
         },
         {
             type: 'heading',
@@ -79,7 +111,21 @@ export function ClassicLessonRootCauseMedicine({
         },
         {
             type: 'quote',
-            content: `"I spent 25 years in corporate accounting. When I started this program, I thought 'Who will listen to me? I'm not a health professional.' My first client was my sister-in-law who'd struggled with fatigue for years. After 3 months working together, she was off her afternoon energy drinks and lost 18 pounds. She told me: 'You helped me more in 3 months than my doctor did in 3 years.' I quit my corporate job 8 months ago. I now work 20 hours/week and earned $4,800 last month. Not bad for someone who 'isn't qualified.'" - Linda M., Ohio | ASI Graduate 2024`,
+            content: `"I need to be honest - I was TERRIFIED to start.
+
+I'd already wasted $2,000 on a life coaching certification that led nowhere. My husband gave me 'the look' when I mentioned this program. My sister literally said 'Another course? Really?'
+
+I spent 25 years in corporate accounting. I had no health background. I wasn't thin or fit. I struggled with my OWN weight and energy. Who was I to help anyone?
+
+But something felt different this time. I actually understood what Sarah was teaching. The root cause stuff - it clicked.
+
+My first client was my sister-in-law who'd struggled with fatigue for years. After 3 months, she was off her afternoon energy drinks and lost 18 pounds. She cried when she told me: 'You helped me more in 3 months than my doctor did in 3 years.'
+
+I cried too. Because for the first time, I felt like I was doing something that MATTERED.
+
+Today: I work 20 hours/week from home. Last month I earned $4,800. My husband now brags about me to his friends. And my sister? She's my client now.
+
+To anyone feeling like an imposter: You don't need to be perfect. You just need to START." - Linda M., Ohio | ASI Graduate 2024`,
         },
         {
             type: 'heading',
@@ -171,7 +217,25 @@ export function ClassicLessonRootCauseMedicine({
         },
         {
             type: 'quote',
-            content: `"I taught high school for 20 years. Zero health background. When my own thyroid issues led me down the functional medicine rabbit hole, I finally felt better for the first time in a decade. I thought: 'I have to share this with other women.' The certification gave me the structure and credibility I needed. Now I specialize in helping women with thyroid and hormone issues. Last month: 8 clients, $3,400 in income, working from home while my kids are at school. The best part? I'm HELPING people. That never happened in the classroom." - Patricia K., Texas | ASI Graduate 2023`,
+            content: `"I was exhausted. Not 'tired' - EXHAUSTED. For years.
+
+My doctor tested my thyroid and said 'Everything looks fine.' But I knew something was wrong. I was gaining weight, losing hair, couldn't get out of bed. I felt like I was watching my life from behind a fog.
+
+I spent 3 years and thousands of dollars on doctors who dismissed me. 'Have you tried exercise?' they'd say. I wanted to scream.
+
+Then I found functional medicine. I learned that 'normal' thyroid labs don't mean optimal. I learned about T3, reverse T3, antibodies. Things my doctors NEVER mentioned.
+
+For the first time in a decade, I felt better.
+
+And I thought: 'How many other women are being dismissed right now? How many are hearing 'you're fine' when they're SUFFERING?'
+
+I had to do something.
+
+Today I specialize in helping women with thyroid and hormone issues. Last month: 8 clients, $3,400 income, working from home while my kids are at school.
+
+My students ask me: 'What made you qualified to do this?'
+
+I tell them: 'My suffering. My frustration. My refusal to give up. That's my qualification.'" - Patricia K., Texas | ASI Graduate 2023`,
         },
         {
             type: 'heading',

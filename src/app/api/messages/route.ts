@@ -281,3 +281,62 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// DELETE - Delete a message (admin/mentor only)
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Check if user is admin/mentor
+    const allowedRoles = ["ADMIN", "INSTRUCTOR", "MENTOR"];
+    if (!allowedRoles.includes(session.user.role as string)) {
+      return NextResponse.json(
+        { success: false, error: "Only admins and mentors can delete messages" },
+        { status: 403 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const messageId = searchParams.get("messageId");
+
+    if (!messageId) {
+      return NextResponse.json(
+        { success: false, error: "Message ID required" },
+        { status: 400 }
+      );
+    }
+
+    // Delete any reactions first (due to foreign key constraint)
+    await prisma.messageReaction.deleteMany({
+      where: { messageId },
+    });
+
+    // Delete replies to this message (update replyToId to null)
+    await prisma.message.updateMany({
+      where: { replyToId: messageId },
+      data: { replyToId: null },
+    });
+
+    // Delete the message
+    const deletedMessage = await prisma.message.delete({
+      where: { id: messageId },
+    });
+
+    console.log(`[MESSAGES] Message ${messageId} deleted by ${session.user.email}`);
+
+    return NextResponse.json({ success: true, data: deletedMessage });
+  } catch (error) {
+    console.error("Delete message error:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to delete message" },
+      { status: 500 }
+    );
+  }
+}

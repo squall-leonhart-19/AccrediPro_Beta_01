@@ -13,13 +13,19 @@ interface LeadLayoutProps {
 // Map diploma slug to tag prefix
 const DIPLOMA_TAG_PREFIX: Record<string, string> = {
     "womens-health-diploma": "wh-lesson-complete",
+    "womens-hormone-health-diploma": "whh-lesson-complete",
     "gut-health-diploma": "gut-health-lesson-complete",
     "functional-medicine-diploma": "functional-medicine-lesson-complete",
     "health-coach-diploma": "health-coach-lesson-complete",
     "nurse-coach-diploma": "nurse-coach-lesson-complete",
     "holistic-nutrition-diploma": "holistic-nutrition-lesson-complete",
     "hormone-health-diploma": "hormone-health-lesson-complete",
+    "spiritual-healing-diploma": "spiritual-healing-lesson-complete",
+    "energy-healing-diploma": "energy-healing-lesson-complete",
     "christian-coaching-diploma": "christian-coaching-lesson-complete",
+    "reiki-healing-diploma": "reiki-healing-lesson-complete",
+    "adhd-coaching-diploma": "adhd-coaching-lesson-complete",
+    "pet-nutrition-diploma": "pet-nutrition-lesson-complete",
 };
 
 async function getLeadData(userId: string, diplomaSlug: string) {
@@ -83,9 +89,19 @@ export default async function LeadLayout({ children }: LeadLayoutProps) {
     const headersList = await headers();
     const pathname = headersList.get("x-pathname") || headersList.get("x-invoke-path") || "";
 
-    // Extract diploma slug from pathname (e.g., /gut-health-diploma/profile -> gut-health-diploma)
+    // Extract diploma slug from pathname
+    // New pattern: /portal/functional-medicine/lesson/1 -> functional-medicine-diploma
+    // Old pattern: /gut-health-diploma/profile -> gut-health-diploma
     const pathParts = pathname.split("/").filter(Boolean);
-    const diplomaSlug = pathParts.find(part => part.includes("-diploma")) || "womens-health-diploma";
+
+    let diplomaSlug = "womens-health-diploma";
+    if (pathParts[0] === "portal" && pathParts[1]) {
+        // New portal pattern - convert to course slug format
+        diplomaSlug = `${pathParts[1]}-diploma`;
+    } else if (pathParts[0]?.includes("-diploma")) {
+        // Old diploma pattern
+        diplomaSlug = pathParts[0];
+    }
 
     const { user, leadOnboarding, diplomaCompleted } = await getLeadData(session.user.id, diplomaSlug);
 

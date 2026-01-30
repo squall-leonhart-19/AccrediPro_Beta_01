@@ -21,6 +21,7 @@ const MINI_DIPLOMA_SLUGS = [
   "holistic-nutrition-mini-diploma",
   "hormone-health-mini-diploma",
   "nurse-coach-mini-diploma",
+  "adhd-coaching-mini-diploma",
 ];
 
 // Map mini diploma slug to tag prefix for completion tracking
@@ -32,6 +33,7 @@ const DIPLOMA_TAG_PREFIX: Record<string, string> = {
   "holistic-nutrition-mini-diploma": "holistic-nutrition-lesson-complete",
   "hormone-health-mini-diploma": "hormone-health-lesson-complete",
   "nurse-coach-mini-diploma": "nurse-coach-lesson-complete",
+  "adhd-coaching-mini-diploma": "adhd-coaching-lesson-complete",
 };
 
 // Map mini diploma slug to lead portal route
@@ -43,6 +45,7 @@ const DIPLOMA_ROUTES: Record<string, string> = {
   "holistic-nutrition-mini-diploma": "/holistic-nutrition-diploma",
   "hormone-health-mini-diploma": "/hormone-health-diploma",
   "nurse-coach-mini-diploma": "/nurse-coach-diploma",
+  "adhd-coaching-mini-diploma": "/adhd-coaching-diploma",
 };
 
 async function getUserOnboardingData(userId: string) {

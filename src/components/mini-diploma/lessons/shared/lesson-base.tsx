@@ -151,7 +151,7 @@ export function LessonBase({
                 return () => clearTimeout(timer);
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentMessageIndex, messages.length]);
 
     // Auto-scroll
@@ -308,7 +308,7 @@ export function LessonBase({
                         >
                             <span className="flex items-center justify-center gap-2">
                                 <GraduationCap className="h-5 w-5" />
-                                Complete & Get Your Certificate!
+                                Complete & Take Final Exam! →
                             </span>
                         </Button>
                     )}
@@ -390,11 +390,10 @@ export function LessonBase({
                                             <div className="flex items-center gap-3">
                                                 <button
                                                     onClick={() => msg.audioUrl && playPreRecordedAudio(msg.id, msg.audioUrl)}
-                                                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
-                                                        playingAudioId === msg.id
+                                                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${playingAudioId === msg.id
                                                             ? 'bg-burgundy-600 text-white'
                                                             : 'bg-white text-burgundy-600 hover:bg-burgundy-50 border border-burgundy-200'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {playingAudioId === msg.id ? (
                                                         <Pause className="h-5 w-5" />
@@ -407,9 +406,8 @@ export function LessonBase({
                                                         {[3, 5, 8, 4, 7, 9, 5, 6, 8, 4, 6, 3, 5, 7, 4].map((h, i) => (
                                                             <div
                                                                 key={i}
-                                                                className={`w-1 rounded-full transition-colors ${
-                                                                    playingAudioId === msg.id ? 'bg-burgundy-500 animate-pulse' : 'bg-burgundy-300'
-                                                                }`}
+                                                                className={`w-1 rounded-full transition-colors ${playingAudioId === msg.id ? 'bg-burgundy-500 animate-pulse' : 'bg-burgundy-300'
+                                                                    }`}
                                                                 style={{ height: `${h * 2}px` }}
                                                             />
                                                         ))}

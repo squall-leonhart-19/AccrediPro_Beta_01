@@ -187,7 +187,7 @@ export function MultiStepQualificationForm({
                         </div>
 
                         <div className="space-y-1.5">
-                            <Label htmlFor="phone" className="text-sm font-medium">Phone (I'll text your access link) *</Label>
+                            <Label htmlFor="phone" className="text-sm font-medium">Phone (I'll text your access link & certificate) *</Label>
                             <div className="relative">
                                 <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                                 <div className="absolute left-9 top-3 text-gray-500 font-medium border-r border-gray-300 pr-2 mr-2 text-sm leading-none h-5 flex items-center">

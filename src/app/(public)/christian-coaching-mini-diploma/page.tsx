@@ -4,36 +4,34 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
     Award, CheckCircle2, ArrowRight,
-    GraduationCap, Users, Star, Clock,
-    BookOpen, MessageCircle, Loader2, Shield,
-    Globe, ChevronDown, ChevronUp, Zap, ArrowDown,
+    Users, Star, Clock,
+    BookOpen, Loader2, Shield,
+    ChevronDown, ChevronUp, ArrowDown,
     DollarSign, Heart, Sparkles, X, Cross
 } from "lucide-react";
 import { PIXEL_CONFIG } from "@/components/tracking/meta-pixel";
 import { useMetaTracking } from "@/hooks/useMetaTracking";
 import MetaPixel from "@/components/tracking/meta-pixel";
-import { FloatingChatWidget } from "@/components/lead-portal/floating-chat-widget";
+import { CertificatePreview } from "@/components/certificates/certificate-preview";
 import { MultiStepQualificationForm, QualificationData } from "@/components/lead-portal/multi-step-qualification-form";
 
 // Same default password as backend
 const LEAD_PASSWORD = "coach2026";
 
-// Brand Colors - Navy & Gold (Faith-based theme)
+// Brand Colors - Blue/Gold theme for Christian Coaching
 const BRAND = {
-    navy: "#1e3a5f",
-    navyDark: "#0f2034",
-    navyLight: "#2d5a8a",
-    gold: "#d4a574",
-    goldLight: "#e8c9a8",
-    goldDark: "#b8864a",
+    primary: "#1e40af",
+    primaryDark: "#1e3a8a",
+    primaryLight: "#3b82f6",
+    gold: "#d4af37",
+    goldLight: "#f7e7a0",
+    goldDark: "#b8860b",
     cream: "#fdf8f0",
-    rose: "#8b4557",
-    goldMetallic: "linear-gradient(135deg, #d4a574 0%, #e8c9a8 25%, #d4a574 50%, #b8864a 75%, #d4a574 100%)",
-    navyMetallic: "linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 25%, #1e3a5f 50%, #0f2034 75%, #1e3a5f 100%)",
+    goldMetallic: "linear-gradient(135deg, #d4af37 0%, #f7e7a0 25%, #d4af37 50%, #b8860b 75%, #d4af37 100%)",
+    primaryMetallic: "linear-gradient(135deg, #1e40af 0%, #3b82f6 25%, #1e40af 50%, #1e3a8a 75%, #1e40af 100%)",
 };
 
 function ChristianCoachingMiniDiplomaContent() {
@@ -62,7 +60,7 @@ function ChristianCoachingMiniDiplomaContent() {
         trackViewContent(
             "Christian Coaching Mini Diploma",
             "christian-coaching-mini-diploma",
-            PIXEL_CONFIG.FUNCTIONAL_MEDICINE
+            PIXEL_CONFIG.HEALTH_COACH
         );
     }, [trackViewContent]);
 
@@ -100,7 +98,7 @@ function ChristianCoachingMiniDiplomaContent() {
                     investmentLevel: formData.investmentLevel,
                     readiness: formData.readiness,
                     course: "christian-coaching",
-                    segment: "faith-based",
+                    segment: "general",
                 }),
             });
 
@@ -114,7 +112,7 @@ function ChristianCoachingMiniDiplomaContent() {
                 "Christian Coaching Mini Diploma",
                 formData.email,
                 formData.firstName,
-                PIXEL_CONFIG.FUNCTIONAL_MEDICINE
+                PIXEL_CONFIG.HEALTH_COACH
             );
 
             // Track optin event for funnel analytics
@@ -130,7 +128,7 @@ function ChristianCoachingMiniDiplomaContent() {
                         utm_source: searchParams.get("utm_source"),
                         utm_medium: searchParams.get("utm_medium"),
                         utm_campaign: searchParams.get("utm_campaign"),
-                        segment: "faith-based",
+                        segment: "general",
                         device: typeof window !== "undefined" && window.innerWidth < 768 ? "mobile" : "desktop"
                     }
                 })
@@ -146,11 +144,11 @@ function ChristianCoachingMiniDiplomaContent() {
                 email: formData.email.toLowerCase(),
                 password: LEAD_PASSWORD,
                 redirect: false,
-                callbackUrl: "/christian-coaching-diploma/qualification",
+                callbackUrl: "/portal/christian-coaching",
             });
 
             // Redirect to qualification interstitial with name for personalization
-            window.location.href = `/christian-coaching-diploma/qualification?name=${encodeURIComponent(formData.firstName.trim())}`;
+            window.location.href = `/portal/christian-coaching?name=${encodeURIComponent(formData.firstName.trim())}`;
 
         } catch (err: any) {
             alert(err.message || "Failed to register. Please try again.");
@@ -165,21 +163,21 @@ function ChristianCoachingMiniDiplomaContent() {
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: BRAND.cream }}>
-            <MetaPixel pixelId={PIXEL_CONFIG.FUNCTIONAL_MEDICINE} />
+            <MetaPixel pixelId={PIXEL_CONFIG.HEALTH_COACH} />
 
             {/* URGENCY BAR with COUNTDOWN */}
             <div style={{ background: BRAND.goldMetallic }} className="py-2.5 px-4 text-center">
-                <p className="text-sm font-bold flex items-center justify-center gap-2 flex-wrap" style={{ color: BRAND.navyDark }}>
-                    ✝️ FREE ACCESS EXPIRES IN:
+                <p className="text-sm font-bold flex items-center justify-center gap-2 flex-wrap" style={{ color: BRAND.primaryDark }}>
+                    ✝ FREE ACCESS EXPIRES IN:
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-600 text-white text-xs font-mono">
                         {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
                     </span>
-                    • 247 faith-driven women enrolled today
+                    • 187 coaches enrolled today
                 </p>
             </div>
 
             {/* HERO SECTION */}
-            <section className="relative overflow-hidden pt-10 pb-16 md:pt-16 md:pb-24" style={{ backgroundColor: BRAND.navyDark }}>
+            <section className="relative overflow-hidden pt-10 pb-16 md:pt-16 md:pb-24" style={{ backgroundColor: BRAND.primaryDark }}>
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-10">
                     <div className="absolute inset-0" style={{
@@ -195,24 +193,24 @@ function ChristianCoachingMiniDiplomaContent() {
                     <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 items-start">
                         {/* Left Column - Copy */}
                         <div className="text-white">
-                            {/* Faith Badge */}
+                            {/* Christian Coaching Badge */}
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ backgroundColor: `${BRAND.gold}20`, border: `1px solid ${BRAND.gold}40` }}>
-                                <Heart className="w-4 h-4" style={{ color: BRAND.gold }} />
-                                <span className="text-sm font-medium" style={{ color: BRAND.gold }}>1-Hour Certification for Women of Faith</span>
+                                <Cross className="w-4 h-4" style={{ color: BRAND.gold }} />
+                                <span className="text-sm font-medium" style={{ color: BRAND.gold }}>1-Hour Certification in Christian Coaching</span>
                             </div>
 
                             <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1] mb-6">
-                                <span style={{ color: BRAND.goldLight }}>Turn Your Faith</span><br />
-                                <span className="text-white">Into a Calling That Pays</span><br />
-                                <span className="text-white/80 text-2xl md:text-3xl lg:text-4xl">$4K-$8K/Month. From Home. Impact Lives.</span>
+                                <span style={{ color: BRAND.goldLight }}>Turn Your Faith & Calling</span><br />
+                                <span className="text-white">Into a Thriving Ministry</span><br />
+                                <span className="text-white/80 text-2xl md:text-3xl lg:text-4xl">Help Others Grow. Earn $3K-$6K/Month.</span>
                             </h1>
 
                             <p className="text-lg md:text-xl text-white/80 mb-8 max-w-lg leading-relaxed">
-                                Get <strong className="text-white">certified in 1 hour</strong>. Your wisdom and faith are the foundation.
-                                Discover how 247 faith-driven women this week turned their spiritual gifts into a flexible, high-paying coaching career.
+                                Get <strong className="text-white">certified in 1 hour</strong>. God has given you gifts to serve others.
+                                Join 187 Christian coaches this week who turned their calling into a meaningful, profitable ministry.
                             </p>
 
-                            {/* Proof Points */}
+                            {/* Proof Points - Optimized */}
                             <div className="flex flex-wrap gap-4 md:gap-6 mb-8">
                                 <div className="flex items-center gap-2">
                                     <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${BRAND.gold}20` }}>
@@ -237,13 +235,13 @@ function ChristianCoachingMiniDiplomaContent() {
                                         <DollarSign className="w-5 h-5" style={{ color: BRAND.gold }} />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-white">$4K-$8K/mo</p>
-                                        <p className="text-xs text-white/60">Avg. graduate income</p>
+                                        <p className="font-bold text-white">$3K-$6K/mo</p>
+                                        <p className="text-xs text-white/60">Avg. coach income</p>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Testimonial Avatar Circle */}
+                            {/* Testimonial Avatar Circle - Social Proof - Mobile Optimized */}
                             <div className="flex flex-wrap items-center gap-3 mb-8">
                                 <div className="flex -space-x-2 flex-shrink-0">
                                     {[
@@ -262,12 +260,12 @@ function ChristianCoachingMiniDiplomaContent() {
                                             className="rounded-full border-2 border-white object-cover w-9 h-9"
                                         />
                                     ))}
-                                    <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ backgroundColor: BRAND.gold, color: BRAND.navyDark }}>
+                                    <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ backgroundColor: BRAND.gold, color: BRAND.primaryDark }}>
                                         +2K
                                     </div>
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-white text-sm font-semibold">2,147 women of faith certified</p>
+                                    <p className="text-white text-sm font-semibold">2,100+ Christian coaches certified</p>
                                     <p className="text-white/60 text-xs">Join them today — it's free</p>
                                 </div>
                             </div>
@@ -276,7 +274,7 @@ function ChristianCoachingMiniDiplomaContent() {
                             <Button
                                 onClick={scrollToForm}
                                 className="lg:hidden w-full h-14 text-lg font-bold text-white mb-6"
-                                style={{ background: BRAND.goldMetallic, color: BRAND.navyDark }}
+                                style={{ background: BRAND.goldMetallic, color: BRAND.primaryDark }}
                             >
                                 Get Certified Free — 1 Hour
                                 <ArrowDown className="ml-2 w-5 h-5" />
@@ -299,55 +297,60 @@ function ChristianCoachingMiniDiplomaContent() {
             <section className="py-16 md:py-20" style={{ backgroundColor: '#fff' }}>
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="grid lg:grid-cols-[300px_1fr] gap-10 items-start">
-                        {/* Sarah Photo */}
+                        {/* Sarah Photo - Small Testimonial Circle Style */}
                         <div className="flex items-start gap-4 lg:block">
                             <div className="relative inline-block flex-shrink-0">
                                 <Image
                                     src="/coach-sarah.webp"
-                                    alt="Sarah Mitchell, Your Christian Life Coaching Mentor"
+                                    alt="Sarah Mitchell, Your Christian Coaching Coach"
                                     width={80}
                                     height={80}
                                     className="rounded-full shadow-lg w-16 h-16 md:w-20 md:h-20 object-cover border-3"
                                     style={{ borderColor: BRAND.gold }}
                                 />
                                 <div className="absolute -bottom-1 -right-1 bg-white rounded-full shadow-lg p-1 border border-gray-100">
-                                    <Heart className="w-3 h-3" style={{ color: BRAND.navy }} />
+                                    <Shield className="w-3 h-3" style={{ color: BRAND.primary }} />
                                 </div>
                             </div>
                         </div>
 
                         {/* Sarah Story */}
                         <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-4" style={{ background: BRAND.goldMetallic, color: BRAND.navyDark }}>
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-4" style={{ background: BRAND.goldMetallic, color: BRAND.primaryDark }}>
                                 <Heart className="w-3 h-3" />
-                                FROM SARAH, YOUR MENTOR
+                                FROM SARAH, YOUR COACH
                             </div>
                             <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-4">
-                                "I Spent Years Watching Women Struggle<br />
-                                <span style={{ color: BRAND.navy }}>With No One to Truly Listen."</span>
+                                "God Called Me to Help Others.<br />
+                                <span style={{ color: BRAND.primary }}>Then I Found My Purpose."</span>
                             </h2>
                             <div className="space-y-4 text-gray-600 leading-relaxed">
                                 <p>
-                                    I'm Sarah Mitchell. 20+ years helping women find purpose. Former ministry leader who walked away from burnout because I couldn't watch one more woman feel lost and unheard in her own life.
+                                    I'm Sarah Mitchell. For years, I felt a stirring in my spirit — a calling to help others
+                                    grow in their faith and life. But I had no framework, no training, no way to turn
+                                    this calling into something tangible.
                                 </p>
                                 <p>
-                                    <strong className="text-gray-900">The woman who changed everything for me?</strong> She was 45, exhausted, feeling invisible in her own home. The church said "pray harder." Her friends said "be grateful." But she needed someone to actually COACH her through the storm.
+                                    <strong className="text-gray-900">The moment that changed everything?</strong> I discovered that
+                                    Christian coaching isn't just "nice conversations" — it's a biblical, structured practice that
+                                    transforms lives. Within months, I had paying clients. Within a year, I'd built a full ministry.
                                 </p>
                                 <p>
-                                    Now I train Christian life coaches who blend faith with practical transformation. <strong className="text-gray-900">2,100+ women</strong> have gone through this program. Many were just like you — called to serve but unsure how to turn their gifts into income.
+                                    Now I train others who feel the same calling. <strong className="text-gray-900">2,100+ Christian coaches</strong> have
+                                    gone through this program. Many were just like you — called by God but uncertain how to answer that call practically.
                                 </p>
                             </div>
                             <div className="flex flex-wrap gap-4 mt-6">
                                 <div className="flex items-center gap-2">
-                                    <Award className="w-5 h-5" style={{ color: BRAND.navy }} />
-                                    <span className="text-sm font-medium text-gray-700">20+ Years Experience</span>
+                                    <Award className="w-5 h-5" style={{ color: BRAND.primary }} />
+                                    <span className="text-sm font-medium text-gray-700">15+ Years Experience</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Users className="w-5 h-5" style={{ color: BRAND.navy }} />
+                                    <Users className="w-5 h-5" style={{ color: BRAND.primary }} />
                                     <span className="text-sm font-medium text-gray-700">2,100+ Graduates</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Star className="w-5 h-5" style={{ color: BRAND.navy }} />
+                                    <Star className="w-5 h-5" style={{ color: BRAND.primary }} />
                                     <span className="text-sm font-medium text-gray-700">4.9★ Student Rating</span>
                                 </div>
                             </div>
@@ -356,38 +359,38 @@ function ChristianCoachingMiniDiplomaContent() {
                 </div>
             </section>
 
-            {/* SUCCESS STORIES */}
-            <section className="py-16 md:py-20" style={{ backgroundColor: "#f5f0eb" }}>
+            {/* SUCCESS STORIES - WITH PHOTOS */}
+            <section className="py-16 md:py-20" style={{ backgroundColor: "#faf5eb" }}>
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-4">
-                        <p className="font-bold text-sm uppercase tracking-wide mb-3" style={{ color: BRAND.navy }}>Join 2,147 Women of Faith Who Answered the Call</p>
+                        <p className="font-bold text-sm uppercase tracking-wide mb-3" style={{ color: BRAND.primary }}>Join 2,100+ Coaches Who Answered Their Calling</p>
                         <h2 className="text-3xl md:text-4xl font-black text-gray-900">
-                            They Turned Their Faith<br />
-                            <span style={{ color: BRAND.navy }}>Into a Blessing and a Business.</span>
+                            They Stepped Out in Faith.<br />
+                            <span style={{ color: BRAND.primary }}>Now They Transform Lives.</span>
                         </h2>
                     </div>
 
                     {/* Social Proof Counter */}
                     <div className="flex justify-center gap-6 mb-10">
                         <div className="text-center">
-                            <p className="text-3xl font-black" style={{ color: BRAND.navy }}>2,147</p>
+                            <p className="text-3xl font-black" style={{ color: BRAND.primary }}>2,100+</p>
                             <p className="text-xs text-gray-500">Certified Coaches</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-3xl font-black" style={{ color: BRAND.navy }}>247</p>
+                            <p className="text-3xl font-black" style={{ color: BRAND.primary }}>187</p>
                             <p className="text-xs text-gray-500">Enrolled This Week</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-3xl font-black" style={{ color: BRAND.navy }}>89%</p>
+                            <p className="text-3xl font-black" style={{ color: BRAND.primary }}>91%</p>
                             <p className="text-xs text-gray-500">Finish Same Day</p>
                         </div>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-6">
                         {[
-                            { name: "Rebecca M.", age: "47", income: "$5,600/mo", before: "Pastor's Wife, 18 years", story: "I spent years supporting everyone else's ministry. When the kids left, I felt purposeless. Now I coach women through life transitions — using everything I learned in ministry. It's the calling I didn't know I was missing.", avatar: "/zombie-avatars/user_47_backyard_bbq_1767801467.webp" },
-                            { name: "Sandra K.", age: "52", income: "$7,200/mo", before: "Women's Ministry Leader", story: "I was burnt out from church work but still loved helping women. This certification gave me a way to serve AND earn. My faith is the foundation. My coaching is the ministry.", avatar: "/zombie-avatars/user_52_bedroom_morning_1767801467.webp" },
-                            { name: "Michelle T.", age: "44", income: "$4,400/mo", before: "Sunday School Teacher", story: "I didn't think I could turn my faith into income. Now I help Christian moms navigate overwhelm. Every session feels like a divine appointment. And I finally contribute financially to my family.", avatar: "/zombie-avatars/user_44_bathroom_mirror_1767801533.webp" }
+                            { name: "Jennifer R.", age: "45", income: "$4,200/mo", before: "Women's Ministry Leader", story: "I always felt called to help women beyond Sunday morning. This certification gave me the biblical framework and confidence to start my practice. Now I help women find freedom and purpose in Christ.", avatar: "/zombie-avatars/user_47_backyard_bbq_1767801467.webp" },
+                            { name: "Michelle M.", age: "52", income: "$5,800/mo", before: "Corporate Executive", story: "After 25 years in corporate, I felt spiritually dry. This program helped me align my skills with my faith. Now I coach Christian leaders full-time and have never been more fulfilled.", avatar: "/zombie-avatars/user_52_bedroom_morning_1767801467.webp" },
+                            { name: "Rebecca K.", age: "38", income: "$3,500/mo", before: "Homeschool Mom", story: "I felt God calling me to something more but didn't know what. This certification gave me legitimacy and a clear path. Now I see clients while my kids are at school.", avatar: "/zombie-avatars/user_44_bathroom_mirror_1767801533.webp" }
                         ].map((story, i) => (
                             <div key={i} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                                 <div className="flex items-center gap-3 mb-4">
@@ -405,8 +408,8 @@ function ChristianCoachingMiniDiplomaContent() {
                                 </div>
                                 <p className="text-gray-600 text-sm mb-4 italic">"{story.story}"</p>
                                 <div className="rounded-xl px-4 py-3 text-center" style={{ background: BRAND.goldMetallic }}>
-                                    <p className="text-2xl font-black" style={{ color: BRAND.navyDark }}>{story.income}</p>
-                                    <p className="text-xs" style={{ color: BRAND.navyDark }}>Monthly Income</p>
+                                    <p className="text-2xl font-black" style={{ color: BRAND.primaryDark }}>{story.income}</p>
+                                    <p className="text-xs" style={{ color: BRAND.primaryDark }}>Monthly Income</p>
                                 </div>
                             </div>
                         ))}
@@ -423,13 +426,13 @@ function ChristianCoachingMiniDiplomaContent() {
                                 <Shield className="w-8 h-8 text-green-600" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-black text-gray-900 mb-2">🛡️ The "Called & Confident" Guarantee</h3>
+                                <h3 className="text-xl font-black text-gray-900 mb-2">The "This Actually Works" Guarantee</h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Complete all 9 lessons. If you don't feel 100% confident that God has equipped you to coach others,
+                                    Complete all 9 lessons. If you don't feel 100% confident you understand how to start your ministry,
                                     email me personally. I'll either coach you until you do — or refund every penny of any future
                                     purchase you make. <strong>No questions, no guilt, no fine print.</strong>
                                 </p>
-                                <p className="text-sm text-gray-500 mt-3 italic">— Sarah Mitchell, Your Mentor</p>
+                                <p className="text-sm text-gray-500 mt-3 italic">— Sarah Mitchell, Your Coach</p>
                             </div>
                         </div>
                     </div>
@@ -442,24 +445,24 @@ function ChristianCoachingMiniDiplomaContent() {
                     <div className="rounded-2xl overflow-hidden border-2" style={{ borderColor: BRAND.gold }}>
                         <div className="grid md:grid-cols-2">
                             {/* Left: Career Path */}
-                            <div className="p-8" style={{ backgroundColor: BRAND.navyDark }}>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: BRAND.goldMetallic, color: BRAND.navyDark }}>
+                            <div className="p-8" style={{ backgroundColor: BRAND.primaryDark }}>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: BRAND.goldMetallic, color: BRAND.primaryDark }}>
                                     <Sparkles className="w-3 h-3" />
-                                    YOUR NEW CALLING
+                                    YOUR NEW MINISTRY PATH
                                 </div>
                                 <h3 className="text-2xl md:text-3xl font-black text-white mb-4">
                                     Become a<br />
                                     <span style={{ color: BRAND.gold }}>Certified Christian Life Coach</span>
                                 </h3>
                                 <p className="text-white/70 mb-6">
-                                    Help clients find purpose, overcome challenges, and live their God-given potential. Work from home. Set your own hours. Earn what you're worth.
+                                    Help clients grow spiritually and practically. Work from home. Set your own hours. Create kingdom impact.
                                 </p>
                                 <div className="space-y-3">
                                     {[
                                         "Work with clients 1-on-1 (virtual or in-person)",
-                                        "Help people align their lives with their faith",
+                                        "Help people discover God's purpose for their lives",
                                         "Be your own boss with flexible hours",
-                                        "Use your wisdom and spiritual gifts"
+                                        "Build a ministry that supports your family"
                                     ].map((item, i) => (
                                         <div key={i} className="flex items-center gap-2 text-white/90">
                                             <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: BRAND.gold }} />
@@ -469,23 +472,23 @@ function ChristianCoachingMiniDiplomaContent() {
                                 </div>
                             </div>
                             {/* Right: Income */}
-                            <div className="p-8 flex flex-col justify-center" style={{ backgroundColor: "#f5f0eb" }}>
+                            <div className="p-8 flex flex-col justify-center" style={{ backgroundColor: "#faf5eb" }}>
                                 <div className="text-center">
-                                    <p className="text-sm font-bold uppercase tracking-wide mb-2" style={{ color: BRAND.navy }}>Average Coach Income</p>
-                                    <div className="text-5xl md:text-6xl font-black mb-2" style={{ color: BRAND.navy }}>$4K-$8K</div>
+                                    <p className="text-sm font-bold uppercase tracking-wide mb-2" style={{ color: BRAND.primary }}>Average Coach Income</p>
+                                    <div className="text-5xl md:text-6xl font-black mb-2" style={{ color: BRAND.primary }}>$3K-$6K</div>
                                     <p className="text-gray-500 text-sm mb-6">per month (part-time)</p>
 
                                     <div className="grid grid-cols-3 gap-4 text-center">
                                         <div>
-                                            <p className="text-2xl font-bold" style={{ color: BRAND.navy }}>$150</p>
+                                            <p className="text-2xl font-bold" style={{ color: BRAND.primary }}>$125</p>
                                             <p className="text-xs text-gray-500">per session</p>
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-bold" style={{ color: BRAND.navy }}>10-15</p>
+                                            <p className="text-2xl font-bold" style={{ color: BRAND.primary }}>8-12</p>
                                             <p className="text-xs text-gray-500">clients/month</p>
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-bold" style={{ color: BRAND.navy }}>Flexible</p>
+                                            <p className="text-2xl font-bold" style={{ color: BRAND.primary }}>Flexible</p>
                                             <p className="text-xs text-gray-500">your schedule</p>
                                         </div>
                                     </div>
@@ -501,23 +504,24 @@ function ChristianCoachingMiniDiplomaContent() {
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
-                            Your Faith Background Is<br />
-                            <span style={{ color: BRAND.navy }}>Your Unfair Advantage</span>
+                            Your Faith & Calling Are<br />
+                            <span style={{ color: BRAND.primary }}>Your Unfair Advantage</span>
                         </h2>
                         <p className="text-gray-600 max-w-2xl mx-auto">
-                            You already understand grace, patience, and walking alongside others through storms. You know how to listen with compassion. You just need the <strong>coaching framework</strong> to put it all together.
+                            You already have a heart for people. You hear from God. You want to serve.
+                            You just need the <strong>framework and skills</strong> to turn that calling into a practice.
                         </p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-6">
                         {[
-                            { icon: Heart, title: "Spiritual Foundation", desc: "You understand faith, grace, and the journey of growth. That's the heart of transformation coaching right there." },
-                            { icon: BookOpen, title: "Wisdom & Experience", desc: "Years of life experience, Bible study, and walking with others through trials — you have deep wells to draw from." },
-                            { icon: Users, title: "Compassionate Listening", desc: "You know how to hold space, ask the right questions, and provide comfort. That's what clients pay for." }
+                            { icon: Cross, title: "Deep Faith Foundation", desc: "Your relationship with God is the foundation of powerful coaching. That's what sets Christian coaching apart." },
+                            { icon: BookOpen, title: "Biblical Wisdom", desc: "God's Word provides timeless principles for life change. You'll learn to apply them practically." },
+                            { icon: Heart, title: "Heart for Service", desc: "You naturally care about people's growth. That's what clients are looking for — someone who genuinely cares." }
                         ].map((item, i) => (
                             <div key={i} className="text-center p-6 rounded-2xl border border-gray-100">
-                                <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: `${BRAND.navy}10` }}>
-                                    <item.icon className="w-7 h-7" style={{ color: BRAND.navy }} />
+                                <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: `${BRAND.primary}10` }}>
+                                    <item.icon className="w-7 h-7" style={{ color: BRAND.primary }} />
                                 </div>
                                 <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
                                 <p className="text-gray-600 text-sm">{item.desc}</p>
@@ -528,55 +532,52 @@ function ChristianCoachingMiniDiplomaContent() {
             </section>
 
             {/* CERTIFICATE PREVIEW */}
-            <section className="py-16 md:py-20" style={{ backgroundColor: "#f5f0eb" }}>
+            <section className="py-16 md:py-20" style={{ backgroundColor: "#faf5eb" }}>
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="grid lg:grid-cols-2 gap-10 items-center">
-                        {/* Certificate Image */}
+                        {/* Certificate Preview */}
                         <div className="relative">
                             <div className="absolute -inset-4 rounded-3xl opacity-20 blur-2xl" style={{ backgroundColor: BRAND.gold }} />
-                            <div className="relative bg-white rounded-2xl shadow-2xl p-4 border border-gray-100 transform hover:scale-[1.02] transition-transform">
-                                <Image
-                                    src="/FUNCTIONAL_MEDICINE_CERTIFICATE.webp"
-                                    alt="Christian Life Coaching Foundation Certificate"
-                                    width={600}
-                                    height={450}
-                                    className="rounded-xl w-full h-auto"
+                            <div className="relative transform hover:scale-[1.02] transition-transform">
+                                <CertificatePreview
+                                    diplomaTitle="Christian Life Coach"
+                                    primaryColor={BRAND.primary}
                                 />
                             </div>
                             {/* Badge */}
                             <div className="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-lg px-4 py-2 border border-gray-100">
                                 <div className="flex items-center gap-2">
-                                    <Shield className="w-5 h-5" style={{ color: BRAND.navy }} />
-                                    <span className="font-bold text-sm" style={{ color: BRAND.navy }}>ASI Verified</span>
+                                    <Shield className="w-5 h-5" style={{ color: BRAND.primary }} />
+                                    <span className="font-bold text-sm" style={{ color: BRAND.primary }}>ASI Verified</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Certificate Copy */}
                         <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-6" style={{ background: BRAND.goldMetallic, color: BRAND.navyDark }}>
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-6" style={{ background: BRAND.goldMetallic, color: BRAND.primaryDark }}>
                                 <Award className="w-4 h-4" />
-                                ADD TO YOUR CREDENTIALS
+                                VALIDATE YOUR CALLING
                             </div>
 
                             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
                                 Get Certified Today.<br />
-                                <span style={{ color: BRAND.navy }}>In Just 1 Hour.</span>
+                                <span style={{ color: BRAND.primary }}>In Just 1 Hour.</span>
                             </h2>
 
                             <p className="text-gray-600 mb-6 leading-relaxed">
                                 Complete all 9 lessons and receive your <strong>ASI-Verified Foundation Certificate</strong>.
-                                Add it to LinkedIn today. Show the world you're equipped to coach with faith and excellence.
+                                Add it to LinkedIn today. Show the world you're a trained Christian life coach.
                             </p>
 
-                            {/* Urgency Box */}
+                            {/* Urgency Box - 48 Hour Deadline */}
                             <div className="rounded-2xl p-5 mb-6 border-2 border-red-200" style={{ backgroundColor: "#fef2f2" }}>
                                 <div className="flex items-start gap-3">
                                     <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-red-500">
                                         <Clock className="w-5 h-5 text-white" />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-red-700 mb-1">⏰ 48-Hour Completion Window</p>
+                                        <p className="font-bold text-red-700 mb-1">48-Hour Completion Window</p>
                                         <p className="text-sm text-gray-600">
                                             Your access expires in <strong className="text-red-600">48 hours</strong>. Complete all 9 lessons to claim your certificate.
                                             <strong> Most finish in one sitting.</strong>
@@ -588,7 +589,7 @@ function ChristianCoachingMiniDiplomaContent() {
                             <Button
                                 onClick={scrollToForm}
                                 className="h-14 px-8 text-lg font-bold text-white"
-                                style={{ background: BRAND.navyMetallic }}
+                                style={{ background: BRAND.primaryMetallic }}
                             >
                                 Start My 1-Hour Certification
                                 <ArrowRight className="ml-2 w-5 h-5" />
@@ -603,25 +604,25 @@ function ChristianCoachingMiniDiplomaContent() {
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
-                            This Is Perfect For You If…
+                            This Is Perfect For You If...
                         </h2>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
-                        <div className="rounded-2xl p-6 border" style={{ backgroundColor: `${BRAND.navy}08`, borderColor: `${BRAND.navy}20` }}>
-                            <h3 className="font-bold mb-4 flex items-center gap-2" style={{ color: BRAND.navy }}>
+                        <div className="rounded-2xl p-6 border" style={{ backgroundColor: `${BRAND.primary}08`, borderColor: `${BRAND.primary}20` }}>
+                            <h3 className="font-bold mb-4 flex items-center gap-2" style={{ color: BRAND.primary }}>
                                 <CheckCircle2 className="w-5 h-5" /> You'll Love This If:
                             </h3>
                             <ul className="space-y-3 text-gray-700">
                                 {[
-                                    "You feel called to help others but don't know how to start",
-                                    "You've been serving in ministry but want more flexibility",
-                                    "You want to use your faith and wisdom to earn income",
-                                    "You dream of working from home on YOUR schedule",
-                                    "You want to make a difference AND provide for your family"
+                                    "You feel called by God to help others grow and transform",
+                                    "You want to integrate your faith into meaningful work",
+                                    "You're passionate about helping people find their purpose in Christ",
+                                    "You want to serve others while supporting your family",
+                                    "You believe in the power of biblical principles for life change"
                                 ].map((item, i) => (
                                     <li key={i} className="flex items-start gap-2">
-                                        <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: BRAND.navy }} />
+                                        <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: BRAND.primary }} />
                                         <span className="text-sm">{item}</span>
                                     </li>
                                 ))}
@@ -634,10 +635,10 @@ function ChristianCoachingMiniDiplomaContent() {
                             </h3>
                             <ul className="space-y-3 text-gray-600">
                                 {[
-                                    "You're not interested in helping others one-on-one",
-                                    "You don't believe faith can be part of coaching",
-                                    "You're not willing to invest 60 minutes",
-                                    "You think coaching is just 'paying for a friend'"
+                                    "You're not interested in faith-based approaches",
+                                    "You're looking for a get-rich-quick scheme",
+                                    "You're not willing to invest 60 minutes in yourself",
+                                    "You don't believe coaching can help people"
                                 ].map((item, i) => (
                                     <li key={i} className="flex items-start gap-2">
                                         <X className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
@@ -651,29 +652,29 @@ function ChristianCoachingMiniDiplomaContent() {
             </section>
 
             {/* WHAT YOU'LL LEARN */}
-            <section className="py-16 md:py-20 text-white" style={{ backgroundColor: BRAND.navyDark }}>
+            <section className="py-16 md:py-20 text-white" style={{ backgroundColor: BRAND.primaryDark }}>
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-12">
                         <p className="font-bold text-sm uppercase mb-3" style={{ color: BRAND.gold }}>Inside Your Free Mini-Diploma</p>
                         <h2 className="text-3xl md:text-4xl font-black">
-                            9 Lessons That Transform<br />
-                            <span style={{ color: BRAND.gold }}>Your Calling Into a Career</span>
+                            9 Lessons That Transform Your<br />
+                            <span style={{ color: BRAND.gold }}>Calling Into a Ministry</span>
                         </h2>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-4">
                         {[
-                            { num: 1, title: "The Coaching Mindset", desc: "Shift from helping to empowering" },
-                            { num: 2, title: "Active Listening", desc: "The skill that unlocks breakthrough" },
-                            { num: 3, title: "Powerful Questions", desc: "Guide without giving answers" },
-                            { num: 4, title: "Faith-Based Framework", desc: "Integrating faith ethically" },
-                            { num: 5, title: "Goal Setting with Grace", desc: "Achievable transformation plans" },
-                            { num: 6, title: "Overcoming Obstacles", desc: "Helping clients break through" },
-                            { num: 7, title: "Boundaries & Ethics", desc: "Coach vs counselor clarity" },
-                            { num: 8, title: "Building Your Practice", desc: "Getting your first clients" },
-                            { num: 9, title: "Your Next Steps", desc: "The path to full certification" }
+                            { num: 1, title: "Biblical Foundations of Coaching", desc: "What Scripture teaches about helping others grow" },
+                            { num: 2, title: "Spirit-Led Listening", desc: "How to hear God while serving clients" },
+                            { num: 3, title: "Identity in Christ", desc: "Helping clients discover who God made them to be" },
+                            { num: 4, title: "Transformational Questions", desc: "Questions that unlock breakthrough" },
+                            { num: 5, title: "Overcoming Limiting Beliefs", desc: "Breaking chains that hold people back" },
+                            { num: 6, title: "Purpose & Calling Discovery", desc: "Helping clients find their divine assignment" },
+                            { num: 7, title: "Faith-Based Goal Setting", desc: "Aligning goals with God's plans" },
+                            { num: 8, title: "Ministry & Business Ethics", desc: "Professional boundaries and standards" },
+                            { num: 9, title: "Launching Your Ministry", desc: "Your path to full certification" }
                         ].map((lesson) => (
-                            <div key={lesson.num} className="rounded-xl p-4 border" style={{ backgroundColor: `${BRAND.navy}80`, borderColor: `${BRAND.gold}30` }}>
+                            <div key={lesson.num} className="rounded-xl p-4 border" style={{ backgroundColor: `${BRAND.primary}80`, borderColor: `${BRAND.gold}30` }}>
                                 <div className="flex items-center gap-3 mb-2">
                                     <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" style={{ backgroundColor: `${BRAND.gold}30`, color: BRAND.gold }}>
                                         {lesson.num}
@@ -689,7 +690,7 @@ function ChristianCoachingMiniDiplomaContent() {
                         <Button
                             onClick={scrollToForm}
                             className="h-14 px-10 text-lg font-bold"
-                            style={{ background: BRAND.goldMetallic, color: BRAND.navyDark }}
+                            style={{ background: BRAND.goldMetallic, color: BRAND.primaryDark }}
                         >
                             Start My 1-Hour Certification
                             <ArrowRight className="ml-2 w-5 h-5" />
@@ -705,30 +706,30 @@ function ChristianCoachingMiniDiplomaContent() {
                     <div className="text-center mb-10">
                         <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
                             Everything You're Getting<br />
-                            <span style={{ color: BRAND.navy }}>100% Free Today</span>
+                            <span style={{ color: BRAND.primary }}>100% Free Today</span>
                         </h2>
                     </div>
 
                     <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
                         {[
-                            { item: "9-Lesson Christian Life Coaching Mini-Diploma", value: "$97" },
+                            { item: "9-Lesson Christian Coaching Mini-Diploma", value: "$97" },
                             { item: "ASI-Verified Certificate of Completion", value: "$47" },
-                            { item: "Faith-to-Career Transition Guide", value: "$197" },
-                            { item: "Scope of Practice Clarity Module", value: "$47" },
-                            { item: "Private Community Access (800+ coaches)", value: "$47" }
+                            { item: "Biblical Coaching Framework Guide", value: "$197" },
+                            { item: "Ministry Ethics & Boundaries Module", value: "$47" },
+                            { item: "Private Community Access (2,100+ coaches)", value: "$47" }
                         ].map((row, i) => (
                             <div key={i} className={`flex items-center justify-between p-4 ${i < 4 ? "border-b border-gray-200" : ""}`}>
                                 <div className="flex items-center gap-3">
-                                    <CheckCircle2 className="w-5 h-5" style={{ color: BRAND.navy }} />
+                                    <CheckCircle2 className="w-5 h-5" style={{ color: BRAND.primary }} />
                                     <span className="font-medium text-gray-800">{row.item}</span>
                                 </div>
                                 <span className="text-gray-400 line-through text-sm">{row.value}</span>
                             </div>
                         ))}
-                        <div className="p-6 text-center text-white" style={{ background: BRAND.navyMetallic }}>
+                        <div className="p-6 text-center text-white" style={{ background: BRAND.primaryMetallic }}>
                             <p className="text-sm opacity-80 mb-1">Total Value: <span className="line-through">$435</span></p>
                             <p className="text-4xl font-black">FREE TODAY</p>
-                            <p className="text-sm opacity-80 mt-1">For Women of Faith Only</p>
+                            <p className="text-sm opacity-80 mt-1">For Those Called to Serve</p>
                         </div>
                     </div>
 
@@ -736,7 +737,7 @@ function ChristianCoachingMiniDiplomaContent() {
                         <Button
                             onClick={scrollToForm}
                             className="h-14 px-10 text-lg font-bold text-white"
-                            style={{ background: BRAND.navyMetallic }}
+                            style={{ background: BRAND.primaryMetallic }}
                         >
                             Claim Your Free Diploma
                             <ArrowRight className="ml-2 w-5 h-5" />
@@ -749,18 +750,18 @@ function ChristianCoachingMiniDiplomaContent() {
             <section className="py-16 md:py-20" style={{ backgroundColor: BRAND.cream }}>
                 <div className="max-w-3xl mx-auto px-4">
                     <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-10">
-                        Questions From Women of Faith
+                        Common Questions
                     </h2>
 
                     <div className="space-y-3">
                         {[
-                            { q: "Is this aligned with my Christian values?", a: "Absolutely! This program was designed specifically for women of faith. We integrate biblical principles with proven coaching frameworks. You'll never be asked to compromise your values — in fact, your faith becomes your foundation for transformation." },
-                            { q: "Do I need a counseling or ministry degree?", a: "No! Life coaching is a separate profession from counseling or therapy. You're not diagnosing or treating mental health conditions — you're helping people set goals, overcome obstacles, and live with purpose. Your life experience and faith are your qualifications." },
-                            { q: "I'm not tech-savvy. Can I still do this from home?", a: "Yes! If you can use Zoom and email, you can coach. Most of our graduates started with zero tech skills. We provide simple step-by-step guides. Many coaches simply use their phone for calls." },
-                            { q: "Can I really earn $4-8K/month doing this?", a: "Here's the math: $150/session × 3 sessions/client × 10 clients = $4,500/month. That's part-time hours. Your faith background, life experience, and genuine care give you a major advantage. Many of our graduates started while working other jobs." },
-                            { q: "What if I can't finish in time?", a: "Work at your own pace! You have 48 hours of access, but most people finish in a single sitting (about 60 minutes). If something comes up, just pick up where you left off. The lessons save automatically." },
-                            { q: "What's the catch? Why is it free?", a: "Simple model: we give you a genuinely valuable free certification so you can experience what coaching feels like. If you love it (most faith-driven women do), you'll want to continue with our full Board Certification. If not, you walk away with real skills and a certificate. Win-win." },
-                            { q: "Will I actually be able to get clients?", a: "This Foundation Certificate is Step 1 of a proven path. The full Board Certification includes client-getting training — not just coaching skills. We don't just teach you to coach; we teach you to build a practice. But even with the free training, many graduates get their first paying clients." }
+                            { q: "Is Christian coaching legitimate? Can I really make money doing this?", a: "Absolutely. The coaching industry is worth over $15 billion globally, and faith-based coaching is one of the fastest-growing segments. Our graduates earn $3K-$6K/month part-time by helping clients with life transitions, purpose discovery, and spiritual growth. People are craving deeper guidance — and they're willing to pay for it." },
+                            { q: "Do I need a seminary degree or pastoral background?", a: "Not at all. While those can be helpful, they're not required. Christian coaching is about helping people apply biblical principles to their lives — you need faith, a heart for people, and the skills we teach. Many of our most successful graduates came from corporate, healthcare, or stay-at-home backgrounds." },
+                            { q: "What's the difference between counseling and coaching?", a: "Great question. Counseling typically deals with healing past wounds and diagnosing issues — it requires licensure. Coaching focuses on forward progress — helping clients set goals, overcome obstacles, and step into their calling. You'll help people move forward, not process trauma." },
+                            { q: "Can I really learn this in 1 hour?", a: "This mini-diploma gives you the foundation — the core principles, ethics, and techniques to get started. It's not the end of your journey, it's the beginning. Most students complete it in one sitting and feel ready to start practicing immediately." },
+                            { q: "What's the catch? Why is it free?", a: "Simple: we give you a genuinely valuable free certification so you can experience Christian coaching training. If you love it (most do), you'll want to continue with our full Board Certification program. If not, you still walk away with a real credential and practical knowledge. Win-win." },
+                            { q: "Is this certification recognized?", a: "ASI (AccrediPro Standards Institute) is our credentialing body for wellness and coaching practitioners. Coaching isn't regulated like counseling, which actually gives you freedom to practice. Our certification demonstrates you've been trained in ethical, effective, biblically-grounded methods. 2,100+ coaches carry our credential." },
+                            { q: "What if I have questions during the course?", a: "You'll have access to our private community of 2,100+ Christian coaches, plus you can message me directly. We're here to support your journey every step of the way." }
                         ].map((faq, i) => (
                             <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                                 <button
@@ -786,30 +787,30 @@ function ChristianCoachingMiniDiplomaContent() {
             </section>
 
             {/* FINAL CTA */}
-            <section className="py-16 md:py-20 text-white text-center" style={{ backgroundColor: BRAND.navyDark }}>
+            <section className="py-16 md:py-20 text-white text-center" style={{ backgroundColor: BRAND.primaryDark }}>
                 <div className="max-w-3xl mx-auto px-4">
                     <h2 className="text-3xl md:text-4xl font-black mb-6">
                         1 Hour From Now, You Could Be<br />
-                        <span style={{ color: BRAND.gold }}>Certified as a Christian Life Coach.</span>
+                        <span style={{ color: BRAND.gold }}>A Certified Christian Life Coach.</span>
                     </h2>
                     <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">
-                        247 women enrolled this week. 89% finished the same day.
-                        Your faith + coaching skills = <strong className="text-white">$4K-$8K/month from home.</strong>
+                        187 coaches started this week. 91% finished the same day.
+                        Your faith + this certification = <strong className="text-white">$3K-$6K/month serving others.</strong>
                     </p>
                     <Button
                         onClick={scrollToForm}
                         className="h-16 px-12 text-xl font-bold"
-                        style={{ background: BRAND.goldMetallic, color: BRAND.navyDark }}
+                        style={{ background: BRAND.goldMetallic, color: BRAND.primaryDark }}
                     >
                         Get Certified Now — It's Free
                         <ArrowRight className="ml-2 w-6 h-6" />
                     </Button>
-                    <p className="text-white/50 text-sm mt-4">⏰ 48-hour access window • Complete in 1 hour</p>
+                    <p className="text-white/50 text-sm mt-4">✝ 48-hour access window • Complete in 1 hour</p>
                 </div>
             </section>
 
             {/* Footer */}
-            <footer className="py-10 text-gray-400" style={{ backgroundColor: "#0f2034" }}>
+            <footer className="py-10 text-gray-400" style={{ backgroundColor: "#0f172a" }}>
                 <div className="max-w-5xl mx-auto px-4 text-center">
                     <div className="flex items-center justify-center gap-3 mb-4">
                         <Image src="/asi-logo.png" alt="ASI" width={44} height={44} className="rounded-lg" />
@@ -821,7 +822,7 @@ function ChristianCoachingMiniDiplomaContent() {
                 </div>
             </footer>
 
-            <FloatingChatWidget />
+            {/* Chat widget removed for mini diploma */}
         </div>
     );
 }
@@ -829,8 +830,8 @@ function ChristianCoachingMiniDiplomaContent() {
 export default function ChristianCoachingMiniDiplomaPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#0f2034" }}>
-                <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d4a574" }} />
+            <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#1e3a8a" }}>
+                <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d4af37" }} />
             </div>
         }>
             <ChristianCoachingMiniDiplomaContent />

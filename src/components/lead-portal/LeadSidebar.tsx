@@ -59,8 +59,13 @@ export function LeadSidebar({
     certificateClaimed,
 }: LeadSidebarProps) {
     const pathname = usePathname();
-    const [onlineCount] = useState(Math.floor(Math.random() * 30) + 35);
+    const [onlineCount, setOnlineCount] = useState(45); // Default static value for SSR
     const [mobileOpen, setMobileOpen] = useState(false);
+
+    // Set random count only on client to avoid hydration mismatch
+    useEffect(() => {
+        setOnlineCount(Math.floor(Math.random() * 30) + 35);
+    }, []);
 
     // Close sidebar on route change (mobile)
     useEffect(() => {
@@ -79,14 +84,24 @@ export function LeadSidebar({
         };
     }, [mobileOpen]);
 
-    // Dynamic base path for diploma
+    // Dynamic base path for diploma - supports both old and new patterns
     const getDiplomaBasePath = () => {
-        if (!pathname) return "/womens-health-diploma";
-        const parts = pathname.split("/");
-        if (parts[1] && parts[1].includes("-diploma")) {
-            return `/${parts[1]}`;
+        if (!pathname) return "/portal/womens-health";
+        const parts = pathname.split("/").filter(Boolean);
+
+        // New pattern: /portal/functional-medicine/lesson/1
+        if (parts[0] === "portal" && parts[1]) {
+            return `/portal/${parts[1]}`;
         }
-        return "/womens-health-diploma";
+
+        // Old pattern: /functional-medicine-diploma/lesson/1
+        if (parts[0]?.includes("-diploma")) {
+            // Convert old format to new for consistency
+            const slug = parts[0].replace("-diploma", "");
+            return `/portal/${slug}`;
+        }
+
+        return "/portal/womens-health";
     };
 
     const basePath = getDiplomaBasePath();
@@ -281,54 +296,97 @@ export function LeadSidebar({
 
                     {/* Ask Coach Sarah - Premium CTA Style */}
                     <Link
-                        href="/messages"
+                        href={`${basePath}/chat`}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-white/70 hover:text-white relative overflow-hidden group"
                         style={{
                             border: `1px solid ${BRAND.gold}40`,
-                            background: isActive("/messages") ? BRAND.goldMetallic : 'transparent'
+                            background: isActive(`${basePath}/chat`) ? BRAND.goldMetallic : 'transparent'
                         }}
                     >
                         <div
                             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
                             style={{ background: `${BRAND.gold}10` }}
                         />
-                        <svg className="w-5 h-5 flex-shrink-0 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={isActive("/messages") ? { color: BRAND.burgundyDark } : {}}>
+                        <svg className="w-5 h-5 flex-shrink-0 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={isActive(`${basePath}/chat`) ? { color: BRAND.burgundyDark } : {}}>
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                         </svg>
-                        <span className="font-medium relative z-10" style={isActive("/messages") ? { color: BRAND.burgundyDark } : {}}>💬 Get Help from Sarah</span>
+                        <span className="font-medium relative z-10" style={isActive(`${basePath}/chat`) ? { color: BRAND.burgundyDark } : {}}>💬 Get Help from Sarah</span>
                         <span className="ml-auto w-2.5 h-2.5 rounded-full animate-pulse relative z-10" style={{ backgroundColor: '#22c55e' }} title="Online now" />
                     </Link>
 
-                    {/* Certificate - Only show after completion */}
-                    {diplomaCompleted && (
-                        <>
-                            <p className="text-[10px] font-bold tracking-widest px-3 mt-4 mb-2" style={{ color: `${BRAND.gold}80` }}>
-                                YOUR CREDENTIALS
-                            </p>
-                            <Link
-                                href={`${basePath}/certificate`}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${isActive(`${basePath}/certificate`)
-                                    ? "shadow-lg"
-                                    : "text-white/70 hover:text-white hover:bg-white/5"
-                                    }`}
-                                style={isActive(`${basePath}/certificate`) ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
-                            >
-                                <Award className="w-5 h-5 flex-shrink-0" />
-                                <span className="font-medium">My Certificate</span>
-                            </Link>
+                    {/* Certificate Section - Always visible with locked/unlocked states */}
+                    <p className="text-[10px] font-bold tracking-widest px-3 mt-4 mb-2" style={{ color: `${BRAND.gold}80` }}>
+                        YOUR CREDENTIALS
+                    </p>
 
-                            <Link
-                                href={`${basePath}/career-roadmap`}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${isActive(`${basePath}/career-roadmap`)
-                                    ? "shadow-lg"
-                                    : "text-white/70 hover:text-white hover:bg-white/5"
-                                    }`}
-                                style={isActive(`${basePath}/career-roadmap`) ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
+                    {/* Certificate - Locked/Unlocked based on diplomaCompleted */}
+                    {diplomaCompleted ? (
+                        // UNLOCKED - Gold metallic, clickable
+                        <Link
+                            href={`${basePath}/certificate`}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${isActive(`${basePath}/certificate`)
+                                ? "shadow-lg"
+                                : "hover:shadow-md"
+                                }`}
+                            style={{
+                                background: isActive(`${basePath}/certificate`) ? BRAND.goldMetallic : `linear-gradient(135deg, ${BRAND.gold}20 0%, ${BRAND.gold}10 100%)`,
+                                color: isActive(`${basePath}/certificate`) ? BRAND.burgundyDark : 'white',
+                                border: `1px solid ${BRAND.gold}50`
+                            }}
+                        >
+                            <div
+                                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                                style={{ background: BRAND.goldMetallic }}
                             >
-                                <Target className="w-5 h-5 flex-shrink-0" />
-                                <span className="font-medium">Career Roadmap</span>
-                            </Link>
-                        </>
+                                <Award className="w-4 h-4" style={{ color: BRAND.burgundyDark }} />
+                            </div>
+                            <div className="flex-1">
+                                <span className="font-semibold" style={{ color: isActive(`${basePath}/certificate`) ? BRAND.burgundyDark : BRAND.gold }}>
+                                    🏆 My Certificate
+                                </span>
+                                <p className="text-[10px]" style={{ color: isActive(`${basePath}/certificate`) ? BRAND.burgundy : `${BRAND.goldLight}80` }}>
+                                    Ready to download!
+                                </p>
+                            </div>
+                            <ChevronRight className="w-4 h-4" style={{ color: isActive(`${basePath}/certificate`) ? BRAND.burgundy : BRAND.gold }} />
+                        </Link>
+                    ) : (
+                        // LOCKED - Greyed out, not clickable
+                        <div
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-not-allowed opacity-60"
+                            style={{
+                                background: `${BRAND.burgundy}30`,
+                                border: `1px solid ${BRAND.burgundy}40`
+                            }}
+                        >
+                            <div
+                                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                                style={{ background: `${BRAND.burgundy}50` }}
+                            >
+                                <svg className="w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <div className="flex-1">
+                                <span className="font-medium text-white/50">🔒 Certificate</span>
+                                <p className="text-[10px] text-white/30">Pass exam to unlock</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Career Roadmap - Only after completion */}
+                    {diplomaCompleted && (
+                        <Link
+                            href={`${basePath}/career-roadmap`}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all mt-1.5 ${isActive(`${basePath}/career-roadmap`)
+                                ? "shadow-lg"
+                                : "text-white/70 hover:text-white hover:bg-white/5"
+                                }`}
+                            style={isActive(`${basePath}/career-roadmap`) ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
+                        >
+                            <Target className="w-5 h-5 flex-shrink-0" />
+                            <span className="font-medium">Career Roadmap</span>
+                        </Link>
                     )}
                 </nav>
 

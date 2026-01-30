@@ -2199,3 +2199,105 @@ P.S. Just reply to this email if you want to chat — I read everything personal
     type: 'marketing', // Use marketing sender (Sarah)
   });
 }
+
+// ============================================
+// DFY PURCHASE EMAILS
+// ============================================
+
+/**
+ * Send DFY welcome email from Jessica Parker - notifies customer of purchase and intake form
+ */
+export async function sendDFYWelcomeEmail({
+  to,
+  firstName,
+  productName,
+  intakeUrl,
+}: {
+  to: string;
+  firstName: string;
+  productName: string;
+  intakeUrl: string;
+}) {
+  const content = `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Your Done-For-You Package is Confirmed! 🎉</h2>
+
+    <p style="color: #555; font-size: 16px;">Hey ${firstName}!</p>
+
+    <p style="color: #555; font-size: 16px;">I'm <strong>Jessica</strong>, your DFY fulfillment specialist at AccrediPro. I just saw your order come through — and I'm excited to start working on your website!</p>
+
+    ${highlightBox(`
+      <p style="margin: 0; font-size: 14px; color: #722F37; font-weight: bold;">YOUR PACKAGE</p>
+      <p style="margin: 8px 0 0 0; font-size: 20px; font-weight: bold; color: #722F37;">${productName}</p>
+    `, 'green')}
+
+    <p style="color: #555; font-size: 16px;"><strong>What happens next:</strong></p>
+    <ol style="color: #555; font-size: 15px; padding-left: 20px;">
+      <li style="margin: 10px 0;">Fill out the quick intake form below (takes ~15 mins)</li>
+      <li style="margin: 10px 0;">I'll start working on your website right away</li>
+      <li style="margin: 10px 0;">You'll receive your completed website within 7 days</li>
+    </ol>
+
+    ${primaryButton('Fill Out Intake Form →', intakeUrl)}
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
+      <p style="margin: 0; font-size: 14px; color: #666;">Have questions? Just reply to this email or message me directly in your dashboard.</p>
+    </div>
+
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">Talk soon,<br/><strong>Jessica Parker</strong><br/><span style="color: #888; font-size: 13px;">DFY Fulfillment Specialist, AccrediPro Academy</span></p>
+  `;
+
+  return sendEmail({
+    to,
+    subject: `Your ${productName} is Confirmed! Next Steps Inside`,
+    html: emailWrapper(content, `Hey ${firstName}! Your DFY package is confirmed. Fill out the intake form to get started.`),
+  });
+}
+
+/**
+ * Send DFY delivery complete email - notifies customer that their package is ready
+ */
+export async function sendDFYDeliveryEmail({
+  to,
+  firstName,
+  productName,
+  dashboardUrl,
+}: {
+  to: string;
+  firstName: string;
+  productName: string;
+  dashboardUrl: string;
+}) {
+  const content = `
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h2 style="color: #722F37; margin: 0; font-size: 28px;">Your Package is Ready! 🎁</h2>
+    </div>
+
+    <p style="color: #555; font-size: 16px; text-align: center;">Hey ${firstName}!</p>
+
+    <p style="color: #555; font-size: 16px; text-align: center;">Great news — your <strong>${productName}</strong> is complete and waiting for you in your dashboard!</p>
+
+    ${highlightBox(`
+      <div style="text-align: center;">
+        <p style="margin: 0; font-size: 14px; color: #166534; font-weight: bold;">DELIVERED</p>
+        <p style="margin: 8px 0 0 0; font-size: 20px; font-weight: bold; color: #722F37;">${productName}</p>
+        <p style="margin: 8px 0 0 0; font-size: 14px; color: #666;">Ready to use</p>
+      </div>
+    `, 'green')}
+
+    <p style="color: #555; font-size: 16px;">Everything has been customized based on your intake form and is ready to use with your clients.</p>
+
+    ${primaryButton('Access My Package', dashboardUrl)}
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
+      <p style="margin: 0; font-size: 14px; color: #666;">Need any tweaks or have questions? Just reply to this email — I'm here to help!</p>
+    </div>
+
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">Cheers,<br/><strong>Jessica Parker</strong></p>
+  `;
+
+  return sendEmail({
+    to,
+    subject: `Your ${productName} is Ready! 🎁`,
+    html: emailWrapper(content, `${firstName}, your DFY package is ready and waiting in your dashboard!`),
+  });
+}

@@ -272,6 +272,8 @@ export function UsersClient({ courses }: UsersClientProps) {
     "referral_partner",
     "mini_diploma_started",
     "mini_diploma_completed",
+    "dfy_purchased",           // DFY package purchased
+    "dfy_intake_completed",    // DFY intake form submitted
   ];
 
   // Tag packs for one-click application

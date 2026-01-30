@@ -17,7 +17,8 @@ import { PIXEL_CONFIG } from "@/components/tracking/meta-pixel";
 import { useMetaTracking } from "@/hooks/useMetaTracking";
 import MetaPixel from "@/components/tracking/meta-pixel";
 import { FloatingChatWidget } from "@/components/lead-portal/floating-chat-widget";
-import { MultiStepQualificationForm, QualificationData } from "@/components/lead-portal/multi-step-qualification-form";
+import { TypeformQualificationForm, TypeformQualificationData } from "@/components/lead-portal/typeform-qualification-form";
+import { CertificatePreview } from "@/components/certificates/certificate-preview";
 
 // Same default password as backend
 const LEAD_PASSWORD = "coach2026";
@@ -65,7 +66,7 @@ function HealthcareWorkersMiniDiplomaContent() {
         );
     }, [trackViewContent]);
 
-    const handleSubmit = async (formData: QualificationData) => {
+    const handleSubmit = async (formData: TypeformQualificationData) => {
         setIsVerifying(true);
 
         try {
@@ -85,6 +86,16 @@ function HealthcareWorkersMiniDiplomaContent() {
             setIsVerifying(false);
             setIsSubmitting(true);
 
+            // Calculate lead quality score based on answers
+            let leadScore = 0;
+            if (formData.background.includes("nurse")) leadScore += 30;
+            else if (formData.background.includes("healthcare")) leadScore += 25;
+            else if (formData.background.includes("wellness")) leadScore += 20;
+            if (formData.timing === "ready-now") leadScore += 25;
+            else if (formData.timing === "soon") leadScore += 15;
+            if (formData.timeAvailability === "more-time" || formData.timeAvailability === "5-10-hours") leadScore += 15;
+            if (formData.dreamOutcome.length > 100) leadScore += 10;
+
             const response = await fetch("/api/mini-diploma/optin", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -93,13 +104,21 @@ function HealthcareWorkersMiniDiplomaContent() {
                     lastName: formData.lastName,
                     email: formData.email,
                     phone: formData.phone,
-                    lifeStage: formData.timeCommitment || formData.lifeStage,
+                    // Qualification data
+                    background: formData.background.join(", "),
                     motivation: formData.motivation,
-                    investment: formData.incomeGoal || formData.investment,
-                    investmentLevel: formData.investmentLevel,
-                    readiness: formData.readiness,
+                    healthJourney: formData.healthJourney,
+                    previousAttempts: formData.previousAttempts.join(", "),
+                    holdingBack: formData.holdingBack.join(", "),
+                    timeCommitment: formData.timeAvailability,
+                    dreamOutcome: formData.dreamOutcome,
+                    programNeeds: formData.programNeeds.join(", "),
+                    decisionStyle: formData.decisionStyle,
+                    readiness: formData.timing,
+                    leadScore: leadScore,
                     course: "fm-healthcare",
                     segment: "healthcare-workers",
+                    formVariant: searchParams.get("v") || "A", // A/B testing variant
                 }),
             });
 
@@ -116,16 +135,20 @@ function HealthcareWorkersMiniDiplomaContent() {
                 PIXEL_CONFIG.FUNCTIONAL_MEDICINE
             );
 
-            // Track optin event for funnel analytics
+            // Track optin event with rich qualification data
             fetch("/api/track/mini-diploma", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     event: "optin_completed",
                     properties: {
-                        qualification_answer: formData.motivation,
-                        life_stage: formData.timeCommitment || formData.lifeStage,
-                        income_goal: formData.incomeGoal || formData.investment,
+                        background: formData.background,
+                        motivation: formData.motivation,
+                        health_journey: formData.healthJourney,
+                        time_availability: formData.timeAvailability,
+                        timing: formData.timing,
+                        lead_score: leadScore,
+                        dream_length: formData.dreamOutcome.length,
                         utm_source: searchParams.get("utm_source"),
                         utm_medium: searchParams.get("utm_medium"),
                         utm_campaign: searchParams.get("utm_campaign"),
@@ -145,11 +168,11 @@ function HealthcareWorkersMiniDiplomaContent() {
                 email: formData.email.toLowerCase(),
                 password: LEAD_PASSWORD,
                 redirect: false,
-                callbackUrl: "/functional-medicine-diploma/qualification",
+                callbackUrl: "/portal/functional-medicine",
             });
 
             // Redirect to qualification interstitial with name for personalization
-            window.location.href = `/functional-medicine-diploma/qualification?name=${encodeURIComponent(formData.firstName.trim())}`;
+            window.location.href = `/portal/functional-medicine?name=${encodeURIComponent(formData.firstName.trim())}`;
 
         } catch (err: any) {
             alert(err.message || "Failed to register. Please try again.");
@@ -173,7 +196,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-600 text-white text-xs font-mono">
                         {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
                     </span>
-                    • 312 nurses enrolled today
+                    • 37 nurses enrolled today
                 </p>
             </div>
 
@@ -208,7 +231,7 @@ function HealthcareWorkersMiniDiplomaContent() {
 
                             <p className="text-lg md:text-xl text-white/80 mb-8 max-w-lg leading-relaxed">
                                 Get <strong className="text-white">certified in 1 hour</strong>. Your clinical skills are worth more than hospital wages.
-                                Discover how 312 nurses this week turned their healthcare background into a flexible, high-paying coaching career.
+                                Discover how nurses this week turned their healthcare background into a flexible, high-paying coaching career.
                             </p>
 
                             {/* Proof Points - Optimized */}
@@ -243,7 +266,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                             </div>
 
                             {/* Testimonial Avatar Circle - Social Proof - Mobile Optimized */}
-                            <div className="flex flex-wrap items-center gap-3 mb-8">
+                            <div className="flex flex-wrap items-center gap-3 mb-4">
                                 <div className="flex -space-x-2 flex-shrink-0">
                                     {[
                                         "/zombie-avatars/user_47_backyard_bbq_1767801467.webp",
@@ -271,6 +294,24 @@ function HealthcareWorkersMiniDiplomaContent() {
                                 </div>
                             </div>
 
+                            {/* Trustpilot-Style Review Widget */}
+                            <div className="flex items-center gap-3 mb-8 px-4 py-3 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
+                                <div className="flex items-center gap-0.5">
+                                    {[1, 2, 3, 4, 5].map(i => (
+                                        <Star key={i} className="w-4 h-4 fill-current" style={{ color: '#00b67a' }} />
+                                    ))}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-white font-bold text-sm">4.9/5</span>
+                                    <span className="text-white/60 text-xs">•</span>
+                                    <span className="text-white/80 text-xs">1,157+ reviews</span>
+                                </div>
+                                <div className="ml-auto flex items-center gap-1.5">
+                                    <span className="text-[10px] text-white/50 uppercase tracking-wide">Verified by</span>
+                                    <span className="text-xs font-bold" style={{ color: '#00b67a' }}>★ Trustpilot</span>
+                                </div>
+                            </div>
+
                             {/* Mobile CTA */}
                             <Button
                                 onClick={scrollToForm}
@@ -282,13 +323,27 @@ function HealthcareWorkersMiniDiplomaContent() {
                             </Button>
                         </div>
 
-                        {/* Right Column - Form */}
-                        <div id="lead-form" className="relative z-10">
-                            <MultiStepQualificationForm
-                                onSubmit={handleSubmit}
-                                isSubmitting={isSubmitting}
-                                isVerifying={isVerifying}
-                            />
+                        {/* Right Column - CTA Box (Form is below) */}
+                        <div className="hidden lg:block relative z-10">
+                            <div className="rounded-2xl p-8 text-center" style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', border: `1px solid ${BRAND.gold}40` }}>
+                                <div className="mb-6">
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold mb-4" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+                                        <Sparkles className="w-4 h-4" />
+                                        Free 1-Hour Certification
+                                    </div>
+                                    <h3 className="text-2xl font-black text-white mb-2">Start Earning as a Coach</h3>
+                                    <p className="text-white/70">Take our quick qualification quiz to see if you're a fit</p>
+                                </div>
+                                <Button
+                                    onClick={scrollToForm}
+                                    className="w-full h-14 text-lg font-bold"
+                                    style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
+                                >
+                                    See If You Qualify
+                                    <ArrowDown className="ml-2 w-5 h-5" />
+                                </Button>
+                                <p className="text-white/50 text-xs mt-4">Takes 3 minutes • No payment required</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -378,8 +433,8 @@ function HealthcareWorkersMiniDiplomaContent() {
                             <p className="text-xs text-gray-500">Certified Practitioners</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-3xl font-black" style={{ color: BRAND.burgundy }}>312</p>
-                            <p className="text-xs text-gray-500">Enrolled This Week</p>
+                            <p className="text-3xl font-black" style={{ color: BRAND.burgundy }}>37</p>
+                            <p className="text-xs text-gray-500">Enrolled Today</p>
                         </div>
                         <div className="text-center">
                             <p className="text-3xl font-black" style={{ color: BRAND.burgundy }}>89%</p>
@@ -391,7 +446,10 @@ function HealthcareWorkersMiniDiplomaContent() {
                         {[
                             { name: "Jennifer M., RN", age: "47", income: "$5,800/mo", before: "ICU Nurse, 18 years", story: "I loved my patients but hated the system. 12-hour shifts, mandatory overtime, watching people get sicker on meds. Now I help clients actually get well — from my home office.", avatar: "/zombie-avatars/user_47_backyard_bbq_1767801467.webp" },
                             { name: "Patricia L., PT", age: "52", income: "$7,200/mo", before: "Physical Therapist, 24 years", story: "Insurance dictated my care plans. 15-minute appointments. I knew there was a better way. Now I spend an hour with clients and see real transformation.", avatar: "/zombie-avatars/user_52_bedroom_morning_1767801467.webp" },
-                            { name: "Michelle R., MA", age: "44", income: "$4,100/mo", before: "Medical Assistant", story: "I was exhausted running between exam rooms. The doctors had no time. Patients left confused. Now I give them what the system never could — attention and answers.", avatar: "/zombie-avatars/user_44_bathroom_mirror_1767801533.webp" }
+                            { name: "Michelle R., MA", age: "44", income: "$4,100/mo", before: "Medical Assistant", story: "I was exhausted running between exam rooms. The doctors had no time. Patients left confused. Now I give them what the system never could — attention and answers.", avatar: "/zombie-avatars/user_44_bathroom_mirror_1767801533.webp" },
+                            { name: "Susan K., NP", age: "55", income: "$8,400/mo", before: "Nurse Practitioner, 30 years", story: "I had the prescription pad but no answers for chronic fatigue, gut issues, or hormonal imbalances. Functional medicine changed everything. My patients actually get BETTER now.", avatar: "/zombie-avatars/user_55_cooking_class_1767801442.webp" },
+                            { name: "Angela T., LPN", age: "41", income: "$3,900/mo", before: "Licensed Practical Nurse", story: "I thought I needed to go back to school for years to make real money. This certification in 1 hour gave me the confidence to start coaching. Three clients in my first month.", avatar: "/zombie-avatars/user_41_coffee_shop_working_1768611487.webp" },
+                            { name: "Karen D., CNA", age: "38", income: "$4,600/mo", before: "Certified Nursing Assistant", story: "Everyone told me I needed a higher degree. But clients pay for results, not credentials. With functional medicine, I help people who gave up on the medical system.", avatar: "/zombie-avatars/user_38_home_office_1768611487.webp" }
                         ].map((story, i) => (
                             <div key={i} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                                 <div className="flex items-center gap-3 mb-4">
@@ -430,8 +488,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                                 <h3 className="text-xl font-black text-gray-900 mb-2">🛡️ The "This Actually Works" Guarantee</h3>
                                 <p className="text-gray-600 leading-relaxed">
                                     Complete all 9 lessons. If you don't feel 100% confident you understand how to start your practice,
-                                    email me personally. I'll either coach you until you do — or refund every penny of any future
-                                    purchase you make. <strong>No questions, no guilt, no fine print.</strong>
+                                    email me personally. I'll coach you until you do — <strong>no limits, no extra cost, no fine print.</strong>
                                 </p>
                                 <p className="text-sm text-gray-500 mt-3 italic">— Sarah Mitchell, Your Coach</p>
                             </div>
@@ -536,17 +593,11 @@ function HealthcareWorkersMiniDiplomaContent() {
             <section className="py-16 md:py-20" style={{ backgroundColor: "#faf5eb" }}>
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="grid lg:grid-cols-2 gap-10 items-center">
-                        {/* Certificate Image */}
+                        {/* Certificate Preview - HTML */}
                         <div className="relative">
                             <div className="absolute -inset-4 rounded-3xl opacity-20 blur-2xl" style={{ backgroundColor: BRAND.gold }} />
-                            <div className="relative bg-white rounded-2xl shadow-2xl p-4 border border-gray-100 transform hover:scale-[1.02] transition-transform">
-                                <Image
-                                    src="/FUNCTIONAL_MEDICINE_CERTIFICATE.webp"
-                                    alt="Functional Medicine Foundation Certificate"
-                                    width={600}
-                                    height={450}
-                                    className="rounded-xl w-full h-auto"
-                                />
+                            <div className="relative transform hover:scale-[1.02] transition-transform">
+                                <CertificatePreview diplomaTitle="Functional Medicine Foundation" primaryColor={BRAND.burgundy} />
                             </div>
                             {/* Badge */}
                             <div className="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-lg px-4 py-2 border border-gray-100">
@@ -595,7 +646,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                                 className="h-14 px-8 text-lg font-bold text-white"
                                 style={{ background: BRAND.burgundyMetallic }}
                             >
-                                Start My 1-Hour Certification
+                                Start Your Application
                                 <ArrowRight className="ml-2 w-5 h-5" />
                             </Button>
                         </div>
@@ -696,11 +747,36 @@ function HealthcareWorkersMiniDiplomaContent() {
                             className="h-14 px-10 text-lg font-bold"
                             style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                         >
-                            Start My 1-Hour Certification
+                            Get Started Free
                             <ArrowRight className="ml-2 w-5 h-5" />
                         </Button>
                         <p className="text-white/50 text-sm mt-3">30 seconds to start • 1 hour to certified • 48-hour access</p>
                     </div>
+                </div>
+            </section>
+
+            {/* ⭐ QUALIFICATION FORM SECTION ⭐ */}
+            <section id="lead-form" className="py-16 md:py-20" style={{ backgroundColor: BRAND.cream }}>
+                <div className="max-w-2xl mx-auto px-4">
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold mb-4" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+                            <Sparkles className="w-4 h-4" />
+                            See If You Qualify
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
+                            Ready to Start Earning<br />
+                            <span style={{ color: BRAND.burgundy }}>as a Functional Medicine Coach?</span>
+                        </h2>
+                        <p className="text-gray-600 max-w-md mx-auto">
+                            Answer a few quick questions so I can understand if we're a fit — takes about 3 minutes.
+                        </p>
+                    </div>
+
+                    <TypeformQualificationForm
+                        onSubmit={handleSubmit}
+                        isSubmitting={isSubmitting}
+                        isVerifying={isVerifying}
+                    />
                 </div>
             </section>
 
@@ -750,6 +826,68 @@ function HealthcareWorkersMiniDiplomaContent() {
                 </div>
             </section>
 
+            {/* ASI CREDENTIALING SECTION */}
+            <section className="py-16 md:py-20 bg-white">
+                <div className="max-w-4xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold mb-6" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+                            <Shield className="w-4 h-4" />
+                            YOUR CERTIFICATION AUTHORITY
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+                            Certified by the<br />
+                            <span style={{ color: BRAND.burgundy }}>AccrediPro International Standards Institute</span>
+                        </h2>
+                        <p className="text-gray-600 max-w-2xl mx-auto">
+                            ASI is the credentialing body for functional medicine practitioners.
+                            Our certification is recognized by employers, clients, and the wellness industry worldwide.
+                        </p>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
+                        <div className="grid md:grid-cols-[200px_1fr] gap-8 items-center">
+                            <div className="flex flex-col items-center">
+                                <Image
+                                    src="/asi-logo.png"
+                                    alt="AccrediPro International Standards Institute"
+                                    width={120}
+                                    height={120}
+                                    className="rounded-xl mb-3"
+                                />
+                                <p className="text-sm font-bold text-gray-900 text-center">AccrediPro<br />Standards Institute</p>
+                            </div>
+                            <div>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                    {[
+                                        { num: "4,247+", label: "Certified Practitioners" },
+                                        { num: "42", label: "Countries" },
+                                        { num: "4.9/5", label: "Student Rating" },
+                                        { num: "2019", label: "Established" }
+                                    ].map((stat, i) => (
+                                        <div key={i} className="text-center">
+                                            <p className="text-2xl font-black" style={{ color: BRAND.burgundy }}>{stat.num}</p>
+                                            <p className="text-xs text-gray-500">{stat.label}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="space-y-2">
+                                    {[
+                                        "Curriculum developed with practicing functional medicine clinicians",
+                                        "Certificates include unique verification ID for employer validation",
+                                        "Recognized in the coaching and wellness industry worldwide"
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex items-start gap-2">
+                                            <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: BRAND.burgundy }} />
+                                            <span className="text-sm text-gray-700">{item}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* FAQ - EXPANDED WITH OBJECTION HANDLING */}
             <section className="py-16 md:py-20" style={{ backgroundColor: BRAND.cream }}>
                 <div className="max-w-3xl mx-auto px-4">
@@ -759,12 +897,12 @@ function HealthcareWorkersMiniDiplomaContent() {
 
                     <div className="space-y-3">
                         {[
-                            { q: "Is this legitimate? I've been burned by fake certifications before.", a: "I get it — the wellness space is full of garbage weekend certificates. ASI (AccrediPro Standards Institute) is a credentialing body specifically for functional medicine practitioners. Our curriculum was developed with practicing clinicians, and unlike most certifications, we teach you how to GET CLIENTS — not just theory. Our graduates are practicing and earning. That's the proof." },
+                            { q: "Is this legitimate? I've been burned by fake certifications before.", a: "I get it — the wellness space is full of garbage weekend certificates. ASI (AccrediPro International Standards Institute) is a credentialing body specifically for functional medicine practitioners. Our curriculum was developed with practicing clinicians, and unlike most certifications, we teach you how to GET CLIENTS — not just theory. Our graduates are practicing and earning. That's the proof." },
                             { q: "Will this conflict with my nursing/medical license?", a: "No! Functional health coaching is a separate scope of practice. You're NOT diagnosing or treating disease — you're coaching clients on lifestyle, nutrition, and wellness. This is explicitly legal in all 50 states. Many RNs, PTs, and MAs do this alongside their clinical work or as a full career transition. We include a Scope of Practice Clarity Module that explains exactly where the lines are." },
                             { q: "I'm exhausted after shifts. Do I have time for this?", a: "The entire mini-diploma is 60 minutes. That's one lunch break or one evening after the kids are asleep. The lessons are 5-7 minutes each — designed for busy professionals. 89% of our students complete it the same day they start. You can pause and resume anytime within your 48-hour window." },
                             { q: "Can I really earn $4-8K/month doing this?", a: "Healthcare pros typically hit these numbers faster than career changers. Here's the math: $150/session × 3 sessions/client × 10 clients = $4,500/month. That's part-time hours. Your clinical credibility, patient rapport skills, and medical knowledge give you a major head start. Many of our graduates started while still working their clinical jobs." },
                             { q: "What if I can't finish?", a: "Work at your own pace! You have 48 hours of access, but most people finish in a single sitting (about 60 minutes). If something comes up, just pick up where you left off. The lessons save your progress automatically." },
-                            { q: "What is ASI exactly? Is this accreditation real?", a: "ASI stands for AccrediPro Standards Institute — our independent credentialing body for functional medicine practitioners. While we're not affiliated with traditional medical boards (which is intentional — they focus on disease treatment, not root-cause wellness), our certification is recognized in the coaching and wellness industry. 2,400+ practitioners carry our credential and are actively practicing." },
+                            { q: "What is ASI exactly? Is this accreditation real?", a: "ASI stands for AccrediPro International Standards Institute — our independent credentialing body for functional medicine practitioners. While we're not affiliated with traditional medical boards (which is intentional — they focus on disease treatment, not root-cause wellness), our certification is recognized in the coaching and wellness industry. 4,200+ practitioners carry our credential and are actively practicing." },
                             { q: "What's the catch? Why is it free?", a: "Simple business model: we give you a genuinely valuable free certification so you can experience functional medicine thinking. If you love it (most healthcare pros do), you'll want to continue with our full Board Certification program. If not, you still walk away with a real credential and knowledge you can use. Win-win." },
                             { q: "Is this just another certificate that sits on my wall?", a: "Only if you let it! This Foundation Certificate is Step 1 of a proven career path. After this, you can continue to our full Board Certification (which includes client-getting training, not just clinical knowledge). We don't just teach functional medicine — we teach you how to build a practice." }
                         ].map((faq, i) => (
@@ -788,6 +926,17 @@ function HealthcareWorkersMiniDiplomaContent() {
                             </div>
                         ))}
                     </div>
+
+                    <div className="text-center mt-10">
+                        <Button
+                            onClick={scrollToForm}
+                            className="h-14 px-10 text-lg font-bold text-white"
+                            style={{ background: BRAND.burgundyMetallic }}
+                        >
+                            Apply Now
+                            <ArrowRight className="ml-2 w-5 h-5" />
+                        </Button>
+                    </div>
                 </div>
             </section>
 
@@ -799,7 +948,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                         <span style={{ color: BRAND.gold }}>Certified in Functional Medicine.</span>
                     </h2>
                     <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">
-                        312 nurses started this week. 89% finished the same day.
+                        37 nurses enrolled today. 89% finished the same day.
                         Your clinical skills + functional medicine = <strong className="text-white">$4K-$8K/month from home.</strong>
                     </p>
                     <Button
@@ -814,20 +963,28 @@ function HealthcareWorkersMiniDiplomaContent() {
                 </div>
             </section>
 
-            {/* Footer */}
-            <footer className="py-10 text-gray-400" style={{ backgroundColor: "#2a1518" }}>
+            {/* Footer - Minimal for Optin */}
+            <footer className="py-8 text-gray-400" style={{ backgroundColor: "#2a1518" }}>
                 <div className="max-w-5xl mx-auto px-4 text-center">
                     <div className="flex items-center justify-center gap-3 mb-4">
                         <Image src="/asi-logo.png" alt="ASI" width={44} height={44} className="rounded-lg" />
-                        <span className="text-white font-bold">AccrediPro Standards Institute</span>
+                        <span className="text-white font-bold">AccrediPro International Standards Institute</span>
                     </div>
-                    <p className="text-sm">
-                        © {new Date().getFullYear()} AccrediPro Standards Institute. All rights reserved.
+                    <div className="flex items-center justify-center gap-4 mb-4">
+                        <div className="flex items-center gap-0.5">
+                            {[1, 2, 3, 4, 5].map(i => (
+                                <Star key={i} className="w-3.5 h-3.5 fill-current" style={{ color: '#00b67a' }} />
+                            ))}
+                        </div>
+                        <span className="text-sm text-gray-300">4.9/5 from 1,157+ reviews</span>
+                    </div>
+                    <p className="text-xs">
+                        © {new Date().getFullYear()} AccrediPro International Standards Institute. All rights reserved.
                     </p>
                 </div>
             </footer>
 
-            <FloatingChatWidget />
+            {/* Chat widget removed for mini diploma */}
         </div>
     );
 }

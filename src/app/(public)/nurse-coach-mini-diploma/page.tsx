@@ -146,9 +146,9 @@ export default function WomensHealthMiniDiplomaPage() {
                     lastName: lastName.trim(),
                     email: email.toLowerCase().trim(),
                 }));
-                window.location.href = "/nurse-coach-mini-diploma/thank-you";
+                window.location.href = "/portal/nurse-coach";
             } else {
-                window.location.href = "/nurse-coach-mini-diploma/thank-you";
+                window.location.href = "/portal/nurse-coach";
             }
 
         } catch (err: any) {

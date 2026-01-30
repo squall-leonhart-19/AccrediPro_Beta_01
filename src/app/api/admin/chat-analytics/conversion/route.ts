@@ -7,7 +7,7 @@ export async function GET() {
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+        if (!session?.user || !["ADMIN", "INSTRUCTOR", "SUPERUSER", "SUPPORT"].includes(session.user.role as string)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
@@ -24,61 +24,98 @@ export async function GET() {
         const chatEmailsMap = new Map(
             chatOptins
                 .filter((o) => o.email)
-                .map((o) => [o.email!.toLowerCase(), { name: o.name, createdAt: o.createdAt }])
+                .map((o) => [o.email!.toLowerCase(), { name: o.name, createdAt: o.createdAt, visitorId: o.visitorId }])
         );
 
-        // Get all users (purchasers)
-        const users = await prisma.user.findMany({
+        // Get users who have ACTUALLY purchased (have enrollments or payments)
+        const usersWithPurchases = await prisma.user.findMany({
+            where: {
+                email: { in: Array.from(chatEmailsMap.keys()) },
+                OR: [
+                    { enrollments: { some: {} } },
+                    { payments: { some: { status: "COMPLETED" } } },
+                ],
+            },
             select: {
                 email: true,
+                firstName: true,
+                lastName: true,
                 createdAt: true,
+                enrollments: { select: { courseId: true }, take: 1 },
+                payments: {
+                    select: { amount: true, createdAt: true },
+                    orderBy: { createdAt: 'desc' },
+                    take: 1
+                },
             },
         });
 
-        const userEmailsSet = new Set(users.filter(u => u.email).map((u) => u.email!.toLowerCase()));
+        const purchaserEmailsSet = new Set(
+            usersWithPurchases.filter(u => u.email).map((u) => u.email!.toLowerCase())
+        );
 
         // Find converted leads (chatted AND bought)
         const convertedEmails = Array.from(chatEmailsMap.keys()).filter((email) =>
-            userEmailsSet.has(email)
+            purchaserEmailsSet.has(email)
         );
 
-        // Get pending conversations (unreplied messages)
-        const allMessages = await prisma.salesChat.findMany({
+        // Build converted leads details for UI
+        const convertedLeads = usersWithPurchases
+            .filter(u => u.email && chatEmailsMap.has(u.email.toLowerCase()))
+            .map(u => ({
+                email: u.email,
+                name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : chatEmailsMap.get(u.email!.toLowerCase())?.name || 'Unknown',
+                convertedAt: u.payments[0]?.createdAt || u.createdAt,
+                value: u.payments[0]?.amount ? Number(u.payments[0].amount) : null,
+            }));
+
+        // Get messages from last 7 days only for pending calculation
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const recentMessages = await prisma.salesChat.findMany({
+            where: { createdAt: { gte: sevenDaysAgo } },
             orderBy: { createdAt: "desc" },
         });
 
-        // Group by visitor/email and find unreplied
-        const conversationsMap = new Map<string, { hasReply: boolean; lastMessageTime: Date }>();
+        // Group by visitor/email and check if LAST visitor message is unreplied
+        const conversationsMap = new Map<string, {
+            lastVisitorMsgTime: Date | null;
+            lastAdminMsgTime: Date | null;
+        }>();
 
-        allMessages.forEach((msg) => {
+        recentMessages.forEach((msg) => {
             const optin = chatOptins.find((o) => o.visitorId === msg.visitorId);
             const email = optin?.email || msg.visitorEmail;
             const key = email ? `email:${email.toLowerCase()}` : `visitor:${msg.visitorId}`;
 
             if (!conversationsMap.has(key)) {
-                conversationsMap.set(key, { hasReply: false, lastMessageTime: msg.createdAt });
+                conversationsMap.set(key, { lastVisitorMsgTime: null, lastAdminMsgTime: null });
             }
 
             const conv = conversationsMap.get(key)!;
 
-            // If there's any message from admin/staff, conversation has reply
-            if (!msg.isFromVisitor) {
-                conv.hasReply = true;
-            }
-
-            // Track most recent message time
-            if (msg.createdAt > conv.lastMessageTime) {
-                conv.lastMessageTime = msg.createdAt;
+            if (msg.isFromVisitor) {
+                if (!conv.lastVisitorMsgTime || msg.createdAt > conv.lastVisitorMsgTime) {
+                    conv.lastVisitorMsgTime = msg.createdAt;
+                }
+            } else {
+                if (!conv.lastAdminMsgTime || msg.createdAt > conv.lastAdminMsgTime) {
+                    conv.lastAdminMsgTime = msg.createdAt;
+                }
             }
         });
 
-        const pendingReplies = Array.from(conversationsMap.values()).filter((c) => !c.hasReply).length;
+        // Pending = conversations where last visitor message is AFTER last admin message (or no admin reply)
+        const pendingReplies = Array.from(conversationsMap.values()).filter((c) => {
+            if (!c.lastVisitorMsgTime) return false; // No visitor messages, not pending
+            if (!c.lastAdminMsgTime) return true; // Never replied
+            return c.lastVisitorMsgTime > c.lastAdminMsgTime; // Visitor sent after last reply
+        }).length;
 
-        // Calculate avg response time (simplified - time from first visitor msg to first admin reply)
+        // Calculate avg response time (time from visitor msg to next admin reply)
         const responseTimes: number[] = [];
-        const conversationsByKey = new Map<string, typeof allMessages>();
+        const conversationsByKey = new Map<string, typeof recentMessages>();
 
-        allMessages.forEach((msg) => {
+        recentMessages.forEach((msg) => {
             const optin = chatOptins.find((o) => o.visitorId === msg.visitorId);
             const email = optin?.email || msg.visitorEmail;
             const key = email ? `email:${email.toLowerCase()}` : `visitor:${msg.visitorId}`;
@@ -96,7 +133,9 @@ export async function GET() {
 
             if (firstVisitorMsg && firstAdminMsg) {
                 const responseTime = firstAdminMsg.createdAt.getTime() - firstVisitorMsg.createdAt.getTime();
-                responseTimes.push(responseTime);
+                if (responseTime > 0) {
+                    responseTimes.push(responseTime);
+                }
             }
         });
 
@@ -116,7 +155,7 @@ export async function GET() {
         const leadsWithoutEmail = chatOptins.filter(o => !o.email || o.email.trim() === "").length;
         // Total leads = those with email + those without
         const totalLeads = leadsWithEmail + leadsWithoutEmail;
-        // Converted (from those with email)
+        // Converted (from those with email who actually purchased)
         const converted = convertedEmails.length;
         // Conversion rate = converted / leads with email (only count trackable leads)
         const conversionRate = leadsWithEmail > 0 ? (converted / leadsWithEmail) * 100 : 0;
@@ -132,6 +171,7 @@ export async function GET() {
             avgResponseTimeMin: Math.round(avgResponseTime / 60000),
             todayChats,
             convertedEmails,
+            convertedLeads, // NEW: Full details for UI
         });
     } catch (error) {
         console.error("Failed to fetch chat analytics:", error);

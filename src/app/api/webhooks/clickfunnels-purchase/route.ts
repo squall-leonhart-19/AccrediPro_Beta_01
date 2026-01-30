@@ -628,6 +628,105 @@ export async function POST(request: NextRequest) {
         }
 
         // =====================================================
+        // 5A. DETECT DFY PURCHASE (DFY_PROGRAM_DS)
+        // =====================================================
+
+        const productSkuLower = productSku.toLowerCase();
+        const productNameLower = productName.toLowerCase();
+        const isDFYPurchase = productSkuLower.includes("dfy_program_ds") ||
+            productNameLower.includes("dfy_program_ds") ||
+            productNameLower.includes("dfy program") ||
+            productNameLower.includes("done for you");
+
+        if (isDFYPurchase) {
+            console.log(`[CF Purchase] 🎁 DFY PRODUCT DETECTED: ${productName}`);
+
+            try {
+                // Find Jessica (DFY specialist)
+                const jessica = await prisma.user.findFirst({
+                    where: { email: "jessica@accredipro-certificate.com" },
+                    select: { id: true },
+                });
+
+                // Find or create DFY product record
+                let dfyProduct = await prisma.dFYProduct.findFirst({
+                    where: { slug: "dfy-program-ds" },
+                });
+
+                if (!dfyProduct) {
+                    dfyProduct = await prisma.dFYProduct.create({
+                        data: {
+                            slug: "dfy-program-ds",
+                            name: "Done For You Website Package",
+                            description: "Complete coaching website setup",
+                            price: purchaseValue,
+                            isActive: true,
+                        },
+                    });
+                    console.log(`[CF Purchase] Created DFY Product: ${dfyProduct.id}`);
+                }
+
+                // Create DFY purchase record
+                const dfyPurchase = await prisma.dFYPurchase.upsert({
+                    where: {
+                        userId_productId: { userId: user.id, productId: dfyProduct.id },
+                    },
+                    update: {},
+                    create: {
+                        userId: user.id,
+                        productId: dfyProduct.id,
+                        purchasePrice: purchaseValue,
+                        status: "COMPLETED",
+                        fulfillmentStatus: "PENDING",
+                        assignedToId: jessica?.id || null,
+                    },
+                });
+
+                console.log(`[CF Purchase] ✅ Created DFY Purchase: ${dfyPurchase.id}`);
+
+                // Add dfy_purchased tag
+                await prisma.userTag.upsert({
+                    where: { userId_tag: { userId: user.id, tag: "dfy_purchased" } },
+                    update: {},
+                    create: { userId: user.id, tag: "dfy_purchased" },
+                });
+
+                // Send DFY welcome email
+                try {
+                    const { sendDFYWelcomeEmail } = await import("@/lib/email");
+                    const intakeUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://learn.accredipro.academy"}/dfy-intake?id=${dfyPurchase.id}`;
+
+                    await sendDFYWelcomeEmail({
+                        to: normalizedEmail,
+                        firstName: firstName || "there",
+                        productName: dfyProduct.name,
+                        intakeUrl,
+                    });
+                    console.log(`[CF Purchase] ✅ DFY welcome email sent`);
+                } catch (emailError) {
+                    console.error("[CF Purchase] DFY welcome email failed:", emailError);
+                }
+
+                // Send welcome DM from Jessica with intake link
+                if (jessica) {
+                    const intakeUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://learn.accredipro.academy"}/dfy-intake?id=${dfyPurchase.id}`;
+                    await prisma.message.create({
+                        data: {
+                            senderId: jessica.id,
+                            receiverId: user.id,
+                            content: `Hey ${firstName || "there"}! 👋\n\nI'm Jessica, and I'll be personally handling your Done For You website setup! 🎉\n\nTo get started, I just need you to fill out a quick intake form (about 15 minutes). It helps me understand your coaching, your vibe, and exactly how you want your website to look.\n\n👉 **Start your intake form here:**\n${intakeUrl}\n\nI'll have your website ready within 7 days of receiving your form. Can't wait to build something amazing for you!`,
+                            messageType: "DIRECT",
+                        },
+                    });
+                    console.log(`[CF Purchase] ✅ Jessica DM sent for DFY`);
+                }
+
+            } catch (dfyError) {
+                console.error("[CF Purchase] DFY processing error:", dfyError);
+            }
+        }
+
+        // =====================================================
         // 6. TRIGGER SARAH'S WELCOME DM (NEW USERS ONLY)
         // =====================================================
 

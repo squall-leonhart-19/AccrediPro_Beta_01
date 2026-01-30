@@ -146,9 +146,9 @@ export default function WomensHealthMiniDiplomaPage() {
                     lastName: lastName.trim(),
                     email: email.toLowerCase().trim(),
                 }));
-                window.location.href = "/gut-health-mini-diploma/thank-you";
+                window.location.href = "/portal/gut-health";
             } else {
-                window.location.href = "/gut-health-mini-diploma/thank-you";
+                window.location.href = "/portal/gut-health";
             }
 
         } catch (err: any) {

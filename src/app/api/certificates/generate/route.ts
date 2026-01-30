@@ -1,9 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createCanvas, loadImage } from "canvas";
+import { createCanvas, loadImage, registerFont } from "canvas";
 import { join } from "path";
 import jsPDF from "jspdf";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { existsSync } from "fs";
+
+// Try to register Noto Sans font (included with Next.js/Vercel OG)
+const notoSansPath = join(process.cwd(), "node_modules/next/dist/compiled/@vercel/og/noto-sans-v27-latin-regular.ttf");
+if (existsSync(notoSansPath)) {
+    try {
+        registerFont(notoSansPath, { family: "NotoSans" });
+        console.log("[CERT] Registered NotoSans font");
+    } catch (e) {
+        console.warn("[CERT] Could not register NotoSans font:", e);
+    }
+}
 
 export async function POST(request: NextRequest) {
     try {
@@ -52,13 +64,13 @@ export async function POST(request: NextRequest) {
             let fontSize = 52;
             const titleText = courseTitle.toUpperCase();
 
-            ctx.font = `bold ${fontSize}px Georgia`;
+            ctx.font = `bold ${fontSize}px Arial, NotoSans, sans-serif`;
             let textWidth = ctx.measureText(titleText).width;
 
             // Reduce font size until it fits
             while (textWidth > maxWidth && fontSize > 28) {
                 fontSize -= 2;
-                ctx.font = `bold ${fontSize}px Georgia`;
+                ctx.font = `bold ${fontSize}px Arial, NotoSans, sans-serif`;
                 textWidth = ctx.measureText(titleText).width;
             }
 
@@ -67,18 +79,18 @@ export async function POST(request: NextRequest) {
 
         // ===== 2. STUDENT NAME (Center) - Position: 1000, 750 =====
         ctx.fillStyle = "#FFFFFF"; // WHITE text
-        ctx.font = "italic 64px Georgia";
+        ctx.font = "italic 64px Arial, NotoSans, sans-serif";
         ctx.textAlign = "center";
         ctx.fillText(formattedName, 1000, 750);
 
         // ===== 3. CERTIFICATE ID - Position: 685, 1280 =====
         ctx.fillStyle = "#FFFFFF"; // WHITE text
-        ctx.font = "22px Georgia"; // Elegant serif
+        ctx.font = "22px Arial, NotoSans, sans-serif";
         ctx.textAlign = "center";
         ctx.fillText(certificateId, 685, 1280);
 
         // ===== 4. DATE - Position: 1378, 1283 =====
-        ctx.font = "22px Georgia"; // Elegant serif
+        ctx.font = "22px Arial, NotoSans, sans-serif";
         ctx.textAlign = "center";
         ctx.fillText(date, 1378, 1283);
 

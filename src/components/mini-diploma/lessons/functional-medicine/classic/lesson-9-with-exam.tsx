@@ -48,113 +48,142 @@ export function ClassicLessonYourNextStepWithExam({
     const sections: LessonSection[] = [
         {
             type: 'intro',
-            content: `{name}, you made it. You completed all 9 lessons. I'm genuinely proud of you. Before we talk about what's next, I want to show you what's POSSIBLE. Not theory. Not hype. REAL numbers from real graduates who started exactly where you are.`,
+            content: `{name}, you made it. You completed all 9 lessons. I'm genuinely proud of you. Before we talk about what's next, I want to show you what's POSSIBLE. Not theory. Not hype. REAL income potential from certified practitioners who started exactly where you are.`,
         },
         {
             type: 'heading',
-            content: '"What If I Fail?"',
+            content: 'Your Income Potential: The FULL Picture',
         },
         {
             type: 'text',
-            content: `Let me address the elephant in the room. The fear that keeps most people stuck. What if you invest in certification and it doesn't work out?`,
+            content: `Here's what certified functional medicine practitioners actually earn. These aren't cherry-picked outliers - these are the FOUR income tiers we see across our graduate community:`,
         },
         {
             type: 'list',
-            content: 'Let\'s Do the Math:',
+            content: '🌱 TIER 1: Side Hustle ($3K-$8K/month)',
             items: [
-                'Full certification investment: $297',
-                'Average session rate after certification: $175',
-                'Sessions needed to break even: 2',
-                'Time to get 2 clients: Usually 2-4 weeks',
-            ],
-        },
-        {
-            type: 'callout',
-            content: `TWO clients. That's all it takes to recover your investment. Everything after that? Pure upside. Compare that to a college degree ($50,000+) or even a weekend seminar ($2,000+). This is one of the lowest-risk career investments you can make.`,
-            style: 'tip',
-        },
-        {
-            type: 'heading',
-            content: 'Real Income: What Graduates Actually Earn',
-        },
-        {
-            type: 'text',
-            content: `Here are REAL numbers from our graduate community. These aren't the outliers - these are typical results for people who actually implement.`,
-        },
-        {
-            type: 'list',
-            content: '6 MONTHS IN (Part-Time):',
-            items: [
-                'Clients: 5-8',
-                'Rate: $150-175/session',
-                'Hours: 8-12/week',
-                'Monthly income: $1,500-3,000',
+                '5-10 clients • 10-15 hours/week • $150-175/session',
+                'Perfect for: People keeping their day job',
+                'Timeline: Achievable within 3-6 months',
+                'Example: Nancy from Illinois - $4,900/month working 12 hrs/week',
             ],
         },
         {
             type: 'list',
-            content: '12 MONTHS IN (Growing):',
+            content: '🚀 TIER 2: Full Income Replacement ($10K-$15K/month)',
             items: [
-                'Clients: 10-15',
-                'Rate: $175-225/session',
-                'Hours: 15-20/week',
-                'Monthly income: $3,500-5,500',
+                '15-25 clients • 20-25 hours/week • $175-250/session',
+                'Perfect for: Those ready to quit their 9-5',
+                'Timeline: Achievable within 12-18 months',
+                'Example: Diana from Georgia - $8,500/month (quit corporate at 53)',
             ],
         },
         {
             type: 'list',
-            content: '24 MONTHS IN (Established):',
+            content: '💎 TIER 3: Premium Practice ($20K-$35K/month)',
             items: [
-                'Clients: 12-20',
-                'Rate: $200-300/session',
-                'Hours: 15-25/week',
-                'Monthly income: $5,000-8,000+',
-                'Often have waitlists',
+                '20-40 clients • Group programs • $250-400/session',
+                'Perfect for: Those building a recognized brand',
+                'Timeline: Achievable within 2-3 years',
+                'Includes group coaching, courses, and premium packages',
+            ],
+        },
+        {
+            type: 'list',
+            content: '👑 TIER 4: Empire Builder ($50K-$100K+/month)',
+            items: [
+                'Team of coaches • Online courses • Retreats • Speaking',
+                'Perfect for: Those who want to scale beyond 1-on-1',
+                'Timeline: 3-5 years of committed growth',
+                'Example: Top graduates running 6-7 figure practices',
             ],
         },
         {
             type: 'key-point',
-            content: `Notice: These are PART-TIME numbers. Most graduates work 15-20 hours/week and earn $4,000-6,000/month. That's $50-75/hour effective rate. More than most corporate jobs. With flexibility. Doing work that matters.`,
+            content: `Where you land depends on YOUR ambition, YOUR hours, and YOUR commitment. The certification opens ALL these doors. You choose which one to walk through.`,
         },
         {
             type: 'heading',
-            content: 'Real Story: Diana, 53 - The Skeptic Who Made It',
-        },
-        {
-            type: 'quote',
-            content: `"I was the biggest skeptic. 'This won't work for me.' 'I'm too old.' 'Nobody will pay me.' 'I don't have time.' Every excuse in the book. My daughter finally said: 'Mom, stop talking about it and just do it.' So I did. Month 1: 0 clients. Panic. Month 2: 2 clients from church. $300 total. Month 3: 4 clients. $700. I almost quit. Month 6: 8 clients. $2,400. I stopped making excuses. Month 12: 14 clients. $4,900. I gave my corporate job 2 weeks notice. Month 24 (now): 18 clients. $6,800/month. 22 hours/week. Complete control of my schedule. At 53, I started over. At 55, I have the career I always wanted. The only failure would have been not trying." - Diana M., Georgia | ASI Graduate 2022`,
-        },
-        {
-            type: 'heading',
-            content: 'What You\'ve Learned',
+            content: 'The Math That Changes Everything',
         },
         {
             type: 'list',
-            content: 'Your New Knowledge:',
+            content: 'Your Investment vs. Return:',
             items: [
-                'Root cause thinking - the 5 causes behind all chronic disease',
-                'Gut health - why it\'s the foundation of everything',
-                'Inflammation - the silent killer and how to address it',
-                'Toxins - environmental health in a poisoned world',
-                'Stress & hormones - the burnout epidemic and HPA axis',
-                'Nutrients - what doctors miss in lab reviews',
-                'Lab interpretation - functional vs. conventional ranges',
-                'Client acquisition - the 90-day path to paying clients',
+                'Full certification investment: $297',
+                'ONE session at $175 = 60% of investment recovered',
+                'TWO sessions = FULL investment recovered + profit',
+                'Sessions needed to hit $10K/month: Just 50-60 (about 15/week)',
             ],
         },
         {
             type: 'callout',
-            content: `You now know more about root-cause health than most conventionally trained healthcare providers. Seriously. They learn disease treatment. You learned disease PREVENTION and ROOT CAUSE resolution.`,
+            content: `Compare this to ANY other career path: Medical school ($250K+, 8+ years). MBA ($100K+, 2 years). Even trade school ($15K+, 6+ months). For $297 and focused effort, you can build a $100K+/year practice. This is the lowest-risk, highest-upside career investment you'll ever make.`,
+            style: 'tip',
+        },
+        {
+            type: 'heading',
+            content: 'Real Story: From Skeptic to $8,500/Month',
+        },
+        {
+            type: 'quote',
+            content: `"I was the biggest skeptic. 'This won't work for me.' 'I'm too old.' 'Nobody will pay me.' Every excuse in the book. My daughter finally said: 'Mom, stop talking about it and just do it.' Month 1: 0 clients. Panic. Month 3: 4 clients. $700. Month 6: 8 clients. $2,400. Month 12: 14 clients. $4,900. I gave notice. Month 24: 18 clients + group program. $8,500/month. 22 hours/week. At 53, I started over. At 55, I have the career I always wanted. The only failure would have been not trying." - Diana M., Georgia | ASI Graduate 2022`,
+        },
+        {
+            type: 'heading',
+            content: 'What You\'ve Learned (And Why It\'s Valuable)',
+        },
+        {
+            type: 'list',
+            content: 'Your New Knowledge Is Worth $$$:',
+            items: [
+                'Root cause thinking - what doctors spend 7+ years NOT learning',
+                'Gut health - the foundation 90% of practitioners miss',
+                'Inflammation - the silent killer clients NEED help with',
+                'Toxins - a growing crisis creating massive demand',
+                'Stress & hormones - burnout epidemic = endless clients',
+                'Lab interpretation - functional ranges = competitive edge',
+                'Client acquisition - the business side most "healers" ignore',
+            ],
+        },
+        {
+            type: 'callout',
+            content: `You now know more about root-cause health than most conventionally trained healthcare providers. They learned disease TREATMENT. You learned disease PREVENTION and ROOT CAUSE resolution. That knowledge is worth $100K+/year to the right clients.`,
             style: 'success',
+        },
+        {
+            type: 'heading',
+            content: 'Your Next Step: Get Fully Certified',
+        },
+        {
+            type: 'text',
+            content: `This Mini Diploma gave you the foundation. The FULL Functional Medicine Certification is what separates you from everyone else:`,
+        },
+        {
+            type: 'list',
+            content: 'Full Certification Includes:',
+            items: [
+                '✅ Advanced protocols and complete frameworks',
+                '✅ Video masterclasses with in-depth case studies',
+                '✅ Client intake templates and business systems',
+                '✅ Marketing playbook to fill your practice',
+                '✅ Private community of certified practitioners',
+                '✅ Lifetime updates as the field evolves',
+                '✅ Official ASI certificate to display',
+            ],
+        },
+        {
+            type: 'key-point',
+            content: `Certified practitioners command 3x higher rates ($175-300/session vs $50-75 for "wellness coaches"). The certification pays for itself with your FIRST client. Everything after is pure profit.`,
         },
     ];
 
     const keyTakeaways = [
-        '2 clients at $175/session = full certification investment recovered',
-        'Typical 12-month graduate: 10-15 clients, $175-225/session, $3,500-5,500/month',
-        'Part-time (15-20 hrs/week) can generate $4,000-6,000/month',
-        'You now know more about root-cause health than most healthcare providers',
-        'The world needs more people who understand functional medicine',
+        'Income Tier 1: $3K-8K/month (side hustle, 10-15 hrs/week)',
+        'Income Tier 2: $10K-15K/month (full income replacement)',
+        'Income Tier 3+: $20K-50K+/month (premium practice, group programs)',
+        'Full certification investment recovered in just 2 client sessions',
+        'Certified practitioners earn 3x more than uncertified wellness coaches',
     ];
 
     // Handle exam completion
@@ -263,7 +292,7 @@ export function ClassicLessonYourNextStepWithExam({
         );
     }
 
-    // Show lesson with custom completion behavior
+    // Show lesson - onNext will go to /exam page (handled by lesson page)
     return (
         <ClassicLessonBase
             lessonNumber={lessonNumber}
@@ -272,9 +301,8 @@ export function ClassicLessonYourNextStepWithExam({
             totalLessons={totalLessons}
             sections={sections}
             keyTakeaways={keyTakeaways}
-            // Don't pass onComplete/onNext - we handle it custom
-            onComplete={() => {}}
-            onNext={handleProceedToExam}
+            onComplete={onComplete}
+            onNext={onNext} // This goes to /portal/{slug}/exam
             isCompleted={isCompleted}
             firstName={firstName}
             niche="functional-medicine"

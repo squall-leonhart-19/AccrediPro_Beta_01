@@ -56,6 +56,7 @@ import {
   Pin,
   Shield,
   PlayCircle,
+  Trash2,
 } from "lucide-react";
 
 interface Enrollment {
@@ -1059,6 +1060,29 @@ export function MessagesClient({
     setShowReactionPicker(null);
   };
 
+  // Delete message (admin/mentor only)
+  const deleteMessage = async (messageId: string) => {
+    if (!confirm("Are you sure you want to delete this message?")) return;
+
+    try {
+      const response = await fetch(`/api/messages?messageId=${messageId}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        // Remove from local state
+        setMessages((prev) => prev.filter((m) => m.id !== messageId));
+        toast.success("Message deleted");
+      } else {
+        toast.error(data.error || "Failed to delete message");
+      }
+    } catch (error) {
+      console.error("Failed to delete message:", error);
+      toast.error("Failed to delete message");
+    }
+  };
+
   // Emoji picker
   const addEmoji = (emoji: string) => {
     setNewMessage((prev) => prev + emoji);
@@ -1441,14 +1465,36 @@ export function MessagesClient({
   };
 
   // Memoize filtered conversations to prevent re-filtering on every render
+  // Priority: 1) Waiting for reply (last msg from other user), 2) Most recent
   const filteredConversations = useMemo(() => {
-    if (!searchQuery) return conversations;
-    const query = searchQuery.toLowerCase();
-    return conversations.filter((conv) => {
-      const fullName = `${conv.user?.firstName} ${conv.user?.lastName}`.toLowerCase();
-      return fullName.includes(query) || conv.user?.email.toLowerCase().includes(query);
+    let result = conversations;
+
+    // Filter by search query if present
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter((conv) => {
+        const fullName = `${conv.user?.firstName} ${conv.user?.lastName}`.toLowerCase();
+        return fullName.includes(query) || conv.user?.email.toLowerCase().includes(query);
+      });
+    }
+
+    // Sort: prioritize waiting for reply, then by most recent
+    return [...result].sort((a, b) => {
+      // Check if conversation needs a reply (last message is NOT from current user)
+      const aNeedsReply = a.lastMessage && a.lastMessage.senderId !== currentUserId ? 1 : 0;
+      const bNeedsReply = b.lastMessage && b.lastMessage.senderId !== currentUserId ? 1 : 0;
+
+      // Prioritize conversations needing reply
+      if (aNeedsReply !== bNeedsReply) {
+        return bNeedsReply - aNeedsReply; // Needs reply comes first
+      }
+
+      // Within same priority, sort by most recent
+      const aTime = a.lastMessage?.createdAt ? new Date(a.lastMessage.createdAt).getTime() : 0;
+      const bTime = b.lastMessage?.createdAt ? new Date(b.lastMessage.createdAt).getTime() : 0;
+      return bTime - aTime;
     });
-  }, [conversations, searchQuery]);
+  }, [conversations, searchQuery, currentUserId]);
 
   // Keyboard shortcuts for power users
   useEffect(() => {
@@ -2258,6 +2304,17 @@ export function MessagesClient({
                                   >
                                     <Reply className="w-3 h-3 text-gray-500" />
                                   </Button>
+                                  {/* Delete button - only for admin/mentor */}
+                                  {isCoach && (
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-6 w-6 bg-white shadow-sm border hover:bg-red-50"
+                                      onClick={() => deleteMessage(message.id)}
+                                    >
+                                      <Trash2 className="w-3 h-3 text-red-500" />
+                                    </Button>
+                                  )}
                                 </div>
 
                                 {/* Reaction picker popup */}
