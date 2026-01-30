@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { sendMarketingEmail, personalEmailWrapper } from "@/lib/email";
+import { sendMarketingEmail } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
     try {
@@ -10,22 +10,26 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { to, subject, content, emailId } = await request.json();
+        const { to, subject, content, html, emailId } = await request.json();
 
-        if (!to || !subject || !content) {
+        if (!to || !subject) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        // Format the content with line breaks
-        const formattedContent = content
-            .split('\n\n')
-            .map((p: string) => `<p style="margin: 0 0 16px 0;">${p.replace(/\n/g, '<br>')}</p>`)
-            .join('');
+        // Use the provided HTML if available, otherwise format content
+        let emailHtml = html;
+        if (!emailHtml && content) {
+            const formattedContent = content
+                .split('\n\n')
+                .map((p: string) => `<p style="margin: 0 0 16px 0;">${p.replace(/\n/g, '<br>')}</p>`)
+                .join('');
+            emailHtml = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;">${formattedContent}</body></html>`;
+        }
 
         await sendMarketingEmail({
             to,
             subject,
-            html: personalEmailWrapper(formattedContent),
+            html: emailHtml,
         });
 
         return NextResponse.json({
