@@ -34,19 +34,12 @@ export interface CourseContext {
 }
 
 // ============================================
-// SIGNATURE - Hyper Professional Authority
+// SIGNATURE - Simple for Primary Inbox
+// (Fancy signatures trigger Promotions tab)
 // ============================================
 
-const SARAH_SIGNATURE = `
-Warmly,
+const SARAH_SIGNATURE = `Sarah`;
 
-Sarah Mitchell, CFMP, BCMP
-Chief Education Officer
-AccrediPro Standards Institute
-
-Direct Line: support@accredipro-certificate.com
-1,247+ Certified Practitioners | 9 International Accreditations
-New York | Dubai | London`;
 
 
 // ============================================
