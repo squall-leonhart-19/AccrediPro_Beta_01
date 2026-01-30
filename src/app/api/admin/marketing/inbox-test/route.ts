@@ -4676,7 +4676,208 @@ If not: I'll stop emailing. No hard feelings.
 
 I hope this is your year.`,
   },
+
+  // ============================================
+  // BUYER RETENTION EMAILS - Post-Purchase Sequences
+  // Test which subjects land in Primary for existing buyers
+  // ============================================
+
+  // Sprint Email 1: Day 0 - Welcome
+  {
+    id: 300,
+    name: "Buyer Sprint 1: Welcome",
+    day: 0,
+    section: "buyer_retention",
+    originalSubject: "You're in! Here's your first step",
+    subject: "Re: your access is ready",
+    content: `{{firstName}},
+
+Congratulations - you just made one of the best decisions of your life.
+
+You're now enrolled in Functional Medicine Certification.
+
+But here's the thing: the practitioners who succeed aren't the ones who "plan to start Monday." They're the ones who start TODAY.
+
+So here's what I want you to do right now:
+
+1. Log into your dashboard: https://learn.accredipro.academy/dashboard
+2. Click "Start Module 1"
+3. Complete the first lesson (12 minutes)
+
+That's it. Just one lesson.
+
+I'm so excited to have you in the community.
+
+Sarah
+
+P.S. I'll check in tomorrow to see how you're doing.`,
+  },
+  {
+    id: 301,
+    name: "Buyer Sprint 1 - V2: Personal",
+    day: 0,
+    section: "buyer_retention",
+    originalSubject: "welcome + your login",
+    subject: "Re: welcome",
+    content: `{{firstName}},
+
+You're in.
+
+I just saw your name come through and wanted to say welcome personally.
+
+Your dashboard is ready: https://learn.accredipro.academy/dashboard
+
+Just start Module 1 when you're ready. No rush - but sooner is better.
+
+Talk soon.
+
+Sarah`,
+  },
+  {
+    id: 302,
+    name: "Buyer Sprint 1 - V3: Ultra Short",
+    day: 0,
+    section: "buyer_retention",
+    originalSubject: "you're all set",
+    subject: "Re: you're all set",
+    content: `{{firstName}},
+
+All set! Your course is ready.
+
+Start here: https://learn.accredipro.academy/dashboard
+
+Any questions, just reply.
+
+Sarah`,
+  },
+
+  // 7-Day Reminder Variants
+  {
+    id: 310,
+    name: "Buyer 7d Reminder: V1 Check-in",
+    day: 7,
+    section: "buyer_retention",
+    originalSubject: "Your course is waiting...",
+    subject: "Re: quick check-in",
+    content: `{{firstName}},
+
+I noticed you haven't logged in for a while.
+
+Is everything okay?
+
+I'm not going to guilt you - I know life gets crazy. But I also know you invested in this for a reason.
+
+Can I help with anything?
+
+Your course is here: https://learn.accredipro.academy/dashboard
+
+Just one lesson today. That's all I'm asking.
+
+Sarah`,
+  },
+  {
+    id: 311,
+    name: "Buyer 7d Reminder: V2 Question",
+    day: 7,
+    section: "buyer_retention",
+    originalSubject: "did you get stuck?",
+    subject: "Re: question for you",
+    content: `{{firstName}},
+
+Quick question - did something come up?
+
+I noticed you haven't been in the course for a bit. Totally normal - life happens.
+
+If you're stuck on anything, just reply and let me know. I can help.
+
+When you're ready: https://learn.accredipro.academy/dashboard
+
+Sarah`,
+  },
+  {
+    id: 312,
+    name: "Buyer 7d Reminder: V3 Caring",
+    day: 7,
+    section: "buyer_retention",
+    originalSubject: "thinking of you",
+    subject: "Re: thinking of you",
+    content: `{{firstName}},
+
+Just wanted to check in.
+
+Haven't seen you in the course lately and wanted to make sure you're okay.
+
+No pressure. Whenever you're ready, I'm here.
+
+Sarah`,
+  },
+
+  // 14-Day Reminder Variants
+  {
+    id: 320,
+    name: "Buyer 14d Reminder: V1 Honest",
+    day: 14,
+    section: "buyer_retention",
+    originalSubject: "I noticed you haven't continued...",
+    subject: "Re: following up",
+    content: `{{firstName}},
+
+It's been 2 weeks since you made progress in your certification.
+
+I'm reaching out because I care.
+
+Every day that passes makes it harder to restart. The excitement fades. And before you know it, you're one of those people who "bought a course but never finished it."
+
+That's not you.
+
+Log in today and complete just ONE lesson: https://learn.accredipro.academy/dashboard
+
+I'm rooting for you.
+
+Sarah`,
+  },
+  {
+    id: 321,
+    name: "Buyer 14d Reminder: V2 Direct",
+    day: 14,
+    section: "buyer_retention",
+    originalSubject: "hey - wanted to check in",
+    subject: "Re: checking in again",
+    content: `{{firstName}},
+
+Hey - just checking in on you.
+
+You started strong. What happened?
+
+If something's blocking you, tell me. If life just got busy, I get it.
+
+Either way, your spot is waiting: https://learn.accredipro.academy/dashboard
+
+Sarah`,
+  },
+  {
+    id: 322,
+    name: "Buyer 14d Reminder: V3 Supportive",
+    day: 14,
+    section: "buyer_retention",
+    originalSubject: "I'm here when you need me",
+    subject: "Re: still here for you",
+    content: `{{firstName}},
+
+I haven't forgotten about you.
+
+Life gets in the way sometimes. That's okay.
+
+Whenever you're ready to continue, I'll be here. Your progress is saved. Nothing is lost.
+
+Just pick up where you left off: https://learn.accredipro.academy/dashboard
+
+No judgment. Just support.
+
+Sarah`,
+  },
 ];
+
 
 // GET - Return all variants info
 export async function GET(request: NextRequest) {
