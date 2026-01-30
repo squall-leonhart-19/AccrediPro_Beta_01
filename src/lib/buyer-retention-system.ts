@@ -1,13 +1,15 @@
 /**
- * UNIVERSAL BUYER RETENTION SYSTEM
+ * MAXIMUM BUYER RETENTION SYSTEM v2.0
  * 
- * Dynamic sequences that work for ANY course
- * Uses template variables: {{courseName}}, {{courseUrl}}, {{firstName}}, etc.
+ * Hormozi-style engagement with warm copy for 35/40+ women
+ * ~25 unique email triggers covering ALL scenarios
  * 
  * SEQUENCES:
- * 1. SPRINT (0-48h): 4 emails pushing first module completion
- * 2. MILESTONES: Module 1, Halfway, Complete, Certificate
- * 3. REMINDERS: 7d, 14d, 30d, 45d for stalled buyers
+ * 1. SPRINT (Day 0-5) - Everyone gets, push to start
+ * 2. RECOVERY (Day 3-30) - No login at all
+ * 3. STALLED (Day 3-14) - Login but no progress
+ * 4. MILESTONE - Celebrate completion achievements
+ * 5. RE-ENGAGEMENT - Welcome back after absence
  */
 
 // ============================================
@@ -16,495 +18,542 @@
 
 export interface BuyerRetentionEmail {
     id: string;
-    phase: 'sprint' | 'milestone' | 'reminder';
-    day: number;
+    sequence: 'sprint' | 'recovery' | 'stalled' | 'milestone' | 'reengagement';
+    trigger: string;
     delayHours: number;
     subject: string;
     content: string;
+    preventTag?: string;
 }
 
-export interface CourseContext {
-    firstName: string;
-    email?: string;
-    courseName: string;
-    courseUrl: string;
-    dashboardUrl: string;
-    certificateUrl?: string;
-    deadline?: string;
+// ============================================
+// TEMPLATE HELPERS
+// ============================================
+
+export function fillTemplateVariables(content: string, vars: Record<string, string>): string {
+    let result = content;
+    for (const [key, value] of Object.entries(vars)) {
+        result = result.replace(new RegExp(`{{${key}}}`, 'g'), value);
+    }
+    return result;
 }
 
 // ============================================
 // SIGNATURE - Simple for Primary Inbox
-// (Fancy signatures trigger Promotions tab)
 // ============================================
 
-const SARAH_SIGNATURE = `Sarah`;
-
-
+const SARAH = `Sarah`;
 
 // ============================================
-// SPRINT SEQUENCE (0-48h)
-// Get them to complete Module 1 FAST
+// 1. SPRINT SEQUENCE (Everyone gets these)
+// Push them to start within 72 hours
 // ============================================
 
 export const SPRINT_SEQUENCE: BuyerRetentionEmail[] = [
     {
-        id: "sprint_1",
-        phase: "sprint",
-        day: 0,
+        id: "sprint_0h",
+        sequence: "sprint",
+        trigger: "purchase",
         delayHours: 0,
         subject: "Re: your access is ready",
         content: `{{firstName}},
 
-Congratulations - you just made one of the best decisions of your life.
+You're in! I'm so excited for you.
 
-You're now enrolled in {{courseName}}.
+Your course is ready and waiting for you.
 
-But here's the thing: the practitioners who succeed aren't the ones who "plan to start Monday." They're the ones who start TODAY.
+When you get a chance, log in and check out the first lesson. Most people finish it in about 15 minutes - it's a great way to get started.
 
-So here's what I want you to do right now:
+Here's your dashboard: {{dashboardUrl}}
 
-1. Log into your dashboard: {{dashboardUrl}}
-2. Click "Start Module 1"
-3. Complete the first lesson (12 minutes)
+I'll be here if you need anything. Just hit reply anytime.
 
-That's it. Just one lesson.
+Welcome to the community!
 
-By the end, you'll understand the core foundation that separates amateur health coaches from clinical-grade practitioners.
-
-Start here: {{courseUrl}}
-
-I'm so excited to have you in the community. You're going to love what's ahead.
-
-${SARAH_SIGNATURE}
-
-P.S. I'll check in tomorrow to see how you're doing. Any questions, just hit reply.`,
+${SARAH}`,
     },
     {
-        id: "sprint_2",
-        phase: "sprint",
-        day: 0,
-        delayHours: 6,
-        subject: "Re: quick question",
+        id: "sprint_2h",
+        sequence: "sprint",
+        trigger: "auto",
+        delayHours: 2,
+        subject: "Re: quick hello",
         content: `{{firstName}},
 
-Quick check-in - did you start Module 1 yet?
+Just wanted to pop in and say hi!
 
-If not, no judgment. Life gets busy.
+Did you get a chance to check out your course yet? No rush at all - just curious how things are going.
 
-But let me tell you what's waiting for you inside Module 1:
+If you have any questions about where to start, I'm here.
 
-- The core methodology that changes everything
-- Key concepts most practitioners miss
-- Your first practical framework
-- The "aha moment" our graduates talk about most
-
-By the end of Module 1, you'll already see health differently than before.
-
-Time to complete: ~45 minutes
-
-Start Module 1: {{courseUrl}}
-
-See you in there.
-
-${SARAH_SIGNATURE}`,
+${SARAH}`,
     },
     {
-        id: "sprint_3",
-        phase: "sprint",
-        day: 1,
-        delayHours: 0,
-        subject: "Re: following up",
+        id: "sprint_day1",
+        sequence: "sprint",
+        trigger: "auto",
+        delayHours: 24,
+        subject: "Re: thinking about you",
         content: `{{firstName}},
 
-I want to share something with you.
+Good morning!
 
-We've tracked thousands of students through our certifications.
+I was just thinking about you and wanted to check in. How's everything going?
 
-And here's what we found:
+The first lesson is waiting whenever you're ready. It covers some really beautiful foundational concepts that I think you'll love.
 
-Students who complete Module 1 in the first 24 hours are 4x more likely to finish the entire certification and get their first paying client.
+No pressure - just excited for you to experience it.
 
-It's not about being smarter. It's about momentum.
-
-The ones who "start tomorrow" usually don't start at all. Life gets in the way. The excitement fades. And 30 days later, they're still on Lesson 1.
-
-Don't let that be you.
-
-You paid for this. You made the decision. Now honor that decision with 45 minutes of focused action.
-
-Module 1 is waiting: {{courseUrl}}
-
-One lesson. That's all it takes to change your trajectory.
-
-${SARAH_SIGNATURE}
-
-P.S. If you've already started - ignore this and keep going! Reply with "STARTED" and I'll send you something special.`,
+${SARAH}`,
     },
     {
-        id: "sprint_4",
-        phase: "sprint",
-        day: 2,
-        delayHours: 0,
-        subject: "Re: checking in",
+        id: "sprint_day2",
+        sequence: "sprint",
+        trigger: "auto",
+        delayHours: 48,
+        subject: "Re: a little something",
         content: `{{firstName}},
 
-It's been 48 hours since you enrolled.
+Hey there!
 
-Can I ask you something honestly?
+I hope you're having a good week so far.
 
-Have you started yet?
+If you've started the course - amazing! I'd love to hear what you think.
 
-Because if you haven't... I get it. We all have reasons:
-- "I'll start when things calm down"
-- "I need to find the right time"
-- "I'm waiting until I can really focus"
+If you haven't had a chance yet - totally okay. Life happens. Your course isn't going anywhere.
 
-But here's the truth: there's never a "right time."
+Just wanted you to know I'm thinking of you.
 
-There's only now.
+${SARAH}`,
+    },
+    {
+        id: "sprint_day3",
+        sequence: "sprint",
+        trigger: "auto",
+        delayHours: 72,
+        subject: "Re: one thing I've noticed",
+        content: `{{firstName}},
 
-The women who are now earning $5,000-$10,000/month as certified practitioners? They all started imperfectly. They started tired. They started busy. They started anyway.
+I've noticed something interesting over the years.
 
-Here's my challenge for you:
+The students who end up absolutely loving this journey? They often start with just one small step.
 
-Open Module 1. Complete one lesson. Just one.
+Not the whole course. Not even a whole module. Just one lesson.
 
-It's 12 minutes that could change everything.
+There's something magical about taking that first step. Everything feels more real after that.
 
-Start now: {{courseUrl}}
+Whenever you're ready: {{dashboardUrl}}
 
-I believe in you, {{firstName}}. You made this investment for a reason. Trust yourself.
+Cheering you on!
 
-${SARAH_SIGNATURE}
+${SARAH}`,
+    },
+    {
+        id: "sprint_day5",
+        sequence: "sprint",
+        trigger: "auto",
+        delayHours: 120,
+        subject: "Re: before the weekend",
+        content: `{{firstName}},
 
-P.S. If you're stuck or confused about anything, reply to this email. I read every response and I'll personally help you get unstuck.`,
+Hey! Hope you have something nice planned for the weekend.
+
+Just wanted to send you a little note before things get busy.
+
+If you get a quiet moment this weekend, the first lesson would be perfect for a cozy morning with coffee. Just a thought!
+
+Either way, I hope you have a wonderful few days.
+
+${SARAH}`,
     },
 ];
 
 // ============================================
-// MILESTONE EMAILS
-// Celebrate progress, maintain momentum
+// 2. RECOVERY SEQUENCE (No login at all)
+// Warm outreach for people who never logged in
+// ============================================
+
+export const RECOVERY_SEQUENCE: BuyerRetentionEmail[] = [
+    {
+        id: "recovery_3d",
+        sequence: "recovery",
+        trigger: "no_login_3d",
+        delayHours: 72,
+        preventTag: "recovery_3d_sent",
+        subject: "Re: everything okay?",
+        content: `{{firstName}},
+
+Hey, I just wanted to check - is everything okay?
+
+I noticed you haven't had a chance to log in yet, and I wanted to make sure nothing went wrong on our end.
+
+Sometimes emails land in spam, or links don't work, or life just gets crazy busy. Totally normal!
+
+If you're having any trouble at all, just reply to this email. I'm here to help.
+
+Your course is waiting here: {{dashboardUrl}}
+
+${SARAH}`,
+    },
+    {
+        id: "recovery_5d",
+        sequence: "recovery",
+        trigger: "no_login_5d",
+        delayHours: 120,
+        preventTag: "recovery_5d_sent",
+        subject: "Re: here for you",
+        content: `{{firstName}},
+
+I hope you're doing well!
+
+I wanted to let you know - there's no timeline or pressure here. Your course is yours, and it'll be ready whenever the time feels right for you.
+
+Some people dive in right away. Some wait for a quieter season. Both are totally valid.
+
+If there's anything I can do to make getting started easier, I'd love to help. Just hit reply.
+
+Thinking of you!
+
+${SARAH}`,
+    },
+    {
+        id: "recovery_7d",
+        sequence: "recovery",
+        trigger: "no_login_7d",
+        delayHours: 168,
+        preventTag: "recovery_7d_sent",
+        subject: "Re: thinking of you",
+        content: `{{firstName}},
+
+Just a little note to say I'm thinking of you.
+
+I know life can pull us in a million directions. Work, family, everything in between.
+
+I just wanted you to know - you're not forgotten here. Your spot is saved. Your course is ready. And I'm still cheering you on, even from the sidelines.
+
+Whenever you're ready, I'll be here.
+
+With warmth,
+
+${SARAH}`,
+    },
+    {
+        id: "recovery_14d",
+        sequence: "recovery",
+        trigger: "no_login_14d",
+        delayHours: 336,
+        preventTag: "recovery_14d_sent",
+        subject: "Re: still here for you",
+        content: `{{firstName}},
+
+Hi there!
+
+It's been a couple of weeks, and I just wanted to send you a little hello.
+
+I'm not going anywhere, and neither is your course. Everything is saved and waiting.
+
+If you ever want to chat about where to start, or if something is making it hard to begin, I'm just an email away. No judgment, just support.
+
+Wishing you all the best.
+
+${SARAH}`,
+    },
+    {
+        id: "recovery_30d",
+        sequence: "recovery",
+        trigger: "no_login_30d",
+        delayHours: 720,
+        preventTag: "recovery_30d_sent",
+        subject: "Re: sending love your way",
+        content: `{{firstName}},
+
+Hi love,
+
+It's been about a month, and I wanted to reach out one more time.
+
+I think about the women in our community all the time - including you, even if we haven't connected much yet.
+
+I don't know what's happening in your world right now, but I hope you're taking care of yourself. Whatever you're dealing with - you've got this.
+
+Your course will always be here. And so will I.
+
+Sending you so much love today.
+
+${SARAH}`,
+    },
+];
+
+// ============================================
+// 3. STALLED SEQUENCE (Login but no progress)
+// For people who signed in but didn't complete anything
+// ============================================
+
+export const STALLED_SEQUENCE: BuyerRetentionEmail[] = [
+    {
+        id: "stalled_3d",
+        sequence: "stalled",
+        trigger: "login_no_progress_3d",
+        delayHours: 72,
+        preventTag: "stalled_3d_sent",
+        subject: "Re: can I help?",
+        content: `{{firstName}},
+
+I saw you logged in - yay! That's a great first step.
+
+I wanted to check in because I know sometimes getting started can feel... big. Like, where do you even begin?
+
+If you're feeling stuck or overwhelmed, I totally get it. Here's my suggestion: just start with Lesson 1. Don't think about the whole course. Just one lesson.
+
+If something specific is blocking you, hit reply and tell me. I love problem-solving!
+
+${SARAH}`,
+    },
+    {
+        id: "stalled_5d",
+        sequence: "stalled",
+        trigger: "login_no_progress_5d",
+        delayHours: 120,
+        preventTag: "stalled_5d_sent",
+        subject: "Re: stuck on something?",
+        content: `{{firstName}},
+
+Just checking in again!
+
+I wanted to see if there's anything that's making it hard to get started. Sometimes it's technical stuff, sometimes it's feeling overwhelmed, sometimes it's just... life.
+
+Whatever it is, I've probably seen it before and can help.
+
+What would make this easier for you? I'm all ears.
+
+${SARAH}`,
+    },
+    {
+        id: "stalled_7d",
+        sequence: "stalled",
+        trigger: "login_no_progress_7d",
+        delayHours: 168,
+        preventTag: "stalled_7d_sent",
+        subject: "Re: no pressure",
+        content: `{{firstName}},
+
+Hey there!
+
+I wanted to pop in and say - there's zero pressure from me. Truly.
+
+Some people start right away. Some take their time. There's no wrong way to do this.
+
+I just want you to know that whenever the moment feels right, everything is ready for you. And if you need any support, I'm here.
+
+You've got this, on your own timeline.
+
+${SARAH}`,
+    },
+    {
+        id: "stalled_14d",
+        sequence: "stalled",
+        trigger: "login_no_progress_14d",
+        delayHours: 336,
+        preventTag: "stalled_14d_sent",
+        subject: "Re: whenever you're ready",
+        content: `{{firstName}},
+
+Just a gentle hello!
+
+I know you peeked into the course a while back. I just wanted to let you know - your progress is saved, your spot is secure, and nothing has changed.
+
+Whenever the timing feels right, you can pick right up where you left off.
+
+No rush. No pressure. Just possibility.
+
+Thinking of you!
+
+${SARAH}`,
+    },
+];
+
+// ============================================
+// 4. MILESTONE SEQUENCE (Celebrate achievements)
+// Sent when they complete key milestones
 // ============================================
 
 export const MILESTONE_EMAILS: Record<string, BuyerRetentionEmail> = {
     module_1_complete: {
-        id: "milestone_module_1",
-        phase: "milestone",
-        day: 0,
+        id: "milestone_module1",
+        sequence: "milestone",
+        trigger: "module_1_complete",
         delayHours: 0,
-        subject: "Re: you did it",
+        subject: "Re: you did it!",
         content: `{{firstName}},
 
-You just completed Module 1.
+You just finished Module 1!
 
-Do you realize what that means?
+I'm so proud of you. Seriously. Taking that first step is often the hardest part, and you did it.
 
-You now understand more about this field than 95% of the population. You have the foundational knowledge that everything else builds on.
+How are you feeling? I'd love to know what stood out to you most.
 
-And here's what I want you to know: most people who buy courses never finish the first module. You already have.
+The momentum you've built is real. Module 2 is just as good - I can't wait for you to experience it.
 
-That tells me something about you.
+But for now, just celebrate this win. You earned it!
 
-Module 2 is now unlocked. This is where it gets really good. You'll learn how to actually apply what you know to real situations.
-
-Continue your training: {{courseUrl}}
-
-Keep the momentum going, {{firstName}}. You're doing amazing.
-
-${SARAH_SIGNATURE}
-
-P.S. Quick tip: Students who complete Module 2 within 48 hours of Module 1 have the highest completion rates.`,
+${SARAH}`,
     },
 
-    halfway_complete: {
-        id: "milestone_halfway",
-        phase: "milestone",
-        day: 0,
+    progress_25: {
+        id: "milestone_25",
+        sequence: "milestone",
+        trigger: "progress_25_percent",
         delayHours: 0,
-        subject: "Re: you're halfway there",
+        subject: "Re: look how far you've come",
         content: `{{firstName}},
 
-This is a big deal.
+Quarter of the way there!
 
-You just hit the halfway point in your certification.
+You're making amazing progress, and I wanted to take a moment to celebrate that.
 
-I want to put this in perspective:
+Do you remember how it felt when you first started? Look at you now - concepts are clicking, things are making sense, and you're building real knowledge.
 
-- 70% of online course buyers never finish Module 1
-- 40% drop off by Module 3
-- You're now in the top 30% of students
+Keep going! But also, take a breath and appreciate how far you've come.
 
-This isn't luck. This is discipline. This is commitment. This is who you are.
+So proud of you!
 
-The finish line is closer than you think.
-
-Keep going: {{courseUrl}}
-
-${SARAH_SIGNATURE}
-
-P.S. I see you showing up. You're exactly the kind of practitioner we love having.`,
+${SARAH}`,
     },
 
-    course_complete: {
+    progress_50: {
+        id: "milestone_50",
+        sequence: "milestone",
+        trigger: "progress_50_percent",
+        delayHours: 0,
+        subject: "Re: halfway there!",
+        content: `{{firstName}},
+
+You're at the halfway point!
+
+This is a big deal. A lot of people never make it this far in any course. But here you are - consistent, committed, and doing the work.
+
+I'm genuinely so excited for what's ahead of you. The second half builds on everything you've learned, and it's where things really start to click.
+
+You're doing incredible.
+
+${SARAH}`,
+    },
+
+    progress_90: {
+        id: "milestone_90",
+        sequence: "milestone",
+        trigger: "progress_90_percent",
+        delayHours: 0,
+        subject: "Re: almost at the finish line",
+        content: `{{firstName}},
+
+You're so close!
+
+90% complete. I can barely contain my excitement for you.
+
+The finish line is right there. A few more lessons and you'll have done something most people only dream about.
+
+You've put in the work. Now let's finish this thing.
+
+I'll be here cheering when you cross that finish line!
+
+${SARAH}`,
+    },
+
+    completion: {
         id: "milestone_complete",
-        phase: "milestone",
-        day: 0,
+        sequence: "milestone",
+        trigger: "course_complete",
         delayHours: 0,
-        subject: "Re: congratulations",
+        subject: "Re: congratulations!",
         content: `{{firstName}},
 
-I don't have enough words.
+YOU DID IT!
 
-YOU DID IT.
+I am SO incredibly proud of you. You just completed the entire certification.
 
-You completed {{courseName}}.
+Think about where you started. Think about every lesson, every concept, every moment of growth. You did all of that.
 
-Do you understand how rare that is?
+This isn't just a certificate - it's proof that you follow through. That you invest in yourself. That you finish what you start.
 
-Less than 15% of people who start online courses finish them. You didn't just finish - you mastered the entire curriculum.
+Your certificate will be in your dashboard soon.
 
-Here's what happens next:
+But more importantly - you're now part of something bigger. A community of practitioners who are making a real difference in people's lives.
 
-1. YOUR CERTIFICATE IS READY
-   Go claim it here: {{certificateUrl}}
-   
-2. ADD YOUR CREDENTIALS
-   You can now add your certification to your name.
-   
-3. LINKEDIN BADGE
-   Download your official badge and add it to your profile.
+Welcome to the next chapter.
 
-{{firstName}}, I'm genuinely proud of you.
+With so much love and pride,
 
-This journey isn't easy. The material is dense. The commitment is real. And you showed up, lesson after lesson, until you finished.
-
-That says everything about who you are.
-
-Go claim your certificate: {{certificateUrl}}
-
-Welcome to the certified practitioner community.
-
-${SARAH_SIGNATURE}
-
-P.S. This is just the beginning. There's so much more ahead.`,
-    },
-
-    certificate_claimed: {
-        id: "milestone_certificate",
-        phase: "milestone",
-        day: 0,
-        delayHours: 0,
-        subject: "Re: your certificate",
-        content: `{{firstName}},
-
-Your certificate is now official.
-
-You are certified.
-
-I want you to do something for me:
-
-1. Print your certificate (or save the PDF somewhere visible)
-2. Update your LinkedIn headline with your new credential
-3. Tell ONE person in your life what you just accomplished
-
-Why? Because external recognition reinforces internal belief.
-
-The more you OWN this credential, the more confident you'll feel when you start talking to clients.
-
-You're the real deal now.
-
-${SARAH_SIGNATURE}`,
+${SARAH}`,
     },
 };
 
 // ============================================
-// ENGAGEMENT REMINDERS
-// Warm, caring check-ins - NO scare tactics
+// 5. RE-ENGAGEMENT (Welcome back!)
+// For students who return after being away
 // ============================================
 
-export const REMINDER_EMAILS: Record<string, BuyerRetentionEmail & { triggerDays: number; preventTag: string }> = {
-    no_login_7d: {
-        id: "reminder_7d",
-        phase: "reminder",
-        day: 7,
+export const REENGAGEMENT_EMAILS: Record<string, BuyerRetentionEmail> = {
+    return_after_7d: {
+        id: "reengagement_7d",
+        sequence: "reengagement",
+        trigger: "return_after_7d_absence",
         delayHours: 0,
-        triggerDays: 7,
-        preventTag: "reminder_7d_sent",
-        subject: "Re: checking in on you",
+        subject: "Re: so good to see you back!",
         content: `{{firstName}},
 
-Just thinking about you and wanted to reach out.
+You're back!
 
-How are you doing? How's everything going with the course?
+I noticed you logged in today, and it made me smile. Welcome back!
 
-I know life can get busy - trust me, I've been there. Some weeks just fly by and before you know it, things get pushed aside.
+Life has a way of pulling us in different directions sometimes. But here you are, showing up for yourself again.
 
-If you've had a chance to start, I'd love to hear how it's going. And if you haven't yet - no worries at all. Your course is there whenever you're ready.
+Everything is right where you left it. Your progress is saved. You can pick up whenever you're ready.
 
-Is there anything I can help with? Sometimes just having someone to talk through things with makes all the difference.
+If you need any help getting re-oriented, just reply to this email. I'm here!
 
-Your dashboard is here: {{dashboardUrl}}
+So glad to have you back.
 
-Sending you good energy today.
-
-${SARAH_SIGNATURE}`,
-    },
-
-    no_progress_14d: {
-        id: "reminder_14d",
-        phase: "reminder",
-        day: 14,
-        delayHours: 0,
-        triggerDays: 14,
-        preventTag: "reminder_14d_sent",
-        subject: "Re: thinking of you",
-        content: `{{firstName}},
-
-I've been thinking about you.
-
-It's been a couple weeks and I just wanted to check in. How are you? How's life treating you?
-
-I know from experience that sometimes the timing just isn't right. That's okay. Your course isn't going anywhere - it'll be here whenever you have a moment.
-
-But I also know that sometimes we just need a little nudge. A reminder that we can do this. That it's okay to take things slow.
-
-If you're feeling overwhelmed about where to start, just reply to this email. I love helping people figure out their next step.
-
-And if now just isn't the right time - that's completely okay too. No pressure from me.
-
-Just know that I'm here and I believe in you.
-
-${SARAH_SIGNATURE}`,
-    },
-
-    stalled_30d: {
-        id: "reminder_30d",
-        phase: "reminder",
-        day: 30,
-        delayHours: 0,
-        triggerDays: 30,
-        preventTag: "reminder_30d_sent",
-        subject: "Re: still here for you",
-        content: `{{firstName}},
-
-I hope you're doing well.
-
-It's been about a month and I just wanted to let you know - I'm still here for you. Your course is still here. Nothing has changed.
-
-Life has a way of taking us in unexpected directions sometimes. Maybe things got busy. Maybe something came up. Maybe you're just not feeling it right now.
-
-All of that is okay.
-
-I'm not here to pressure you or make you feel bad. I'm here because I genuinely care about the people in our community.
-
-Whenever you're ready to jump back in, even if it's months from now, I'll be here to support you.
-
-If you want to chat about anything - the course, life, whatever - just reply. I love hearing from you.
-
-Take care of yourself.
-
-${SARAH_SIGNATURE}`,
-    },
-
-    dormant_45d: {
-        id: "reminder_45d",
-        phase: "reminder",
-        day: 45,
-        delayHours: 0,
-        triggerDays: 45,
-        preventTag: "reminder_45d_sent",
-        subject: "Re: sending love your way",
-        content: `{{firstName}},
-
-I hope this finds you well.
-
-I just wanted to send you a little note to let you know I'm thinking of you.
-
-Your course is here, your spot is saved, and there's no expiration on any of it. Whenever the time feels right for you - whether that's next week or next year - you can pick up right where you left off.
-
-I genuinely believe that everything happens in its own time. Sometimes we're not ready, and that's perfectly okay.
-
-If there's ever anything I can do to support you - even if it's just a friendly ear - please reach out. I love connecting with the women in our community.
-
-Wishing you all the best, wherever life is taking you right now.
-
-With love,
-
-${SARAH_SIGNATURE}`,
+${SARAH}`,
     },
 };
 
 // ============================================
-// HELPER: Fill template variables
+// ALL SEQUENCES COMBINED (for cron job)
 // ============================================
 
-export function fillEmailTemplate(
-    template: BuyerRetentionEmail,
-    context: CourseContext
-): { subject: string; content: string } {
-    const replaceVars = (text: string): string => {
-        return text
-            .replace(/\{\{firstName\}\}/g, context.firstName)
-            .replace(/\{\{email\}\}/g, context.email || '')
-            .replace(/\{\{courseName\}\}/g, context.courseName)
-            .replace(/\{\{courseUrl\}\}/g, context.courseUrl)
-            .replace(/\{\{dashboardUrl\}\}/g, context.dashboardUrl)
-            .replace(/\{\{certificateUrl\}\}/g, context.certificateUrl || 'https://learn.accredipro.academy/certificates')
-            .replace(/\{\{deadline\}\}/g, context.deadline || '7 days');
-    };
-
-    return {
-        subject: replaceVars(template.subject),
-        content: replaceVars(template.content),
-    };
-}
-
-// ============================================
-// COURSE CONFIG MAP
-// Returns course-specific URLs and names
-// ============================================
-
-export const COURSE_CONFIGS: Record<string, Omit<CourseContext, 'firstName' | 'email'>> = {
-    "functional-medicine-complete-certification": {
-        courseName: "Functional Medicine Certification",
-        courseUrl: "https://learn.accredipro.academy/courses/functional-medicine-complete-certification",
-        dashboardUrl: "https://learn.accredipro.academy/dashboard",
-        certificateUrl: "https://learn.accredipro.academy/certificates",
-    },
-    "holistic-nutrition-coach-certification": {
-        courseName: "Holistic Nutrition Coach Certification",
-        courseUrl: "https://learn.accredipro.academy/courses/holistic-nutrition-coach-certification",
-        dashboardUrl: "https://learn.accredipro.academy/dashboard",
-        certificateUrl: "https://learn.accredipro.academy/certificates",
-    },
-    "womens-hormone-health-coach-certification": {
-        courseName: "Women's Hormone Health Coach Certification",
-        courseUrl: "https://learn.accredipro.academy/courses/womens-hormone-health-coach-certification",
-        dashboardUrl: "https://learn.accredipro.academy/dashboard",
-        certificateUrl: "https://learn.accredipro.academy/certificates",
-    },
-    "gut-health-microbiome-coach-certification": {
-        courseName: "Gut Health & Microbiome Coach Certification",
-        courseUrl: "https://learn.accredipro.academy/courses/gut-health-microbiome-coach-certification",
-        dashboardUrl: "https://learn.accredipro.academy/dashboard",
-        certificateUrl: "https://learn.accredipro.academy/certificates",
-    },
-    // Add more courses as needed...
+export const ALL_BUYER_EMAILS = {
+    sprint: SPRINT_SEQUENCE,
+    recovery: RECOVERY_SEQUENCE,
+    stalled: STALLED_SEQUENCE,
+    milestone: MILESTONE_EMAILS,
+    reengagement: REENGAGEMENT_EMAILS,
 };
 
-// Get course context with fallback
-export function getCourseContext(courseSlug: string, firstName: string, email?: string): CourseContext {
-    const config = COURSE_CONFIGS[courseSlug] || {
-        courseName: "Your Certification",
-        courseUrl: `https://learn.accredipro.academy/courses/${courseSlug}`,
-        dashboardUrl: "https://learn.accredipro.academy/dashboard",
-        certificateUrl: "https://learn.accredipro.academy/certificates",
-    };
+// ============================================
+// TRIGGER CONDITIONS (for cron job logic)
+// ============================================
 
-    return {
-        firstName,
-        email,
-        ...config,
-    };
-}
+export const TRIGGER_CONDITIONS = {
+    // Recovery: No login at all
+    no_login_3d: { condition: 'never_logged_in', days: 3 },
+    no_login_5d: { condition: 'never_logged_in', days: 5 },
+    no_login_7d: { condition: 'never_logged_in', days: 7 },
+    no_login_14d: { condition: 'never_logged_in', days: 14 },
+    no_login_30d: { condition: 'never_logged_in', days: 30 },
+
+    // Stalled: Login but no progress
+    login_no_progress_3d: { condition: 'logged_in_no_progress', days: 3 },
+    login_no_progress_5d: { condition: 'logged_in_no_progress', days: 5 },
+    login_no_progress_7d: { condition: 'logged_in_no_progress', days: 7 },
+    login_no_progress_14d: { condition: 'logged_in_no_progress', days: 14 },
+
+    // Milestone: Percentage complete
+    module_1_complete: { condition: 'module_complete', module: 1 },
+    progress_25_percent: { condition: 'progress_percent', percent: 25 },
+    progress_50_percent: { condition: 'progress_percent', percent: 50 },
+    progress_90_percent: { condition: 'progress_percent', percent: 90 },
+    course_complete: { condition: 'progress_percent', percent: 100 },
+
+    // Re-engagement
+    return_after_7d_absence: { condition: 'returned_after_absence', days: 7 },
+};

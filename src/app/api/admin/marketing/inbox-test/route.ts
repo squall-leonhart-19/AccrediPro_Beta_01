@@ -4678,207 +4678,447 @@ I hope this is your year.`,
   },
 
   // ============================================
-  // BUYER RETENTION EMAILS - Post-Purchase Sequences
-  // Test which subjects land in Primary for existing buyers
+  // BUYER RETENTION EMAILS - Maximum System v2.0
+  // 21 emails across 5 sequences
   // ============================================
 
-  // Sprint Email 1: Day 0 - Welcome
+  // === SPRINT SEQUENCE (Day 0-5, everyone gets) ===
   {
     id: 300,
-    name: "Buyer Sprint 1: Welcome",
+    name: "Sprint 0h: Welcome",
     day: 0,
     section: "buyer_retention",
-    originalSubject: "You're in! Here's your first step",
+    originalSubject: "your access is ready",
     subject: "Re: your access is ready",
     content: `{{firstName}},
 
-Congratulations - you just made one of the best decisions of your life.
+You're in! I'm so excited for you.
 
-You're now enrolled in Functional Medicine Certification.
+Your course is ready and waiting for you.
 
-But here's the thing: the practitioners who succeed aren't the ones who "plan to start Monday." They're the ones who start TODAY.
+When you get a chance, log in and check out the first lesson. Most people finish it in about 15 minutes.
 
-So here's what I want you to do right now:
+Here's your dashboard: https://learn.accredipro.academy/dashboard
 
-1. Log into your dashboard: https://learn.accredipro.academy/dashboard
-2. Click "Start Module 1"
-3. Complete the first lesson (12 minutes)
+I'll be here if you need anything. Just hit reply anytime.
 
-That's it. Just one lesson.
+Welcome to the community!
 
-I'm so excited to have you in the community.
-
-Sarah
-
-P.S. I'll check in tomorrow to see how you're doing.`,
+Sarah`,
   },
   {
     id: 301,
-    name: "Buyer Sprint 1 - V2: Personal",
+    name: "Sprint +2h: Quick hello",
     day: 0,
     section: "buyer_retention",
-    originalSubject: "welcome + your login",
-    subject: "Re: welcome",
+    originalSubject: "quick hello",
+    subject: "Re: quick hello",
     content: `{{firstName}},
 
-You're in.
+Just wanted to pop in and say hi!
 
-I just saw your name come through and wanted to say welcome personally.
+Did you get a chance to check out your course yet? No rush at all - just curious how things are going.
 
-Your dashboard is ready: https://learn.accredipro.academy/dashboard
-
-Just start Module 1 when you're ready. No rush - but sooner is better.
-
-Talk soon.
+If you have any questions about where to start, I'm here.
 
 Sarah`,
   },
   {
     id: 302,
-    name: "Buyer Sprint 1 - V3: Ultra Short",
-    day: 0,
+    name: "Sprint Day 1: Thinking of you",
+    day: 1,
     section: "buyer_retention",
-    originalSubject: "you're all set",
-    subject: "Re: you're all set",
+    originalSubject: "thinking about you",
+    subject: "Re: thinking about you",
     content: `{{firstName}},
 
-All set! Your course is ready.
+Good morning!
 
-Start here: https://learn.accredipro.academy/dashboard
+I was just thinking about you and wanted to check in. How's everything going?
 
-Any questions, just reply.
+The first lesson is waiting whenever you're ready. It covers some really beautiful foundational concepts.
+
+No pressure - just excited for you to experience it.
+
+Sarah`,
+  },
+  {
+    id: 303,
+    name: "Sprint Day 2: Little something",
+    day: 2,
+    section: "buyer_retention",
+    originalSubject: "a little something",
+    subject: "Re: a little something",
+    content: `{{firstName}},
+
+Hey there!
+
+I hope you're having a good week so far.
+
+If you've started the course - amazing! I'd love to hear what you think.
+
+If you haven't had a chance yet - totally okay. Life happens. Your course isn't going anywhere.
+
+Just wanted you to know I'm thinking of you.
+
+Sarah`,
+  },
+  {
+    id: 304,
+    name: "Sprint Day 3: One thing noticed",
+    day: 3,
+    section: "buyer_retention",
+    originalSubject: "one thing I've noticed",
+    subject: "Re: one thing I've noticed",
+    content: `{{firstName}},
+
+I've noticed something interesting over the years.
+
+The students who end up absolutely loving this journey? They often start with just one small step.
+
+Not the whole course. Not even a whole module. Just one lesson.
+
+There's something magical about taking that first step.
+
+Whenever you're ready: https://learn.accredipro.academy/dashboard
+
+Cheering you on!
+
+Sarah`,
+  },
+  {
+    id: 305,
+    name: "Sprint Day 5: Before weekend",
+    day: 5,
+    section: "buyer_retention",
+    originalSubject: "before the weekend",
+    subject: "Re: before the weekend",
+    content: `{{firstName}},
+
+Hey! Hope you have something nice planned for the weekend.
+
+Just wanted to send you a little note before things get busy.
+
+If you get a quiet moment this weekend, the first lesson would be perfect for a cozy morning with coffee.
+
+Either way, I hope you have a wonderful few days.
 
 Sarah`,
   },
 
-  // 7-Day Reminder Variants - WARM & CARING
+  // === RECOVERY SEQUENCE (No login at all) ===
   {
     id: 310,
-    name: "Buyer 7d: V1 Thinking of you",
+    name: "Recovery 3d: Everything okay?",
+    day: 3,
+    section: "buyer_retention",
+    originalSubject: "everything okay?",
+    subject: "Re: everything okay?",
+    content: `{{firstName}},
+
+Hey, I just wanted to check - is everything okay?
+
+I noticed you haven't had a chance to log in yet, and I wanted to make sure nothing went wrong on our end.
+
+Sometimes emails land in spam, or links don't work, or life just gets crazy busy. Totally normal!
+
+If you're having any trouble at all, just reply to this email. I'm here to help.
+
+Sarah`,
+  },
+  {
+    id: 311,
+    name: "Recovery 5d: Here for you",
+    day: 5,
+    section: "buyer_retention",
+    originalSubject: "here for you",
+    subject: "Re: here for you",
+    content: `{{firstName}},
+
+I hope you're doing well!
+
+I wanted to let you know - there's no timeline or pressure here. Your course is yours, and it'll be ready whenever the time feels right.
+
+Some people dive in right away. Some wait for a quieter season. Both are totally valid.
+
+If there's anything I can do to make getting started easier, I'd love to help.
+
+Thinking of you!
+
+Sarah`,
+  },
+  {
+    id: 312,
+    name: "Recovery 7d: Thinking of you",
     day: 7,
     section: "buyer_retention",
     originalSubject: "thinking of you",
     subject: "Re: thinking of you",
     content: `{{firstName}},
 
-Just thinking about you and wanted to reach out.
+Just a little note to say I'm thinking of you.
 
-How are you doing? How's everything going?
+I know life can pull us in a million directions. Work, family, everything in between.
 
-I know life can get busy - trust me, I've been there. Some weeks just fly by.
+I just wanted you to know - you're not forgotten here. Your spot is saved. Your course is ready.
 
-If you've had a chance to start, I'd love to hear how it's going. And if you haven't yet - no worries at all. Your course is there whenever you're ready.
+Whenever you're ready, I'll be here.
 
-Is there anything I can help with?
-
-Sending you good energy today.
+With warmth,
 
 Sarah`,
   },
   {
-    id: 311,
-    name: "Buyer 7d: V2 Checking in",
-    day: 7,
-    section: "buyer_retention",
-    originalSubject: "checking in on you",
-    subject: "Re: checking in on you",
-    content: `{{firstName}},
-
-Hey - just wanted to check in and see how you're doing.
-
-No agenda here. Just genuinely curious how life is treating you.
-
-Your course is ready whenever you are. No rush, no pressure.
-
-If you want to chat about anything, just reply. I love hearing from you.
-
-Sarah`,
-  },
-  {
-    id: 312,
-    name: "Buyer 7d: V3 Here for you",
-    day: 7,
-    section: "buyer_retention",
-    originalSubject: "here for you",
-    subject: "Re: here for you",
-    content: `{{firstName}},
-
-Just a quick note to let you know I'm here if you need anything.
-
-Sometimes we just need a friendly voice. I'm that voice if you want it.
-
-Whenever you're ready to dive in, I'll be here.
-
-Take care of yourself.
-
-Sarah`,
-  },
-
-  // 14-Day Reminder Variants - WARM & SUPPORTIVE
-  {
-    id: 320,
-    name: "Buyer 14d: V1 Still thinking of you",
+    id: 313,
+    name: "Recovery 14d: Still here",
     day: 14,
     section: "buyer_retention",
-    originalSubject: "still thinking of you",
-    subject: "Re: still thinking of you",
+    originalSubject: "still here for you",
+    subject: "Re: still here for you",
     content: `{{firstName}},
 
-I've been thinking about you.
+Hi there!
 
-It's been a couple weeks and I just wanted to see how you're doing. How's life?
+It's been a couple of weeks, and I just wanted to send you a little hello.
 
-I know from experience that sometimes the timing just isn't right. That's okay. Your course isn't going anywhere.
+I'm not going anywhere, and neither is your course. Everything is saved and waiting.
 
-But I also know sometimes we just need a little nudge. A reminder that we can do this.
+If you ever want to chat about where to start, I'm just an email away. No judgment, just support.
 
-If you're feeling overwhelmed about where to start, just reply. I love helping people figure out their next step.
+Wishing you all the best.
 
-No pressure from me. Just support.
+Sarah`,
+  },
+  {
+    id: 314,
+    name: "Recovery 30d: Sending love",
+    day: 30,
+    section: "buyer_retention",
+    originalSubject: "sending love your way",
+    subject: "Re: sending love your way",
+    content: `{{firstName}},
+
+Hi love,
+
+It's been about a month, and I wanted to reach out one more time.
+
+I think about the women in our community all the time - including you.
+
+I don't know what's happening in your world right now, but I hope you're taking care of yourself.
+
+Your course will always be here. And so will I.
+
+Sending you so much love today.
+
+Sarah`,
+  },
+
+  // === STALLED SEQUENCE (Login but no progress) ===
+  {
+    id: 320,
+    name: "Stalled 3d: Can I help?",
+    day: 3,
+    section: "buyer_retention",
+    originalSubject: "can I help?",
+    subject: "Re: can I help?",
+    content: `{{firstName}},
+
+I saw you logged in - yay! That's a great first step.
+
+I wanted to check in because I know sometimes getting started can feel... big.
+
+If you're feeling stuck or overwhelmed, I totally get it. Here's my suggestion: just start with Lesson 1. Don't think about the whole course. Just one lesson.
+
+If something specific is blocking you, hit reply and tell me!
 
 Sarah`,
   },
   {
     id: 321,
-    name: "Buyer 14d: V2 No pressure",
-    day: 14,
+    name: "Stalled 5d: Stuck on something?",
+    day: 5,
     section: "buyer_retention",
-    originalSubject: "no pressure",
-    subject: "Re: no pressure at all",
+    originalSubject: "stuck on something?",
+    subject: "Re: stuck on something?",
     content: `{{firstName}},
 
-I hope you're well.
+Just checking in again!
 
-Just wanted you to know - there's absolutely no pressure from me.
+I wanted to see if there's anything that's making it hard to get started.
 
-Life gets busy. Things come up. I totally understand.
+Sometimes it's technical stuff, sometimes it's feeling overwhelmed, sometimes it's just... life.
 
-Whenever you're ready, your spot is saved. I'll be here.
+Whatever it is, I've probably seen it before and can help.
 
-Virtual hug your way.
+What would make this easier for you?
 
 Sarah`,
   },
   {
     id: 322,
-    name: "Buyer 14d: V3 Sending love",
-    day: 14,
+    name: "Stalled 7d: No pressure",
+    day: 7,
     section: "buyer_retention",
-    originalSubject: "sending love",
-    subject: "Re: sending love your way",
+    originalSubject: "no pressure",
+    subject: "Re: no pressure",
     content: `{{firstName}},
 
-I haven't forgotten about you.
+Hey there!
 
-Life has a way of taking us in unexpected directions sometimes. Maybe things got busy. Maybe something came up.
+I wanted to pop in and say - there's zero pressure from me. Truly.
 
-All of that is okay.
+Some people start right away. Some take their time. There's no wrong way to do this.
 
-I'm not here to pressure you. I'm here because I genuinely care about the women in our community.
+I just want you to know that whenever the moment feels right, everything is ready for you.
 
-Whenever you're ready - whether that's next week or next month - I'll be here.
+You've got this, on your own timeline.
 
-With love,
+Sarah`,
+  },
+  {
+    id: 323,
+    name: "Stalled 14d: Whenever ready",
+    day: 14,
+    section: "buyer_retention",
+    originalSubject: "whenever you're ready",
+    subject: "Re: whenever you're ready",
+    content: `{{firstName}},
+
+Just a gentle hello!
+
+I know you peeked into the course a while back. I just wanted to let you know - your progress is saved, your spot is secure.
+
+Whenever the timing feels right, you can pick right up where you left off.
+
+No rush. No pressure. Just possibility.
+
+Thinking of you!
+
+Sarah`,
+  },
+
+  // === MILESTONE SEQUENCE (Celebrate achievements) ===
+  {
+    id: 330,
+    name: "Milestone: Module 1 Done!",
+    day: 0,
+    section: "buyer_retention",
+    originalSubject: "you did it!",
+    subject: "Re: you did it!",
+    content: `{{firstName}},
+
+You just finished Module 1!
+
+I'm so proud of you. Seriously. Taking that first step is often the hardest part, and you did it.
+
+How are you feeling? I'd love to know what stood out to you most.
+
+But for now, just celebrate this win. You earned it!
+
+Sarah`,
+  },
+  {
+    id: 331,
+    name: "Milestone: 25% Complete",
+    day: 0,
+    section: "buyer_retention",
+    originalSubject: "look how far you've come",
+    subject: "Re: look how far you've come",
+    content: `{{firstName}},
+
+Quarter of the way there!
+
+You're making amazing progress, and I wanted to take a moment to celebrate that.
+
+Do you remember how it felt when you first started? Look at you now - concepts are clicking, things are making sense.
+
+Keep going! But also, take a breath and appreciate how far you've come.
+
+So proud of you!
+
+Sarah`,
+  },
+  {
+    id: 332,
+    name: "Milestone: 50% Complete",
+    day: 0,
+    section: "buyer_retention",
+    originalSubject: "halfway there!",
+    subject: "Re: halfway there!",
+    content: `{{firstName}},
+
+You're at the halfway point!
+
+This is a big deal. A lot of people never make it this far in any course. But here you are - consistent, committed, and doing the work.
+
+I'm genuinely so excited for what's ahead of you.
+
+You're doing incredible.
+
+Sarah`,
+  },
+  {
+    id: 333,
+    name: "Milestone: 90% Complete",
+    day: 0,
+    section: "buyer_retention",
+    originalSubject: "almost at the finish line",
+    subject: "Re: almost at the finish line",
+    content: `{{firstName}},
+
+You're so close!
+
+90% complete. I can barely contain my excitement for you.
+
+The finish line is right there. A few more lessons and you'll have done something most people only dream about.
+
+I'll be here cheering when you cross that finish line!
+
+Sarah`,
+  },
+  {
+    id: 334,
+    name: "Milestone: 100% Complete!",
+    day: 0,
+    section: "buyer_retention",
+    originalSubject: "congratulations!",
+    subject: "Re: congratulations!",
+    content: `{{firstName}},
+
+YOU DID IT!
+
+I am SO incredibly proud of you. You just completed the entire certification.
+
+Think about where you started. Think about every lesson, every concept, every moment of growth.
+
+This isn't just a certificate - it's proof that you follow through. That you invest in yourself.
+
+Welcome to the next chapter.
+
+With so much love and pride,
+
+Sarah`,
+  },
+
+  // === RE-ENGAGEMENT (Welcome back!) ===
+  {
+    id: 340,
+    name: "Re-engage: Welcome back!",
+    day: 0,
+    section: "buyer_retention",
+    originalSubject: "so good to see you back!",
+    subject: "Re: so good to see you back!",
+    content: `{{firstName}},
+
+You're back!
+
+I noticed you logged in today, and it made me smile. Welcome back!
+
+Life has a way of pulling us in different directions sometimes. But here you are, showing up for yourself again.
+
+Everything is right where you left it.
+
+So glad to have you back.
 
 Sarah`,
   },
