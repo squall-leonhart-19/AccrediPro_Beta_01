@@ -81,6 +81,21 @@ export default function InboxTestPage() {
     const inboxCount = Object.values(results).filter(r => r === "inbox").length;
     const promoCount = Object.values(results).filter(r => r === "promotion").length;
 
+    const ALL_EMAILS = [...ONBOARDING, ...VALUE, ...PRO_ACCELERATOR, ...DFY_STACK, ...CASE_STUDIES, ...NURTURE];
+    const [sendingAll, setSendingAll] = useState(false);
+    const [progress, setProgress] = useState(0);
+
+    const sendAllEmails = async () => {
+        setSendingAll(true);
+        setProgress(0);
+        for (let i = 0; i < ALL_EMAILS.length; i++) {
+            await sendEmail(ALL_EMAILS[i]);
+            setProgress(i + 1);
+            await new Promise(r => setTimeout(r, 1000));
+        }
+        setSendingAll(false);
+    };
+
     const Row = ({ email }: { email: any }) => {
         const result = results[email.id];
         return (
@@ -130,6 +145,20 @@ export default function InboxTestPage() {
 
             <div className="bg-white rounded-lg shadow p-4 mb-4">
                 <Input type="email" value={testEmail} onChange={(e) => setTestEmail(e.target.value)} className="mb-3" />
+
+                {/* SEND ALL BUTTON */}
+                <Button
+                    onClick={sendAllEmails}
+                    disabled={sendingAll}
+                    className="w-full mb-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3"
+                >
+                    {sendingAll ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending {progress}/{ALL_EMAILS.length}...</>
+                    ) : (
+                        <><Send className="w-4 h-4 mr-2" /> 🚀 SEND ALL 21 EMAILS</>
+                    )}
+                </Button>
+
                 <div className="grid grid-cols-2 gap-4">
                     <div className="bg-green-100 rounded p-3 text-center"><p className="text-xl font-bold text-green-700">{inboxCount}</p><p className="text-xs">Inbox ✅</p></div>
                     <div className="bg-orange-100 rounded p-3 text-center"><p className="text-xl font-bold text-orange-700">{promoCount}</p><p className="text-xs">Promo 📦</p></div>

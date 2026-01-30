@@ -322,11 +322,16 @@ export async function sendEmail({ to, subject, html, text, replyTo, type = 'tran
     // Get the primary email address for suppression check
     const primaryEmail = Array.isArray(to) ? to[0] : to;
 
-    // Check if email is suppressed (bounced, complained, unsubscribed)
-    const suppression = await isEmailSuppressed(primaryEmail);
-    if (suppression.suppressed) {
-      console.log(`📧 SUPPRESSED - Not sending to ${primaryEmail} (${suppression.reason})`);
-      return { success: false, error: `Email suppressed: ${suppression.reason}` };
+    // Skip suppression check for test emails (at.seed* pattern)
+    const isTestEmail = primaryEmail.toLowerCase().includes('at.seed');
+
+    if (!isTestEmail) {
+      // Check if email is suppressed (bounced, complained, unsubscribed)
+      const suppression = await isEmailSuppressed(primaryEmail);
+      if (suppression.suppressed) {
+        console.log(`📧 SUPPRESSED - Not sending to ${primaryEmail} (${suppression.reason})`);
+        return { success: false, error: `Email suppressed: ${suppression.reason}` };
+      }
     }
 
     const fromEmail = type === 'marketing' ? FROM_EMAIL_MARKETING : FROM_EMAIL_TRANSACTIONAL;
