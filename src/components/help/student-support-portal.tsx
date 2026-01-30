@@ -6,7 +6,8 @@ import { formatDistanceToNow } from "date-fns";
 import {
     Plus, MessageSquare, ChevronLeft, ChevronRight, Send,
     Loader2, Search, Filter, HelpCircle, FileText, CreditCard,
-    Cpu, GraduationCap, X, Paperclip, CheckCircle2, AlertCircle
+    Cpu, GraduationCap, X, Paperclip, CheckCircle2, AlertCircle,
+    AlertTriangle, Shield, Clock, UserCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,11 +46,24 @@ type Ticket = {
 };
 
 const CATEGORIES = [
-    { id: "TECHNICAL", label: "Technical Issue", icon: Cpu, desc: "Login, bugs, or error messages", color: "bg-blue-100 text-blue-700" },
-    { id: "BILLING", label: "Billing & Payments", icon: CreditCard, desc: "Invoices, refunds, or payment methods", color: "bg-green-100 text-green-700" },
-    { id: "COURSE_CONTENT", label: "Course Content", icon: FileText, desc: "Missing videos, lessons, or materials", color: "bg-purple-100 text-purple-700" },
-    { id: "CERTIFICATES", label: "Certificates", icon: GraduationCap, desc: "Completion, downloads, or verification", color: "bg-amber-100 text-amber-700" },
-    { id: "GENERAL", label: "General Inquiry", icon: HelpCircle, desc: "Everything else", color: "bg-slate-100 text-slate-700" },
+    { id: "TECHNICAL", label: "Technical Issue", icon: Cpu, desc: "Login, bugs, or error messages", color: "bg-blue-100 text-blue-700", department: "Technical Support Team", responseTime: "24-48 hours" },
+    { id: "BILLING", label: "Billing & Payments", icon: CreditCard, desc: "Invoices or payment methods", color: "bg-green-100 text-green-700", department: "Accounts & Billing Team", responseTime: "24-48 hours" },
+    { id: "COURSE_CONTENT", label: "Course Content", icon: FileText, desc: "Missing videos, lessons, or materials", color: "bg-purple-100 text-purple-700", department: "Academic Affairs Office", responseTime: "24-48 hours" },
+    { id: "CERTIFICATES", label: "Certificates", icon: GraduationCap, desc: "Completion, downloads, or verification", color: "bg-amber-100 text-amber-700", department: "Credentialing Board", responseTime: "24-48 hours" },
+    { id: "GENERAL", label: "General Inquiry", icon: HelpCircle, desc: "Everything else", color: "bg-slate-100 text-slate-700", department: "Student Success Team", responseTime: "24-48 hours" },
+    { id: "REFUND", label: "Refund Request", icon: AlertTriangle, desc: "Request a course refund", color: "bg-red-100 text-red-700", department: "Legal Team & Consumer Affairs Division", responseTime: "5-7 business days", requiresAcknowledgment: true },
+];
+
+const REFUND_REASONS = [
+    { value: "changed_mind", label: "Changed my mind" },
+    { value: "financial", label: "Financial difficulties" },
+    { value: "not_as_expected", label: "Course not as expected" },
+    { value: "technical_issues", label: "Persistent technical issues" },
+    { value: "health_issues", label: "Health issues (proof required)" },
+    { value: "duplicate_purchase", label: "Duplicate/accidental purchase" },
+    { value: "family_emergency", label: "Family emergency (proof required)" },
+    { value: "personal_circumstances", label: "Personal circumstances" },
+    { value: "other", label: "Other reason" },
 ];
 
 export default function StudentSupportPortal() {
@@ -58,6 +72,9 @@ export default function StudentSupportPortal() {
     // Create flow state
     const [createStep, setCreateStep] = useState<"CATEGORY" | "DETAILS">("CATEGORY");
     const [selectedCategory, setSelectedCategory] = useState<string>("");
+    // Refund friction state
+    const [policyAcknowledged, setPolicyAcknowledged] = useState(false);
+    const [refundReason, setRefundReason] = useState<string>("");
     // Ticket filter state
     const [ticketFilter, setTicketFilter] = useState<"ALL" | "OPEN" | "SOLVED">("ALL");
 
@@ -137,6 +154,8 @@ export default function StudentSupportPortal() {
         setSelectedCategory("");
         setAttachments([]);
         setIsUploading(false);
+        setPolicyAcknowledged(false);
+        setRefundReason("");
     };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -243,7 +262,7 @@ export default function StudentSupportPortal() {
     // 1. CREATE TICKET VIEW
     if (view === "CREATE") {
         return (
-            <div className="max-w-3xl mx-auto space-y-6 animate-fade-in">
+            <div className="max-w-5xl mx-auto space-y-6 animate-fade-in">
                 <Button variant="ghost" onClick={() => { setView("LIST"); resetCreateForm(); }} className="pl-0 hover:bg-transparent hover:text-burgundy-600">
                     <ChevronLeft className="w-4 h-4 mr-2" /> Back to Dashboard
                 </Button>
@@ -277,104 +296,225 @@ export default function StudentSupportPortal() {
                         </div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="md:col-span-2 space-y-6">
-                            <Card className="card-premium">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2">
-                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 mr-1" onClick={() => setCreateStep("CATEGORY")}>
-                                            <ChevronLeft className="w-4 h-4" />
-                                        </Button>
-                                        New {CATEGORIES.find(c => c.id === selectedCategory)?.label} Request
-                                    </CardTitle>
-                                    <CardDescription>
-                                        Provide as much detail as possible so we can help you faster.
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <form onSubmit={handleCreateSubmit} className="space-y-4">
-                                        <div className="space-y-2">
-                                            <Label>Subject</Label>
-                                            <Input name="subject" placeholder="Brief summary of the issue" autoFocus required />
+                    <div className="space-y-6">
+                        {/* Department Info Card - Full width on top */}
+                        {(() => {
+                            const cat = CATEGORIES.find(c => c.id === selectedCategory);
+                            const isRefund = selectedCategory === "REFUND";
+                            return (
+                                <Card className={isRefund ? "bg-red-50 border-2 border-red-300" : "bg-blue-50 border-blue-200"}>
+                                    <CardContent className="p-4">
+                                        <div className="flex flex-wrap items-center justify-between gap-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`p-2 rounded-lg ${isRefund ? "bg-red-200" : "bg-blue-200"}`}>
+                                                    <Shield className={`w-5 h-5 ${isRefund ? "text-red-700" : "text-blue-700"}`} />
+                                                </div>
+                                                <div>
+                                                    <p className={`text-xs font-medium ${isRefund ? "text-red-600" : "text-blue-600"}`}>Your request will be handled by:</p>
+                                                    <p className={`font-bold ${isRefund ? "text-red-900" : "text-slate-900"}`}>
+                                                        {cat?.department || "Student Support"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${isRefund ? "bg-red-200 text-red-800" : "bg-blue-200 text-blue-800"}`}>
+                                                <Clock className="w-4 h-4" />
+                                                <span className="text-sm font-medium">{cat?.responseTime || "24-48 hours"}</span>
+                                            </div>
                                         </div>
+                                        {isRefund && (
+                                            <p className="text-xs text-red-700 mt-3 flex items-center gap-2 bg-red-100 p-2 rounded">
+                                                <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                                                <span><strong>⚠️ Warning:</strong> All requests are reviewed by our Legal Team. Chargebacks will result in <strong>immediate legal action</strong> and permanent account termination.</span>
+                                            </p>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            );
+                        })()}
 
-                                        <div className="space-y-2">
-                                            <Label>Description</Label>
-                                            <Textarea
-                                                name="message"
-                                                placeholder="Describe what happened, what you expected, and any error messages..."
-                                                className="min-h-[150px]"
-                                                required
+                        {/* Main Form Card - Full Width */}
+                        <Card className="card-premium">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 mr-1" onClick={() => setCreateStep("CATEGORY")}>
+                                        <ChevronLeft className="w-4 h-4" />
+                                    </Button>
+                                    New {CATEGORIES.find(c => c.id === selectedCategory)?.label} Request
+                                </CardTitle>
+                                <CardDescription>
+                                    Provide as much detail as possible so we can help you faster.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <form onSubmit={handleCreateSubmit} className="space-y-4">
+                                    {/* REFUND FRICTION WARNING */}
+                                    {selectedCategory === "REFUND" && (
+                                        <div className="space-y-4">
+                                            {/* Warning Banner */}
+                                            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
+                                                <div className="flex gap-3">
+                                                    <div className="flex-shrink-0">
+                                                        <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                                                            <Shield className="w-5 h-5 text-red-600" />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-red-900 mb-1">⚠️ Important: Refund Review Process</h4>
+                                                        <p className="text-sm text-red-800 mb-2">
+                                                            Refund requests are reviewed by our <strong>Consumer Affairs Division</strong> and require <strong>5-7 business days</strong> for processing.
+                                                        </p>
+                                                        <ul className="text-xs text-red-700 space-y-1">
+                                                            <li>• All refund requests are logged and reviewed by our legal team</li>
+                                                            <li>• Refund eligibility is determined by our published policy</li>
+                                                            <li>• Chargebacks may result in permanent account suspension</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Alternative Suggestion */}
+                                            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                                                <div className="flex items-start gap-3">
+                                                    <UserCheck className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                                                    <div>
+                                                        <p className="text-sm text-amber-900 font-medium">Before requesting a refund, have you tried:</p>
+                                                        <ul className="text-xs text-amber-800 mt-1 space-y-1">
+                                                            <li>• Messaging your coach about your concerns?</li>
+                                                            <li>• Checking our FAQ for common issues?</li>
+                                                            <li>• Contacting support for technical problems?</li>
+                                                        </ul>
+                                                        <Link href="/messages" className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-amber-700 hover:text-amber-900">
+                                                            <MessageSquare className="w-3 h-3" />
+                                                            Message your coach instead
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Reason Dropdown */}
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-medium">Reason for Refund Request *</Label>
+                                                <Select value={refundReason} onValueChange={setRefundReason}>
+                                                    <SelectTrigger className="border-red-200 focus:ring-red-500">
+                                                        <SelectValue placeholder="Select your reason..." />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {REFUND_REASONS.map((reason) => (
+                                                            <SelectItem key={reason.value} value={reason.value}>
+                                                                {reason.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className="space-y-2">
+                                        <Label>Subject</Label>
+                                        <Input name="subject" placeholder="Brief summary of the issue" autoFocus required />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label>Description</Label>
+                                        <Textarea
+                                            name="message"
+                                            placeholder={selectedCategory === "REFUND"
+                                                ? "Please explain in detail why you are requesting a refund. Include any relevant information about your attempts to resolve the issue..."
+                                                : "Describe what happened, what you expected, and any error messages..."}
+                                            className="min-h-[150px]"
+                                            required
+                                        />
+                                    </div>
+
+                                    {/* Policy Acknowledgment for Refunds */}
+                                    {selectedCategory === "REFUND" && (
+                                        <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                                            <label className="flex items-start gap-3 cursor-pointer group">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={policyAcknowledged}
+                                                    onChange={(e) => setPolicyAcknowledged(e.target.checked)}
+                                                    className="mt-1 h-4 w-4 rounded border-slate-300 text-red-600 focus:ring-red-500"
+                                                />
+                                                <div className="text-sm">
+                                                    <span className="font-medium text-slate-900">I acknowledge that I have read and understand the </span>
+                                                    <a
+                                                        href="/refund-policy"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-burgundy-600 hover:text-burgundy-800 underline font-semibold"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        Refund Policy
+                                                    </a>
+                                                    <span className="font-medium text-slate-900">, and I understand that refund eligibility is subject to review by the Consumer Affairs Division.</span>
+                                                    <p className="text-xs text-slate-500 mt-1">
+                                                        This acknowledgment is required to submit a refund request.
+                                                    </p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    )}
+
+                                    <div className="space-y-2">
+                                        <Label className="text-sm text-slate-500">Attachments (Optional)</Label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {attachments.map((file, idx) => (
+                                                <Badge key={idx} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
+                                                    <span className="max-w-[100px] truncate">{file.name}</span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeAttachment(idx)}
+                                                        className="hover:bg-slate-200 rounded-full p-0.5"
+                                                    >
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                </Badge>
+                                            ))}
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => fileInputRef.current?.click()}
+                                                disabled={attachments.length >= 3}
+                                            >
+                                                <Paperclip className="w-3 h-3 mr-2" />
+                                                Attach File
+                                            </Button>
+                                            <input
+                                                type="file"
+                                                ref={fileInputRef}
+                                                className="hidden"
+                                                multiple
+                                                accept="image/*,.pdf"
+                                                onChange={handleFileSelect}
                                             />
                                         </div>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-sm text-slate-500">Attachments (Optional)</Label>
-                                            <div className="flex flex-wrap gap-2">
-                                                {attachments.map((file, idx) => (
-                                                    <Badge key={idx} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
-                                                        <span className="max-w-[100px] truncate">{file.name}</span>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => removeAttachment(idx)}
-                                                            className="hover:bg-slate-200 rounded-full p-0.5"
-                                                        >
-                                                            <X className="w-3 h-3" />
-                                                        </button>
-                                                    </Badge>
-                                                ))}
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => fileInputRef.current?.click()}
-                                                    disabled={attachments.length >= 3}
-                                                >
-                                                    <Paperclip className="w-3 h-3 mr-2" />
-                                                    Attach File
-                                                </Button>
-                                                <input
-                                                    type="file"
-                                                    ref={fileInputRef}
-                                                    className="hidden"
-                                                    multiple
-                                                    accept="image/*,.pdf"
-                                                    onChange={handleFileSelect}
-                                                />
-                                            </div>
-                                            <p className="text-xs text-slate-400">Supported formats: JPG, PNG, PDF (Max 5MB)</p>
-                                        </div>
-
-                                        {/* Error/Status display area if needed */}
-
-                                        <div className="flex justify-end pt-4">
-                                            <Button
-                                                type="submit"
-                                                disabled={createTicketMutation.isPending || isUploading}
-                                                className="bg-burgundy-600 hover:bg-burgundy-700 text-white min-w-[120px]"
-                                            >
-                                                {(createTicketMutation.isPending || isUploading) && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                                                {isUploading ? "Uploading..." : "Submit Request"}
-                                            </Button>
-                                        </div>
-                                    </form>
-                                </CardContent>
-                            </Card>
-                        </div>
-
-                        <div className="space-y-4">
-                            <Card className="bg-blue-50 border-blue-100">
-                                <CardContent className="p-4 flex gap-3">
-                                    <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-medium text-blue-900 text-sm">Response Time</h4>
-                                        <p className="text-xs text-blue-700 mt-1">
-                                            We typically respond within 24-48 working hours. Check your email for updates.
-                                        </p>
+                                        <p className="text-xs text-slate-400">Supported formats: JPG, PNG, PDF (Max 5MB)</p>
                                     </div>
-                                </CardContent>
-                            </Card>
-                        </div>
+
+                                    {/* Error/Status display area if needed */}
+
+                                    <div className="flex justify-end pt-4">
+                                        <Button
+                                            type="submit"
+                                            disabled={
+                                                createTicketMutation.isPending ||
+                                                isUploading ||
+                                                (selectedCategory === "REFUND" && (!policyAcknowledged || !refundReason))
+                                            }
+                                            className={selectedCategory === "REFUND"
+                                                ? "bg-red-600 hover:bg-red-700 text-white min-w-[180px]"
+                                                : "bg-burgundy-600 hover:bg-burgundy-700 text-white min-w-[120px]"}
+                                        >
+                                            {(createTicketMutation.isPending || isUploading) && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                                            {isUploading ? "Uploading..." : selectedCategory === "REFUND" ? "Submit Refund Request" : "Submit Request"}
+                                        </Button>
+                                    </div>
+                                </form>
+                            </CardContent>
+                        </Card>
                     </div>
                 )}
             </div>
@@ -412,6 +552,21 @@ export default function StudentSupportPortal() {
                                 <p className="text-xs text-slate-500 mt-1">
                                     Started {formatDistanceToNow(new Date(ticket.createdAt), { addSuffix: true })}
                                 </p>
+                                {/* Department Info */}
+                                {(() => {
+                                    const cat = CATEGORIES.find(c => c.id === ticket.category);
+                                    if (cat) {
+                                        return (
+                                            <div className="flex items-center gap-2 mt-2 text-xs bg-blue-50 border border-blue-100 rounded-lg px-3 py-1.5 w-fit">
+                                                <Shield className="w-3.5 h-3.5 text-blue-600" />
+                                                <span className="text-blue-700">Handled by <strong>{cat.department}</strong></span>
+                                                <span className="text-blue-400">•</span>
+                                                <span className="text-blue-600">Est. response: {cat.responseTime}</span>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                })()}
                             </div>
                         </div>
 

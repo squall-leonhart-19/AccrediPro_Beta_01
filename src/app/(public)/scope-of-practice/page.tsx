@@ -71,7 +71,7 @@ export default function ScopeOfPracticePage() {
 
       {/* Hero Header */}
       <div className="text-white" style={{ background: `linear-gradient(135deg, ${BRAND.burgundyDark} 0%, ${BRAND.burgundy} 100%)` }}>
-        <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="max-w-6xl mx-auto px-4 py-12">
           <Link href="/" className="inline-flex items-center gap-2 hover:opacity-80 mb-6 transition-opacity" style={{ color: BRAND.gold }}>
             <ArrowLeft className="w-4 h-4" />
             Back to ASI Home
@@ -99,7 +99,7 @@ export default function ScopeOfPracticePage() {
       </div>
 
       {/* Critical Notice */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="rounded-xl p-6 border-2" style={{ backgroundColor: '#fef3c7', borderColor: '#f59e0b' }}>
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-6 h-6 flex-shrink-0 mt-0.5" style={{ color: '#d97706' }} />
@@ -114,7 +114,7 @@ export default function ScopeOfPracticePage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 pb-12">
+      <div className="max-w-6xl mx-auto px-4 pb-12">
         <Card className="border-0 shadow-lg">
           <CardContent className="p-8 md:p-12">
 
@@ -428,8 +428,8 @@ export default function ScopeOfPracticePage() {
                   </p>
                   <p>
                     <strong>General Support:</strong>{" "}
-                    <a href="mailto:support@accreditation-standards.org" className="hover:underline font-medium" style={{ color: BRAND.burgundy }}>
-                      support@accreditation-standards.org
+                    <a href="mailto:legal@accredipro.academy" className="hover:underline font-medium" style={{ color: BRAND.burgundy }}>
+                      legal@accredipro.academy
                     </a>
                   </p>
                 </div>

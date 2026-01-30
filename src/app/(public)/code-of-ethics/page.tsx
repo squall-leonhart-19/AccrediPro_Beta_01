@@ -206,7 +206,7 @@ export default function CodeOfEthicsPage() {
 
       {/* Prohibited Conduct */}
       <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="bg-red-50 border border-red-100 rounded-2xl p-8 lg:p-12">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center">
@@ -275,7 +275,7 @@ export default function CodeOfEthicsPage() {
 
       {/* CTA */}
       <section className="py-16 bg-burgundy-50">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="max-w-6xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Committed to Ethical Practice
           </h2>

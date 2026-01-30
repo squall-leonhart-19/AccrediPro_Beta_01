@@ -89,6 +89,8 @@ export function useTickets(
         },
         // Refresh every 30 seconds for performance (reduced from 5s)
         refetchInterval: 30000,
+        // Data is fresh for 15 seconds - prevents instant refetch on filter changes
+        staleTime: 15000,
         // Keep previous data while fetching for instant UI
         placeholderData: (previousData) => previousData,
     });

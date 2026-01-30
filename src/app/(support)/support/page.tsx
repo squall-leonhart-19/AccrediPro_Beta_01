@@ -232,7 +232,7 @@ export default function SupportPortalPage() {
     const queryClient = useQueryClient();
 
     const [searchTerm, setSearchTerm] = useState("");
-    const [statusFilter, setStatusFilter] = useState<string>("NEW");
+    const [statusFilter, setStatusFilter] = useState<string>("all");
     const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
     const [replyText, setReplyText] = useState("");
     const [isInternalNote, setIsInternalNote] = useState(false);
@@ -259,12 +259,25 @@ export default function SupportPortalPage() {
         return tickets.find(t => t.id === selectedTicketId);
     }, [tickets, selectedTicketId, ticketDetails]);
 
-    const stats = useMemo(() => ({
-        new: tickets.filter(t => t.status === "NEW").length,
-        open: tickets.filter(t => t.status === "OPEN" || t.status === "PENDING").length,
-        urgent: tickets.filter(t => t.priority === "URGENT" || t.priority === "HIGH").length,
-        total: tickets.length,
-    }), [tickets]);
+    const stats = useMemo(() => {
+        // Use stats from API response for global counts (accurate regardless of filter)
+        const apiStats = data?.stats;
+        if (apiStats) {
+            return {
+                new: apiStats.NEW || 0,
+                open: (apiStats.OPEN || 0) + (apiStats.PENDING || 0),
+                resolved: (apiStats.RESOLVED || 0) + (apiStats.CLOSED || 0),
+                total: apiStats.total || 0,
+            };
+        }
+        // Fallback to counting from current tickets (less accurate when filtered)
+        return {
+            new: tickets.filter(t => t.status === "NEW").length,
+            open: tickets.filter(t => t.status === "OPEN" || t.status === "PENDING").length,
+            resolved: tickets.filter(t => t.status === "RESOLVED" || t.status === "CLOSED").length,
+            total: tickets.length,
+        };
+    }, [tickets, data?.stats]);
 
     useEffect(() => {
         if (!selectedTicketId && tickets.length > 0) setSelectedTicketId(tickets[0].id);
@@ -397,7 +410,7 @@ export default function SupportPortalPage() {
                         {[
                             { label: "New", value: stats.new, color: "bg-blue-400" },
                             { label: "Open", value: stats.open, color: "bg-emerald-400" },
-                            { label: "Urgent", value: stats.urgent, color: "bg-red-400" },
+                            { label: "Resolved", value: stats.resolved, color: "bg-purple-400" },
                             { label: "Total", value: stats.total, color: "bg-slate-400" },
                         ].map(s => (
                             <div key={s.label}>
@@ -867,7 +880,7 @@ export default function SupportPortalPage() {
                                         value={replyText}
                                         onChange={e => setReplyText(e.target.value)}
                                         placeholder={isInternalNote ? "Add internal note..." : "Type your reply..."}
-                                        className="flex-1 min-h-[100px] resize-none"
+                                        className="flex-1 min-h-[160px] max-h-[400px] resize-y"
                                         onKeyDown={e => { if (e.key === "Enter" && e.metaKey) handleSendReply(); }}
                                     />
                                     <Button
@@ -891,6 +904,6 @@ export default function SupportPortalPage() {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

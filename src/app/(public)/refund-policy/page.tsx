@@ -123,7 +123,7 @@ export default function RefundPolicyPage() {
           backgroundSize: "48px 48px"
         }} />
 
-        <div style={{ position: "relative", maxWidth: "896px", margin: "0 auto", padding: "48px 16px" }}>
+        <div style={{ position: "relative", maxWidth: "1280px", margin: "0 auto", padding: "48px 16px" }}>
           <Link href="/asi-home" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "#f5e6e8", textDecoration: "none", marginBottom: "24px" }}>
             <ArrowRight style={{ width: "16px", height: "16px", transform: "rotate(180deg)" }} />
             Back to ASI Home
@@ -171,7 +171,7 @@ export default function RefundPolicyPage() {
 
       {/* ALL SALES FINAL Warning */}
       <section style={{ backgroundColor: "#fef2f2", borderBottom: "4px solid #dc2626", padding: "24px 16px" }}>
-        <div style={{ maxWidth: "896px", margin: "0 auto" }}>
+        <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
             <div style={{
               width: "56px",
@@ -199,7 +199,7 @@ export default function RefundPolicyPage() {
 
       {/* Content */}
       <section style={{ backgroundColor: BRAND.cream, padding: "48px 16px" }}>
-        <div style={{ maxWidth: "896px", margin: "0 auto" }}>
+        <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
           <div style={{ backgroundColor: "white", borderRadius: "16px", boxShadow: "0 4px 24px rgba(0,0,0,0.08)", padding: "48px" }}>
 
             {/* Section 1: Policy Overview */}
@@ -363,7 +363,7 @@ export default function RefundPolicyPage() {
               </p>
               <ol style={{ marginLeft: "24px", color: "#374151", lineHeight: 1.8 }}>
                 <li style={{ marginBottom: "12px" }}>
-                  <strong>Contact Support First:</strong> Email <a href="mailto:support@accreditation-standards.org" style={{ color: BRAND.burgundy, fontWeight: 500 }}>support@accreditation-standards.org</a> with subject line "Guarantee Review Request - [Your Full Name]"
+                  <strong>Contact Support First:</strong> Email <a href="mailto:legal@accredipro.academy" style={{ color: BRAND.burgundy, fontWeight: 500 }}>legal@accredipro.academy</a> with subject line "Guarantee Review Request - [Your Full Name]"
                 </li>
                 <li style={{ marginBottom: "12px" }}>
                   <strong>Include Required Information:</strong> Full name, email address, enrollment date, program name, and a detailed explanation of why you are requesting a review
@@ -457,7 +457,7 @@ export default function RefundPolicyPage() {
                 Technical difficulties are not grounds for a refund. However, we are committed to helping you access our content. If you experience technical issues:
               </p>
               <ul style={{ marginLeft: "24px", color: "#374151", lineHeight: 1.8, marginBottom: "16px" }}>
-                <li style={{ marginBottom: "8px" }}>Contact our support team at <a href="mailto:support@accreditation-standards.org" style={{ color: BRAND.burgundy, fontWeight: 500 }}>support@accreditation-standards.org</a></li>
+                <li style={{ marginBottom: "8px" }}>Contact our support team at <a href="mailto:legal@accredipro.academy" style={{ color: BRAND.burgundy, fontWeight: 500 }}>legal@accredipro.academy</a></li>
                 <li style={{ marginBottom: "8px" }}>Provide specific details about the issue (error messages, screenshots, browser/device info)</li>
                 <li style={{ marginBottom: "8px" }}>Our team will respond within 24-48 business hours</li>
                 <li>We will work to resolve any platform-side technical issues promptly</li>
@@ -507,7 +507,7 @@ export default function RefundPolicyPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   <p style={{ color: "#374151", display: "flex", alignItems: "center", gap: "8px" }}>
                     <Mail style={{ width: "16px", height: "16px", color: BRAND.burgundy }} />
-                    Email: <a href="mailto:support@accreditation-standards.org" style={{ color: BRAND.burgundy, fontWeight: 500 }}>support@accreditation-standards.org</a>
+                    Email: <a href="mailto:legal@accredipro.academy" style={{ color: BRAND.burgundy, fontWeight: 500 }}>legal@accredipro.academy</a>
                   </p>
                   <p style={{ color: "#374151", display: "flex", alignItems: "center", gap: "8px" }}>
                     <MapPin style={{ width: "16px", height: "16px", color: BRAND.burgundy }} />

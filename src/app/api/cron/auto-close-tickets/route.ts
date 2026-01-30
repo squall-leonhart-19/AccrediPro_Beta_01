@@ -3,41 +3,55 @@ import { prisma } from "@/lib/prisma";
 import { sendTicketRatingRequestEmail } from "@/lib/email";
 
 export async function GET(request: NextRequest) {
-    // Simple auth check for cron jobs (verify secret if needed, but for now assuming Vercel Cron or secure internal call)
-    // Check for CRON_SECRET if properly secured
-    // if (request.headers.get("Authorization") !== `Bearer ${process.env.CRON_SECRET}`) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
-
     try {
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-        // Find stale tickets
-        const staleTickets = await prisma.supportTicket.findMany({
+        // 1. Find RESOLVED tickets older than 7 days to close
+        const resolvedStaleTickets = await prisma.supportTicket.findMany({
             where: {
                 status: "RESOLVED",
                 updatedAt: { lt: sevenDaysAgo },
-                // Ensure we haven't already rated them or closed them (redundancy check)
             },
-            take: 50, // Process in batches to avoid timeout
+            take: 50,
         });
 
-        console.log(`Found ${staleTickets.length} stale tickets to close.`);
+        // 2. Find OPEN/PENDING tickets where last message was from support (not customer) 
+        // and older than 7 days - no customer response = auto-close
+        const pendingStaleTickets = await prisma.supportTicket.findMany({
+            where: {
+                status: { in: ["OPEN", "PENDING"] },
+                updatedAt: { lt: sevenDaysAgo },
+            },
+            include: {
+                messages: {
+                    orderBy: { createdAt: "desc" },
+                    take: 1,
+                    select: { isFromCustomer: true, createdAt: true },
+                },
+            },
+            take: 50,
+        });
 
-        const results: number[] = [];
+        // Filter: only close if last message was NOT from customer (support replied, customer ghosted)
+        const noResponseTickets = pendingStaleTickets.filter(ticket => {
+            const lastMsg = ticket.messages[0];
+            if (!lastMsg) return false;
+            // Last message is from support AND older than 7 days
+            return !lastMsg.isFromCustomer && new Date(lastMsg.createdAt) < sevenDaysAgo;
+        });
 
-        for (const ticket of staleTickets) {
-            // 1. Close ticket
+        console.log(`Found ${resolvedStaleTickets.length} resolved + ${noResponseTickets.length} no-response tickets to close.`);
+
+        const results: { ticketNumber: number; reason: string }[] = [];
+
+        // Close resolved tickets
+        for (const ticket of resolvedStaleTickets) {
             await prisma.supportTicket.update({
                 where: { id: ticket.id },
-                data: {
-                    status: "CLOSED",
-                    closedAt: new Date(),
-                },
+                data: { status: "CLOSED", closedAt: new Date() },
             });
 
-            // 2. Send rating request if not already rated
             if (!ticket.rating) {
                 try {
                     await sendTicketRatingRequestEmail(
@@ -50,13 +64,36 @@ export async function GET(request: NextRequest) {
                 }
             }
 
-            results.push(ticket.ticketNumber);
+            results.push({ ticketNumber: ticket.ticketNumber, reason: "resolved_7d" });
+        }
+
+        // Close no-response tickets
+        for (const ticket of noResponseTickets) {
+            await prisma.supportTicket.update({
+                where: { id: ticket.id },
+                data: {
+                    status: "CLOSED",
+                    closedAt: new Date(),
+                },
+            });
+
+            // Add auto-close message
+            await prisma.ticketMessage.create({
+                data: {
+                    ticketId: ticket.id,
+                    content: "This ticket has been automatically closed due to no response from customer after 7 days. If you still need help, please open a new ticket.",
+                    isFromCustomer: false,
+                    isInternal: false,
+                },
+            });
+
+            results.push({ ticketNumber: ticket.ticketNumber, reason: "no_response_7d" });
         }
 
         return NextResponse.json({
             success: true,
             processed: results.length,
-            ticketNumbers: results
+            results,
         });
 
     } catch (error) {

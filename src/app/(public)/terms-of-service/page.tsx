@@ -71,7 +71,7 @@ export default function TermsOfServicePage() {
 
       {/* Hero Header */}
       <div className="text-white" style={{ background: `linear-gradient(135deg, ${BRAND.burgundyDark} 0%, ${BRAND.burgundy} 100%)` }}>
-        <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="max-w-6xl mx-auto px-4 py-12">
           <Link href="/" className="inline-flex items-center gap-2 hover:opacity-80 mb-6 transition-opacity" style={{ color: BRAND.gold }}>
             <ArrowLeft className="w-4 h-4" />
             Back to ASI Home
@@ -99,7 +99,7 @@ export default function TermsOfServicePage() {
       </div>
 
       {/* Important Notice */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-6">
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
@@ -114,7 +114,7 @@ export default function TermsOfServicePage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 pb-12">
+      <div className="max-w-6xl mx-auto px-4 pb-12">
         <Card className="border-0 shadow-lg">
           <CardContent className="p-8 md:p-12 prose prose-gray max-w-none">
 
@@ -400,7 +400,7 @@ export default function TermsOfServicePage() {
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">6.3 Mandatory Pre-Dispute Resolution</h3>
               <p className="text-gray-700 leading-relaxed">
-                Before initiating any chargeback, payment dispute, or legal action, you agree to first contact ASI directly at support@accreditation-standards.org and allow forty-eight (48) business hours for response and investigation.
+                Before initiating any chargeback, payment dispute, or legal action, you agree to first contact ASI directly at legal@accredipro.academy and allow forty-eight (48) business hours for response and investigation.
               </p>
             </section>
 
@@ -618,8 +618,8 @@ export default function TermsOfServicePage() {
                   </p>
                   <p>
                     <strong>Support:</strong>{" "}
-                    <a href="mailto:support@accreditation-standards.org" className="font-medium hover:underline" style={{ color: BRAND.burgundy }}>
-                      support@accreditation-standards.org
+                    <a href="mailto:legal@accredipro.academy" className="font-medium hover:underline" style={{ color: BRAND.burgundy }}>
+                      legal@accredipro.academy
                     </a>
                   </p>
                   <p>
