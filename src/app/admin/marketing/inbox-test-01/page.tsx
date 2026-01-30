@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Mail, Send, Eye, Inbox, Tag, Check } from "lucide-react";
+import { Loader2, Mail, Send, Eye, Inbox, Tag, Check, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,16 +10,21 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
-// All 18 Buyer Nurturing Emails with Inbox-Optimized Subjects
-const ALL_NURTURING_EMAILS = [
-    // STORY SEQUENCE (Day 1-10)
+// Each email has 3 subject variants to test
+const EMAIL_VARIANTS = [
+    // STORY DAY 1
     {
         id: "story_day1",
         name: "Story Day 1: Kitchen Floor",
         day: 1,
         sequence: "Story",
-        subject: "Re: quick question about your journey",
+        variants: [
+            { id: "story_day1_a", subject: "Re: quick question about your journey" }, // Proven winner
+            { id: "story_day1_b", subject: "just wanted to check in on you" }, // No Re:, personal
+            { id: "story_day1_c", subject: "hey" }, // Ultra minimal
+        ],
         content: `{{firstName}},
 
 Can I tell you a little bit of my story?
@@ -32,7 +37,7 @@ Inside, I felt like a fraud.
 
 I loved helping people, but when clients came to me with real struggles — chronic fatigue, brain fog, autoimmune symptoms — I didn't know what to do. I could see the disappointment in their eyes when I said, "You should ask your doctor about that."
 
-Meanwhile, my own health was unraveling. Stress, exhaustion, and the heavy weight of "doing it all" as a single mom. I remember standing in the kitchen one night, staring at the bills, fighting back tears, and thinking: "There has to be more than this. There has to be a better way." 💔
+Meanwhile, my own health was unraveling. Stress, exhaustion, and the heavy weight of "doing it all" as a single mom. I remember standing in the kitchen one night, staring at the bills, fighting back tears, and thinking: "There has to be more than this. There has to be a better way."
 
 That's when I found integrative and functional medicine.
 
@@ -40,20 +45,25 @@ It was like someone handed me the missing puzzle pieces: finally understanding h
 
 But more than that — it gave me back my hope.
 
-And now? I get to live what once felt impossible: helping people transform their health at the root level, while being present for my child and proud of the work I do. 🌱
+And now? I get to live what once felt impossible: helping people transform their health at the root level, while being present for my child and proud of the work I do.
 
 That's why I'm so passionate about this path — because if I could step from survival into purpose, I know you can too.
 
 With love,
 
-Sarah 💕`,
+Sarah`,
     },
+    // STORY DAY 3
     {
         id: "story_day3",
         name: "Story Day 3: 3am Discovery",
         day: 3,
         sequence: "Story",
-        subject: "Re: wanted to tell you something",
+        variants: [
+            { id: "story_day3_a", subject: "Re: about last night" }, // Curiosity
+            { id: "story_day3_b", subject: "couldn't sleep" }, // Personal, relatable
+            { id: "story_day3_c", subject: "3am" }, // Ultra short, mysterious
+        ],
         content: `{{firstName}},
 
 I want to tell you about the night everything changed for me.
@@ -80,16 +90,21 @@ I'm sharing this because I know you're at your own crossroads right now.
 
 You signed up for a reason. Maybe you haven't even fully admitted that reason to yourself yet. But something inside you knows there's more.
 
-Trust that feeling. 💕
+Trust that feeling.
 
 Sarah`,
     },
+    // STORY DAY 5
     {
         id: "story_day5",
         name: "Story Day 5: First Breakthrough",
         day: 5,
         sequence: "Story",
-        subject: "Re: this reminded me of you",
+        variants: [
+            { id: "story_day5_a", subject: "Re: she started crying" }, // Emotion hook
+            { id: "story_day5_b", subject: "my first client win" }, // Direct
+            { id: "story_day5_c", subject: "thought you'd want to know" }, // Personal
+        ],
         content: `{{firstName}},
 
 I'll never forget my first real breakthrough.
@@ -114,16 +129,21 @@ That was the moment I knew. This wasn't just education. This was transformation 
 
 I went from "maybe I can do this" to "I was MADE for this."
 
-And {{firstName}}, I believe you have that moment waiting for you too.
+And I believe you have that moment waiting for you too.
 
 Sarah`,
     },
+    // STORY DAY 7
     {
         id: "story_day7",
         name: "Story Day 7: Daughter Noticed",
         day: 7,
         sequence: "Story",
-        subject: "Re: something I noticed about you",
+        variants: [
+            { id: "story_day7_a", subject: "mommy you smile more now" }, // Exact quote
+            { id: "story_day7_b", subject: "Re: something my daughter said" }, // Re: format
+            { id: "story_day7_c", subject: "this made me cry" }, // Emotional
+        ],
         content: `{{firstName}},
 
 There's a moment I come back to whenever I doubt myself.
@@ -146,16 +166,21 @@ All of it led to THIS — being present, being healthy, being the mom I always w
 
 I don't know what your "moment" will look like. Maybe it's a client breakthrough. Maybe it's financial freedom. Maybe it's just feeling like YOU again.
 
-But I know it's coming. And I can't wait for you to experience it. 💕
+But I know it's coming. And I can't wait for you to experience it.
 
 Sarah`,
     },
+    // STORY DAY 10
     {
         id: "story_day10",
         name: "Story Day 10: Why I Do This",
         day: 10,
         sequence: "Story",
-        subject: "Re: your question from earlier",
+        variants: [
+            { id: "story_day10_a", subject: "Re: why I built this" }, // Re: format
+            { id: "story_day10_b", subject: "i spent 27k learning this" }, // Shocking number
+            { id: "story_day10_c", subject: "the real reason" }, // Curiosity
+        ],
         content: `{{firstName}},
 
 I've told you a lot about my journey. The kitchen floor moment. The 3am discovery. The first breakthrough.
@@ -182,16 +207,19 @@ My job is to make sure you have everything you need to succeed.
 
 With love,
 
-Sarah 💕`,
+Sarah`,
     },
-
-    // PROOF SEQUENCE (Day 12-21)
+    // PROOF DAY 12
     {
         id: "proof_day12",
         name: "Proof Day 12: Diane (62, RN)",
         day: 12,
         sequence: "Proof",
-        subject: "Re: thought you'd want to hear this",
+        variants: [
+            { id: "proof_day12_a", subject: "Re: she was 62 and skeptical" }, // Age + emotion
+            { id: "proof_day12_b", subject: "35 years as a nurse then this" }, // Career pivot
+            { id: "proof_day12_c", subject: "diane's story" }, // Simple name
+        ],
         content: `{{firstName}},
 
 I want to introduce you to Diane.
@@ -218,12 +246,17 @@ What's possible for YOU?
 
 Sarah`,
     },
+    // PROOF DAY 15
     {
         id: "proof_day15",
         name: "Proof Day 15: Maria (Single Mom)",
         day: 15,
         sequence: "Proof",
-        subject: "Re: had to share this with you",
+        variants: [
+            { id: "proof_day15_a", subject: "Re: single mom working 60 hours" }, // Relatable struggle
+            { id: "proof_day15_b", subject: "she picks up her kids every day now" }, // Outcome
+            { id: "proof_day15_c", subject: "maria replaced her income" }, // Result
+        ],
         content: `{{firstName}},
 
 Maria's story is the one I share most often.
@@ -252,12 +285,17 @@ What could YOUR life look like in 6 months?
 
 Sarah`,
     },
+    // PROOF DAY 18
     {
         id: "proof_day18",
         name: "Proof Day 18: Vicki (Yoga Teacher)",
         day: 18,
         sequence: "Proof",
-        subject: "Re: you asked about this before",
+        variants: [
+            { id: "proof_day18_a", subject: "Re: from $45/class to $250/session" }, // Price jump
+            { id: "proof_day18_b", subject: "vicki only teaches 2 classes now" }, // Lifestyle
+            { id: "proof_day18_c", subject: "she had no medical background" }, // Objection crusher
+        ],
         content: `{{firstName}},
 
 Vicki was charging $45 per yoga class.
@@ -286,352 +324,18 @@ But she had heart. And she got the training she needed.
 
 Sarah`,
     },
-    {
-        id: "proof_day21",
-        name: "Proof Day 21: The Common Thread",
-        day: 21,
-        sequence: "Proof",
-        subject: "Re: what I noticed about your progress",
-        content: `{{firstName}},
-
-Over the past week, I've shared stories with you. Diane (62, RN). Maria (single mom). Vicki (yoga teacher).
-
-Different ages. Different backgrounds. Different starting points.
-
-But they all have ONE thing in common:
-
-They decided they were worth the investment.
-
-Not "when I have more money." Not "when my kids are older." Not "when things calm down."
-
-NOW.
-
-They bet on themselves when it wasn't comfortable. When it wasn't convenient. When there were a thousand reasons to wait.
-
-And that decision changed everything.
-
-I'm not sharing these stories to pressure you.
-
-I'm sharing them because I see something in YOU.
-
-The same spark I saw in Diane, Maria, and Vicki.
-
-The question is: what are you going to do with it?
-
-Whatever you decide, I'm proud of you for being here.
-
-Sarah 💕`,
-    },
-
-    // PAIN SEED SEQUENCE (Day 24-28)
-    {
-        id: "pain_day24",
-        name: "Pain Day 24: Then What?",
-        day: 24,
-        sequence: "Pain Seed",
-        subject: "Re: checking in on your next steps",
-        content: `{{firstName}},
-
-Can I ask you something honest?
-
-Let's say you complete this certification. You learn the clinical skills. You understand root cause analysis. You can create real protocols.
-
-Then what?
-
-Because here's what I've seen happen too many times:
-
-Amazing practitioners with incredible knowledge... who have no idea how to actually BUILD a business.
-
-They struggle with:
-- How do I find clients?
-- What do I charge?
-- How do I set up intake forms?
-- What about legal stuff?
-- How do I market myself without feeling gross?
-
-And they end up either undercharging, overworking, or giving up entirely.
-
-That's not going to be you.
-
-But it DOES mean thinking ahead. Building systems now. Having the business infrastructure ready BEFORE you need it.
-
-That's why I want to tell you about something we created for exactly this problem...
-
-But that's for tomorrow.
-
-For now, just think about: what would it look like to launch your practice with everything ALREADY set up?
-
-Sarah`,
-    },
-    {
-        id: "pain_day26",
-        name: "Pain Day 26: Two Types",
-        day: 26,
-        sequence: "Pain Seed",
-        subject: "Re: quick thought about your situation",
-        content: `{{firstName}},
-
-I've noticed there are two types of practitioners:
-
-TYPE 1: The Strugglers
-They spend 6+ months trying to figure out business stuff on their own.
-They DIY their website (it looks... okay).
-They write their own intake forms (missing key questions).
-They create their own protocols from scratch (reinventing the wheel).
-They eventually launch... exhausted, underconfident, and unsure if any of it is "right."
-
-TYPE 2: The Fast-Launchers
-They invest in done-for-you systems.
-They have a professional website within 48 hours.
-They use proven intake forms and legal templates.
-They follow tested protocols.
-They launch FAST — confident, credible, and ready to serve clients.
-
-Same certification. Same skills. WILDLY different outcomes.
-
-The difference isn't talent. It's infrastructure.
-
-Most practitioners lose 6-12 months struggling with the business side.
-
-That's 6-12 months of NOT helping clients. NOT making income. NOT building the life they enrolled for.
-
-There's a better way. I'll share it tomorrow.
-
-Sarah`,
-    },
-    {
-        id: "pain_day28",
-        name: "Pain Day 28: What If?",
-        day: 28,
-        sequence: "Pain Seed",
-        subject: "Re: your question about getting started",
-        content: `{{firstName}},
-
-What if everything was already done for you?
-
-I mean EVERYTHING:
-✓ Professional website (custom built)
-✓ Complete intake system
-✓ Legal documents (liability waivers, consent forms)
-✓ 10 ready-to-use protocol templates
-✓ 31 email sequences for client nurturing
-✓ 30 days of social media content
-✓ Discovery call scripts
-✓ Pricing and packaging templates
-
-What if you could focus on what you LOVE — helping clients — instead of drowning in business logistics?
-
-What if you could launch THIS WEEK instead of "someday"?
-
-This is exactly what our Done-For-You Business Kit provides.
-
-Everything built. Everything handed to you. Everything ready to use immediately.
-
-I'm opening spots in 2 days. Very limited (we physically build each website ourselves).
-
-Keep an eye on your inbox.
-
-Sarah`,
-    },
-
-    // DFY LAUNCH SEQUENCE (Day 30-35)
-    {
-        id: "dfy_day30",
-        name: "DFY Day 30: Coming Tomorrow",
-        day: 30,
-        sequence: "DFY Launch",
-        subject: "Re: following up on our conversation",
-        content: `{{firstName}},
-
-Quick heads up:
-
-Tomorrow morning, I'm opening a few spots for our Complete Done-For-You Business Kit.
-
-Everything you need to launch your practice — built and handed to you:
-
-✓ Professional website (built within 48 hours)
-✓ Complete intake system
-✓ Legal documents bundle
-✓ 10 protocol templates
-✓ 31 email sequences
-✓ 30 days of social content
-✓ Discovery call script
-✓ Pricing & packaging templates
-
-This is legitimately everything you need to go from "learning" to "launching" — fast.
-
-Only a handful of spots because we physically build each website personally.
-
-I'll send you the link in the morning.
-
-Sarah`,
-    },
-    {
-        id: "dfy_day31",
-        name: "DFY Day 31: DOORS OPEN",
-        day: 31,
-        sequence: "DFY Launch",
-        subject: "Re: here's the link you asked for",
-        content: `{{firstName}},
-
-It's ready.
-
-Here's the link for the Complete Done-For-You Business Kit:
-
-https://learn.accredipro.academy/dfy-kit
-
-What you get:
-
-✓ Custom Professional Website - Built within 48 hours
-✓ Complete Intake System - Forms, questionnaires, automation
-✓ Legal Documents Bundle - Liability waivers, consent forms, policies
-✓ 10 Protocol Templates - Ready-to-use with your clients
-✓ 31 Email Sequences - Client nurturing on autopilot
-✓ 30 Days Social Content - Posts, stories, captions done
-✓ Discovery Call Script - Convert prospects to clients
-✓ Pricing & Packaging Guide - Know exactly what to charge
-
-This is everything you need to launch a professional practice THIS WEEK instead of struggling for months trying to figure it all out.
-
-Secure your spot: https://learn.accredipro.academy/dfy-kit
-
-Sarah`,
-    },
-    {
-        id: "dfy_day33",
-        name: "DFY Day 33: Following Up",
-        day: 33,
-        sequence: "DFY Launch",
-        subject: "Re: did you see my last message?",
-        content: `{{firstName}},
-
-Just wanted to follow up on the Done-For-You Business Kit.
-
-A few spots have been claimed already, and I wanted to make sure you saw the link.
-
-Quick reminder of what's included:
-- Custom website (built in 48 hours)
-- Complete intake system
-- Legal docs bundle
-- 10 protocol templates
-- 31 email sequences
-- 30 days social content
-- Discovery call script
-- Pricing guide
-
-This is the difference between launching THIS WEEK vs struggling for months.
-
-Here's the link: https://learn.accredipro.academy/dfy-kit
-
-Sarah`,
-    },
-    {
-        id: "dfy_day35",
-        name: "DFY Day 35: FINAL CALL",
-        day: 35,
-        sequence: "DFY Launch",
-        subject: "Re: one last thing before I go",
-        content: `{{firstName}},
-
-This is my last message about the Done-For-You Business Kit.
-
-A few spots are still available. After these are gone, the next opening won't be for 4-6 weeks (we need time to build the websites).
-
-Everything you need to launch:
-- Custom website (48-hour delivery)
-- Intake system
-- Legal bundle
-- Protocol templates
-- Email sequences
-- Social content
-- Scripts & guides
-
-Here's the link if you want it: https://learn.accredipro.academy/dfy-kit
-
-Either way, I'm rooting for you.
-
-Sarah`,
-    },
-
-    // MILESTONE UPSELLS (Pro Accelerator)
-    {
-        id: "milestone_50",
-        name: "Milestone 50%: Pro Accelerator",
-        day: 0,
-        sequence: "Milestone",
-        subject: "Re: noticed something about your account",
-        content: `{{firstName}},
-
-I just saw you hit 50% in your certification.
-
-This tells me something important about you: you're not a dabbler. You're not "just browsing." You're actually DOING the work.
-
-That's rare. Most people never make it this far.
-
-And because you've proven you're serious, I want to tell you about something that's only offered to students who've reached this milestone:
-
-**Pro Accelerator™**
-
-This is the advanced track — where we go from "competent" to "DANGEROUS good."
-
-20 modules. 120 lessons. Complete clinical AND business mastery.
-
-What's included:
-- Advanced lab interpretation
-- Complex case management
-- High-ticket client acquisition
-- Referral network building
-- Practice scaling systems
-
-For serious students only.
-
-See what's inside: https://learn.accredipro.academy/pro-accelerator
-
-Sarah`,
-    },
-    {
-        id: "milestone_100",
-        name: "Milestone 100%: What's Next?",
-        day: 0,
-        sequence: "Milestone",
-        subject: "Re: congratulations on your achievement",
-        content: `{{firstName}},
-
-YOU DID IT! 🎉
-
-I'm so, so proud of you. You completed your entire certification.
-
-Take a moment to really feel this. You did something most people never do.
-
-Now... what's next?
-
-What you've learned gives you a FOUNDATION. But if you want to:
-- Handle the complex cases (the ones that pay $2,500-5,000)
-- Get doctors and practitioners referring to YOU
-- Build to $10,000-20,000/month
-- Become THE expert in your area
-
-You need the advanced training. That's what Pro Accelerator™ is for.
-
-You've proven you finish what you start. Now let's make sure you BUILD what you've learned.
-
-See the options: https://learn.accredipro.academy/pro-accelerator
-
-Whatever you decide, I'm proud of you.
-
-Sarah`,
-    },
 ];
 
-export default function InboxTestBuyerNurturingPage() {
+export default function InboxTestVariantsPage() {
     const [testEmail, setTestEmail] = useState("at.seed019@gmail.com");
     const [sending, setSending] = useState<string | null>(null);
     const [sendingAll, setSendingAll] = useState(false);
-    const [results, setResults] = useState<Record<string, { sent: boolean; placement?: "inbox" | "promotion" }>>({});
-    const [previewEmail, setPreviewEmail] = useState<typeof ALL_NURTURING_EMAILS[0] | null>(null);
+    const [expandedEmails, setExpandedEmails] = useState<Set<string>>(new Set(["story_day1"]));
+    const [results, setResults] = useState<Record<string, "inbox" | "promotion">>({});
+    const [previewContent, setPreviewContent] = useState<{ title: string; content: string } | null>(null);
 
-    const sendEmail = async (email: typeof ALL_NURTURING_EMAILS[0]) => {
-        setSending(email.id);
+    const sendVariant = async (emailId: string, variantId: string, subject: string, content: string) => {
+        setSending(variantId);
 
         try {
             const res = await fetch("/api/admin/marketing/send-nurturing-test", {
@@ -639,15 +343,13 @@ export default function InboxTestBuyerNurturingPage() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     to: testEmail,
-                    subject: email.subject,
-                    content: email.content.replace(/\{\{firstName\}\}/g, "Friend"),
-                    emailId: email.id,
+                    subject,
+                    content: content.replace(/\{\{firstName\}\}/g, "Friend"),
+                    emailId: variantId,
                 }),
             });
 
-            if (res.ok) {
-                setResults(prev => ({ ...prev, [email.id]: { sent: true } }));
-            }
+            if (!res.ok) throw new Error("Failed to send");
         } catch (err) {
             console.error(err);
         } finally {
@@ -655,54 +357,53 @@ export default function InboxTestBuyerNurturingPage() {
         }
     };
 
-    const sendAllEmails = async () => {
+    const sendAllVariants = async (email: typeof EMAIL_VARIANTS[0]) => {
         setSendingAll(true);
-        setResults({});
 
-        for (const email of ALL_NURTURING_EMAILS) {
-            await sendEmail(email);
-            await new Promise(r => setTimeout(r, 3000)); // 3s delay
+        for (const variant of email.variants) {
+            await sendVariant(email.id, variant.id, variant.subject, email.content);
+            await new Promise(r => setTimeout(r, 1000));
         }
 
         setSendingAll(false);
     };
 
-    const markPlacement = (emailId: string, placement: "inbox" | "promotion") => {
-        setResults(prev => ({
-            ...prev,
-            [emailId]: { ...prev[emailId], sent: true, placement }
-        }));
+    const markResult = (variantId: string, result: "inbox" | "promotion") => {
+        setResults(prev => ({ ...prev, [variantId]: result }));
+    };
+
+    const toggleExpand = (emailId: string) => {
+        setExpandedEmails(prev => {
+            const next = new Set(prev);
+            next.has(emailId) ? next.delete(emailId) : next.add(emailId);
+            return next;
+        });
     };
 
     const getSequenceColor = (sequence: string) => {
         switch (sequence) {
             case "Story": return "bg-pink-500";
             case "Proof": return "bg-blue-500";
-            case "Pain Seed": return "bg-orange-500";
-            case "DFY Launch": return "bg-green-500";
-            case "Milestone": return "bg-purple-500";
             default: return "bg-gray-500";
         }
     };
 
-    const inboxCount = Object.values(results).filter(r => r.placement === "inbox").length;
-    const promoCount = Object.values(results).filter(r => r.placement === "promotion").length;
+    // Count results
+    const inboxWins = Object.values(results).filter(r => r === "inbox").length;
+    const promoCount = Object.values(results).filter(r => r === "promotion").length;
 
     return (
-        <div className="p-8 max-w-5xl mx-auto">
+        <div className="p-8 max-w-4xl mx-auto">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">📧 All 18 Buyer Nurturing Emails</h1>
+                <h1 className="text-3xl font-bold text-gray-900">🧪 Subject Line A/B Testing</h1>
                 <p className="text-gray-600 mt-2">
-                    Inbox-optimized subjects using winning formula: <code className="bg-gray-100 px-2 py-1 rounded">Re: [conversational question about THEM]</code>
+                    3 variants per email. Send all variants → Check Gmail → Mark inbox/promo → Find winning patterns
                 </p>
             </div>
 
-            {/* Test Email Input */}
+            {/* Test Email + Results Summary */}
             <div className="bg-white rounded-lg shadow p-6 mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Your Gmail Test Address
-                </label>
-                <div className="flex gap-4">
+                <div className="flex items-center gap-4 mb-4">
                     <Input
                         type="email"
                         value={testEmail}
@@ -710,33 +411,12 @@ export default function InboxTestBuyerNurturingPage() {
                         placeholder="your@gmail.com"
                         className="flex-1"
                     />
-                    <Button
-                        onClick={sendAllEmails}
-                        disabled={sendingAll || !testEmail}
-                        className="bg-purple-600 hover:bg-purple-700"
-                    >
-                        {sendingAll ? (
-                            <>
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Sending ({Object.keys(results).length}/{ALL_NURTURING_EMAILS.length})
-                            </>
-                        ) : (
-                            <>
-                                <Send className="w-4 h-4 mr-2" />
-                                Send All 18 Emails
-                            </>
-                        )}
-                    </Button>
                 </div>
-            </div>
 
-            {/* Results Summary */}
-            {(inboxCount > 0 || promoCount > 0) && (
-                <div className="bg-white rounded-lg shadow p-6 mb-6">
-                    <h3 className="font-semibold text-gray-900 mb-3">📊 Results</h3>
+                {(inboxWins > 0 || promoCount > 0) && (
                     <div className="grid grid-cols-2 gap-4">
                         <div className="bg-green-100 rounded-lg p-4 text-center">
-                            <p className="text-3xl font-bold text-green-700">{inboxCount}</p>
+                            <p className="text-3xl font-bold text-green-700">{inboxWins}</p>
                             <p className="text-sm text-green-600">Primary Inbox ✅</p>
                         </div>
                         <div className="bg-orange-100 rounded-lg p-4 text-center">
@@ -744,118 +424,135 @@ export default function InboxTestBuyerNurturingPage() {
                             <p className="text-sm text-orange-600">Promotions 📦</p>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
-            {/* Email List */}
-            <div className="space-y-3">
-                {ALL_NURTURING_EMAILS.map((email) => {
-                    const result = results[email.id];
+            {/* Email List with Variants */}
+            <div className="space-y-4">
+                {EMAIL_VARIANTS.map((email) => {
+                    const isExpanded = expandedEmails.has(email.id);
 
                     return (
-                        <div
-                            key={email.id}
-                            className={`bg-white rounded-lg shadow p-4 border-l-4 transition-all ${result?.placement === "inbox"
-                                    ? "border-l-green-500 bg-green-50"
-                                    : result?.placement === "promotion"
-                                        ? "border-l-orange-500 bg-orange-50"
-                                        : result?.sent
-                                            ? "border-l-blue-400 bg-blue-50"
-                                            : "border-l-gray-200"
-                                }`}
-                        >
-                            <div className="flex items-center justify-between gap-4">
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full text-white ${getSequenceColor(email.sequence)}`}>
-                                            {email.sequence}
-                                        </span>
-                                        <span className="text-xs text-gray-500">Day {email.day}</span>
-                                        {result?.placement === "inbox" && (
-                                            <span className="text-xs px-2 py-0.5 bg-green-500 text-white rounded-full">
-                                                ✅ INBOX
-                                            </span>
-                                        )}
-                                        {result?.placement === "promotion" && (
-                                            <span className="text-xs px-2 py-0.5 bg-orange-500 text-white rounded-full">
-                                                📦 PROMO
-                                            </span>
-                                        )}
-                                    </div>
-                                    <p className="font-medium text-gray-900 truncate">{email.subject}</p>
-                                    <p className="text-xs text-gray-500 truncate">{email.name}</p>
-                                </div>
-
-                                <div className="flex items-center gap-2 flex-shrink-0">
-                                    {result?.sent && !result?.placement && (
-                                        <>
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() => markPlacement(email.id, "inbox")}
-                                                className="border-green-500 text-green-700 hover:bg-green-50 text-xs px-2"
-                                            >
-                                                <Inbox className="w-3 h-3 mr-1" /> Inbox
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() => markPlacement(email.id, "promotion")}
-                                                className="border-orange-500 text-orange-700 hover:bg-orange-50 text-xs px-2"
-                                            >
-                                                <Tag className="w-3 h-3 mr-1" /> Promo
-                                            </Button>
-                                        </>
+                        <div key={email.id} className="bg-white rounded-lg shadow overflow-hidden">
+                            {/* Email Header */}
+                            <button
+                                onClick={() => toggleExpand(email.id)}
+                                className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50"
+                            >
+                                <div className="flex items-center gap-3">
+                                    {isExpanded ? (
+                                        <ChevronDown className="w-5 h-5 text-gray-400" />
+                                    ) : (
+                                        <ChevronRight className="w-5 h-5 text-gray-400" />
                                     )}
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => setPreviewEmail(email)}
-                                        className="text-xs px-2"
-                                    >
-                                        <Eye className="w-3 h-3" />
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        onClick={() => sendEmail(email)}
-                                        disabled={sending === email.id || sendingAll}
-                                        className="text-xs px-3"
-                                    >
-                                        {sending === email.id ? (
-                                            <Loader2 className="w-3 h-3 animate-spin" />
-                                        ) : result?.sent ? (
-                                            <Check className="w-3 h-3" />
-                                        ) : (
-                                            <Mail className="w-3 h-3" />
-                                        )}
-                                    </Button>
+                                    <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full text-white", getSequenceColor(email.sequence))}>
+                                        {email.sequence}
+                                    </span>
+                                    <span className="text-xs text-gray-500">Day {email.day}</span>
+                                    <span className="font-medium text-gray-900">{email.name}</span>
                                 </div>
-                            </div>
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        sendAllVariants(email);
+                                    }}
+                                    disabled={sendingAll}
+                                    className="text-xs"
+                                >
+                                    {sendingAll ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3 mr-1" />}
+                                    Send All 3
+                                </Button>
+                            </button>
+
+                            {/* Variants (expanded) */}
+                            {isExpanded && (
+                                <div className="border-t divide-y">
+                                    {email.variants.map((variant, idx) => {
+                                        const result = results[variant.id];
+
+                                        return (
+                                            <div
+                                                key={variant.id}
+                                                className={cn(
+                                                    "px-4 py-3 flex items-center justify-between gap-4",
+                                                    result === "inbox" && "bg-green-50",
+                                                    result === "promotion" && "bg-orange-50"
+                                                )}
+                                            >
+                                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                                                    <span className="text-sm font-bold text-gray-500 w-6">{String.fromCharCode(65 + idx)}.</span>
+                                                    <span className="text-sm font-medium text-gray-900 truncate">{variant.subject}</span>
+                                                    {result === "inbox" && (
+                                                        <span className="text-xs px-2 py-0.5 bg-green-500 text-white rounded-full flex-shrink-0">✅ INBOX</span>
+                                                    )}
+                                                    {result === "promotion" && (
+                                                        <span className="text-xs px-2 py-0.5 bg-orange-500 text-white rounded-full flex-shrink-0">📦 PROMO</span>
+                                                    )}
+                                                </div>
+
+                                                <div className="flex items-center gap-2 flex-shrink-0">
+                                                    {!result && (
+                                                        <>
+                                                            <Button
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() => markResult(variant.id, "inbox")}
+                                                                className="text-xs border-green-500 text-green-700 hover:bg-green-50 h-7"
+                                                            >
+                                                                <Inbox className="w-3 h-3 mr-1" /> Inbox
+                                                            </Button>
+                                                            <Button
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() => markResult(variant.id, "promotion")}
+                                                                className="text-xs border-orange-500 text-orange-700 hover:bg-orange-50 h-7"
+                                                            >
+                                                                <Tag className="w-3 h-3 mr-1" /> Promo
+                                                            </Button>
+                                                        </>
+                                                    )}
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() => setPreviewContent({ title: variant.subject, content: email.content })}
+                                                        className="h-7 w-7 p-0"
+                                                    >
+                                                        <Eye className="w-3 h-3" />
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={() => sendVariant(email.id, variant.id, variant.subject, email.content)}
+                                                        disabled={sending === variant.id}
+                                                        className="h-7 w-7 p-0"
+                                                    >
+                                                        {sending === variant.id ? (
+                                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                                        ) : (
+                                                            <Mail className="w-3 h-3" />
+                                                        )}
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
                     );
                 })}
             </div>
 
             {/* Preview Modal */}
-            <Dialog open={!!previewEmail} onOpenChange={() => setPreviewEmail(null)}>
+            <Dialog open={!!previewContent} onOpenChange={() => setPreviewContent(null)}>
                 <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle>{previewEmail?.name}</DialogTitle>
+                        <DialogTitle>{previewContent?.title}</DialogTitle>
                     </DialogHeader>
-                    {previewEmail && (
-                        <div className="space-y-4">
-                            <div className="bg-purple-50 rounded-lg p-4">
-                                <p className="text-sm font-medium text-gray-500">Subject</p>
-                                <p className="text-xl font-bold text-purple-700">{previewEmail.subject}</p>
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium text-gray-500 mb-2">Content</p>
-                                <div className="bg-gray-50 rounded-lg p-4 whitespace-pre-wrap text-sm">
-                                    {previewEmail.content.replace(/\{\{firstName\}\}/g, "Friend")}
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    <div className="bg-gray-50 rounded-lg p-4 whitespace-pre-wrap text-sm">
+                        {previewContent?.content.replace(/\{\{firstName\}\}/g, "Friend")}
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>
