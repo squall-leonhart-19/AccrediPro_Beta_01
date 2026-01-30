@@ -92,24 +92,22 @@ export function personalEmailWrapper(content: string): string {
   // Remove ALL emojis from content
   const noEmojis = content.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}]/gu, '');
 
-  // Convert any fancy HTML to simple text-like HTML
-  const simplifiedContent = noEmojis
-    // Remove any inline styles
-    .replace(/style="[^"]*"/gi, '')
-    // Simple paragraph spacing
-    .replace(/<p>/gi, '<p style="margin:0 0 14px 0;">')
-    // Simple links - no color styling
-    .replace(/<a\s+href=/gi, '<a href=');
+  // Convert newlines to <br> tags for proper line breaks
+  const withLineBreaks = noEmojis
+    .split('\n\n')
+    .map(paragraph => paragraph.replace(/\n/g, '<br>'))
+    .join('</p><p style="margin:0 0 14px 0;">');
 
   // Ultra minimal - like Gmail compose
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"></head>
-<body style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#222;">
-${simplifiedContent}
+<body style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#222;">
+<p style="margin:0 0 14px 0;">${withLineBreaks}</p>
 </body>
 </html>`;
 }
+
 
 // Branded wrapper for nurture sequence emails - AccrediPro burgundy header styling
 // This matches the inbox-test route's HTML output with full branding

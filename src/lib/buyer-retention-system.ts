@@ -34,13 +34,12 @@ export interface CourseContext {
 }
 
 // ============================================
-// SIGNATURE
+// SIGNATURE - Simple for inbox delivery
 // ============================================
 
 const SARAH_SIGNATURE = `
-Sarah
-Board Certified Master Practitioner
-AccrediPro Standards Institute`;
+Sarah`;
+
 
 // ============================================
 // SPRINT SEQUENCE (0-48h)
@@ -53,7 +52,7 @@ export const SPRINT_SEQUENCE: BuyerRetentionEmail[] = [
         phase: "sprint",
         day: 0,
         delayHours: 0,
-        subject: "You're in! Here's your first step",
+        subject: "Re: your access is ready",
         content: `{{firstName}},
 
 Congratulations - you just made one of the best decisions of your life.
@@ -85,7 +84,7 @@ P.S. I'll check in tomorrow to see how you're doing. Any questions, just hit rep
         phase: "sprint",
         day: 0,
         delayHours: 6,
-        subject: "What's inside Module 1",
+        subject: "Re: quick question",
         content: `{{firstName}},
 
 Quick check-in - did you start Module 1 yet?
@@ -114,7 +113,7 @@ ${SARAH_SIGNATURE}`,
         phase: "sprint",
         day: 1,
         delayHours: 0,
-        subject: "Students who finish Module 1 in 24 hours...",
+        subject: "Re: following up",
         content: `{{firstName}},
 
 I want to share something with you.
@@ -146,7 +145,7 @@ P.S. If you've already started - ignore this and keep going! Reply with "STARTED
         phase: "sprint",
         day: 2,
         delayHours: 0,
-        subject: "You're 1 lesson away from your first breakthrough",
+        subject: "Re: checking in",
         content: `{{firstName}},
 
 It's been 48 hours since you enrolled.
@@ -193,7 +192,7 @@ export const MILESTONE_EMAILS: Record<string, BuyerRetentionEmail> = {
         phase: "milestone",
         day: 0,
         delayHours: 0,
-        subject: "Module 1 COMPLETE - you're already ahead",
+        subject: "Re: you did it",
         content: `{{firstName}},
 
 You just completed Module 1.
@@ -222,7 +221,7 @@ P.S. Quick tip: Students who complete Module 2 within 48 hours of Module 1 have 
         phase: "milestone",
         day: 0,
         delayHours: 0,
-        subject: "HALFWAY - you're ahead of 70% of students",
+        subject: "Re: you're halfway there",
         content: `{{firstName}},
 
 This is a big deal.
@@ -251,7 +250,7 @@ P.S. I see you showing up. You're exactly the kind of practitioner we love havin
         phase: "milestone",
         day: 0,
         delayHours: 0,
-        subject: "CONGRATULATIONS - You Did It!",
+        subject: "Re: congratulations",
         content: `{{firstName}},
 
 I don't have enough words.
@@ -295,7 +294,7 @@ P.S. This is just the beginning. There's so much more ahead.`,
         phase: "milestone",
         day: 0,
         delayHours: 0,
-        subject: "Your certificate is officially yours",
+        subject: "Re: your certificate",
         content: `{{firstName}},
 
 Your certificate is now official.
@@ -331,7 +330,7 @@ export const REMINDER_EMAILS: Record<string, BuyerRetentionEmail & { triggerDays
         delayHours: 0,
         triggerDays: 7,
         preventTag: "reminder_7d_sent",
-        subject: "Your course is waiting...",
+        subject: "Re: quick check-in",
         content: `{{firstName}},
 
 I noticed you haven't logged in to {{courseName}} in a while.
@@ -360,7 +359,7 @@ ${SARAH_SIGNATURE}`,
         delayHours: 0,
         triggerDays: 14,
         preventTag: "reminder_14d_sent",
-        subject: "I noticed you haven't continued...",
+        subject: "Re: following up",
         content: `{{firstName}},
 
 It's been 2 weeks since you made progress in your certification.
@@ -395,7 +394,7 @@ P.S. If something specific is blocking you - reply and tell me what it is. I rea
         delayHours: 0,
         triggerDays: 30,
         preventTag: "reminder_30d_sent",
-        subject: "Honest question for you...",
+        subject: "Re: honest question",
         content: `{{firstName}},
 
 Honest question: do you still want to do this?
@@ -428,7 +427,7 @@ ${SARAH_SIGNATURE}`,
         delayHours: 0,
         triggerDays: 45,
         preventTag: "reminder_45d_sent",
-        subject: "Your enrollment status",
+        subject: "Re: your enrollment",
         content: `{{firstName}},
 
 I have to tell you something important.
