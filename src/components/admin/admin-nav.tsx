@@ -30,6 +30,7 @@ import {
   Gift,
   GraduationCap,
   UserPlus,
+  Package,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -59,6 +60,7 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/admin/purchases", label: "Purchases", icon: DollarSign, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/leads", label: "Leads & Mini Diploma", icon: UserPlus, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/dfy-orders", label: "DFY Orders", icon: Package, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/referrals", label: "Referrals", icon: Gift, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
     ],
   },
@@ -73,7 +75,7 @@ const navGroups: NavGroup[] = [
   {
     title: "Support & Chat",
     items: [
-      { href: "/admin/messages", label: "Direct Messages", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/messages", label: "Direct Messages", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/support", label: "Support Desk", icon: Ticket, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
     ],
