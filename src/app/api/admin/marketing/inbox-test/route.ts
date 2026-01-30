@@ -4751,128 +4751,134 @@ Any questions, just reply.
 Sarah`,
   },
 
-  // 7-Day Reminder Variants
+  // 7-Day Reminder Variants - WARM & CARING
   {
     id: 310,
-    name: "Buyer 7d Reminder: V1 Check-in",
-    day: 7,
-    section: "buyer_retention",
-    originalSubject: "Your course is waiting...",
-    subject: "Re: quick check-in",
-    content: `{{firstName}},
-
-I noticed you haven't logged in for a while.
-
-Is everything okay?
-
-I'm not going to guilt you - I know life gets crazy. But I also know you invested in this for a reason.
-
-Can I help with anything?
-
-Your course is here: https://learn.accredipro.academy/dashboard
-
-Just one lesson today. That's all I'm asking.
-
-Sarah`,
-  },
-  {
-    id: 311,
-    name: "Buyer 7d Reminder: V2 Question",
-    day: 7,
-    section: "buyer_retention",
-    originalSubject: "did you get stuck?",
-    subject: "Re: question for you",
-    content: `{{firstName}},
-
-Quick question - did something come up?
-
-I noticed you haven't been in the course for a bit. Totally normal - life happens.
-
-If you're stuck on anything, just reply and let me know. I can help.
-
-When you're ready: https://learn.accredipro.academy/dashboard
-
-Sarah`,
-  },
-  {
-    id: 312,
-    name: "Buyer 7d Reminder: V3 Caring",
+    name: "Buyer 7d: V1 Thinking of you",
     day: 7,
     section: "buyer_retention",
     originalSubject: "thinking of you",
     subject: "Re: thinking of you",
     content: `{{firstName}},
 
-Just wanted to check in.
+Just thinking about you and wanted to reach out.
 
-Haven't seen you in the course lately and wanted to make sure you're okay.
+How are you doing? How's everything going?
 
-No pressure. Whenever you're ready, I'm here.
+I know life can get busy - trust me, I've been there. Some weeks just fly by.
+
+If you've had a chance to start, I'd love to hear how it's going. And if you haven't yet - no worries at all. Your course is there whenever you're ready.
+
+Is there anything I can help with?
+
+Sending you good energy today.
+
+Sarah`,
+  },
+  {
+    id: 311,
+    name: "Buyer 7d: V2 Checking in",
+    day: 7,
+    section: "buyer_retention",
+    originalSubject: "checking in on you",
+    subject: "Re: checking in on you",
+    content: `{{firstName}},
+
+Hey - just wanted to check in and see how you're doing.
+
+No agenda here. Just genuinely curious how life is treating you.
+
+Your course is ready whenever you are. No rush, no pressure.
+
+If you want to chat about anything, just reply. I love hearing from you.
+
+Sarah`,
+  },
+  {
+    id: 312,
+    name: "Buyer 7d: V3 Here for you",
+    day: 7,
+    section: "buyer_retention",
+    originalSubject: "here for you",
+    subject: "Re: here for you",
+    content: `{{firstName}},
+
+Just a quick note to let you know I'm here if you need anything.
+
+Sometimes we just need a friendly voice. I'm that voice if you want it.
+
+Whenever you're ready to dive in, I'll be here.
+
+Take care of yourself.
 
 Sarah`,
   },
 
-  // 14-Day Reminder Variants
+  // 14-Day Reminder Variants - WARM & SUPPORTIVE
   {
     id: 320,
-    name: "Buyer 14d Reminder: V1 Honest",
+    name: "Buyer 14d: V1 Still thinking of you",
     day: 14,
     section: "buyer_retention",
-    originalSubject: "I noticed you haven't continued...",
-    subject: "Re: following up",
+    originalSubject: "still thinking of you",
+    subject: "Re: still thinking of you",
     content: `{{firstName}},
 
-It's been 2 weeks since you made progress in your certification.
+I've been thinking about you.
 
-I'm reaching out because I care.
+It's been a couple weeks and I just wanted to see how you're doing. How's life?
 
-Every day that passes makes it harder to restart. The excitement fades. And before you know it, you're one of those people who "bought a course but never finished it."
+I know from experience that sometimes the timing just isn't right. That's okay. Your course isn't going anywhere.
 
-That's not you.
+But I also know sometimes we just need a little nudge. A reminder that we can do this.
 
-Log in today and complete just ONE lesson: https://learn.accredipro.academy/dashboard
+If you're feeling overwhelmed about where to start, just reply. I love helping people figure out their next step.
 
-I'm rooting for you.
+No pressure from me. Just support.
 
 Sarah`,
   },
   {
     id: 321,
-    name: "Buyer 14d Reminder: V2 Direct",
+    name: "Buyer 14d: V2 No pressure",
     day: 14,
     section: "buyer_retention",
-    originalSubject: "hey - wanted to check in",
-    subject: "Re: checking in again",
+    originalSubject: "no pressure",
+    subject: "Re: no pressure at all",
     content: `{{firstName}},
 
-Hey - just checking in on you.
+I hope you're well.
 
-You started strong. What happened?
+Just wanted you to know - there's absolutely no pressure from me.
 
-If something's blocking you, tell me. If life just got busy, I get it.
+Life gets busy. Things come up. I totally understand.
 
-Either way, your spot is waiting: https://learn.accredipro.academy/dashboard
+Whenever you're ready, your spot is saved. I'll be here.
+
+Virtual hug your way.
 
 Sarah`,
   },
   {
     id: 322,
-    name: "Buyer 14d Reminder: V3 Supportive",
+    name: "Buyer 14d: V3 Sending love",
     day: 14,
     section: "buyer_retention",
-    originalSubject: "I'm here when you need me",
-    subject: "Re: still here for you",
+    originalSubject: "sending love",
+    subject: "Re: sending love your way",
     content: `{{firstName}},
 
 I haven't forgotten about you.
 
-Life gets in the way sometimes. That's okay.
+Life has a way of taking us in unexpected directions sometimes. Maybe things got busy. Maybe something came up.
 
-Whenever you're ready to continue, I'll be here. Your progress is saved. Nothing is lost.
+All of that is okay.
 
-Just pick up where you left off: https://learn.accredipro.academy/dashboard
+I'm not here to pressure you. I'm here because I genuinely care about the women in our community.
 
-No judgment. Just support.
+Whenever you're ready - whether that's next week or next month - I'll be here.
+
+With love,
 
 Sarah`,
   },

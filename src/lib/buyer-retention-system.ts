@@ -320,7 +320,7 @@ ${SARAH_SIGNATURE}`,
 
 // ============================================
 // ENGAGEMENT REMINDERS
-// For stalled/inactive buyers
+// Warm, caring check-ins - NO scare tactics
 // ============================================
 
 export const REMINDER_EMAILS: Record<string, BuyerRetentionEmail & { triggerDays: number; preventTag: string }> = {
@@ -331,24 +331,22 @@ export const REMINDER_EMAILS: Record<string, BuyerRetentionEmail & { triggerDays
         delayHours: 0,
         triggerDays: 7,
         preventTag: "reminder_7d_sent",
-        subject: "Re: quick check-in",
+        subject: "Re: checking in on you",
         content: `{{firstName}},
 
-I noticed you haven't logged in to {{courseName}} in a while.
+Just thinking about you and wanted to reach out.
 
-Is everything okay?
+How are you doing? How's everything going with the course?
 
-I'm not going to guilt you - I know life gets crazy. But I also know you invested in this for a reason. And whatever that reason was, it's still valid.
+I know life can get busy - trust me, I've been there. Some weeks just fly by and before you know it, things get pushed aside.
 
-Can I help with anything?
+If you've had a chance to start, I'd love to hear how it's going. And if you haven't yet - no worries at all. Your course is there whenever you're ready.
 
-- Confused about where to start? Reply and I'll point you in the right direction.
-- Feeling overwhelmed? I can help you create a realistic schedule.
-- Technical issues? My team will fix it immediately.
+Is there anything I can help with? Sometimes just having someone to talk through things with makes all the difference.
 
-Your course is here, waiting: {{dashboardUrl}}
+Your dashboard is here: {{dashboardUrl}}
 
-Just one lesson today. That's all I'm asking.
+Sending you good energy today.
 
 ${SARAH_SIGNATURE}`,
     },
@@ -360,32 +358,24 @@ ${SARAH_SIGNATURE}`,
         delayHours: 0,
         triggerDays: 14,
         preventTag: "reminder_14d_sent",
-        subject: "Re: following up",
+        subject: "Re: thinking of you",
         content: `{{firstName}},
 
-It's been 2 weeks since you made progress in your certification.
+I've been thinking about you.
 
-I'm reaching out because I care.
+It's been a couple weeks and I just wanted to check in. How are you? How's life treating you?
 
-Here's the truth: every day that passes makes it harder to restart. The excitement fades. The urgency disappears. And before you know it, you're one of those people who "bought a course but never finished it."
+I know from experience that sometimes the timing just isn't right. That's okay. Your course isn't going anywhere - it'll be here whenever you have a moment.
 
-That's not you.
+But I also know that sometimes we just need a little nudge. A reminder that we can do this. That it's okay to take things slow.
 
-You invested in this because you wanted something different. A new skill. A new career. A new way to help people.
+If you're feeling overwhelmed about where to start, just reply to this email. I love helping people figure out their next step.
 
-That's still possible.
+And if now just isn't the right time - that's completely okay too. No pressure from me.
 
-Here's my challenge: log in today and complete just ONE lesson.
+Just know that I'm here and I believe in you.
 
-Not the whole module. Just one lesson.
-
-Login here: {{dashboardUrl}}
-
-I'm rooting for you.
-
-${SARAH_SIGNATURE}
-
-P.S. If something specific is blocking you - reply and tell me what it is. I read every email personally.`,
+${SARAH_SIGNATURE}`,
     },
 
     stalled_30d: {
@@ -395,28 +385,24 @@ P.S. If something specific is blocking you - reply and tell me what it is. I rea
         delayHours: 0,
         triggerDays: 30,
         preventTag: "reminder_30d_sent",
-        subject: "Re: honest question",
+        subject: "Re: still here for you",
         content: `{{firstName}},
 
-Honest question: do you still want to do this?
+I hope you're doing well.
 
-It's been 30 days since you made progress in your certification.
+It's been about a month and I just wanted to let you know - I'm still here for you. Your course is still here. Nothing has changed.
 
-I'm not asking to shame you. I'm asking because the answer matters.
+Life has a way of taking us in unexpected directions sometimes. Maybe things got busy. Maybe something came up. Maybe you're just not feeling it right now.
 
-If the answer is YES - then something is in the way. Time, energy, clarity, something. Reply to this email and tell me what it is. I'll help you figure it out.
+All of that is okay.
 
-If the answer is NO - that's okay too. Not everyone is meant to be a practitioner. But at least be honest with yourself about it.
+I'm not here to pressure you or make you feel bad. I'm here because I genuinely care about the people in our community.
 
-What I don't want is for you to be stuck in limbo. Half-committed. Thinking about it but not doing it. That's the worst place to be.
+Whenever you're ready to jump back in, even if it's months from now, I'll be here to support you.
 
-Choose one:
-- REPLY "YES I WANT THIS" - and I'll help you get back on track
-- REPLY "NO I'M DONE" - and I'll stop emailing you about it
+If you want to chat about anything - the course, life, whatever - just reply. I love hearing from you.
 
-No judgment either way.
-
-But the decision is yours.
+Take care of yourself.
 
 ${SARAH_SIGNATURE}`,
     },
@@ -428,33 +414,22 @@ ${SARAH_SIGNATURE}`,
         delayHours: 0,
         triggerDays: 45,
         preventTag: "reminder_45d_sent",
-        subject: "Re: your enrollment",
+        subject: "Re: sending love your way",
         content: `{{firstName}},
 
-I have to tell you something important.
+I hope this finds you well.
 
-Inactive enrollments are reviewed monthly. Students with no progress for 45+ days are moved to "paused" status.
+I just wanted to send you a little note to let you know I'm thinking of you.
 
-You're on that list.
+Your course is here, your spot is saved, and there's no expiration on any of it. Whenever the time feels right for you - whether that's next week or next year - you can pick up right where you left off.
 
-This doesn't mean you lose your course forever. But it does mean:
-- You'll lose access to live mentorship sessions
-- Your accountability pod spot gets reassigned
-- You'll need to request reactivation to continue
+I genuinely believe that everything happens in its own time. Sometimes we're not ready, and that's perfectly okay.
 
-I don't want that for you.
+If there's ever anything I can do to support you - even if it's just a friendly ear - please reach out. I love connecting with the women in our community.
 
-Here's how to stay active:
+Wishing you all the best, wherever life is taking you right now.
 
-1. Log in before {{deadline}}
-2. Complete any lesson (even a 5-minute one)
-3. That resets your 45-day timer
-
-Login now: {{dashboardUrl}}
-
-I know this sounds like "fake urgency." It's not. We genuinely can't support students who aren't engaged - it takes resources away from those who are.
-
-Please log in.
+With love,
 
 ${SARAH_SIGNATURE}`,
     },
