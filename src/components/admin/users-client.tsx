@@ -1049,6 +1049,7 @@ export function UsersClient({ courses }: UsersClientProps) {
     ADMIN: "bg-red-100 text-red-700 border-red-200",
     INSTRUCTOR: "bg-purple-100 text-purple-700 border-purple-200",
     MENTOR: "bg-blue-100 text-blue-700 border-blue-200",
+    SUPPORT: "bg-teal-100 text-teal-700 border-teal-200",
     STUDENT: "bg-gray-100 text-gray-700 border-gray-200",
   };
 
@@ -3134,6 +3135,7 @@ Terms: https://learn.accredipro.academy/terms-of-service
                   <SelectItem value="STUDENT">Student</SelectItem>
                   <SelectItem value="MENTOR">Mentor</SelectItem>
                   <SelectItem value="INSTRUCTOR">Instructor</SelectItem>
+                  <SelectItem value="SUPPORT">Support (Read-Only)</SelectItem>
                   <SelectItem value="ADMIN">Admin</SelectItem>
                 </SelectContent>
               </Select>
@@ -3311,6 +3313,7 @@ Terms: https://learn.accredipro.academy/terms-of-service
                       <SelectItem value="STUDENT">Student</SelectItem>
                       <SelectItem value="MENTOR">Mentor</SelectItem>
                       <SelectItem value="INSTRUCTOR">Instructor</SelectItem>
+                      <SelectItem value="SUPPORT">Support (Read-Only)</SelectItem>
                       <SelectItem value="ADMIN">Admin</SelectItem>
                     </SelectContent>
                   </Select>
