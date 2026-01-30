@@ -5958,7 +5958,8 @@ ${personalizedContent.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>')}
       section: "fm_nurture_v4",
     }));
 
-    const allVariants = [...EMAIL_VARIANTS, ...whV2Emails, ...fmCompletionEmails, ...fmNurtureEmails];
+    const allVariants = [...EMAIL_VARIANTS, ...whV2Emails, ...fmCompletionEmails, ...fmNurtureEmails]
+      .filter(v => (v as any).section !== "buyer_retention"); // Buyer nurturing/retention moved to inbox-test-01
 
     return NextResponse.json({
       variants: allVariants.map(v => ({
