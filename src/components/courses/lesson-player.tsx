@@ -153,9 +153,42 @@ export function LessonPlayer({
         };
 
         fetchMessages();
-        // Poll for new messages every 30s
-        const interval = setInterval(fetchMessages, 30000);
-        return () => clearInterval(interval);
+
+        // Visibility-aware polling - pause when tab is backgrounded
+        let interval: NodeJS.Timeout | null = null;
+
+        const startPolling = () => {
+            if (interval) clearInterval(interval);
+            interval = setInterval(fetchMessages, 30000);
+        };
+
+        const stopPolling = () => {
+            if (interval) {
+                clearInterval(interval);
+                interval = null;
+            }
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                fetchMessages(); // Fetch immediately when tab becomes visible
+                startPolling();
+            } else {
+                stopPolling();
+            }
+        };
+
+        // Start polling if tab is visible
+        if (document.visibilityState === 'visible') {
+            startPolling();
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            stopPolling();
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
     }, [coachId, session?.user?.id]);
 
     // Smart scroll - only scroll to bottom when near bottom or initial load

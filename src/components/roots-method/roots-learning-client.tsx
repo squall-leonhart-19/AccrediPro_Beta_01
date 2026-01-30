@@ -122,7 +122,7 @@ export function RootsLearningClient({
   useEffect(() => {
     if (showChat && coachId) {
       fetchMessages();
-      pollInterval.current = setInterval(fetchMessages, 5000);
+      pollInterval.current = setInterval(fetchMessages, 60000); // 60s - mentor responds in hours
     }
     return () => {
       if (pollInterval.current) clearInterval(pollInterval.current);

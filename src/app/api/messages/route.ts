@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { sendEmail, emailWrapper } from "@/lib/email";
 import { notifyNewMessage } from "@/lib/push-notifications";
+import { apiRateLimiter } from "@/lib/redis";
 
 // Track last email sent per conversation (in-memory, reset on server restart)
 // With TTL cleanup to prevent memory leak
@@ -48,6 +49,20 @@ export async function GET(request: NextRequest) {
         { success: false, error: "Unauthorized" },
         { status: 401 }
       );
+    }
+
+    // Rate limiting using Upstash Redis (distributed, works across serverless instances)
+    try {
+      const { success: rateLimitOk } = await apiRateLimiter.limit(session.user.id);
+      if (!rateLimitOk) {
+        return NextResponse.json(
+          { success: false, error: "Too many requests. Please slow down." },
+          { status: 429 }
+        );
+      }
+    } catch (rateLimitError) {
+      // If Redis is down, continue without rate limiting (fail open)
+      console.warn("Rate limiter unavailable:", rateLimitError);
     }
 
     const { searchParams } = new URL(request.url);

@@ -380,14 +380,42 @@ function LiveChatPanelInner({ courseId, courseSlug, isMobile = false, onClose }:
     // EFFECTS
     // ============================================
 
-    // Initial fetch + polling
+    // Initial fetch + visibility-aware polling
     useEffect(() => {
         fetchMessages(true);
-        const interval = setInterval(() => fetchMessages(false), POLL_INTERVAL_MS);
+
+        let interval: NodeJS.Timeout | null = null;
+
+        const startPolling = () => {
+            if (interval) clearInterval(interval);
+            interval = setInterval(() => fetchMessages(false), POLL_INTERVAL_MS);
+        };
+
+        const stopPolling = () => {
+            if (interval) {
+                clearInterval(interval);
+                interval = null;
+            }
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                fetchMessages(false);
+                startPolling();
+            } else {
+                stopPolling();
+            }
+        };
+
+        if (document.visibilityState === 'visible') {
+            startPolling();
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
-            clearInterval(interval);
-            // Cleanup: abort any pending request
+            stopPolling();
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
             if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
             }
