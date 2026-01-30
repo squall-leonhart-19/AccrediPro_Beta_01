@@ -337,7 +337,7 @@ export default function TicketsClient() {
   const router = useRouter();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("OPEN"); // Default to OPEN tab
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
   const [isInternalNote, setIsInternalNote] = useState(false);
@@ -352,7 +352,26 @@ export default function TicketsClient() {
   const replyTicket = useReplyTicket();
   const { data: ticketDetails, isLoading: isLoadingDetails } = useTicketDetails(selectedTicketId);
 
-  const tickets = data?.tickets || [];
+  // Filter and sort tickets - OPEN = NEW+OPEN+PENDING, CLOSED = RESOLVED+CLOSED
+  // Sort by most recent activity (newest at top)
+  const allTickets = data?.tickets || [];
+  const tickets = useMemo(() => {
+    let filtered = allTickets;
+
+    if (statusFilter === "OPEN") {
+      filtered = allTickets.filter(t => ["NEW", "OPEN", "PENDING"].includes(t.status));
+    } else if (statusFilter === "CLOSED") {
+      filtered = allTickets.filter(t => ["RESOLVED", "CLOSED"].includes(t.status));
+    }
+
+    // Sort by most recent message/activity (newest first)
+    return filtered.sort((a, b) => {
+      const aDate = new Date(a.lastMessageAt || a.updatedAt).getTime();
+      const bDate = new Date(b.lastMessageAt || b.updatedAt).getTime();
+      return bDate - aDate; // Newest first
+    });
+  }, [allTickets, statusFilter]);
+
   const selectedTicket = useMemo(() => {
     if (ticketDetails && ticketDetails.id === selectedTicketId) return ticketDetails as Ticket;
     return tickets.find(t => t.id === selectedTicketId);
@@ -447,27 +466,29 @@ export default function TicketsClient() {
           </div>
         </div>
 
-        {/* Status Tabs */}
-        <div className="border-b flex overflow-x-auto scrollbar-hide bg-slate-50">
+        {/* Status Tabs - Simplified */}
+        <div className="border-b flex bg-slate-50">
           {[
-            { id: "all", label: "All", icon: Inbox },
-            { id: "NEW", label: "New", icon: Circle },
-            { id: "OPEN", label: "Open", icon: MessageSquare },
-            { id: "PENDING", label: "Pending", icon: Clock },
-            { id: "RESOLVED", label: "Resolved", icon: CheckCheck },
+            { id: "OPEN", label: "Open", icon: Inbox, description: "Active tickets" },
+            { id: "CLOSED", label: "Closed", icon: Archive, description: "Resolved" },
           ].map(tab => (
             <button
               key={tab.id}
               onClick={() => setStatusFilter(tab.id)}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap",
+                "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
                 statusFilter === tab.id
                   ? "border-[#722F37] text-[#722F37] bg-white"
                   : "border-transparent text-slate-500 hover:text-slate-700"
               )}
             >
-              <tab.icon className="w-3.5 h-3.5" />
+              <tab.icon className="w-4 h-4" />
               {tab.label}
+              {tab.id === "OPEN" && stats.new + stats.open > 0 && (
+                <span className="ml-1 px-1.5 py-0.5 text-xs bg-[#722F37] text-white rounded-full">
+                  {stats.new + stats.open}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -504,6 +525,8 @@ export default function TicketsClient() {
               const isSelected = selectedTicketId === ticket.id;
               const isUrgent = ticket.priority === "URGENT" || ticket.priority === "HIGH";
 
+              const isNew = ticket.status === "NEW";
+
               return (
                 <div
                   key={ticket.id}
@@ -511,7 +534,8 @@ export default function TicketsClient() {
                   className={cn(
                     "p-4 border-b cursor-pointer transition-all hover:bg-slate-50",
                     isSelected && "bg-[#722F37]/5 border-l-4 border-l-[#722F37]",
-                    isUrgent && !isSelected && "bg-red-50/50"
+                    isNew && !isSelected && "bg-yellow-50 border-l-4 border-l-yellow-400", // NEW = highlighted
+                    isUrgent && !isSelected && !isNew && "bg-red-50/50"
                   )}
                 >
                   <div className="flex items-start gap-3">

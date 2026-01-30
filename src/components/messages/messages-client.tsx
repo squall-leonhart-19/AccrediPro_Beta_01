@@ -1083,6 +1083,35 @@ export function MessagesClient({
     }
   };
 
+  // Delete entire conversation (admin/mentor only)
+  const deleteConversation = async (userId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent selecting the conversation
+    if (!confirm("Are you sure you want to delete this entire conversation? This cannot be undone.")) return;
+
+    try {
+      const response = await fetch(`/api/messages/conversation?userId=${userId}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        // Remove from local state
+        setConversations((prev) => prev.filter((c) => c.user?.id !== userId));
+        // If this was the selected user, clear selection
+        if (selectedUser?.id === userId) {
+          setSelectedUser(null);
+          setMessages([]);
+        }
+        toast.success("Conversation deleted");
+      } else {
+        toast.error(data.error || "Failed to delete conversation");
+      }
+    } catch (error) {
+      console.error("Failed to delete conversation:", error);
+      toast.error("Failed to delete conversation");
+    }
+  };
+
   // Emoji picker
   const addEmoji = (emoji: string) => {
     setNewMessage((prev) => prev + emoji);
@@ -1835,72 +1864,86 @@ export function MessagesClient({
                 const isWaitingForReply = isCoach && conv.lastMessage && conv.lastMessage.senderId !== currentUserId;
 
                 return (
-                  <button
+                  <div
                     key={conv.user.id}
-                    onClick={() => setSelectedUser(conv.user)}
-                    className={cn(
-                      "w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left",
-                      isSelected
-                        ? "bg-burgundy-50 border border-burgundy-200"
-                        : isWaitingForReply
-                          ? "bg-amber-50 border border-amber-200 hover:bg-amber-100"
-                          : "hover:bg-gray-50"
-                    )}
+                    className="relative group/conv"
                   >
-                    <div className="relative">
-                      <Avatar className={cn("h-11 w-11", isSelected && "ring-2 ring-burgundy-400 ring-offset-1")}>
-                        <AvatarImage src={conv.user.avatar || undefined} />
-                        <AvatarFallback className={cn("font-semibold text-sm", isSelected ? "bg-burgundy-600 text-white" : "bg-gray-100 text-gray-700")}>
-                          {getInitials(conv.user)}
-                        </AvatarFallback>
-                      </Avatar>
-                      {conv.unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-burgundy-600 text-white text-[10px] rounded-full flex items-center justify-center font-bold px-1">
-                          {conv.unreadCount}
-                        </span>
+                    <button
+                      onClick={() => setSelectedUser(conv.user)}
+                      className={cn(
+                        "w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left",
+                        isSelected
+                          ? "bg-burgundy-50 border border-burgundy-200"
+                          : isWaitingForReply
+                            ? "bg-amber-50 border border-amber-200 hover:bg-amber-100"
+                            : "hover:bg-gray-50"
                       )}
-                    </div>
-                    <div className="flex-1 min-w-0 overflow-hidden">
-                      <div className="flex items-center justify-between mb-0.5">
-                        <div className="flex items-center gap-1.5 min-w-0 flex-1 overflow-hidden">
-                          <p className={cn("font-semibold truncate text-sm", conv.unreadCount > 0 ? "text-gray-900" : "text-gray-700")}>
-                            {conv.user.firstName} {conv.user.lastName}
-                          </p>
-                          {isWaitingForReply && (
-                            <span className="flex-shrink-0 px-1.5 py-0.5 bg-amber-500 text-white text-[9px] font-bold rounded-full">
-                              REPLY
+                    >
+                      <div className="relative">
+                        <Avatar className={cn("h-11 w-11", isSelected && "ring-2 ring-burgundy-400 ring-offset-1")}>
+                          <AvatarImage src={conv.user.avatar || undefined} />
+                          <AvatarFallback className={cn("font-semibold text-sm", isSelected ? "bg-burgundy-600 text-white" : "bg-gray-100 text-gray-700")}>
+                            {getInitials(conv.user)}
+                          </AvatarFallback>
+                        </Avatar>
+                        {conv.unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-burgundy-600 text-white text-[10px] rounded-full flex items-center justify-center font-bold px-1">
+                            {conv.unreadCount}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0 overflow-hidden">
+                        <div className="flex items-center justify-between mb-0.5">
+                          <div className="flex items-center gap-1.5 min-w-0 flex-1 overflow-hidden">
+                            <p className={cn("font-semibold truncate text-sm", conv.unreadCount > 0 ? "text-gray-900" : "text-gray-700")}>
+                              {conv.user.firstName} {conv.user.lastName}
+                            </p>
+                            {isWaitingForReply && (
+                              <span className="flex-shrink-0 px-1.5 py-0.5 bg-amber-500 text-white text-[9px] font-bold rounded-full">
+                                REPLY
+                              </span>
+                            )}
+                          </div>
+                          {conv.lastMessage && (
+                            <span className="text-[10px] text-gray-400 flex-shrink-0 ml-2">
+                              {formatDate(conv.lastMessage.createdAt)}
                             </span>
                           )}
                         </div>
                         {conv.lastMessage && (
-                          <span className="text-[10px] text-gray-400 flex-shrink-0 ml-2">
-                            {formatDate(conv.lastMessage.createdAt)}
-                          </span>
+                          <div className="flex items-center gap-1 w-full overflow-hidden">
+                            {conv.lastMessage.senderId === currentUserId && (
+                              <CheckCheck className={cn("w-3 h-3 flex-shrink-0", conv.lastMessage.isRead ? "text-blue-500" : "text-gray-400")} />
+                            )}
+                            <p className={cn("text-xs truncate max-w-full", conv.unreadCount > 0 ? "text-gray-700 font-medium" : "text-gray-500")}>
+                              {conv.lastMessage.attachmentType === "voice"
+                                ? "🎤 Voice message from Sarah"
+                                : conv.lastMessage.content || "Attachment"}
+                            </p>
+                          </div>
+                        )}
+                        {/* Enrollment badge for coaches viewing student conversations */}
+                        {isCoach && conv.user.enrollments && conv.user.enrollments.length > 0 && (
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <Badge className="text-[10px] bg-burgundy-100 text-burgundy-700 border-0 gap-0.5 py-0">
+                              <BookOpen className="w-2.5 h-2.5" />
+                              {conv.user.enrollments.length} course{conv.user.enrollments.length > 1 ? "s" : ""}
+                            </Badge>
+                          </div>
                         )}
                       </div>
-                      {conv.lastMessage && (
-                        <div className="flex items-center gap-1 w-full overflow-hidden">
-                          {conv.lastMessage.senderId === currentUserId && (
-                            <CheckCheck className={cn("w-3 h-3 flex-shrink-0", conv.lastMessage.isRead ? "text-blue-500" : "text-gray-400")} />
-                          )}
-                          <p className={cn("text-xs truncate max-w-full", conv.unreadCount > 0 ? "text-gray-700 font-medium" : "text-gray-500")}>
-                            {conv.lastMessage.attachmentType === "voice"
-                              ? "🎤 Voice message from Sarah"
-                              : conv.lastMessage.content || "Attachment"}
-                          </p>
-                        </div>
-                      )}
-                      {/* Enrollment badge for coaches viewing student conversations */}
-                      {isCoach && conv.user.enrollments && conv.user.enrollments.length > 0 && (
-                        <div className="flex items-center gap-1 mt-0.5">
-                          <Badge className="text-[10px] bg-burgundy-100 text-burgundy-700 border-0 gap-0.5 py-0">
-                            <BookOpen className="w-2.5 h-2.5" />
-                            {conv.user.enrollments.length} course{conv.user.enrollments.length > 1 ? "s" : ""}
-                          </Badge>
-                        </div>
-                      )}
-                    </div>
-                  </button>
+                    </button>
+                    {/* Delete button - visible on hover for coaches */}
+                    {isCoach && (
+                      <button
+                        onClick={(e) => deleteConversation(conv.user!.id, e)}
+                        className="absolute top-2 right-2 p-1.5 rounded-lg bg-red-100 text-red-600 opacity-0 group-hover/conv:opacity-100 hover:bg-red-200 transition-all z-10"
+                        title="Delete conversation"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 );
               })}
             </div>
