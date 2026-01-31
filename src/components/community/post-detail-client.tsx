@@ -139,6 +139,7 @@ export default function PostDetailClient({
       const cursor = lastComment?.createdAt ? new Date(lastComment.createdAt).toISOString() : "";
 
       const response = await fetch(`/api/community/comments?postId=${post.id}&cursor=${cursor}&limit=20`);
+      if (!response.ok) return;
       const data = await response.json();
 
       if (data.success && data.data) {
@@ -224,6 +225,10 @@ export default function PostDetailClient({
         }),
       });
 
+      if (!response.ok) {
+        alert("Failed to post comment. Please try again.");
+        return;
+      }
       const data = await response.json();
 
       if (data.success) {
@@ -261,6 +266,10 @@ export default function PostDetailClient({
         }),
       });
 
+      if (!response.ok) {
+        alert("Failed to post reply. Please try again.");
+        return;
+      }
       const data = await response.json();
 
       if (data.success) {
@@ -296,6 +305,10 @@ export default function PostDetailClient({
         body: JSON.stringify({ postId: post.id }),
       });
 
+      if (!response.ok) {
+        alert("Failed to delete post. Please try again.");
+        return;
+      }
       const data = await response.json();
 
       if (data.success) {
@@ -325,6 +338,10 @@ export default function PostDetailClient({
         body: JSON.stringify({ commentId: deleteCommentId }),
       });
 
+      if (!response.ok) {
+        alert("Failed to delete comment. Please try again.");
+        return;
+      }
       const data = await response.json();
 
       if (data.success) {

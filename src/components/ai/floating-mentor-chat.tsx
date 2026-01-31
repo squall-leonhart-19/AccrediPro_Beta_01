@@ -63,6 +63,7 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
         try {
             // Fetch mentors to get Sarah's ID
             const mentorsRes = await fetch("/api/messages/mentors");
+            if (!mentorsRes.ok) return;
             const mentorsData = await mentorsRes.json();
 
             if (mentorsData.mentors && mentorsData.mentors.length > 0) {
@@ -76,6 +77,7 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
 
                 // Fetch messages with this mentor
                 const messagesRes = await fetch(`/api/messages?userId=${sarah.id}`);
+                if (!messagesRes.ok) return;
                 const messagesData = await messagesRes.json();
 
                 if (messagesData.messages) {

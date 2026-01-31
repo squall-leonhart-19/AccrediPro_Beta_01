@@ -46,6 +46,7 @@ export function ChatAnalyticsCards({ onCleanup, cleaningLeads }: Props) {
         async function fetchAnalytics() {
             try {
                 const res = await fetch("/api/admin/chat-analytics/conversion");
+                if (!res.ok) return;
                 const data = await res.json();
                 setAnalytics(data);
             } catch (error) {

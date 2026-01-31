@@ -99,7 +99,10 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
         const abortController = new AbortController();
 
         fetch("/api/messages/mentors", { signal: abortController.signal })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
             .then(data => {
                 if (abortController.signal.aborted) return;
                 const sarah = data.mentors?.find((m: any) =>
@@ -124,6 +127,7 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
         const checkUnread = async () => {
             try {
                 const res = await fetch(`/api/messages?userId=${coachId}&limit=50`);
+                if (!res.ok) return;
                 const data = await res.json();
                 if (data.success && data.data) {
                     const unread = data.data.filter((m: any) =>
@@ -153,6 +157,7 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
 
         try {
             const res = await fetch(`/api/messages?userId=${coachId}&limit=20&offset=${offset}`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if (data.success && data.data) {
                 const textMessages = data.data.filter((m: any) => !m.attachmentType || m.attachmentType === null);

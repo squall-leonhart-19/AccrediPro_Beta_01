@@ -425,6 +425,10 @@ export function MessagesClient({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ useAI: true }),
       });
+      if (!res.ok) {
+        alert("Failed to send replies. Server returned an error.");
+        return;
+      }
       const data = await res.json();
 
       if (data.success) {
@@ -515,6 +519,7 @@ export function MessagesClient({
   const fetchMessages = useCallback(async (userId: string, isRefresh = false) => {
     try {
       const response = await fetch(`/api/messages?userId=${userId}&limit=50`);
+      if (!response.ok) return;
       const data = await response.json();
       if (data.success && isMountedRef.current) {
         // NOTE: New message detection and toast/scroll is handled by the useEffect
@@ -547,6 +552,7 @@ export function MessagesClient({
       const response = await fetch(
         `/api/messages?userId=${selectedUser.id}&cursor=${nextCursor}&limit=30`
       );
+      if (!response.ok) return;
       const data = await response.json();
 
       if (data.success && isMountedRef.current) {
@@ -603,6 +609,7 @@ export function MessagesClient({
         if (!isMountedRef.current || document.hidden) return;
         try {
           const res = await fetch(`/api/messages/typing?senderId=${selectedUser.id}`);
+          if (!res.ok) return;
           const data = await res.json();
           if (isMountedRef.current) {
             setOtherUserTyping(data.isTyping || false);
@@ -733,6 +740,7 @@ export function MessagesClient({
 
     try {
       const res = await fetch(`/api/messages/search?q=${encodeURIComponent(query)}${selectedUser ? `&userId=${selectedUser.id}` : ""}`);
+      if (!res.ok) return;
       const data = await res.json();
       if (data.success) {
         setSearchResults(data.data || []);
@@ -1149,6 +1157,7 @@ export function MessagesClient({
     setSearchingStudents(true);
     try {
       const res = await fetch(`/api/messages/students?q=${encodeURIComponent(query)}&limit=10`);
+      if (!res.ok) return;
       const data = await res.json();
       if (data.students) {
         setStudentSearchResults(data.students);

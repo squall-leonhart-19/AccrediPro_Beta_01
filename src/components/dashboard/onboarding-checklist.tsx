@@ -42,6 +42,7 @@ export default function OnboardingChecklist() {
     const fetchProgress = async () => {
         try {
             const res = await fetch("/api/onboarding/progress");
+            if (!res.ok) return;
             const json = await res.json();
             if (json.progress) {
                 setData(json);

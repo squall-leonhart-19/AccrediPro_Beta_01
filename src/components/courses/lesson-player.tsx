@@ -141,6 +141,7 @@ export function LessonPlayer({
             setChatLoading(true);
             try {
                 const res = await fetch(`/api/messages?userId=${coachId}`);
+                if (!res.ok) return;
                 const data = await res.json();
                 if (data.success && data.data) {
                     setMessages(data.data);
@@ -284,6 +285,11 @@ export function LessonPlayer({
                 body: JSON.stringify({ receiverId: coachId, content }),
             });
 
+            if (!res.ok) {
+                toast.error("Failed to send message");
+                setMessages(prev => prev.filter(m => m.id !== tempId));
+                return;
+            }
             const data = await res.json();
             if (data.success) {
                 // Replace temp message with real one
