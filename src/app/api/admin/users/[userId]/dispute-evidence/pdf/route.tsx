@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     section: {
-        marginBottom: 15,
-        padding: 12,
+        marginBottom: 12,
+        padding: 10,
         backgroundColor: "#fafafa",
         borderRadius: 4,
     },
@@ -52,13 +52,13 @@ const styles = StyleSheet.create({
         fontSize: 11,
         fontWeight: "bold",
         color: "#722F37",
-        marginBottom: 8,
+        marginBottom: 6,
         borderBottom: "1px solid #ddd",
         paddingBottom: 4,
     },
     row: {
         flexDirection: "row",
-        marginBottom: 4,
+        marginBottom: 3,
     },
     label: {
         width: "35%",
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     highlight: {
         backgroundColor: "#f0fdf4",
         padding: 8,
-        marginBottom: 10,
+        marginBottom: 8,
         borderLeft: "3px solid #22c55e",
     },
     highlightText: {
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     warning: {
         backgroundColor: "#fef3c7",
         padding: 8,
-        marginBottom: 10,
+        marginBottom: 8,
         borderLeft: "3px solid #f59e0b",
     },
     warningText: {
@@ -96,8 +96,8 @@ const styles = StyleSheet.create({
     },
     timelineItem: {
         flexDirection: "row",
-        marginBottom: 3,
-        paddingVertical: 2,
+        marginBottom: 2,
+        paddingVertical: 1,
         borderBottom: "1px dotted #eee",
     },
     timelineDate: {
@@ -109,6 +109,21 @@ const styles = StyleSheet.create({
         width: "70%",
         fontSize: 8,
         color: "#333",
+    },
+    messageBox: {
+        backgroundColor: "#fff",
+        padding: 6,
+        marginBottom: 4,
+        borderLeft: "2px solid #722F37",
+    },
+    messageText: {
+        fontSize: 8,
+        color: "#333",
+    },
+    messageDate: {
+        fontSize: 7,
+        color: "#999",
+        marginTop: 2,
     },
     footer: {
         position: "absolute",
@@ -139,17 +154,17 @@ const styles = StyleSheet.create({
     summaryText: {
         fontSize: 9,
         color: "#ffffff",
-        lineHeight: 1.5,
+        lineHeight: 1.4,
     },
 });
 
 // Dispute reason types
 type DisputeReason = "fraud" | "services_not_received" | "canceled" | "misrepresentation" | "general";
 
-// GET /api/admin/users/[id]/dispute-evidence/pdf
+// GET /api/admin/users/[userId]/dispute-evidence/pdf
 export async function GET(
     request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
     const session = await getServerSession(authOptions);
 
@@ -157,7 +172,7 @@ export async function GET(
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id: userId } = await params;
+    const { userId } = await params;
     const url = new URL(request.url);
     const reason = (url.searchParams.get("reason") || "general") as DisputeReason;
     const disputeId = url.searchParams.get("disputeId") || "";
@@ -191,13 +206,7 @@ export async function GET(
             where: { userId },
             include: {
                 lesson: {
-                    include: {
-                        module: {
-                            include: {
-                                course: { select: { title: true } },
-                            },
-                        },
-                    },
+                    select: { title: true },
                 },
             },
             orderBy: { completedAt: "asc" },
@@ -218,6 +227,70 @@ export async function GET(
             take: 10,
         });
 
+        // NEW: Fetch mentorship/chat messages (sent BY the user)
+        const messagesSent = await prisma.message.findMany({
+            where: { senderId: userId },
+            orderBy: { createdAt: "asc" },
+            take: 20,
+            select: {
+                id: true,
+                content: true,
+                createdAt: true,
+                messageType: true,
+            },
+        });
+
+        // NEW: Fetch messages received by the user
+        const messagesReceived = await prisma.message.findMany({
+            where: { receiverId: userId },
+            orderBy: { createdAt: "asc" },
+            take: 20,
+            select: {
+                id: true,
+                content: true,
+                createdAt: true,
+                isRead: true,
+                readAt: true,
+            },
+        });
+
+        // NEW: Fetch community posts by user
+        const communityPosts = await prisma.communityPost.findMany({
+            where: { authorId: userId },
+            orderBy: { createdAt: "asc" },
+            take: 10,
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                createdAt: true,
+            },
+        });
+
+        // NEW: Fetch community comments by user
+        const communityComments = await prisma.postComment.findMany({
+            where: { authorId: userId },
+            orderBy: { createdAt: "asc" },
+            take: 15,
+            select: {
+                id: true,
+                content: true,
+                createdAt: true,
+            },
+        });
+
+        // NEW: Fetch quiz attempts by user
+        const quizAttempts = await prisma.quizAttempt.findMany({
+            where: { userId },
+            orderBy: { startedAt: "asc" },
+            include: {
+                quiz: {
+                    select: { title: true },
+                },
+            },
+            take: 20,
+        });
+
         // Get IP geolocation
         const geoLocation = user.registrationIp
             ? await lookupIpLocation(user.registrationIp)
@@ -229,8 +302,10 @@ export async function GET(
         // Calculate metrics
         const totalLessonsStarted = lessonProgress.length;
         const totalLessonsCompleted = lessonProgress.filter(lp => lp.isCompleted).length;
-        const totalWatchMinutes = lessonProgress.reduce((acc, lp) => acc + (lp.watchTime || 0), 0) / 60;
-        const firstLessonDate = lessonProgress.find(lp => lp.completedAt)?.completedAt;
+        const totalMessages = messagesSent.length + messagesReceived.length;
+        const totalCommunityActivity = communityPosts.length + communityComments.length;
+        const totalQuizzes = quizAttempts.length;
+        const quizzesPassed = quizAttempts.filter(q => q.passed).length;
 
         // Generate the PDF document
         const EvidenceDocument = () => (
@@ -313,10 +388,6 @@ export async function GET(
                             <Text style={styles.label}>Refund Policy Accepted:</Text>
                             <Text style={styles.value}>{user.refundPolicyAcceptedAt?.toISOString() || "Not recorded"}</Text>
                         </View>
-                        <View style={styles.row}>
-                            <Text style={styles.label}>Refund Policy Version:</Text>
-                            <Text style={styles.value}>{user.refundPolicyVersion || "N/A"}</Text>
-                        </View>
                     </View>
 
                     {/* Device & Location - Priority for FRAUD */}
@@ -341,20 +412,12 @@ export async function GET(
                                 <Text style={styles.label}>Device:</Text>
                                 <Text style={styles.value}>{deviceInfo.formatted}</Text>
                             </View>
-                            <View style={styles.row}>
-                                <Text style={styles.label}>Browser:</Text>
-                                <Text style={styles.value}>{deviceInfo.browser}</Text>
-                            </View>
-                            <View style={styles.row}>
-                                <Text style={styles.label}>Operating System:</Text>
-                                <Text style={styles.value}>{deviceInfo.os}</Text>
-                            </View>
                         </View>
                     )}
 
-                    {/* Service Delivery - Priority for SERVICES_NOT_RECEIVED */}
+                    {/* Service Delivery - Lessons accessed */}
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>SECTION 4: SERVICE DELIVERY PROOF</Text>
+                        <Text style={styles.sectionTitle}>SECTION 4: LESSON ACCESS PROOF</Text>
                         {totalLessonsStarted > 0 && (
                             <View style={styles.highlight}>
                                 <Text style={styles.highlightText}>
@@ -383,21 +446,91 @@ export async function GET(
                             <Text style={styles.value}>{totalLessonsCompleted}</Text>
                         </View>
                         <View style={styles.row}>
-                            <Text style={styles.label}>Watch Time:</Text>
-                            <Text style={styles.value}>~{Math.round(totalWatchMinutes)} minutes</Text>
-                        </View>
-                        <View style={styles.row}>
                             <Text style={styles.label}>Certificates Earned:</Text>
                             <Text style={styles.value}>{user.certificates.length}</Text>
                         </View>
                     </View>
 
+                    {/* NEW: Mentorship Messages */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>SECTION 5: MENTORSHIP COMMUNICATION</Text>
+                        {totalMessages > 0 ? (
+                            <View style={styles.highlight}>
+                                <Text style={styles.highlightText}>
+                                    ✓ Customer sent {messagesSent.length} messages and received {messagesReceived.length} messages
+                                </Text>
+                            </View>
+                        ) : (
+                            <View style={styles.row}>
+                                <Text style={styles.value}>No mentorship messages recorded</Text>
+                            </View>
+                        )}
+                        {messagesSent.slice(0, 5).map((msg, i) => (
+                            <View key={i} style={styles.messageBox}>
+                                <Text style={styles.messageText}>
+                                    {msg.content.slice(0, 100)}{msg.content.length > 100 ? "..." : ""}
+                                </Text>
+                                <Text style={styles.messageDate}>
+                                    Sent: {msg.createdAt?.toISOString()}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+
+                    {/* NEW: Community Activity */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>SECTION 6: COMMUNITY ENGAGEMENT</Text>
+                        {totalCommunityActivity > 0 ? (
+                            <View style={styles.highlight}>
+                                <Text style={styles.highlightText}>
+                                    ✓ Customer made {communityPosts.length} posts and {communityComments.length} comments
+                                </Text>
+                            </View>
+                        ) : (
+                            <View style={styles.row}>
+                                <Text style={styles.value}>No community activity recorded</Text>
+                            </View>
+                        )}
+                        {communityPosts.slice(0, 3).map((post, i) => (
+                            <View key={i} style={styles.messageBox}>
+                                <Text style={styles.messageText}>POST: {post.title}</Text>
+                                <Text style={styles.messageDate}>
+                                    Posted: {post.createdAt?.toISOString()}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+
+                    {/* NEW: Quiz Scores */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>SECTION 7: QUIZ/ASSESSMENT COMPLETIONS</Text>
+                        {totalQuizzes > 0 ? (
+                            <View style={styles.highlight}>
+                                <Text style={styles.highlightText}>
+                                    ✓ Customer completed {totalQuizzes} quizzes, passed {quizzesPassed}
+                                </Text>
+                            </View>
+                        ) : (
+                            <View style={styles.row}>
+                                <Text style={styles.value}>No quiz attempts recorded</Text>
+                            </View>
+                        )}
+                        {quizAttempts.slice(0, 5).map((attempt, i) => (
+                            <View key={i} style={styles.row}>
+                                <Text style={styles.label}>{attempt.quiz.title}:</Text>
+                                <Text style={styles.value}>
+                                    Score: {attempt.score}% {attempt.passed ? "(PASSED)" : ""} - {attempt.startedAt?.toISOString().slice(0, 10)}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+
                     {/* Activity Timeline */}
                     {activities.length > 0 && (
                         <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>SECTION 5: ACTIVITY TIMELINE</Text>
+                            <Text style={styles.sectionTitle}>SECTION 8: ACTIVITY TIMELINE</Text>
                             <View style={styles.timeline}>
-                                {activities.slice(0, 15).map((activity, i) => (
+                                {activities.slice(0, 10).map((activity, i) => (
                                     <View key={i} style={styles.timelineItem}>
                                         <Text style={styles.timelineDate}>
                                             {activity.createdAt?.toISOString().replace("T", " ").slice(0, 19)}
@@ -412,7 +545,7 @@ export async function GET(
                     {/* Confirmation Emails */}
                     {emailsSent.length > 0 && (
                         <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>SECTION 6: CONFIRMATION EMAILS SENT</Text>
+                            <Text style={styles.sectionTitle}>SECTION 9: CONFIRMATION EMAILS SENT</Text>
                             {emailsSent.slice(0, 5).map((email, i) => (
                                 <View key={i} style={styles.row}>
                                     <Text style={styles.label}>{email.createdAt?.toISOString().slice(0, 10)}:</Text>
@@ -426,7 +559,15 @@ export async function GET(
                     <View style={styles.summary}>
                         <Text style={styles.summaryTitle}>EXECUTIVE SUMMARY</Text>
                         <Text style={styles.summaryText}>
-                            {generateExecutiveSummary(user, totalLessonsStarted, totalLessonsCompleted, totalWatchMinutes, reason)}
+                            {generateExecutiveSummary(
+                                user,
+                                totalLessonsStarted,
+                                totalLessonsCompleted,
+                                totalMessages,
+                                totalCommunityActivity,
+                                totalQuizzes,
+                                reason
+                            )}
                         </Text>
                     </View>
 
@@ -474,25 +615,33 @@ function generateExecutiveSummary(
     user: any,
     lessonsStarted: number,
     lessonsCompleted: number,
-    watchMinutes: number,
+    totalMessages: number,
+    communityActivity: number,
+    quizzes: number,
     reason: DisputeReason
 ): string {
     const name = `${user.firstName || ""} ${user.lastName || ""}`.trim();
-    const hasAccessed = lessonsStarted > 0;
     const hasTOS = !!user.tosAcceptedAt;
+    const hasEngagement = lessonsStarted > 0 || totalMessages > 0 || communityActivity > 0 || quizzes > 0;
 
-    let summary = `Customer ${name} (${user.email}) created an account on ${user.createdAt?.toISOString().slice(0, 10) || "N/A"}.\n\n`;
+    let summary = `Customer ${name} (${user.email}) created account on ${user.createdAt?.toISOString().slice(0, 10) || "N/A"}.\n\n`;
 
     if (hasTOS) {
-        summary += `LEGAL ACCEPTANCE: Terms of Service and Refund Policy were accepted at ${user.tosAcceptedAt?.toISOString() || "checkout"}.\n\n`;
+        summary += `LEGAL: TOS and Refund Policy accepted at ${user.tosAcceptedAt?.toISOString().slice(0, 19) || "checkout"}.\n\n`;
     }
 
-    if (hasAccessed) {
-        summary += `SERVICE DELIVERED: The customer logged in ${user.loginCount || 0} times, accessed ${lessonsStarted} lessons, completed ${lessonsCompleted} lessons, and accumulated approximately ${Math.round(watchMinutes)} minutes of watch time.\n\n`;
-        summary += `CONCLUSION: This evidence demonstrates that the customer DID receive and actively use the digital product purchased.`;
+    summary += `ENGAGEMENT PROOF:\n`;
+    summary += `- Logins: ${user.loginCount || 0}\n`;
+    summary += `- Lessons: ${lessonsStarted} accessed, ${lessonsCompleted} completed\n`;
+    summary += `- Messages: ${totalMessages} (mentorship communication)\n`;
+    summary += `- Community: ${communityActivity} posts/comments\n`;
+    summary += `- Quizzes: ${quizzes} completed\n`;
+    summary += `- Certificates: ${user.certificates?.length || 0}\n\n`;
+
+    if (hasEngagement) {
+        summary += `CONCLUSION: Customer DID receive and actively use the digital product. This evidence proves service was delivered.`;
     } else {
-        summary += `ACCESS STATUS: No lesson access recorded.\n\n`;
-        summary += `CONCLUSION: The customer had full access to the service but chose not to use it. Access was provided immediately upon purchase as agreed in the Terms of Service.`;
+        summary += `CONCLUSION: Full access was provided. Customer chose not to use the service.`;
     }
 
     return summary;

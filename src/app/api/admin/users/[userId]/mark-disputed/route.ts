@@ -3,12 +3,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-// POST /api/admin/users/[id]/mark-disputed
+// POST /api/admin/users/[userId]/mark-disputed
 // Marks a user as having filed a dispute (chargeback)
 // This triggers: email suppression, access block
 export async function POST(
     request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
     const session = await getServerSession(authOptions);
 
@@ -16,7 +16,7 @@ export async function POST(
         return NextResponse.json({ error: "Unauthorized - Admin only" }, { status: 401 });
     }
 
-    const { id: userId } = await params;
+    const { userId } = await params;
 
     try {
         const body = await request.json();
@@ -113,11 +113,11 @@ export async function POST(
     }
 }
 
-// DELETE /api/admin/users/[id]/mark-disputed
+// DELETE /api/admin/users/[userId]/mark-disputed
 // Removes dispute status (if resolved in customer's favor or error)
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
     const session = await getServerSession(authOptions);
 
@@ -125,7 +125,7 @@ export async function DELETE(
         return NextResponse.json({ error: "Unauthorized - Admin only" }, { status: 401 });
     }
 
-    const { id: userId } = await params;
+    const { userId } = await params;
 
     try {
         // Remove dispute-related tags
