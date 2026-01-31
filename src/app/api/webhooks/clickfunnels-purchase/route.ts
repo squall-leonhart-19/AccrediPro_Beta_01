@@ -114,7 +114,19 @@ const PRODUCT_COURSE_MAP: Record<string, string> = {
     "gh-pro-accelerator": "gh-pro-accelerator",
     "gh pro accelerator": "gh-pro-accelerator",
 
-    // Pro Accelerator ($397 XMAS)
+    // === DFY (Done-For-You) Products - MUST BE BEFORE 'accelerator' keyword ===
+    "done-for-you business accelerator": "dfy-business-accelerator",
+    "done for you business accelerator": "dfy-business-accelerator",
+    "dfy business accelerator": "dfy-business-accelerator",
+    "dfy-business-accelerator": "dfy-business-accelerator",
+    "dfy business kit": "dfy-business-kit",
+    "dfy-business-kit": "dfy-business-kit",
+    "done-for-you business kit": "dfy-business-kit",
+    "done for you business kit": "dfy-business-kit",
+    "dfy program": "dfy-business-kit",
+    "dfy_program_ds": "dfy-business-kit",
+
+    // Pro Accelerator ($397 XMAS) - generic 'accelerator' AFTER DFY patterns
     "fm-pro-accelerator": "fm-pro-accelerator",
     "pro accelerator": "fm-pro-accelerator",
     "accelerator": "fm-pro-accelerator",
@@ -135,6 +147,9 @@ const PRODUCT_PRICES: Record<string, number> = {
     "functional-medicine-certification": 97,           // Fallback
     "fm-pro-accelerator": 397,                         // XMAS PRICE
     "fm-10-client-guarantee": 497,
+    // DFY Products
+    "dfy-business-accelerator": 397,
+    "dfy-business-kit": 397,
     // Holistic Nutrition
     "holistic-nutrition-coach-certification": 97,
     "hn-pro-accelerator": 397,
@@ -152,6 +167,9 @@ const PRODUCT_NAMES: Record<string, string> = {
     "functional-medicine-certification": "Certified FM Practitioner",
     "fm-pro-accelerator": "FM Pro Accelerator",
     "fm-10-client-guarantee": "10-Client Guarantee Mentorship",
+    // DFY Products
+    "dfy-business-accelerator": "Done-For-You Business Accelerator",
+    "dfy-business-kit": "Done-For-You Business Kit",
     // Holistic Nutrition
     "holistic-nutrition-coach-certification": "Certified Holistic Nutrition Coach",
     "hn-pro-accelerator": "HN Pro Accelerator™ - Advanced, Master & Practice Path",
@@ -634,9 +652,14 @@ export async function POST(request: NextRequest) {
         const productSkuLower = productSku.toLowerCase();
         const productNameLower = productName.toLowerCase();
         const isDFYPurchase = productSkuLower.includes("dfy_program_ds") ||
+            productSkuLower.includes("dfy_business") ||
+            productSkuLower.includes("dfy-business") ||
             productNameLower.includes("dfy_program_ds") ||
             productNameLower.includes("dfy program") ||
-            productNameLower.includes("done for you");
+            productNameLower.includes("done for you") ||
+            productNameLower.includes("done-for-you") ||
+            productNameLower.includes("dfy business") ||
+            (productNameLower.includes("business accelerator") && !productNameLower.includes("pro accelerator"));
 
         if (isDFYPurchase) {
             console.log(`[CF Purchase] 🎁 DFY PRODUCT DETECTED: ${productName}`);
