@@ -701,8 +701,7 @@ export async function POST(request: NextRequest) {
       const isMiniDiplomaProduct = (productId?.includes("mini-diploma") || productId?.includes("mini_diploma")) ||
         (productName?.toLowerCase().includes("mini diploma") || productName?.toLowerCase().includes("mini-diploma"));
 
-      // Create user with only columns that definitely exist in production DB
-      // TEMPORARILY DISABLED fields that may not exist: registrationIp, registrationUserAgent, tosAcceptedAt, tosVersion, refundPolicyAcceptedAt, refundPolicyVersion
+      // Create user with TOS acceptance at purchase (dispute evidence)
       const newUser = await prisma.user.create({
         data: {
           email: normalizedEmail,
@@ -717,6 +716,14 @@ export async function POST(request: NextRequest) {
           // ONLY set mini diploma fields for actual mini diploma products (NOT certifications)
           miniDiplomaCategory: isMiniDiplomaProduct ? "functional-medicine" : null,
           miniDiplomaOptinAt: isMiniDiplomaProduct ? new Date() : null,
+          // DISPUTE EVIDENCE: Auto-accept TOS at purchase (ClickFunnels checkout = agreement)
+          tosAcceptedAt: new Date(),
+          tosVersion: "2026-01-31",
+          refundPolicyAcceptedAt: new Date(),
+          refundPolicyVersion: "2026-01-31",
+          // DISPUTE EVIDENCE: Registration device info
+          registrationIp: purchaseIp,
+          registrationUserAgent: purchaseUserAgent,
         },
         select: {
           id: true,
@@ -762,18 +769,22 @@ export async function POST(request: NextRequest) {
         updates.leadSource = "ClickFunnels";
         updates.leadSourceDetail = productName || productId || "Purchase";
       }
-      // TEMPORARILY DISABLED: These columns may not exist in production DB
-      // TODO: Re-enable after running db:push or migration
-      // if (!(user as any).tosAcceptedAt) {
-      //   updates.tosAcceptedAt = new Date();
-      //   updates.tosVersion = "1.0";
-      //   updates.refundPolicyAcceptedAt = new Date();
-      //   updates.refundPolicyVersion = "1.0";
-      // }
-      // if (!(user as any).registrationIp && purchaseIp) {
-      //   updates.registrationIp = purchaseIp;
-      //   updates.registrationUserAgent = purchaseUserAgent;
-      // }
+      // DISPUTE EVIDENCE: Auto-accept TOS for existing users on purchase
+      // Only set if not already set (first purchase acceptance)
+      const fullUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { tosAcceptedAt: true, registrationIp: true }
+      });
+      if (!fullUser?.tosAcceptedAt) {
+        updates.tosAcceptedAt = new Date();
+        updates.tosVersion = "2026-01-31";
+        updates.refundPolicyAcceptedAt = new Date();
+        updates.refundPolicyVersion = "2026-01-31";
+      }
+      if (!fullUser?.registrationIp && purchaseIp) {
+        updates.registrationIp = purchaseIp;
+        updates.registrationUserAgent = purchaseUserAgent;
+      }
 
       if (Object.keys(updates).length > 0) {
         await prisma.user.update({

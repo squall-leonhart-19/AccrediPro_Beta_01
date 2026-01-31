@@ -277,11 +277,31 @@ function htmlToPlainText(html: string): string {
 }
 
 /**
- * Check if an email should be suppressed (bounced, complained, unsubscribed)
+ * Check if an email should be suppressed (bounced, complained, unsubscribed, disputed)
  * Returns true if email should NOT be sent
  */
 async function isEmailSuppressed(email: string): Promise<{ suppressed: boolean; reason?: string }> {
   try {
+    // First check: UserTags for dispute/suppression
+    const userWithTags = await prisma.user.findFirst({
+      where: { email: email.toLowerCase() },
+      select: {
+        id: true,
+        tags: {
+          where: {
+            tag: { in: ["dispute_filed", "email_suppressed", "access_blocked"] }
+          },
+          select: { tag: true }
+        }
+      }
+    });
+
+    if (userWithTags?.tags?.length > 0) {
+      const reasons = userWithTags.tags.map(t => t.tag).join(', ');
+      return { suppressed: true, reason: `User tag: ${reasons}` };
+    }
+
+    // Second check: Marketing tags for bounces/complaints (original logic)
     // Use select to avoid P2022 errors from missing columns
     const user = await prisma.user.findFirst({
       where: {
