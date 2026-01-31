@@ -254,6 +254,8 @@ export function UsersClient({ courses }: UsersClientProps) {
     addLogins: true,
     addProgress: true,
     addDownloads: true,
+    addEmails: true,
+    addReview: true,
     importPlatform: "Stripe",
     importDisputeId: "",
     importReason: "Product not as described"
@@ -3856,6 +3858,36 @@ export function UsersClient({ courses }: UsersClientProps) {
                     Simulate 3-5 Resource Downloads (PDFs)
                   </label>
                 </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="genEmails"
+                    checked={evidenceConfig.addEmails}
+                    onChange={(e) => setEvidenceConfig(prev => ({ ...prev, addEmails: e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor="genEmails"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Simulate Email Delivery & Opens (Welcome + Login)
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="genReview"
+                    checked={evidenceConfig.addReview}
+                    onChange={(e) => setEvidenceConfig(prev => ({ ...prev, addReview: e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor="genReview"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Simulate 5-Star Course Review
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -3880,6 +3912,8 @@ export function UsersClient({ courses }: UsersClientProps) {
                     addLogins: evidenceConfig.addLogins,
                     addProgress: evidenceConfig.addProgress,
                     addDownloads: evidenceConfig.addDownloads,
+                    addEmails: evidenceConfig.addEmails,
+                    addReview: evidenceConfig.addReview,
                     targetDate: selectedUser.createdAt
                   };
 
