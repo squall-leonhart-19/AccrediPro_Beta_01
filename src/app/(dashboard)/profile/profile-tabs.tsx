@@ -313,7 +313,7 @@ export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
     };
 
     return (
-        <div className="space-y-6 animate-fade-in">
+        <div className="space-y-4 sm:space-y-6 animate-fade-in px-4 sm:px-0">
             {/* Enhanced Profile Header - Premium Gold/Burgundy */}
             <Card
                 className="border-0 overflow-hidden relative shadow-2xl"
@@ -347,7 +347,7 @@ export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
                         {/* User Info */}
                         <div className="flex-1 min-w-0">
                             <div className="flex flex-wrap items-center gap-2 mb-2">
-                                <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+                                <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight">
                                     {user.firstName} {user.lastName}
                                 </h1>
                                 <Badge
@@ -428,51 +428,53 @@ export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
                 </CardContent>
             </Card>
 
-            {/* Improved Tabs */}
-            <div className="flex flex-wrap gap-2 bg-white p-1.5 rounded-xl border shadow-sm">
-                <button
-                    onClick={() => setActiveTab("overview")}
-                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "overview"
-                        ? "bg-burgundy-600 text-white shadow-md"
-                        : "text-gray-600 hover:bg-gray-100"
-                        }`}
-                >
-                    <User className="w-4 h-4" />
-                    Overview
-                </button>
-                <button
-                    onClick={() => setActiveTab("progress")}
-                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "progress"
-                        ? "bg-burgundy-600 text-white shadow-md"
-                        : "text-gray-600 hover:bg-gray-100"
-                        }`}
-                >
-                    <Trophy className="w-4 h-4" />
-                    Progress & XP
-                </button>
-                <button
-                    onClick={() => setActiveTab("settings")}
-                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "settings"
-                        ? "bg-burgundy-600 text-white shadow-md"
-                        : "text-gray-600 hover:bg-gray-100"
-                        }`}
-                >
-                    <Settings className="w-4 h-4" />
-                    Settings
-                </button>
-                {/* AI Knowledge tab - only for MENTOR/ADMIN users */}
-                {(user.role === "MENTOR" || user.role === "ADMIN") && (
+            {/* Improved Tabs - Scrollable on mobile */}
+            <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                <div className="flex gap-2 bg-white p-1.5 rounded-xl border shadow-sm min-w-max sm:min-w-0 sm:flex-wrap">
                     <button
-                        onClick={() => setActiveTab("knowledge")}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "knowledge"
+                        onClick={() => setActiveTab("overview")}
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "overview"
                             ? "bg-burgundy-600 text-white shadow-md"
                             : "text-gray-600 hover:bg-gray-100"
                             }`}
                     >
-                        <Bot className="w-4 h-4" />
-                        AI Knowledge
+                        <User className="w-4 h-4" />
+                        Overview
                     </button>
-                )}
+                    <button
+                        onClick={() => setActiveTab("progress")}
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "progress"
+                            ? "bg-burgundy-600 text-white shadow-md"
+                            : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                    >
+                        <Trophy className="w-4 h-4" />
+                        Progress & XP
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("settings")}
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "settings"
+                            ? "bg-burgundy-600 text-white shadow-md"
+                            : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                    >
+                        <Settings className="w-4 h-4" />
+                        Settings
+                    </button>
+                    {/* AI Knowledge tab - only for MENTOR/ADMIN users */}
+                    {(user.role === "MENTOR" || user.role === "ADMIN") && (
+                        <button
+                            onClick={() => setActiveTab("knowledge")}
+                            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "knowledge"
+                                ? "bg-burgundy-600 text-white shadow-md"
+                                : "text-gray-600 hover:bg-gray-100"
+                                }`}
+                        >
+                            <Bot className="w-4 h-4" />
+                            AI Knowledge
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Tab Content */}
