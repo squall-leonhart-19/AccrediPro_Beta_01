@@ -857,7 +857,7 @@ export default async function CertificatesPage() {
               </div>
               <div className="grid md:grid-cols-3 gap-4">
                 {enrollments.filter(e => e.progress < 100).map((enrollment) => (
-                  <Link key={enrollment.id} href={`/learning/${enrollment.course.slug}`}>
+                  <Link key={enrollment.id} href={`/courses/${enrollment.course.slug}`}>
                     <Card className="overflow-hidden hover:shadow-xl transition-all cursor-pointer group h-full border-2 border-green-200 hover:border-green-300 relative bg-gradient-to-br from-green-50 to-white">
                       <div className="aspect-[16/9] relative overflow-hidden">
                         <img
