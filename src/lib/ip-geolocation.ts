@@ -124,3 +124,68 @@ export function assessCountryMismatch(
         message: `🚩 FRAUD RISK: Login from ${loginCode} but billing address is ${billingCode}`,
     };
 }
+
+/**
+ * Parse User Agent string into readable device info
+ */
+export function parseUserAgent(userAgent: string | null): {
+    browser: string;
+    os: string;
+    device: string;
+    formatted: string;
+} {
+    if (!userAgent) {
+        return { browser: "Unknown", os: "Unknown", device: "Unknown", formatted: "Unknown Device" };
+    }
+
+    // Browser detection
+    let browser = "Unknown Browser";
+    if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) {
+        const match = userAgent.match(/Chrome\/([\d.]+)/);
+        browser = `Chrome ${match?.[1]?.split(".")[0] || ""}`;
+    } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
+        const match = userAgent.match(/Version\/([\d.]+)/);
+        browser = `Safari ${match?.[1]?.split(".")[0] || ""}`;
+    } else if (userAgent.includes("Firefox")) {
+        const match = userAgent.match(/Firefox\/([\d.]+)/);
+        browser = `Firefox ${match?.[1]?.split(".")[0] || ""}`;
+    } else if (userAgent.includes("Edg")) {
+        const match = userAgent.match(/Edg\/([\d.]+)/);
+        browser = `Edge ${match?.[1]?.split(".")[0] || ""}`;
+    }
+
+    // OS detection
+    let os = "Unknown OS";
+    if (userAgent.includes("Windows NT 10")) os = "Windows 10/11";
+    else if (userAgent.includes("Windows")) os = "Windows";
+    else if (userAgent.includes("Mac OS X")) {
+        const match = userAgent.match(/Mac OS X ([\d_]+)/);
+        os = `macOS ${match?.[1]?.replace(/_/g, ".") || ""}`;
+    }
+    else if (userAgent.includes("iPhone")) os = "iOS (iPhone)";
+    else if (userAgent.includes("iPad")) os = "iOS (iPad)";
+    else if (userAgent.includes("Android")) os = "Android";
+    else if (userAgent.includes("Linux")) os = "Linux";
+
+    // Device type
+    let device = "Desktop";
+    if (userAgent.includes("iPhone") || (userAgent.includes("Android") && userAgent.includes("Mobile"))) {
+        device = "Mobile";
+    } else if (userAgent.includes("iPad") || userAgent.includes("Tablet")) {
+        device = "Tablet";
+    }
+
+    return {
+        browser,
+        os,
+        device,
+        formatted: `${browser} on ${os} (${device})`,
+    };
+}
+
+/**
+ * Format location from GeoLocation result
+ */
+export function formatLocation(geo: { city: string | null; region: string | null; country: string | null }): string {
+    return [geo.city, geo.region, geo.country].filter(Boolean).join(", ") || "Unknown Location";
+}
