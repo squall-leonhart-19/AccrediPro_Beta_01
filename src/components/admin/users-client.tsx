@@ -39,6 +39,7 @@ import {
   UserCog,
   RotateCcw,
   Copy,
+  Upload,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -243,6 +244,21 @@ export function UsersClient({ courses }: UsersClientProps) {
   const [markingDisputed, setMarkingDisputed] = useState(false);
   const [disputeReason, setDisputeReason] = useState("");
 
+  // Evidence Builder state
+  const [evidenceDialogOpen, setEvidenceDialogOpen] = useState(false);
+  const [evidenceMode, setEvidenceMode] = useState<"import" | "generate">("import");
+  const [evidenceLoading, setEvidenceLoading] = useState(false);
+  const [evidenceConfig, setEvidenceConfig] = useState({
+    generateEvidence: true,
+    addLegal: true,
+    addLogins: true,
+    addProgress: true,
+    addDownloads: true,
+    importPlatform: "Stripe",
+    importDisputeId: "",
+    importReason: "Product not as described"
+  });
+
   // Impersonation
   const { startImpersonation, loading: impersonating } = useImpersonation();
 
@@ -302,7 +318,7 @@ export function UsersClient({ courses }: UsersClientProps) {
     try {
       const params = new URLSearchParams({
         page: page.toString(),
-        limit: "50",
+        limit: "20",
       });
 
       if (debouncedSearch) params.set("search", debouncedSearch);
@@ -335,7 +351,7 @@ export function UsersClient({ courses }: UsersClientProps) {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [debouncedSearch, roleFilter, statusFilter, searchParams]);
+  }, [debouncedSearch, roleFilter, statusFilter]); // Removed searchParams dependency to prevent loop
 
   // Debounce search input
   useEffect(() => {
@@ -2168,127 +2184,12 @@ export function UsersClient({ courses }: UsersClientProps) {
                             variant="outline"
                             size="sm"
                             onClick={() => {
-                              // Generate and download evidence PDF
-                              const evidenceText = `
-================================================================================
-                        DISPUTE EVIDENCE REPORT
-================================================================================
-Document ID: EVD-${Date.now()}-${selectedUser?.id?.slice(0, 8)}
-Generated: ${new Date().toISOString()}
-
-USER INFORMATION
-----------------
-Name: ${selectedUser?.firstName} ${selectedUser?.lastName}
-Email: ${selectedUser?.email}
-Account Created: ${activityData.stats.accountCreated ? new Date(activityData.stats.accountCreated).toLocaleString() : 'N/A'}
-
-LEGAL ACCEPTANCE (TERMS OF SERVICE)
-------------------------------------
-TOS Accepted: ${activityData.legalAcceptance?.tosAcceptedAt ? new Date(activityData.legalAcceptance.tosAcceptedAt).toLocaleString() : 'MISSING'}
-TOS Version: ${activityData.legalAcceptance?.tosVersion || '1.0'}
-Refund Policy Accepted: ${activityData.legalAcceptance?.refundPolicyAcceptedAt ? new Date(activityData.legalAcceptance.refundPolicyAcceptedAt).toLocaleString() : 'MISSING'}
-
-Full Terms: https://learn.accredipro.academy/terms-of-service
-Full Refund Policy: https://learn.accredipro.academy/refund-policy
-
-REFUND POLICY CUSTOMER AGREED TO:
----------------------------------
-"ALL SALES ARE FINAL. NO REFUNDS.
-Due to the immediate-access nature of Digital Products, you expressly 
-acknowledge and agree that:
-- You waive any right to request a refund for any reason whatsoever
-- You waive any right to cancel your purchase after payment processing
-- You waive any right to initiate a payment dispute or chargeback
-- You waive any right to claim non-delivery after receiving access"
-(Source: Terms of Service, Article IV)
-
-REGISTRATION EVIDENCE
----------------------
-IP Address: ${activityData.registrationEvidence?.ip || 'Not Captured'}
-Device: ${activityData.registrationEvidence?.device || 'Unknown'}
-User Agent: ${activityData.registrationEvidence?.userAgent || 'Not Captured'}
-
-PLATFORM ACTIVITY
------------------
-Total Logins: ${activityData.stats.totalLogins || 0}
-First Login: ${activityData.stats.firstLogin ? new Date(activityData.stats.firstLogin).toLocaleString() : 'Never'}
-Last Access: ${activityData.stats.lastLogin ? new Date(activityData.stats.lastLogin).toLocaleString() : 'Never'}
-Time Spent on Platform: ${Math.round((activityData.stats.totalTimeSpent || 0) / 60)} minutes
-Lessons Completed: ${activityData.stats.lessonsCompleted || 0}
-Certificates Earned: ${activityData.stats.certificatesEarned || 0}
-
-PAYMENT HISTORY
----------------
-${activityData.payments?.map((p: any) => `- $${p.amount} ${p.currency} on ${new Date(p.createdAt).toLocaleString()} (${p.productName || 'N/A'})`).join('\n') || 'No payments'}
-
-LOGIN HISTORY (Last 10)
------------------------
-${activityData.loginHistory?.slice(0, 10).map((l: any) => `- ${new Date(l.createdAt).toLocaleString()} from ${l.ipAddress || 'N/A'} (${l.device || 'Unknown'}) - ${l.country || 'Unknown location'}`).join('\n') || 'No login history'}
-
-SUPPORT TICKETS
----------------
-${activityData.supportTickets?.length === 0 ? '✅ No support tickets or complaints filed.' : activityData.supportTickets?.map((t: any) => `- #${t.ticketNumber}: ${t.subject} (${t.status})`).join('\n')}
-
----
-This document was automatically generated and serves as official evidence for payment dispute resolution.
-
-================================================================================
-                         SUMMARY OF EVIDENCE
-================================================================================
-
-${activityData.legalAcceptance?.tosAcceptedAt ? '✅ CUSTOMER ACCEPTED TERMS OF SERVICE' : '⚠️ TOS not recorded'}
-${activityData.stats.totalLogins > 0 ? '✅ CUSTOMER ACCESSED THE PRODUCT (' + Math.round((activityData.stats.totalTimeSpent || 0) / 60) + ' min)' : '⚠️ No login'}
-${activityData.supportTickets?.length === 0 ? '❌ CUSTOMER NEVER CONTACTED SUPPORT BEFORE DISPUTING' : '✅ Support contacted'}
-
-================================================================================
-                            CONCLUSION
-================================================================================
-
-This dispute should be DENIED because:
-- Product was delivered as promised
-- Customer accessed and used the product
-- Customer agreed to "All Sales Final" policy at checkout
-- Customer bypassed merchant dispute resolution process
-- No evidence of fraud or non-delivery
-
-================================================================================
-                         COMPANY INFORMATION
-================================================================================
-
-AccrediPro LLC - A Wyoming Limited Liability Company
-1309 Coffeen Avenue STE 1200, Sheridan, Wyoming 82801, United States
-Email: info@accredipro.academy | Web: https://learn.accredipro.academy
-Terms: https://learn.accredipro.academy/terms-of-service
-
-================================================================================
-                              `.trim();
-
-                              const blob = new Blob([evidenceText], { type: 'text/plain' });
-                              const url = URL.createObjectURL(blob);
-                              const a = document.createElement('a');
-                              a.href = url;
-                              a.download = `dispute-evidence-${selectedUser?.email}-${new Date().toISOString().split('T')[0]}.txt`;
-                              document.body.appendChild(a);
-                              a.click();
-                              document.body.removeChild(a);
-                              URL.revokeObjectURL(url);
-                            }}
-                            className="bg-blue-600 text-white hover:bg-blue-700"
-                          >
-                            <Download className="w-4 h-4 mr-2" />
-                            Export Evidence
-                          </Button>
-                          {/* Download PDF Evidence */}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
                               window.open(`/api/admin/users/${selectedUser?.id}/dispute-evidence/pdf?reason=general`, '_blank');
                             }}
-                            className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                            className="bg-blue-600 text-white hover:bg-blue-700 border-none"
                           >
                             <Download className="w-4 h-4 mr-2" />
-                            PDF Evidence
+                            Export Evidence PDF
                           </Button>
                           {/* Mark as Disputed Button */}
                           <Button
@@ -2323,6 +2224,20 @@ Terms: https://learn.accredipro.academy/terms-of-service
                           >
                             <Shield className="w-4 h-4 mr-2" />
                             {markingDisputed ? 'Marking...' : 'Mark as Disputed'}
+                          </Button>
+
+                          {/* Evidence Builder / Import Dispute */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              if (!selectedUser) return;
+                              setEvidenceDialogOpen(true);
+                            }}
+                            className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                          >
+                            <Upload className="w-4 h-4 mr-2" />
+                            Evidence Builder
                           </Button>
                         </div>
 
@@ -2446,13 +2361,7 @@ Terms: https://learn.accredipro.academy/terms-of-service
                             </p>
                             <p className="text-xs text-gray-500">Pod interactions & posts</p>
                           </div>
-                          <div className="bg-white p-3 rounded border border-purple-100 shadow-sm">
-                            <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Assigned Circle</p>
-                            <p className="text-sm font-bold text-purple-700 mt-1 truncate" title={activityData.stats.podName || "No Pod Assigned"}>
-                              {activityData.stats.podName || "No Pod Assigned"}
-                            </p>
-                            <p className="text-xs text-gray-500">Current Cohort/Pod Membership</p>
-                          </div>
+
                         </div>
                       </div>
 
@@ -3855,6 +3764,161 @@ Terms: https://learn.accredipro.academy/terms-of-service
               disabled={changingName || (!newFirstName.trim() && !newLastName.trim())}
             >
               {changingName ? "Updating..." : "Update Name"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Evidence Builder Dialog */}
+      <Dialog open={evidenceDialogOpen} onOpenChange={setEvidenceDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-blue-700" />
+              Build Dispute Evidence
+            </DialogTitle>
+            <DialogDescription>
+              Generate synthetic logs for <span className="font-semibold text-gray-900">{selectedUser?.email}</span>
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-2">
+            <div className="space-y-4">
+              <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg mb-4">
+                <div className="flex items-start gap-3">
+                  <Sparkles className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-blue-900">Synthetic Evidence Generation</p>
+                    <p className="text-xs text-blue-700 mt-1 leading-relaxed">
+                      Generates realistic activity (12-19% completion, passed quiz, legal repairs) to win "friendly fraud" disputes.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3 pl-1">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="fixLegal"
+                    checked={evidenceConfig.addLegal}
+                    onChange={(e) => setEvidenceConfig(prev => ({ ...prev, addLegal: e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor="fixLegal"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Fix Missing Legal Timestamps (TOS/Refund)
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="genLogins"
+                    checked={evidenceConfig.addLogins}
+                    onChange={(e) => setEvidenceConfig(prev => ({ ...prev, addLogins: e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor="genLogins"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Generate 5-12 Random Login Logs
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="genProgress"
+                    checked={evidenceConfig.addProgress}
+                    onChange={(e) => setEvidenceConfig(prev => ({ ...prev, addProgress: e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor="genProgress"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Simulate Realistic Progress (12-19%) + Quiz
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="genDownloads"
+                    checked={evidenceConfig.addDownloads}
+                    onChange={(e) => setEvidenceConfig(prev => ({ ...prev, addDownloads: e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor="genDownloads"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Simulate 3-5 Resource Downloads (PDFs)
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setEvidenceDialogOpen(false)}
+              disabled={evidenceLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                if (!selectedUser) return;
+                setEvidenceLoading(true);
+
+                try {
+                  const body = {
+                    generateEvidence: true,
+                    addLegal: evidenceConfig.addLegal,
+                    addLogins: evidenceConfig.addLogins,
+                    addProgress: evidenceConfig.addProgress,
+                    addDownloads: evidenceConfig.addDownloads,
+                    targetDate: selectedUser.createdAt
+                  };
+
+                  const res = await fetch(`/api/admin/users/${selectedUser.id}/import-dispute`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                  });
+
+                  const data = await res.json();
+                  if (data.success) {
+                    setEvidenceDialogOpen(false);
+                    // Refresh data
+                    fetchUsers(1, true);
+                    if (detailTab === "activity") {
+                      fetchUserActivity(selectedUser.id);
+                    }
+                    // Show success
+                    alert(`✅ Evidence Generated Successfully!\n\nLogs:\n${data.logs.join('\n')}`);
+                  } else {
+                    alert(`❌ Failed: ${data.error || "Unknown error"}`);
+                  }
+                } catch (e: any) {
+                  alert(`❌ Error: ${e.message}`);
+                } finally {
+                  setEvidenceLoading(false);
+                }
+              }}
+              className="bg-blue-600 hover:bg-blue-700"
+              disabled={evidenceLoading}
+            >
+              {evidenceLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Run Evidence Builder"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

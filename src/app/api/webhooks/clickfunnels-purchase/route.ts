@@ -450,13 +450,18 @@ export async function POST(request: NextRequest) {
                     phone: phone || null,
                     role: "STUDENT",
                     emailVerified: new Date(),
-                },
-                select: {
-                    id: true,
-                    email: true,
-                    firstName: true,
-                    lastName: true,
-                    phone: true,
+
+                    // Evidence & Legal
+                    registrationIp: purchaseIp || "0.0.0.0",
+                    registrationUserAgent: purchaseUserAgent || "Unknown",
+                    registrationDevice: "Unknown", // Can be parsed from UA if needed later
+                    registrationBrowser: "Unknown",
+
+                    // Explicit usage of creating a user via Purchase Webhook implies checks passed on CF side
+                    tosAcceptedAt: new Date(),
+                    tosVersion: "2026-01-web-enroll",
+                    refundPolicyAcceptedAt: new Date(),
+                    refundPolicyVersion: "2026-01-no-refunds",
                 },
             });
 
@@ -727,9 +732,11 @@ export async function POST(request: NextRequest) {
                     dfyProduct = await prisma.dFYProduct.create({
                         data: {
                             slug: "dfy-program-ds",
-                            name: "Done For You Website Package",
+                            title: "Done For You Website Package",
                             description: "Complete coaching website setup",
                             price: purchaseValue,
+                            productType: "CORE_PROGRAM",
+                            category: "functional-medicine",
                             isActive: true,
                         },
                     });

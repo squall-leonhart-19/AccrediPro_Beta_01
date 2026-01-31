@@ -230,6 +230,13 @@ const PRODUCT_TAG_MAP: Record<string, string | string[]> = {
     "womens-hormone-health-specialist-certification": "womens_hormone_health_specialist_purchased",
     "wh044-pro-accelerator": "wh044_pro_accelerator_purchased",
     "wh044": "womens_hormone_health_specialist_purchased",
+
+    // DFY BUSINESS ACCELERATOR
+    "dfy-business-accelerator": "dfy_purchased",
+    "dfy_business_accelerator": "dfy_purchased",
+    "dfy_program_ds": "dfy_purchased",
+    "done-for-you": "dfy_purchased",
+    "done for you": "dfy_purchased",
 };
 
 /**

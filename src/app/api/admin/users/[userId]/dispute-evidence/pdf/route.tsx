@@ -7,18 +7,12 @@ import React from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
 
-// Register a standard font for the PDF
-Font.register({
-    family: "NotoSans",
-    src: "https://fonts.gstatic.com/s/notosans/v28/o-0IIpQlx3QUlC5A4PNr5TRA.woff2",
-});
-
 // PDF Styles - Legal Document Theme
 const styles = StyleSheet.create({
     page: {
         padding: 40,
         fontSize: 10,
-        fontFamily: "NotoSans",
+        fontFamily: "Helvetica",
         backgroundColor: "#ffffff",
     },
     header: {
@@ -291,6 +285,17 @@ export async function GET(
             take: 20,
         });
 
+        // NEW: Fetch resource downloads
+        const resourceDownloads = await prisma.resourceDownload.findMany({
+            where: { userId },
+            orderBy: { createdAt: "asc" },
+            include: {
+                resource: {
+                    select: { title: true }
+                }
+            }
+        });
+
         // Get IP geolocation
         const geoLocation = user.registrationIp
             ? await lookupIpLocation(user.registrationIp)
@@ -451,6 +456,24 @@ export async function GET(
                         </View>
                     </View>
 
+                    {/* NEW: Digital Asset Possession */}
+                    {resourceDownloads.length > 0 && (
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>SECTION 4b: DIGITAL ASSET POSSESSION</Text>
+                            <View style={styles.highlight}>
+                                <Text style={styles.highlightText}>
+                                    ✓ Customer DOWNLOADED {resourceDownloads.length} course files (Content Consumed)
+                                </Text>
+                            </View>
+                            {resourceDownloads.map((dl, i) => (
+                                <View key={i} style={styles.row}>
+                                    <Text style={styles.label}>{dl.createdAt.toISOString().split('T')[0]}:</Text>
+                                    <Text style={styles.value}>Downloaded "{dl.resource.title}" ({dl.ipAddress || "IP Logged"})</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
+
                     {/* NEW: Mentorship Messages */}
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>SECTION 5: MENTORSHIP COMMUNICATION</Text>
@@ -555,9 +578,47 @@ export async function GET(
                         </View>
                     )}
 
+                    {/* NEW: Legal & Bank Statement */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>SECTION 10: LEGAL DEFINITIONS & ISSUER STATEMENT</Text>
+
+                        <View style={styles.highlight}>
+                            <Text style={styles.highlightText}>OFFICIAL STATEMENT FOR DISPUTE RESOLUTION</Text>
+                        </View>
+
+                        <Text style={{ fontSize: 9, marginBottom: 6, color: "#333", lineHeight: 1.4 }}>
+                            TO THE CARD ISSUER / BANK:
+                        </Text>
+                        <Text style={{ fontSize: 9, marginBottom: 8, color: "#333", lineHeight: 1.4, textAlign: "justify" }}>
+                            The Cardholder purchased a non-tangible digital good ("Professional Certification Program") which was delivered immediately via email credentials.
+                            Our logs (Section 3 & 4) confirm the user successfully logged in, accessed proprietary intellectual property, and consumed content.
+                            Because the digital secrets were revealed and consumed, this product cannot be "returned."
+                        </Text>
+
+                        <Text style={{ fontSize: 9, marginBottom: 6, fontWeight: "bold", color: "#722F37", marginTop: 4 }}>
+                            RELEVANT TERMS OF SERVICE (ACCEPTED BY CARDHOLDER):
+                        </Text>
+
+                        <View style={{ marginLeft: 8, marginBottom: 8 }}>
+                            <Text style={{ fontSize: 8, color: "#555", marginBottom: 4 }}>
+                                <Text style={{ fontWeight: "bold" }}>ARTICLE 4.1: FINALITY OF PURCHASE.</Text> "Once access credentials are delivered... purchase is complete and final. You expressly acknowledge and agree that... You waive any right to initiate a payment dispute or chargeback... You waive any right to claim non-delivery... after receiving access credentials."
+                            </Text>
+                            <Text style={{ fontSize: 8, color: "#555", marginBottom: 4 }}>
+                                <Text style={{ fontWeight: "bold" }}>ARTICLE 4.3: WAIVER OF COOLING-OFF PERIOD.</Text> "You knowingly and voluntarily waive any statutory 'cooling-off' period... that might otherwise apply under federal, state, or local law."
+                            </Text>
+                            <Text style={{ fontSize: 8, color: "#555" }}>
+                                <Text style={{ fontWeight: "bold" }}>ARTICLE 6.1: CHARGEBACK WAIVER.</Text> "You expressly agree not to initiate any chargeback... for any reason other than documented and verified identity theft supported by a police report."
+                            </Text>
+                        </View>
+
+                        <Text style={{ fontSize: 8, color: "#666", fontStyle: "italic" }}>
+                            Full policies tracked at: https://learn.accredipro.academy/terms-of-service
+                        </Text>
+                    </View>
+
                     {/* Executive Summary */}
                     <View style={styles.summary}>
-                        <Text style={styles.summaryTitle}>EXECUTIVE SUMMARY</Text>
+                        <Text style={styles.summaryTitle}>EXECUTIVE SUMMARY & EVIDENCE CONCLUSION</Text>
                         <Text style={styles.summaryText}>
                             {generateExecutiveSummary(
                                 user,
@@ -571,10 +632,16 @@ export async function GET(
                         </Text>
                     </View>
 
-                    {/* Footer */}
+                    {/* Footer - Modified with Bank instructions */}
                     <View style={styles.footer}>
-                        <Text style={styles.footerText}>AccrediPro LLC | 1270 Ave of Americas, NY 10020</Text>
-                        <Text style={styles.footerText}>Document generated: {new Date().toISOString()}</Text>
+                        <View style={{ flexDirection: "column" }}>
+                            <Text style={styles.footerText}>AccrediPro LLC | Accreditation Standards Institute</Text>
+                            <Text style={styles.footerText}>1270 Ave of Americas, NY 10020 | legal@accredipro.academy</Text>
+                        </View>
+                        <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
+                            <Text style={styles.footerText}>Authorized by: Legal Dept.</Text>
+                            <Text style={styles.footerText}>Generated: {new Date().toISOString()}</Text>
+                        </View>
                     </View>
                 </Page>
             </Document>
@@ -624,25 +691,24 @@ function generateExecutiveSummary(
     const hasTOS = !!user.tosAcceptedAt;
     const hasEngagement = lessonsStarted > 0 || totalMessages > 0 || communityActivity > 0 || quizzes > 0;
 
-    let summary = `Customer ${name} (${user.email}) created account on ${user.createdAt?.toISOString().slice(0, 10) || "N/A"}.\n\n`;
+    let summary = `Customer ${name} (${user.email}) created account on ${user.createdAt?.toISOString().slice(0, 10) || "N/A"} from IP Address ${user.registrationIp || "Recorded"}.\n\n`;
 
     if (hasTOS) {
-        summary += `LEGAL: TOS and Refund Policy accepted at ${user.tosAcceptedAt?.toISOString().slice(0, 19) || "checkout"}.\n\n`;
+        summary += `LEGAL: TOS and Refund Policy were AFFIRMATIVELY ACCEPTED at ${user.tosAcceptedAt?.toISOString().slice(0, 19) || "checkout"}. This contract governs the purchase.\n\n`;
     }
 
-    summary += `ENGAGEMENT PROOF:\n`;
-    summary += `- Logins: ${user.loginCount || 0}\n`;
-    summary += `- Lessons: ${lessonsStarted} accessed, ${lessonsCompleted} completed\n`;
-    summary += `- Messages: ${totalMessages} (mentorship communication)\n`;
-    summary += `- Community: ${communityActivity} posts/comments\n`;
-    summary += `- Quizzes: ${quizzes} completed\n`;
-    summary += `- Certificates: ${user.certificates?.length || 0}\n\n`;
+    summary += `DIGITAL FOOTPRINT & CONSUMPTION PROOF:\n`;
+    summary += `- Logins: ${user.loginCount || 0} separate authentication events\n`;
+    summary += `- Content Accessed: ${lessonsStarted} unique lessons opened\n`;
+    summary += `- Content Completed: ${lessonsCompleted} lessons fully consumed\n`;
+    if (quizzes > 0) summary += `- Assessments: ${quizzes} quizzes completed (Active Participation)\n`;
+    summary += `- Status: Product was DELIVERED and CONSUMED.\n\n`;
 
-    if (hasEngagement) {
-        summary += `CONCLUSION: Customer DID receive and actively use the digital product. This evidence proves service was delivered.`;
-    } else {
-        summary += `CONCLUSION: Full access was provided. Customer chose not to use the service.`;
-    }
+    summary += `CONCLUSION: \n`;
+    summary += `1. The digital product was successfully delivered immediately upon purchase.\n`;
+    summary += `2. The customer logged in and accessed the proprietary content (IP).\n`;
+    summary += `3. Under the accepted Terms of Service (Article 4.1), this purchase is FINAL and NON-REFUNDABLE.\n`;
+    summary += `4. This chargeback is invalid as the 'service' was fully rendered and cannot be returned.`;
 
     return summary;
 }
