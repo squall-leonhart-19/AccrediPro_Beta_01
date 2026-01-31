@@ -14,6 +14,7 @@ import { CommunityWins } from "@/components/dashboard/community-wins";
 import { PodLeaderboardPreview } from "@/components/dashboard/pod-leaderboard-preview";
 import { ReferralCard } from "@/components/dashboard/referral-card";
 import { DashboardPWABanner } from "@/components/dashboard/pwa-banner";
+import OnboardingChecklist from "@/components/dashboard/onboarding-checklist";
 import { generateZombieSuccessEvents } from "@/lib/success-events";
 import { getSpecializationTrack } from "@/lib/specialization-tracks";
 import { getSocialProofStats } from "@/lib/social-proof";
@@ -326,6 +327,9 @@ export default async function DashboardPage() {
 
         {/* ========== PWA INSTALL BANNER ========== */}
         <DashboardPWABanner />
+
+        {/* ========== ONBOARDING CHECKLIST (New Buyers) ========== */}
+        <OnboardingChecklist />
 
         {/* ========== SECTION 1: HERO WITH AVATAR ========== */}
         <HeroCard
