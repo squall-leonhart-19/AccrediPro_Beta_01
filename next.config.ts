@@ -146,7 +146,7 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               // Scripts: self + inline for Next.js + Sentry + analytics + Facebook Pixel + Trustpilot + Wistia
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.google-analytics.com https://*.googletagmanager.com https://js.stripe.com https://connect.facebook.net https://widget.trustpilot.com https://fast.wistia.com https://*.wistia.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.google-analytics.com https://*.googletagmanager.com https://js.stripe.com https://connect.facebook.net https://widget.trustpilot.com https://fast.wistia.com https://fast.wistia.net https://*.wistia.com https://*.wistia.net",
               // Styles: self + inline for dynamic styles
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               // Images: various CDNs and blob for local processing + Facebook
