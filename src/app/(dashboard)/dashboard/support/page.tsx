@@ -329,7 +329,28 @@ export default function SupportPage() {
       )}
 
       {loading ? (
-        <div className="text-center py-8 text-gray-500">Loading...</div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="animate-pulse">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-16 bg-slate-200 rounded" />
+                      <div className="h-5 w-20 bg-slate-200 rounded-full" />
+                    </div>
+                    <div className="h-5 w-3/4 bg-slate-200 rounded" />
+                    <div className="flex items-center gap-4">
+                      <div className="h-4 w-24 bg-slate-100 rounded" />
+                      <div className="h-4 w-20 bg-slate-100 rounded" />
+                    </div>
+                  </div>
+                  <div className="h-5 w-5 bg-slate-200 rounded" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       ) : tickets.length === 0 ? (
         <Card className="text-center py-12">
           <CardContent>

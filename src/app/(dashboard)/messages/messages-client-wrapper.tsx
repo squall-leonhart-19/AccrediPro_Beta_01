@@ -83,7 +83,8 @@ export function MessagesClientWrapper() {
             );
 
             setConversations(convData.conversations || []);
-            setMentors(mentorsData.mentors || []);
+            const fetchedMentors = mentorsData.mentors || [];
+            setMentors(fetchedMentors);
 
             if (isCoach && studentsData) {
                 setStudents(studentsData.students || []);
@@ -95,6 +96,12 @@ export function MessagesClientWrapper() {
                 const userData = await userRes.json();
                 if (userData.user) {
                     setInitialSelectedUser(userData.user);
+                }
+            } else {
+                // AUTO-SELECT SARAH: If no chat param, default to Sarah for students
+                const sarah = fetchedMentors.find((m: Mentor) => m.email === "sarah@accredipro-certificate.com");
+                if (sarah) {
+                    setInitialSelectedUser(sarah);
                 }
             }
         } catch (error) {
