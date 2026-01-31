@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { sendWomensHealthWelcomeEmail, sendFreebieWelcomeEmail } from "@/lib/email";
+import { leadRateLimiter } from "@/lib/redis";
 
 // Universal password for all mini diploma leads
 const LEAD_PASSWORD = "coach2026";
@@ -334,6 +335,16 @@ function calculateLeadScore(investmentLevel?: string, readiness?: string): numbe
 
 export async function POST(request: NextRequest) {
     try {
+        // Rate limit: 3 submissions per hour per IP
+        const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+        const { success: rateLimitOk } = await leadRateLimiter.limit(ip);
+        if (!rateLimitOk) {
+            return NextResponse.json(
+                { error: "Too many requests. Please try again later." },
+                { status: 429 }
+            );
+        }
+
         const body = await request.json();
         const {
             firstName, lastName, email, phone, course,

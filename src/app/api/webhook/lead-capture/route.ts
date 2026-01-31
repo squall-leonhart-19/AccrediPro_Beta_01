@@ -5,6 +5,7 @@ import { sendLeadWelcomeEmail } from "@/lib/email";
 import { assignCoachByTag } from "@/lib/niche-coach";
 import { verifyEmail } from "@/lib/neverbounce";
 import { z } from "zod";
+import { leadRateLimiter } from "@/lib/redis";
 
 // Valid specializations that map to tags
 const VALID_SPECIALIZATIONS = [
@@ -39,6 +40,16 @@ const SPECIALIZATION_NAMES: Record<string, string> = {
 
 export async function POST(request: NextRequest) {
     try {
+        // Rate limit: 3 submissions per hour per IP
+        const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+        const { success: rateLimitOk } = await leadRateLimiter.limit(ip);
+        if (!rateLimitOk) {
+            return NextResponse.json(
+                { success: false, error: "Too many requests. Please try again later." },
+                { status: 429 }
+            );
+        }
+
         // Handle both JSON and form data
         const contentType = request.headers.get("content-type") || "";
         let data: Record<string, string>;

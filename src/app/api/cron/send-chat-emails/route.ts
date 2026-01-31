@@ -44,7 +44,6 @@ export async function GET(request: NextRequest) {
         const optins = await prisma.chatOptin.findMany({
             where: {
                 email: { not: null },
-                // emailsSent is less than total emails in sequence (or null = 0)
             },
             orderBy: { createdAt: "asc" },
             take: 50, // Process max 50 per run
@@ -52,17 +51,25 @@ export async function GET(request: NextRequest) {
 
         console.log(`[CRON-CHAT-EMAIL] Found ${optins.length} optins to check`);
 
+        // Batch-fetch all existing users by email upfront (eliminates N+1)
+        const optinEmails = optins
+            .map(o => o.email?.toLowerCase())
+            .filter((e): e is string => !!e);
+        const existingUsers = optinEmails.length > 0
+            ? await prisma.user.findMany({
+                where: { email: { in: optinEmails } },
+                select: { email: true },
+            })
+            : [];
+        const existingEmailSet = new Set(existingUsers.map(u => u.email.toLowerCase()));
+
         for (const optin of optins) {
             if (!optin.email) continue;
             results.processed++;
 
             try {
                 // Check if already a customer (has User account = purchased)
-                const existingUser = await prisma.user.findUnique({
-                    where: { email: optin.email.toLowerCase() },
-                });
-
-                if (existingUser) {
+                if (existingEmailSet.has(optin.email.toLowerCase())) {
                     // User account = they purchased, skip
                     results.alreadyCustomer++;
                     results.details.push(`${optin.email}: Has account (purchased), skipped`);

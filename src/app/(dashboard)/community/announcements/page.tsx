@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Megaphone, Pin, MessageSquare, Eye } from "lucide-react";
+import { sanitizeHtmlServer } from "@/lib/sanitize-server";
 
 // Force dynamic rendering
 export const dynamic = "force-dynamic";
@@ -142,7 +143,7 @@ export default async function AnnouncementsPage() {
                                             prose-p:my-1.5 sm:prose-p:my-2 prose-ul:my-1.5 sm:prose-ul:my-2 prose-li:my-0.5
                                             prose-strong:text-burgundy-800 prose-em:text-burgundy-600
                                             line-clamp-4 sm:line-clamp-none"
-                                        dangerouslySetInnerHTML={{ __html: post.content }}
+                                        dangerouslySetInnerHTML={{ __html: sanitizeHtmlServer(post.content) }}
                                     />
 
                                     {/* Footer: Stats - Simplified for mobile */}

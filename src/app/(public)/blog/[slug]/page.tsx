@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPosts } from "@/lib/blog-data";
+import { sanitizeHtmlServer } from "@/lib/sanitize-server";
 import {
   Heart,
   BookmarkPlus,
@@ -179,7 +180,7 @@ export default async function BlogArticlePage({ params }: Props) {
             <article className="min-w-0">
               <div
                 className="article-content"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtmlServer(post.content) }}
               />
 
               {/* Tags */}

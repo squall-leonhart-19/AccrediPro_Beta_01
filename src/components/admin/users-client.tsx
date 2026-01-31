@@ -2193,54 +2193,61 @@ export function UsersClient({ courses }: UsersClientProps) {
                             <Download className="w-4 h-4 mr-2" />
                             Export Evidence PDF
                           </Button>
-                          {/* Mark as Disputed Button */}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={async () => {
-                              if (!selectedUser) return;
-                              const reason = prompt('Enter dispute/chargeback reason (optional):') || 'Chargeback filed';
-                              if (!confirm(`⚠️ Mark ${selectedUser.firstName} ${selectedUser.lastName} as DISPUTED?\n\nThis will:\n- Block account access\n- Suppress all emails\n- Deactivate the account\n\nReason: ${reason}`)) return;
-                              setMarkingDisputed(true);
-                              try {
-                                const res = await fetch(`/api/admin/users/${selectedUser.id}/mark-disputed`, {
-                                  method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ reason })
-                                });
-                                const data = await res.json();
-                                if (data.success) {
-                                  alert(`✅ User marked as disputed!\n\nEffects:\n${data.effects.join('\n')}`);
-                                  fetchUsers(1, true);
-                                } else {
-                                  alert(`❌ Failed: ${data.error}`);
+                          {selectedUser.isDisputed ? (
+                            /* Already Disputed: Show Evidence Builder Directly */
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                if (!selectedUser) return;
+                                setEvidenceDialogOpen(true);
+                              }}
+                              className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                            >
+                              <Upload className="w-4 h-4 mr-2" />
+                              Evidence Builder
+                            </Button>
+                          ) : (
+                            /* Not Disputed: Mark then Build */
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={async () => {
+                                if (!selectedUser) return;
+                                const reason = prompt('Enter dispute/chargeback reason (optional):') || 'Chargeback filed';
+                                if (!confirm(`⚠️ Mark ${selectedUser.firstName} ${selectedUser.lastName} as DISPUTED?\n\nThis will:\n- Block account access\n- Suppress all emails\n- Deactivate the account\n\nReason: ${reason}`)) return;
+                                setMarkingDisputed(true);
+                                try {
+                                  const res = await fetch(`/api/admin/users/${selectedUser.id}/mark-disputed`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ reason })
+                                  });
+                                  const data = await res.json();
+                                  if (data.success) {
+                                    // Success: Refresh data AND open Evidence Modal
+                                    alert(`✅ User marked as disputed!\n\nEffects:\n${data.effects.join('\n')}\n\nOpening Evidence Builder...`);
+                                    await fetchUsers(1, true);
+                                    // We need to wait a moment for the user to be updated in local state? 
+                                    // Actually fetchUsers updates the list, but 'selectedUser' might be stale here.
+                                    // However, the ID is the same, so we can just open the dialog.
+                                    setEvidenceDialogOpen(true);
+                                  } else {
+                                    alert(`❌ Failed: ${data.error}`);
+                                  }
+                                } catch (e: any) {
+                                  alert(`❌ Error: ${e.message}`);
+                                } finally {
+                                  setMarkingDisputed(false);
                                 }
-                              } catch (e) {
-                                alert(`❌ Error: ${e}`);
-                              } finally {
-                                setMarkingDisputed(false);
-                              }
-                            }}
-                            disabled={markingDisputed}
-                            className="border-red-500 text-red-600 hover:bg-red-50"
-                          >
-                            <Shield className="w-4 h-4 mr-2" />
-                            {markingDisputed ? 'Marking...' : 'Mark as Disputed'}
-                          </Button>
-
-                          {/* Evidence Builder / Import Dispute */}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              if (!selectedUser) return;
-                              setEvidenceDialogOpen(true);
-                            }}
-                            className="border-gray-300 text-gray-600 hover:bg-gray-50"
-                          >
-                            <Upload className="w-4 h-4 mr-2" />
-                            Evidence Builder
-                          </Button>
+                              }}
+                              disabled={markingDisputed}
+                              className="bg-red-600 text-white hover:bg-red-700 border-none"
+                            >
+                              <Shield className="w-4 h-4 mr-2" />
+                              {markingDisputed ? 'Processing...' : 'Mark as Dispute'}
+                            </Button>
+                          )}
                         </div>
 
                         {/* Fraud Risk Warning */}

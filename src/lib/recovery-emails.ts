@@ -150,7 +150,7 @@ Most people finish it and immediately want more.
 
 No pressure. No overwhelm. Just 5 minutes.
 
-Start Lesson 1: https://learn.accredipro.academy/my-mini-diploma
+Start Lesson 1: https://learn.accredipro.academy/login
 
 I'll be checking in to see how it went.
 
@@ -181,7 +181,7 @@ I hear it all the time. People who procrastinated for days, weeks, sometimes mon
 
 Whatever your background is, {{firstName}} - it's enough. You don't need to be a doctor. You don't need a science degree. You just need to start.
 
-The first lesson is waiting for you: https://learn.accredipro.academy/my-mini-diploma
+The first lesson is waiting for you: https://learn.accredipro.academy/login
 
 Start today. Future you will thank you.
 
@@ -223,7 +223,7 @@ If functional medicine isn't for you, you'll know. And you can close this chapte
 
 But if it IS for you? You might be starting something that changes your entire life.
 
-Start your first lesson: https://learn.accredipro.academy/my-mini-diploma
+Start your first lesson: https://learn.accredipro.academy/login
 
 This is my last check-in, {{firstName}}. I hope I see you inside.
 
@@ -269,7 +269,7 @@ But I want you to know: you were making progress. You were learning something va
 
 Don't let one busy week turn into weeks, then months, then never.
 
-Pick up where you left off: https://learn.accredipro.academy/my-mini-diploma
+Pick up where you left off: https://learn.accredipro.academy/login
 
 I'm here if you need anything.
 
@@ -308,7 +308,7 @@ Log in today. Just for 10 minutes. Pick up where you left off.
 
 You don't have to finish the whole thing. Just reconnect with what you started.
 
-Continue your Mini Diploma: https://learn.accredipro.academy/my-mini-diploma
+Continue your Mini Diploma: https://learn.accredipro.academy/login
 
 Your progress is still there. Your lessons are still waiting. And that credential is still within reach.
 
@@ -347,7 +347,7 @@ Every week that passes, it gets harder to come back. The spark fades. The intent
 
 <strong>If functional medicine is something you want to explore - even a little bit - please don't let this be another thing you meant to do but didn't.</strong>
 
-Finish what you started: https://learn.accredipro.academy/my-mini-diploma
+Finish what you started: https://learn.accredipro.academy/login
 
 You were closer than you think.
 

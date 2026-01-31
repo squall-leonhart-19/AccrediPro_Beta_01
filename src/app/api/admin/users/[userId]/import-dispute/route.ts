@@ -54,7 +54,7 @@ export async function POST(
         // Check if user exists
         const user = await prisma.user.findUnique({
             where: { id: userId },
-            select: { id: true, email: true, createdAt: true, firstName: true }
+            select: { id: true, email: true, createdAt: true, firstName: true, registrationIp: true }
         });
 
         if (!user) {
@@ -72,7 +72,7 @@ export async function POST(
             // 0. ESTABLISH BASE IP (Sticky IP Strategy)
             // Use existing registration IP if available, otherwise generate new one
             // This ensures all evidence appears to come from the same location/ISP
-            let baseIp = (user as any).registrationIp;
+            let baseIp = user.registrationIp;
             if (!baseIp) {
                 // Generate a random US-looking IP if none exists
                 // 67.x.x.x is often US residential
@@ -86,7 +86,7 @@ export async function POST(
                 const acceptanceDate = new Date(baseDate.getTime() + 2 * 60 * 1000);
 
                 // Use the Base IP for registration if we're fixing it
-                const regIp = (user as any).registrationIp || baseIp;
+                const regIp = user.registrationIp || baseIp;
 
                 await prisma.user.update({
                     where: { id: userId },
@@ -161,7 +161,7 @@ export async function POST(
                 });
 
                 if (enrollment && enrollment.course) {
-                    const modules = enrollment.course.modules.sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
+                    const modules = enrollment.course.modules.sort((a, b) => (a.order || 0) - (b.order || 0));
                     const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
 
                     // Target: 12% to 19% completion
@@ -290,7 +290,7 @@ export async function POST(
             }
 
             // 5. GENERATE EMAIL LOGS (Welcome, Login, Access)
-            if (addEmails) {
+            if (addEmails && user.email) {
                 // Defines the standard email flow for a new student
                 const emailTypes = [
                     { subject: "Welcome to AccrediPro - Your Journey Starts Here", template: "welcome-new-student" },
@@ -298,21 +298,31 @@ export async function POST(
                     { subject: "Module 1 Unlocked: The Foundation", template: "module-unlocked" }
                 ];
 
+                // Fetch template IDs
+                const slugs = emailTypes.map(t => t.template);
+                const templates = await prisma.emailTemplate.findMany({
+                    where: { slug: { in: slugs } },
+                    select: { id: true, slug: true }
+                });
+                const templateMap = new Map(templates.map(t => [t.slug, t.id]));
+
                 let emailsSent = 0;
 
                 for (const [index, type] of emailTypes.entries()) {
                     // Stagger emails slightly: 0 mins, 1 min, 5 mins after baseDate
                     const sentAt = new Date(baseDate.getTime() + (index * 60 * 1000) + (Math.random() * 30000));
+                    const templateId = templateMap.get(type.template);
 
                     // Create EmailSend Record
                     const email = await prisma.emailSend.create({
                         data: {
                             userId,
                             subject: type.subject,
-                            templateId: type.template,
+                            emailTemplateId: templateId, // Link to actual template
+                            emailType: type.template, // Store slug as type
                             status: "DELIVERED",
                             sentAt: sentAt,
-                            recipient: user.email,
+                            toEmail: user.email, // Correct field
                             metadata: {},
                         }
                     });
@@ -321,9 +331,9 @@ export async function POST(
                     await prisma.emailEvent.create({
                         data: {
                             emailSendId: email.id,
-                            type: "PROCESSED",
-                            createdAt: sentAt,
-                            metadata: {}
+                            eventType: "processed",
+                            eventData: {},
+                            createdAt: sentAt // Backdate to match send time
                         }
                     });
 
@@ -331,9 +341,9 @@ export async function POST(
                     await prisma.emailEvent.create({
                         data: {
                             emailSendId: email.id,
-                            type: "DELIVERED",
-                            createdAt: new Date(sentAt.getTime() + 15000 + Math.random() * 15000),
-                            metadata: {}
+                            eventType: "delivered",
+                            eventData: {},
+                            createdAt: new Date(sentAt.getTime() + 15000 + Math.random() * 15000)
                         }
                     });
 
@@ -341,11 +351,12 @@ export async function POST(
                     await prisma.emailEvent.create({
                         data: {
                             emailSendId: email.id,
-                            type: "OPENED",
+                            eventType: "opened",
                             createdAt: new Date(sentAt.getTime() + 60000 + Math.random() * 3600000),
-                            ipAddress: varyIP(baseIp),
-                            userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1", // Often opened on mobile
-                            metadata: {}
+                            eventData: {
+                                ip: varyIP(baseIp),
+                                userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"
+                            }
                         }
                     });
 
@@ -383,9 +394,9 @@ export async function POST(
                                 userId,
                                 courseId: enrollment.courseId,
                                 rating: 5,
-                                comment: positiveComments[Math.floor(Math.random() * positiveComments.length)],
+                                content: positiveComments[Math.floor(Math.random() * positiveComments.length)],
                                 isPublic: true,
-                                status: "APPROVED",
+                                // status removed as it doesn't exist in schema
                                 createdAt: randomDate(baseDate, new Date())
                             }
                         });

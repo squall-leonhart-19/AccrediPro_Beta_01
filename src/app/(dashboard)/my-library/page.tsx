@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -4969,7 +4970,7 @@ export default function MyLibraryPage() {
                   {readingEbook.chapters[currentChapter]?.isHtml ? (
                     <div
                       className="ebook-html-content"
-                      dangerouslySetInnerHTML={{ __html: readingEbook.chapters[currentChapter]?.content || "" }}
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(readingEbook.chapters[currentChapter]?.content || "") }}
                     />
                   ) : (
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg">

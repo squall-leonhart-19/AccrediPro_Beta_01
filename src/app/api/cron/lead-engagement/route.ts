@@ -73,13 +73,25 @@ export async function GET(request: Request) {
         // 1. Get ALL leads for ANY registered diploma (60 day window)
         const leads = await prisma.enrollment.findMany({
             where: {
-                course: { slug: { in: ALL_MINI_DIPLOMA_SLUGS } }, // Use registry slugs
+                course: { slug: { in: ALL_MINI_DIPLOMA_SLUGS } },
                 enrolledAt: {
                     gte: new Date(Date.now() - 61 * 24 * 60 * 60 * 1000),
                 },
             },
             include: { user: { select: { id: true, firstName: true, email: true } }, course: { select: { slug: true } } },
         });
+
+        // Batch-fetch ALL user tags upfront to avoid N+1 queries
+        const userIds = [...new Set(leads.map(l => l.user.id))];
+        const allTags = userIds.length > 0
+            ? await prisma.userTag.findMany({ where: { userId: { in: userIds } } })
+            : [];
+        const tagsByUser = new Map<string, typeof allTags>();
+        for (const tag of allTags) {
+            const existing = tagsByUser.get(tag.userId) || [];
+            existing.push(tag);
+            tagsByUser.set(tag.userId, existing);
+        }
 
         for (const lead of leads) {
             stats.checked++;
@@ -91,8 +103,8 @@ export async function GET(request: Request) {
 
             const daysSinceEnroll = Math.floor((now.getTime() - lead.enrolledAt.getTime()) / (1000 * 60 * 60 * 24));
 
-            // Get tags
-            const tags = await prisma.userTag.findMany({ where: { userId: user.id } });
+            // Get tags from pre-fetched map (eliminates N+1)
+            const tags = tagsByUser.get(user.id) || [];
             const tagSet = new Set(tags.map(t => t.tag));
 
             // Check completion status
