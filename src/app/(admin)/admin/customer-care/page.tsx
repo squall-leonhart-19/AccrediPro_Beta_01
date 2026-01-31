@@ -82,20 +82,35 @@ async function getMessageStats() {
     twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
 
     // Get conversations where last message is from student (not Sarah) and older than threshold
+    // Simplified query to avoid ungrouped column PostgreSQL error
     const awaitingResponse = await prisma.$queryRaw<{ count: bigint }[]>`
-    WITH LastMessages AS (
-      SELECT 
-        CASE WHEN "senderId" = ${sarahId} THEN "receiverId" ELSE "senderId" END as student_id,
-        MAX("createdAt") as last_msg_time,
-        (SELECT "senderId" FROM "Message" m2 
-         WHERE (m2."senderId" = m."senderId" AND m2."receiverId" = m."receiverId")
-            OR (m2."senderId" = m."receiverId" AND m2."receiverId" = m."senderId")
-         ORDER BY m2."createdAt" DESC LIMIT 1) as last_sender
-      FROM "Message" m
+    WITH ConversationPairs AS (
+      SELECT DISTINCT
+        CASE WHEN "senderId" < "receiverId" 
+             THEN "senderId" || '|' || "receiverId" 
+             ELSE "receiverId" || '|' || "senderId" END as conv_id,
+        "senderId",
+        "receiverId"
+      FROM "Message"
       WHERE "senderId" = ${sarahId} OR "receiverId" = ${sarahId}
-      GROUP BY student_id
+    ),
+    LastMessagePerConv AS (
+      SELECT DISTINCT ON (
+        CASE WHEN m."senderId" < m."receiverId" 
+             THEN m."senderId" || '|' || m."receiverId" 
+             ELSE m."receiverId" || '|' || m."senderId" END
+      )
+        CASE WHEN m."senderId" < m."receiverId" 
+             THEN m."senderId" || '|' || m."receiverId" 
+             ELSE m."receiverId" || '|' || m."senderId" END as conv_id,
+        m."senderId" as last_sender,
+        m."createdAt" as last_msg_time
+      FROM "Message" m
+      WHERE m."senderId" = ${sarahId} OR m."receiverId" = ${sarahId}
+      ORDER BY conv_id, m."createdAt" DESC
     )
-    SELECT COUNT(*)::bigint as count FROM LastMessages 
+    SELECT COUNT(*)::bigint as count 
+    FROM LastMessagePerConv 
     WHERE last_sender != ${sarahId} 
     AND last_msg_time < ${twentyFourHoursAgo}
   `;

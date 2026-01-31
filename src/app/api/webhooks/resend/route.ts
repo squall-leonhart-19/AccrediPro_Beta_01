@@ -254,7 +254,8 @@ async function updateDailyAnalytics(metric: string) {
 }
 
 // Helper: Check and tag email opener (opens 3+ emails)
-async function checkAndTagEmailOpener(userId: string) {
+async function checkAndTagEmailOpener(userId: string | null) {
+  if (!userId) return; // Skip if no userId (e.g., email sent to lead without user account)
   try {
     const openCount = await prisma.emailSend.count({
       where: {
@@ -282,7 +283,8 @@ async function checkAndTagEmailOpener(userId: string) {
 }
 
 // Helper: Check and tag email clicker
-async function checkAndTagEmailClicker(userId: string) {
+async function checkAndTagEmailClicker(userId: string | null) {
+  if (!userId) return; // Skip if no userId (e.g., email sent to lead without user account)
   try {
     const clickCount = await prisma.emailSend.count({
       where: {
@@ -310,7 +312,8 @@ async function checkAndTagEmailClicker(userId: string) {
 }
 
 // Helper: Add suppression tag
-async function addSuppressionTag(userId: string, tagSlug: string) {
+async function addSuppressionTag(userId: string | null, tagSlug: string) {
+  if (!userId) return; // Skip if no userId (e.g., email sent to lead without user account)
   try {
     const tag = await prisma.marketingTag.findUnique({
       where: { slug: tagSlug },
