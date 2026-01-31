@@ -218,7 +218,14 @@ export default function StudentSupportPortal() {
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
 
+        const subject = formData.get("subject") as string;
         let message = formData.get("message") as string;
+
+        // If refund, prepend the reason to the message
+        if (selectedCategory === "REFUND" && refundReason) {
+            const reasonLabel = REFUND_REASONS.find(r => r.value === refundReason)?.label || refundReason;
+            message = `**Refund Reason:** ${reasonLabel}\n\n${message}`;
+        }
 
         if (attachments.length > 0) {
             const urls = await uploadFiles();
@@ -228,7 +235,7 @@ export default function StudentSupportPortal() {
         }
 
         createTicketMutation.mutate({
-            subject: formData.get("subject") as string,
+            subject: selectedCategory === "REFUND" ? `[REFUND] ${subject}` : subject,
             category: selectedCategory,
             message: message,
         });
@@ -262,7 +269,7 @@ export default function StudentSupportPortal() {
     // 1. CREATE TICKET VIEW
     if (view === "CREATE") {
         return (
-            <div className="max-w-5xl mx-auto space-y-6 animate-fade-in">
+            <div className="max-w-5xl mx-auto space-y-4 sm:space-y-6 animate-fade-in px-4 sm:px-0">
                 <Button variant="ghost" onClick={() => { setView("LIST"); resetCreateForm(); }} className="pl-0 hover:bg-transparent hover:text-burgundy-600">
                     <ChevronLeft className="w-4 h-4 mr-2" /> Back to Dashboard
                 </Button>
@@ -412,7 +419,7 @@ export default function StudentSupportPortal() {
 
                                     <div className="space-y-2">
                                         <Label>Subject</Label>
-                                        <Input name="subject" placeholder="Brief summary of the issue" autoFocus required />
+                                        <Input name="subject" placeholder="Brief summary of the issue" required className="text-base" />
                                     </div>
 
                                     <div className="space-y-2">
@@ -527,7 +534,7 @@ export default function StudentSupportPortal() {
         const ticket = activeTicket;
 
         return (
-            <div className="h-[calc(100vh-140px)] flex flex-col animate-fade-in">
+            <div className="h-[calc(100vh-140px)] flex flex-col animate-fade-in px-4 sm:px-0">
                 <div className="mb-4">
                     <Button variant="ghost" onClick={() => { setView("LIST"); setSelectedTicketId(null); setAttachments([]); }} className="pl-0 hover:bg-transparent hover:text-burgundy-600">
                         <ChevronLeft className="w-4 h-4 mr-2" /> Back to Dashboard
@@ -669,13 +676,13 @@ export default function StudentSupportPortal() {
 
     // 3. LIST VIEW
     return (
-        <div className="space-y-6 animate-fade-in">
+        <div className="space-y-4 sm:space-y-6 animate-fade-in px-4 sm:px-0">
             <div className="flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-burgundy-900 to-burgundy-800 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden">
                 <div className="relative z-10">
-                    <h1 className="text-3xl font-bold flex items-center gap-3">
+                    <h1 className="text-xl sm:text-3xl font-bold flex items-center gap-3">
                         Student Support
                     </h1>
-                    <p className="text-burgundy-100 mt-2 max-w-md">
+                    <p className="text-burgundy-100 mt-2 max-w-md text-sm sm:text-base">
                         Need help with your course, billing, or technical issues? We're here to assist you.
                     </p>
                 </div>
