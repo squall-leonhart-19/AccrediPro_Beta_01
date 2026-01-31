@@ -2803,7 +2803,8 @@ export function MessagesClient({
             )}
 
             {/* Message Input */}
-            <div className="px-4 py-3 bg-white border-t border-gray-100 relative">
+            {/* Message Input - WhatsApp style with safe area */}
+            <div className="px-4 py-3 bg-white border-t border-gray-100 relative pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
               {/* Emoji Picker */}
               {showEmojiPicker && (
                 <div
@@ -3011,15 +3012,34 @@ export function MessagesClient({
                     <Clock className="w-4 h-4" />
                   </Button>
                 )}
-                <Button
-                  type="submit"
-                  disabled={loading || uploading || (!newMessage.trim() && !audioBlob) || isRecording}
-                  onMouseDown={(e) => e.preventDefault()}
-                  size="icon"
-                  className="bg-burgundy-600 hover:bg-burgundy-700 rounded-xl h-10 w-10"
-                >
-                  {loading || uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                </Button>
+                {/* WhatsApp-style Mic/Send Toggle */}
+                {newMessage.trim() || audioBlob ? (
+                  <Button
+                    type="submit"
+                    disabled={loading || uploading || isRecording}
+                    onMouseDown={(e) => e.preventDefault()}
+                    size="icon"
+                    className="bg-burgundy-600 hover:bg-burgundy-700 rounded-full h-11 w-11 shadow-lg transition-all"
+                  >
+                    {loading || uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={isRecording ? stopRecording : startRecording}
+                    onMouseDown={(e) => e.preventDefault()}
+                    size="icon"
+                    disabled={uploading || !!audioBlob || !!ttsPreviewAudio}
+                    className={cn(
+                      "rounded-full h-11 w-11 shadow-lg transition-all",
+                      isRecording
+                        ? "bg-red-500 hover:bg-red-600 animate-pulse"
+                        : "bg-burgundy-600 hover:bg-burgundy-700"
+                    )}
+                  >
+                    {isRecording ? <Square className="w-4 h-4" /> : <Mic className="w-5 h-5" />}
+                  </Button>
+                )}
               </form>
             </div>
           </>
