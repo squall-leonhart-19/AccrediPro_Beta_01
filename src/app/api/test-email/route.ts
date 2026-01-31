@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sendEmail, personalEmailWrapper } from "@/lib/email";
+import { sendEmail, personalEmailWrapper, emailWrapper } from "@/lib/email";
 
 /**
  * Lead Email Templates - Inbox-Optimized (Re: prefix, no emojis)
@@ -240,66 +240,68 @@ PS: Want to learn how to turn this knowledge into a $10K/month income? Just repl
 // Re-export for backward compatibility
 export const LEAD_EMAILS = MINI_DIPLOMA_EMAILS;
 
-// SECTION: ONBOARDING_NUDGES - Buyer Onboarding Step Nudges
+// SECTION: ONBOARDING_NUDGES - Buyer Onboarding Step Nudges (Branded HTML)
+// Sarah signature in italic for personal touch
+const SARAH_SIGNATURE = `
+<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+    <p style="margin: 0; font-style: italic; color: #722F37; font-size: 16px;">– Sarah Mitchell</p>
+    <p style="margin: 5px 0 0 0; color: #999; font-size: 12px;">Your Coach at AccrediPro Academy</p>
+</div>`;
+
 export const ONBOARDING_NUDGE_EMAILS = {
     profile: {
         subject: (firstName: string) => `Quick thing, ${firstName}...`,
-        content: (firstName: string) => `Hey ${firstName},
-
-I noticed you haven't finished setting up your profile yet.
-
-Adding a photo and a short bio helps me understand your goals better – and makes our community feel more connected.
-
-Takes 30 seconds: <a href="https://learn.accredipro.academy/dashboard" style="color: #8B1538; font-weight: bold;">Complete Your Profile →</a>
-
-– Sarah
-
-P.S. I love seeing who I'm working with! 📸`,
+        content: (firstName: string) => `
+            <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">I noticed you haven't finished setting up your profile yet.</p>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Adding a photo and a short bio helps me understand your goals better – and makes our community feel more connected.</p>
+            <p style="margin: 0 0 25px 0; font-size: 16px; line-height: 1.6;">Takes 30 seconds:</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="https://learn.accredipro.academy/dashboard" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: #D4AF37; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">Complete Your Profile →</a>
+            </div>
+            <p style="margin: 20px 0 0 0; font-size: 14px; color: #666; font-style: italic;">P.S. I love seeing who I'm working with! 📸</p>
+            ${SARAH_SIGNATURE}
+        `,
     },
     message: {
         subject: () => `I'm right here if you need me`,
-        content: (firstName: string) => `Hey ${firstName},
-
-Just wanted to remind you – you can message me anytime.
-
-Whether you have questions about the curriculum, need help with a concept, or just want to chat about your goals... I'm here.
-
-<a href="https://learn.accredipro.academy/messages" style="color: #8B1538; font-weight: bold;">Send Me a Message →</a>
-
-Talk soon,
-Sarah
-
-P.S. No question is too small! 💬`,
+        content: (firstName: string) => `
+            <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Just wanted to remind you – you can message me anytime.</p>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Whether you have questions about the curriculum, need help with a concept, or just want to chat about your goals... I'm here.</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="https://learn.accredipro.academy/messages" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: #D4AF37; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">Send Me a Message →</a>
+            </div>
+            <p style="margin: 20px 0 0 0; font-size: 14px; color: #666; font-style: italic;">P.S. No question is too small! 💬</p>
+            ${SARAH_SIGNATURE}
+        `,
     },
     lesson: {
         subject: () => `Your first lesson takes 5 mins`,
-        content: (firstName: string) => `Hey ${firstName},
-
-I've been checking in and noticed you haven't started your first lesson yet.
-
-I get it – life is busy. But here's the thing: your first lesson literally takes 5 minutes and sets the foundation for everything.
-
-Ready to start? <a href="https://learn.accredipro.academy/my-courses" style="color: #8B1538; font-weight: bold;">Start Your First Lesson →</a>
-
-Rooting for you,
-Sarah
-
-P.S. You've got this! 🌟`,
+        content: (firstName: string) => `
+            <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">I've been checking in and noticed you haven't started your first lesson yet.</p>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">I get it – life is busy. But here's the thing: <strong>your first lesson literally takes 5 minutes</strong> and sets the foundation for everything.</p>
+            <p style="margin: 0 0 25px 0; font-size: 16px; line-height: 1.6;">Ready to start?</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="https://learn.accredipro.academy/my-courses" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: #D4AF37; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">Start Your First Lesson →</a>
+            </div>
+            <p style="margin: 20px 0 0 0; font-size: 14px; color: #666; font-style: italic;">P.S. You've got this! 🌟</p>
+            ${SARAH_SIGNATURE}
+        `,
     },
     community: {
         subject: () => `The community is waiting for you`,
-        content: (firstName: string) => `Hey ${firstName},
-
-Quick one – have you introduced yourself in the community yet?
-
-It's a simple post and a great way to connect with others on the same path. Plus, the accountability and support are game-changers.
-
-<a href="https://learn.accredipro.academy/community/cmkvj0klb0000bim95cl2peji" style="color: #8B1538; font-weight: bold;">Introduce Yourself →</a>
-
-See you in there?
-Sarah
-
-P.S. Everyone's super welcoming. No pressure, just support! 🤝`,
+        content: (firstName: string) => `
+            <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Quick one – have you introduced yourself in the community yet?</p>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">It's a simple post and a great way to connect with others on the same path. Plus, the accountability and support are game-changers.</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="https://learn.accredipro.academy/community/cmkvj0klb0000bim95cl2peji" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: #D4AF37; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">Introduce Yourself →</a>
+            </div>
+            <p style="margin: 20px 0 0 0; font-size: 14px; color: #666; font-style: italic;">P.S. Everyone's super welcoming. No pressure, just support! 🤝</p>
+            ${SARAH_SIGNATURE}
+        `,
     },
 };
 
@@ -357,11 +359,15 @@ export async function POST(request: Request) {
         let content = template.content(firstName);
         content = content.replace(/\{\{lessonsRemaining\}\}/g, lessonsRemaining);
 
-        // Use personalEmailWrapper for inbox delivery (plain text style)
+        // Use branded emailWrapper for onboarding, personalEmailWrapper for mini_diploma
+        const wrapContent = section === "onboarding"
+            ? emailWrapper(content)
+            : personalEmailWrapper(content.replace(/\n/g, '<br>'));
+
         const result = await sendEmail({
             to: email,
             subject,
-            html: personalEmailWrapper(content.replace(/\n/g, '<br>')),
+            html: wrapContent,
             type: "transactional",
         });
 
@@ -417,10 +423,15 @@ export async function GET(request: Request) {
             let content = template.content("Test");
             content = content.replace(/\{\{lessonsRemaining\}\}/g, "3");
 
+            // Use branded emailWrapper for onboarding, personalEmailWrapper for mini_diploma
+            const wrapContent = section === "onboarding"
+                ? emailWrapper(content)
+                : personalEmailWrapper(content.replace(/\n/g, '<br>'));
+
             const result = await sendEmail({
                 to: email,
                 subject: `[TEST] ${subject}`,
-                html: personalEmailWrapper(content.replace(/\n/g, '<br>')),
+                html: wrapContent,
                 type: "transactional",
             });
 

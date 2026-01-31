@@ -1,79 +1,73 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sendEmail, personalEmailWrapper } from "@/lib/email";
+import { sendEmail, emailWrapper } from "@/lib/email";
 
-// Email nudge templates for each onboarding step
+// Sarah signature in italic for personal touch
+const SARAH_SIGNATURE = `
+<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+    <p style="margin: 0; font-style: italic; color: #722F37; font-size: 16px;">– Sarah Mitchell</p>
+    <p style="margin: 5px 0 0 0; color: #999; font-size: 12px;">Your Coach at AccrediPro Academy</p>
+</div>`;
+
+// Email nudge templates for each onboarding step (Branded HTML)
 const NUDGE_TEMPLATES = {
     profile: {
         delay: 24 * 60 * 60 * 1000, // 24 hours
         subject: "Quick thing, {{firstName}}...",
-        content: (firstName: string) => `
-Hey ${firstName},
-
-I noticed you haven't finished setting up your profile yet.
-
-Adding a photo and a short bio helps me understand your goals better – and makes our community feel more connected.
-
-Takes 30 seconds: {{PROFILE_LINK}}
-
-– Sarah
-
-P.S. I love seeing who I'm working with! 📸
-        `.trim(),
+        content: (firstName: string, profileLink: string) => `
+            <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">I noticed you haven't finished setting up your profile yet.</p>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Adding a photo and a short bio helps me understand your goals better – and makes our community feel more connected.</p>
+            <p style="margin: 0 0 25px 0; font-size: 16px; line-height: 1.6;">Takes 30 seconds:</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${profileLink}" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: #D4AF37; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">Complete Your Profile →</a>
+            </div>
+            <p style="margin: 20px 0 0 0; font-size: 14px; color: #666; font-style: italic;">P.S. I love seeing who I'm working with! 📸</p>
+            ${SARAH_SIGNATURE}
+        `,
     },
     message: {
         delay: 48 * 60 * 60 * 1000, // 48 hours
         subject: "I'm right here if you need me",
-        content: (firstName: string) => `
-Hey ${firstName},
-
-Just wanted to remind you – you can message me anytime.
-
-Whether you have questions about the curriculum, need help with a concept, or just want to chat about your goals... I'm here.
-
-{{MESSAGE_LINK}}
-
-Talk soon,
-Sarah
-
-P.S. No question is too small! 💬
-        `.trim(),
+        content: (firstName: string, messageLink: string) => `
+            <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Just wanted to remind you – you can message me anytime.</p>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Whether you have questions about the curriculum, need help with a concept, or just want to chat about your goals... I'm here.</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${messageLink}" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: #D4AF37; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">Send Me a Message →</a>
+            </div>
+            <p style="margin: 20px 0 0 0; font-size: 14px; color: #666; font-style: italic;">P.S. No question is too small! 💬</p>
+            ${SARAH_SIGNATURE}
+        `,
     },
     lesson: {
         delay: 72 * 60 * 60 * 1000, // 72 hours
         subject: "Your first lesson takes 5 mins",
-        content: (firstName: string) => `
-Hey ${firstName},
-
-I've been checking in and noticed you haven't started your first lesson yet.
-
-I get it – life is busy. But here's the thing: your first lesson literally takes 5 minutes and sets the foundation for everything.
-
-Ready to start? {{LESSON_LINK}}
-
-Rooting for you,
-Sarah
-
-P.S. You've got this! 🌟
-        `.trim(),
+        content: (firstName: string, lessonLink: string) => `
+            <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">I've been checking in and noticed you haven't started your first lesson yet.</p>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">I get it – life is busy. But here's the thing: <strong>your first lesson literally takes 5 minutes</strong> and sets the foundation for everything.</p>
+            <p style="margin: 0 0 25px 0; font-size: 16px; line-height: 1.6;">Ready to start?</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${lessonLink}" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: #D4AF37; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">Start Your First Lesson →</a>
+            </div>
+            <p style="margin: 20px 0 0 0; font-size: 14px; color: #666; font-style: italic;">P.S. You've got this! 🌟</p>
+            ${SARAH_SIGNATURE}
+        `,
     },
     community: {
         delay: 5 * 24 * 60 * 60 * 1000, // 5 days
         subject: "The community is waiting for you",
-        content: (firstName: string) => `
-Hey ${firstName},
-
-Quick one – have you introduced yourself in the community yet?
-
-It's a simple post and a great way to connect with others on the same path. Plus, the accountability and support are game-changers.
-
-{{COMMUNITY_LINK}}
-
-See you in there?
-Sarah
-
-P.S. Everyone's super welcoming. No pressure, just support! 🤝
-        `.trim(),
+        content: (firstName: string, communityLink: string) => `
+            <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Quick one – have you introduced yourself in the community yet?</p>
+            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">It's a simple post and a great way to connect with others on the same path. Plus, the accountability and support are game-changers.</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${communityLink}" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: #D4AF37; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">Introduce Yourself →</a>
+            </div>
+            <p style="margin: 20px 0 0 0; font-size: 14px; color: #666; font-style: italic;">P.S. Everyone's super welcoming. No pressure, just support! 🤝</p>
+            ${SARAH_SIGNATURE}
+        `,
     },
 };
 
@@ -139,13 +133,12 @@ export async function GET(request: NextRequest) {
                 !progressRecord.profileNudgeSentAt &&
                 timeSinceSignup >= NUDGE_TEMPLATES.profile.delay) {
                 try {
-                    const content = NUDGE_TEMPLATES.profile.content(firstName)
-                        .replace("{{PROFILE_LINK}}", `<a href="${baseUrl}/dashboard" style="color: #8B1538; font-weight: bold;">Complete Your Profile →</a>`);
+                    const content = NUDGE_TEMPLATES.profile.content(firstName, `${baseUrl}/dashboard`);
 
                     await sendEmail({
                         to: email,
                         subject: NUDGE_TEMPLATES.profile.subject.replace("{{firstName}}", firstName),
-                        html: personalEmailWrapper(content.replace(/\n/g, "<br>")),
+                        html: emailWrapper(content),
                         type: "transactional",
                     });
 
@@ -166,13 +159,12 @@ export async function GET(request: NextRequest) {
                 !progressRecord.messageNudgeSentAt &&
                 timeSinceSignup >= NUDGE_TEMPLATES.message.delay) {
                 try {
-                    const content = NUDGE_TEMPLATES.message.content(firstName)
-                        .replace("{{MESSAGE_LINK}}", `<a href="${baseUrl}/messages" style="color: #8B1538; font-weight: bold;">Send Me a Message →</a>`);
+                    const content = NUDGE_TEMPLATES.message.content(firstName, `${baseUrl}/messages`);
 
                     await sendEmail({
                         to: email,
                         subject: NUDGE_TEMPLATES.message.subject,
-                        html: personalEmailWrapper(content.replace(/\n/g, "<br>")),
+                        html: emailWrapper(content),
                         type: "transactional",
                     });
 
@@ -193,13 +185,12 @@ export async function GET(request: NextRequest) {
                 !progressRecord.lessonNudgeSentAt &&
                 timeSinceSignup >= NUDGE_TEMPLATES.lesson.delay) {
                 try {
-                    const content = NUDGE_TEMPLATES.lesson.content(firstName)
-                        .replace("{{LESSON_LINK}}", `<a href="${baseUrl}/my-courses" style="color: #8B1538; font-weight: bold;">Start Your First Lesson →</a>`);
+                    const content = NUDGE_TEMPLATES.lesson.content(firstName, `${baseUrl}/my-courses`);
 
                     await sendEmail({
                         to: email,
                         subject: NUDGE_TEMPLATES.lesson.subject,
-                        html: personalEmailWrapper(content.replace(/\n/g, "<br>")),
+                        html: emailWrapper(content),
                         type: "transactional",
                     });
 
@@ -220,13 +211,12 @@ export async function GET(request: NextRequest) {
                 !progressRecord.communityNudgeSentAt &&
                 timeSinceSignup >= NUDGE_TEMPLATES.community.delay) {
                 try {
-                    const content = NUDGE_TEMPLATES.community.content(firstName)
-                        .replace("{{COMMUNITY_LINK}}", `<a href="${baseUrl}/community/cmkvj0klb0000bim95cl2peji" style="color: #8B1538; font-weight: bold;">Introduce Yourself →</a>`);
+                    const content = NUDGE_TEMPLATES.community.content(firstName, `${baseUrl}/community/cmkvj0klb0000bim95cl2peji`);
 
                     await sendEmail({
                         to: email,
                         subject: NUDGE_TEMPLATES.community.subject,
-                        html: personalEmailWrapper(content.replace(/\n/g, "<br>")),
+                        html: emailWrapper(content),
                         type: "transactional",
                     });
 
