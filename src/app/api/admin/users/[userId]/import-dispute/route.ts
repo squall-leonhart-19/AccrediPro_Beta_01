@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { createAuditLogger, AuditAction } from "@/lib/audit";
+import { createAuditLogger } from "@/lib/audit";
+import { AuditAction } from "@prisma/client";
 
 // Helper to generate a random date between two dates
 function randomDate(start: Date, end: Date) {
@@ -102,7 +103,7 @@ export async function POST(
                     }
                 });
                 logs.push("✅ Legal acceptance timestamps repaired");
-                audit(AuditAction.UPDATE, "user", userId, { action: "evidence_repair_legal" });
+                audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_repair_legal" });
             }
 
             // 2. GENERATE LOGIN HISTORY (5-12 random logins)
@@ -149,7 +150,7 @@ export async function POST(
                 });
 
                 logs.push(`✅ Generated ${numLogins} login history records`);
-                audit(AuditAction.UPDATE, "user", userId, { action: "evidence_generate_logins", count: numLogins });
+                audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_logins", count: numLogins });
             }
 
             // 3. GENERATE COURSE PROGRESS (12-19% "One-Module-Done" Pattern)
@@ -237,7 +238,7 @@ export async function POST(
                     if (progressPercent >= 12 && progressPercent <= 19) {
                         logs.push(`✅ Target Accuracy Hit: ${progressPercent}% (Requested 12-19%)`);
                     }
-                    audit(AuditAction.UPDATE, "user", userId, { action: "evidence_generate_progress", lessons: lessonsMarked, percent: progressPercent });
+                    audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_progress", lessons: lessonsMarked, percent: progressPercent });
                 } else {
                     logs.push("⚠️ No active enrollment found to generate progress for");
                 }
@@ -282,7 +283,7 @@ export async function POST(
                             });
                             logs.push(`✅ Generated download for "${res.title}"`);
                         }
-                        audit(AuditAction.UPDATE, "user", userId, { action: "evidence_generate_downloads", count: numDownloads });
+                        audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_downloads", count: numDownloads });
                     } else {
                         logs.push("⚠️ No resources found in course to download");
                     }
@@ -363,7 +364,7 @@ export async function POST(
                     emailsSent++;
                 }
                 logs.push(`✅ Generated ${emailsSent} verified email logs (Delivered & Opened)`);
-                audit(AuditAction.UPDATE, "user", userId, { action: "evidence_generate_emails", count: emailsSent });
+                audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_emails", count: emailsSent });
             }
 
             // 6. GENERATE POSITIVE REVIEW (5 Star)
@@ -401,7 +402,7 @@ export async function POST(
                             }
                         });
                         logs.push(`✅ Generated 5-Star Course Review`);
-                        audit(AuditAction.UPDATE, "user", userId, { action: "evidence_generate_review" });
+                        audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_review" });
                     } else {
                         logs.push("⚠️ Review already exists, skipped generation");
                     }
@@ -416,7 +417,7 @@ export async function POST(
         // === IMPORT DISPUTE LOGIC (LEGACY/FALLBACK) ===
         if (platform && reason) {
             // 1. Log as Audit Log
-            audit(AuditAction.UPDATE, "user", userId, {
+            audit(AuditAction.USER_UPDATE, "user", userId, {
                 action: "import_dispute",
                 disputeId,
                 platform,
