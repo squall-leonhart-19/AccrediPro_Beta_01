@@ -556,24 +556,9 @@ export default function StudentSupportPortal() {
                                     </Badge>
                                 </div>
                                 <h2 className="text-xl font-bold text-slate-800 line-clamp-1">#{ticket.ticketNumber} - {ticket.subject}</h2>
-                                <p className="text-xs text-slate-500 mt-1">
+                                <p className=\"text-xs text-slate-500 mt-1\">
                                     Started {formatDistanceToNow(new Date(ticket.createdAt), { addSuffix: true })}
                                 </p>
-                                {/* Department Info */}
-                                {(() => {
-                                    const cat = CATEGORIES.find(c => c.id === ticket.category);
-                                    if (cat) {
-                                        return (
-                                            <div className="flex items-center gap-2 mt-2 text-xs bg-blue-50 border border-blue-100 rounded-lg px-3 py-1.5 w-fit">
-                                                <Shield className="w-3.5 h-3.5 text-blue-600" />
-                                                <span className="text-blue-700">Handled by <strong>{cat.department}</strong></span>
-                                                <span className="text-blue-400">•</span>
-                                                <span className="text-blue-600">Est. response: {cat.responseTime}</span>
-                                            </div>
-                                        );
-                                    }
-                                    return null;
-                                })()}
                             </div>
                         </div>
 
@@ -663,183 +648,184 @@ export default function StudentSupportPortal() {
                             </form>
                         </div>
                     </Card>
-                ) : (
-                    <div className="flex flex-col items-center justify-center p-12 text-slate-500">
-                        <AlertCircle className="w-12 h-12 mb-4 text-slate-300" />
-                        <h3 className="text-lg font-medium">Ticket not found</h3>
-                        <Button variant="link" onClick={() => setView("LIST")}>Return to list</Button>
-                    </div>
-                )}
+        ) : (
+            <div className="flex flex-col items-center justify-center p-12 text-slate-500">
+                <AlertCircle className="w-12 h-12 mb-4 text-slate-300" />
+                <h3 className="text-lg font-medium">Ticket not found</h3>
+                <Button variant="link" onClick={() => setView("LIST")}>Return to list</Button>
             </div>
-        );
+        )
     }
+            </div >
+        );
+}
 
-    // 3. LIST VIEW
-    return (
-        <div className="space-y-4 sm:space-y-6 animate-fade-in px-4 sm:px-0">
-            <div className="flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-burgundy-900 to-burgundy-800 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden">
-                <div className="relative z-10">
-                    <h1 className="text-xl sm:text-3xl font-bold flex items-center gap-3">
-                        Student Support
-                    </h1>
-                    <p className="text-burgundy-100 mt-2 max-w-md text-sm sm:text-base">
-                        Need help with your course, billing, or technical issues? We're here to assist you.
-                    </p>
-                </div>
-                <div className="mt-6 md:mt-0 relative z-10">
-                    <Button onClick={() => setView("CREATE")} size="lg" className="bg-gold-500 text-burgundy-950 hover:bg-gold-400 font-bold shadow-lg border-none">
-                        <Plus className="w-4 h-4 mr-2" /> Open New Ticket
-                    </Button>
-                </div>
-                {/* Background Pattern */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full -ml-10 -mb-10 blur-xl pointer-events-none" />
+// 3. LIST VIEW
+return (
+    <div className="space-y-4 sm:space-y-6 animate-fade-in px-4 sm:px-0">
+        <div className="flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-burgundy-900 to-burgundy-800 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden">
+            <div className="relative z-10">
+                <h1 className="text-xl sm:text-3xl font-bold flex items-center gap-3">
+                    Student Support
+                </h1>
+                <p className="text-burgundy-100 mt-2 max-w-md text-sm sm:text-base">
+                    Need help with your course, billing, or technical issues? We're here to assist you.
+                </p>
+            </div>
+            <div className="mt-6 md:mt-0 relative z-10">
+                <Button onClick={() => setView("CREATE")} size="lg" className="bg-gold-500 text-burgundy-950 hover:bg-gold-400 font-bold shadow-lg border-none">
+                    <Plus className="w-4 h-4 mr-2" /> Open New Ticket
+                </Button>
+            </div>
+            {/* Background Pattern */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full -ml-10 -mb-10 blur-xl pointer-events-none" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-1 space-y-6">
+                <Card className="card-premium bg-indigo-50/50 border-indigo-100">
+                    <CardHeader>
+                        <CardTitle className="text-sm font-semibold text-slate-700">Support Hours</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm text-slate-600">
+                        <p className="flex items-center gap-2 mb-2"><CheckCircle2 className="w-4 h-4 text-green-600" /> Mon-Fri: 9am - 6pm EST</p>
+                        <p className="flex items-center gap-2"><Loader2 className="w-4 h-4 text-slate-400" /> Weekends: Limited Support</p>
+                    </CardContent>
+                </Card>
+
+                {/* Need Help? - Private Chat */}
+                <Card className="border border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-white shadow-sm card-premium">
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                            <div className="relative flex-shrink-0">
+                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-burgundy-200 shadow-md">
+                                    <img
+                                        src="/coaches/sarah-coach.webp"
+                                        alt="Coach Sarah"
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            // Fallback if image fails
+                                            (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Sarah+Coach&background=722F37&color=fff";
+                                        }}
+                                    />
+                                </div>
+                                <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-gray-900">Need Private Help?</p>
+                                <p className="text-xs text-gray-500">Message your coach directly</p>
+                            </div>
+                            <Link href="/messages">
+                                <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-sm h-8 w-8 p-0">
+                                    <MessageSquare className="w-4 h-4" />
+                                </Button>
+                            </Link>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-1 space-y-6">
-                    <Card className="card-premium bg-indigo-50/50 border-indigo-100">
-                        <CardHeader>
-                            <CardTitle className="text-sm font-semibold text-slate-700">Support Hours</CardTitle>
-                        </CardHeader>
-                        <CardContent className="text-sm text-slate-600">
-                            <p className="flex items-center gap-2 mb-2"><CheckCircle2 className="w-4 h-4 text-green-600" /> Mon-Fri: 9am - 6pm EST</p>
-                            <p className="flex items-center gap-2"><Loader2 className="w-4 h-4 text-slate-400" /> Weekends: Limited Support</p>
-                        </CardContent>
-                    </Card>
-
-                    {/* Need Help? - Private Chat */}
-                    <Card className="border border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-white shadow-sm card-premium">
-                        <CardContent className="p-4">
-                            <div className="flex items-center gap-3">
-                                <div className="relative flex-shrink-0">
-                                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-burgundy-200 shadow-md">
-                                        <img
-                                            src="/coaches/sarah-coach.webp"
-                                            alt="Coach Sarah"
-                                            className="w-full h-full object-cover"
-                                            onError={(e) => {
-                                                // Fallback if image fails
-                                                (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Sarah+Coach&background=722F37&color=fff";
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-gray-900">Need Private Help?</p>
-                                    <p className="text-xs text-gray-500">Message your coach directly</p>
-                                </div>
-                                <Link href="/messages">
-                                    <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-sm h-8 w-8 p-0">
-                                        <MessageSquare className="w-4 h-4" />
-                                    </Button>
-                                </Link>
+            <div className="lg:col-span-2">
+                <Card className="card-premium min-h-[400px]">
+                    <CardHeader className="pb-0 border-b">
+                        <div className="flex justify-between items-center mb-3">
+                            <CardTitle className="text-lg">Your Tickets</CardTitle>
+                            <Badge variant="outline" className="bg-slate-50">{tickets.length} Total</Badge>
+                        </div>
+                        {/* Filter Tabs */}
+                        <div className="flex gap-1 -mb-px">
+                            {[
+                                { id: "ALL" as const, label: "All", count: tickets.length },
+                                { id: "OPEN" as const, label: "Open", count: tickets.filter(t => t.status !== "RESOLVED" && t.status !== "CLOSED").length },
+                                { id: "SOLVED" as const, label: "Solved", count: tickets.filter(t => t.status === "RESOLVED" || t.status === "CLOSED").length },
+                            ].map(tab => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setTicketFilter(tab.id)}
+                                    className={`px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors ${ticketFilter === tab.id
+                                        ? "border-burgundy-600 text-burgundy-700 bg-burgundy-50/50"
+                                        : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+                                        }`}
+                                >
+                                    {tab.label}
+                                    <span className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${ticketFilter === tab.id ? "bg-burgundy-100 text-burgundy-700" : "bg-slate-100 text-slate-500"
+                                        }`}>
+                                        {tab.count}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        {isLoading ? (
+                            <div className="p-12 text-center text-slate-500 flex flex-col items-center">
+                                <Loader2 className="w-8 h-8 mb-4 animate-spin text-slate-300" />
+                                <p>Loading your history...</p>
                             </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                <div className="lg:col-span-2">
-                    <Card className="card-premium min-h-[400px]">
-                        <CardHeader className="pb-0 border-b">
-                            <div className="flex justify-between items-center mb-3">
-                                <CardTitle className="text-lg">Your Tickets</CardTitle>
-                                <Badge variant="outline" className="bg-slate-50">{tickets.length} Total</Badge>
-                            </div>
-                            {/* Filter Tabs */}
-                            <div className="flex gap-1 -mb-px">
-                                {[
-                                    { id: "ALL" as const, label: "All", count: tickets.length },
-                                    { id: "OPEN" as const, label: "Open", count: tickets.filter(t => t.status !== "RESOLVED" && t.status !== "CLOSED").length },
-                                    { id: "SOLVED" as const, label: "Solved", count: tickets.filter(t => t.status === "RESOLVED" || t.status === "CLOSED").length },
-                                ].map(tab => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setTicketFilter(tab.id)}
-                                        className={`px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors ${ticketFilter === tab.id
-                                            ? "border-burgundy-600 text-burgundy-700 bg-burgundy-50/50"
-                                            : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50"
-                                            }`}
-                                    >
-                                        {tab.label}
-                                        <span className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${ticketFilter === tab.id ? "bg-burgundy-100 text-burgundy-700" : "bg-slate-100 text-slate-500"
-                                            }`}>
-                                            {tab.count}
-                                        </span>
-                                    </button>
-                                ))}
-                            </div>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            {isLoading ? (
-                                <div className="p-12 text-center text-slate-500 flex flex-col items-center">
-                                    <Loader2 className="w-8 h-8 mb-4 animate-spin text-slate-300" />
-                                    <p>Loading your history...</p>
+                        ) : tickets.length === 0 ? (
+                            <div className="p-12 text-center text-slate-500 flex flex-col items-center">
+                                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                                    <MessageSquare className="w-8 h-8 text-slate-300" />
                                 </div>
-                            ) : tickets.length === 0 ? (
-                                <div className="p-12 text-center text-slate-500 flex flex-col items-center">
-                                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                                        <MessageSquare className="w-8 h-8 text-slate-300" />
-                                    </div>
-                                    <h3 className="text-lg font-medium text-slate-700">No tickets yet</h3>
-                                    <p className="max-w-xs mx-auto mt-2 mb-6 text-sm">You haven't submitted any support requests. If you need help, we're here!</p>
-                                    <Button onClick={() => setView("CREATE")} variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">Create your first ticket</Button>
-                                </div>
-                            ) : (
-                                <div className="divide-y divide-slate-100">
-                                    {tickets
-                                        .filter(ticket => {
-                                            if (ticketFilter === "ALL") return true;
-                                            if (ticketFilter === "OPEN") return ticket.status !== "RESOLVED" && ticket.status !== "CLOSED";
-                                            if (ticketFilter === "SOLVED") return ticket.status === "RESOLVED" || ticket.status === "CLOSED";
-                                            return true;
-                                        })
-                                        .map((ticket) => (
-                                            <div
-                                                key={ticket.id}
-                                                className="p-4 hover:bg-slate-50 cursor-pointer transition-colors flex justify-between items-center group"
-                                                onClick={() => { setSelectedTicketId(ticket.id); setView("DETAIL"); }}
-                                            >
-                                                <div className="flex items-start gap-4">
-                                                    <div className={`p-2 rounded-full mt-1 ${ticket.status === 'RESOLVED' ? 'bg-purple-100 text-purple-600' :
-                                                        ticket.status === 'NEW' ? 'bg-blue-100 text-blue-600' :
-                                                            'bg-green-100 text-green-600'
-                                                        }`}>
-                                                        {ticket.status === 'RESOLVED' ? <CheckCircle2 className="w-4 h-4" /> : <MessageSquare className="w-4 h-4" />}
-                                                    </div>
-                                                    <div>
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="font-mono text-xs text-slate-400">#{ticket.ticketNumber}</span>
-                                                            <h4 className="font-semibold text-slate-800 group-hover:text-burgundy-700 transition-colors">
-                                                                {ticket.subject}
-                                                            </h4>
-                                                        </div>
-                                                        <p className="text-sm text-slate-500 line-clamp-1 mt-0.5">
-                                                            <span className="font-medium text-slate-600">{CATEGORIES.find(c => c.id === ticket.category)?.label || ticket.category}</span>
-                                                            <span className="mx-1">•</span>
-                                                            <span>Updated {formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: true })}</span>
-                                                        </p>
-                                                    </div>
+                                <h3 className="text-lg font-medium text-slate-700">No tickets yet</h3>
+                                <p className="max-w-xs mx-auto mt-2 mb-6 text-sm">You haven't submitted any support requests. If you need help, we're here!</p>
+                                <Button onClick={() => setView("CREATE")} variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">Create your first ticket</Button>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-slate-100">
+                                {tickets
+                                    .filter(ticket => {
+                                        if (ticketFilter === "ALL") return true;
+                                        if (ticketFilter === "OPEN") return ticket.status !== "RESOLVED" && ticket.status !== "CLOSED";
+                                        if (ticketFilter === "SOLVED") return ticket.status === "RESOLVED" || ticket.status === "CLOSED";
+                                        return true;
+                                    })
+                                    .map((ticket) => (
+                                        <div
+                                            key={ticket.id}
+                                            className="p-4 hover:bg-slate-50 cursor-pointer transition-colors flex justify-between items-center group"
+                                            onClick={() => { setSelectedTicketId(ticket.id); setView("DETAIL"); }}
+                                        >
+                                            <div className="flex items-start gap-4">
+                                                <div className={`p-2 rounded-full mt-1 ${ticket.status === 'RESOLVED' ? 'bg-purple-100 text-purple-600' :
+                                                    ticket.status === 'NEW' ? 'bg-blue-100 text-blue-600' :
+                                                        'bg-green-100 text-green-600'
+                                                    }`}>
+                                                    {ticket.status === 'RESOLVED' ? <CheckCircle2 className="w-4 h-4" /> : <MessageSquare className="w-4 h-4" />}
                                                 </div>
-                                                <div className="flex items-center gap-4">
-                                                    <Badge variant="secondary" className={
-                                                        ticket.status === "OPEN" ? "bg-green-100 text-green-700 border-green-200" :
-                                                            ticket.status === "RESOLVED" ? "bg-purple-100 text-purple-700 border-purple-200" :
-                                                                "bg-slate-100 text-slate-600 border-slate-200"
-                                                    }>
-                                                        {ticket.status}
-                                                    </Badge>
-                                                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                                                <div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-mono text-xs text-slate-400">#{ticket.ticketNumber}</span>
+                                                        <h4 className="font-semibold text-slate-800 group-hover:text-burgundy-700 transition-colors">
+                                                            {ticket.subject}
+                                                        </h4>
+                                                    </div>
+                                                    <p className="text-sm text-slate-500 line-clamp-1 mt-0.5">
+                                                        <span className="font-medium text-slate-600">{CATEGORIES.find(c => c.id === ticket.category)?.label || ticket.category}</span>
+                                                        <span className="mx-1">•</span>
+                                                        <span>Updated {formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: true })}</span>
+                                                    </p>
                                                 </div>
                                             </div>
-                                        ))}
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </div>
+                                            <div className="flex items-center gap-4">
+                                                <Badge variant="secondary" className={
+                                                    ticket.status === "OPEN" ? "bg-green-100 text-green-700 border-green-200" :
+                                                        ticket.status === "RESOLVED" ? "bg-purple-100 text-purple-700 border-purple-200" :
+                                                            "bg-slate-100 text-slate-600 border-slate-200"
+                                                }>
+                                                    {ticket.status}
+                                                </Badge>
+                                                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                                            </div>
+                                        </div>
+                                    ))}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </div>
-    );
+    </div>
+);
 }

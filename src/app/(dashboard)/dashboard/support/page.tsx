@@ -161,7 +161,7 @@ export default function SupportPage() {
   // View: Ticket Detail
   if (selectedTicket) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
         <Button variant="ghost" onClick={() => setSelectedTicket(null)} className="mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Tickets
@@ -190,9 +190,8 @@ export default function SupportPage() {
               {selectedTicket.messages.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`p-4 rounded-lg ${
-                    msg.isFromCustomer ? "bg-gray-50" : "bg-[#6B2C40]/10 border-l-4 border-[#6B2C40]"
-                  }`}
+                  className={`p-4 rounded-lg ${msg.isFromCustomer ? "bg-gray-50" : "bg-[#6B2C40]/10 border-l-4 border-[#6B2C40]"
+                    }`}
                 >
                   <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
                     <span className="font-medium">
@@ -236,7 +235,7 @@ export default function SupportPage() {
   // View: New Ticket Form
   if (showNewTicket) {
     return (
-      <div className="max-w-2xl mx-auto p-6">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
         <Button variant="ghost" onClick={() => setShowNewTicket(false)} className="mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back
@@ -307,10 +306,10 @@ export default function SupportPage() {
 
   // View: Tickets List
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
             <Ticket className="w-6 h-6" />
             Support
           </h1>
@@ -362,8 +361,8 @@ export default function SupportPage() {
                         {STATUS_LABELS[ticket.status]?.label || ticket.status}
                       </Badge>
                     </div>
-                    <h3 className="font-medium">{ticket.subject}</h3>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                    <h3 className="font-medium text-sm sm:text-base line-clamp-1">{ticket.subject}</h3>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-xs sm:text-sm text-gray-500">
                       <span className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
                         {formatDate(ticket.updatedAt)}
