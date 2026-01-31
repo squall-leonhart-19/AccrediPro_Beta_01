@@ -297,7 +297,7 @@ export async function POST(request: Request) {
             to: email,
             subject,
             html: personalEmailWrapper(content.replace(/\n/g, '<br>')),
-            type: "marketing",
+            type: "transactional",
         });
 
         if (result.success) {
@@ -352,7 +352,7 @@ export async function GET(request: Request) {
                 to: email,
                 subject: `[TEST] ${subject}`,
                 html: personalEmailWrapper(content.replace(/\n/g, '<br>')),
-                type: "marketing",
+                type: "transactional",
             });
 
             results[type] = result.success || false;

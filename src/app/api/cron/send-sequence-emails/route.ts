@@ -153,7 +153,7 @@ export async function GET(request: NextRequest) {
           to: user.email,
           subject,
           html: brandedEmailWrapper(htmlContent),
-          type: "marketing",
+          type: "transactional",
         });
 
         if (result.success) {

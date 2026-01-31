@@ -219,7 +219,7 @@ async function sendRecoveryEmail(
     to: email,
     subject: emailConfig.subject,
     html: personalEmailWrapper(emailConfig.getBody(firstName)),
-    type: "marketing", // Use personal-style wrapper
+    type: "transactional", // Changed from marketing to transactional
   });
 
   // Update the user record to mark this email as sent

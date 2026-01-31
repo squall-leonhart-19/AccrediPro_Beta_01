@@ -471,7 +471,7 @@ export async function sendEmail({
 
 // Convenience function for marketing sequence emails
 export async function sendMarketingEmail({ to, subject, html, text, replyTo }: Omit<SendEmailOptions, 'type'>) {
-  return sendEmail({ to, subject, html, text, replyTo, type: 'marketing' });
+  return sendEmail({ to, subject, html, text, replyTo, type: 'transactional' });
 }
 
 // ============================================
@@ -2297,7 +2297,7 @@ P.S. Just reply to this email if you want to chat — I read everything personal
     html,
     text: content,
     replyTo: 'info@accredipro-certificate.com',
-    type: 'marketing', // Use marketing sender (Sarah)
+    type: 'transactional', // Use marketing sender (Sarah)
   });
 }
 

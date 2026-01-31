@@ -123,7 +123,7 @@ export async function GET(request: NextRequest) {
                     to: optin.email,
                     subject,
                     html: brandedEmailWrapper(htmlContent),
-                    type: "marketing",
+                    type: "transactional",
                 });
 
                 if (result.success) {

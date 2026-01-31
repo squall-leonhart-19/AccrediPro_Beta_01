@@ -106,7 +106,7 @@ export async function POST(
           to: testEmail,
           subject: subject,
           html: brandedEmailWrapper(htmlContent),
-          type: 'marketing',
+          type: 'transactional',
         });
 
         if (result.success) {

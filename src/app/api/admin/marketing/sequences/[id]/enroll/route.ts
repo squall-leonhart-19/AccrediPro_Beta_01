@@ -134,7 +134,7 @@ export async function POST(
             to: user.email,
             subject,
             html: brandedEmailWrapper(htmlContent),
-            type: 'marketing',
+            type: 'transactional',
           });
 
           if (result.success) {
@@ -264,7 +264,7 @@ export async function POST(
           to: user.email,
           subject,
           html: brandedEmailWrapper(htmlContent),
-          type: 'marketing',
+          type: 'transactional',
         });
 
         if (result.success) {

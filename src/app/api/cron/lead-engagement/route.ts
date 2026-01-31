@@ -136,7 +136,7 @@ export async function GET(request: Request) {
                         to: user.email,
                         subject: MINI_DIPLOMA_EMAILS.all_complete.subject(user.firstName || "there"),
                         html: personalEmailWrapper(MINI_DIPLOMA_EMAILS.all_complete.content(user.firstName || "there").replace(/\n/g, '<br>')),
-                        type: "marketing",
+                        type: "transactional",
                     }).catch(console.error);
                 }
                 await prisma.userTag.create({ data: { userId: user.id, tag: completeEmailTag } });
@@ -169,7 +169,7 @@ export async function GET(request: Request) {
                         to: user.email,
                         subject: emailContent.subject.replace(/\{\{firstName\}\}/g, user.firstName || "there"),
                         html: personalEmailWrapper(emailContent.content.replace(/\{\{firstName\}\}/g, user.firstName || "there").replace(/\n/g, '<br>')),
-                        type: "marketing"
+                        type: "transactional"
                     }).catch(console.error);
 
                     await prisma.userTag.create({ data: { userId: user.id, tag: emailTag } });
