@@ -45,8 +45,19 @@ async function getMessageStats() {
     });
     const sarahId = sarah?.id;
 
+    // Return defaults if Sarah doesn't exist
+    if (!sarahId) {
+        return {
+            messagesToday: 0,
+            messagesThisWeek: 0,
+            totalConversations: 0,
+            awaitingResponse: 0,
+        };
+    }
+
     // Messages from students (not from Sarah)
     const [messagesToday, messagesThisWeek, totalConversations] = await Promise.all([
+
         prisma.message.count({
             where: {
                 createdAt: { gte: today },

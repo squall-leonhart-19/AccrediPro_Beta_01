@@ -28,6 +28,10 @@ const onboardingSchema = z.object({
   referralSource: z.string().optional(),
   personalMessage: z.string().optional(),
   leadScore: z.number().optional(),
+  // Sarah's Qualification Flow fields
+  firstClientDate: z.string().optional(),
+  shareInCommunity: z.boolean().optional(),
+  drivers: z.array(z.string()).optional(), // Emotional drivers (why they're doing this)
 });
 
 export async function POST(request: NextRequest) {
@@ -117,6 +121,21 @@ export async function POST(request: NextRequest) {
       for (const obstacle of data.obstacles) {
         tags.push({ tag: `obstacle:${obstacle}` });
       }
+    }
+
+    // Driver tags (emotional motivations from Sarah's flow)
+    if (data.drivers) {
+      for (const driver of data.drivers) {
+        tags.push({ tag: `driver:${driver}` });
+      }
+    }
+
+    // First client commitment date
+    if (data.firstClientDate) {
+      tags.push({
+        tag: `first_client_date:${data.firstClientDate}`,
+        metadata: { shareInCommunity: data.shareInCommunity || false }
+      });
     }
 
     // Experience level
