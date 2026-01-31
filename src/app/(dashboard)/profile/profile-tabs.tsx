@@ -94,7 +94,10 @@ interface GoalsData {
     investmentReadiness: string | null;
     obstacles: string[];
     interests: string[];
+    drivers: string[];
+    firstClientDate: string | null;
 }
+
 
 interface ProfileTabsProps {
     user: {
@@ -840,7 +843,7 @@ export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
             {activeTab === "settings" && (
                 <div className="grid lg:grid-cols-2 gap-6">
                     {/* My Goals & Journey - NEW */}
-                    {goals && (goals.incomeGoal || user.learningGoal) && (
+                    {goals && (goals.incomeGoal || user.learningGoal || goals.firstClientDate) && (
                         <Card className="card-premium lg:col-span-2 bg-gradient-to-br from-burgundy-50 via-white to-gold-50 border-burgundy-200">
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between mb-4">
@@ -852,7 +855,7 @@ export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
                                         variant="outline"
                                         size="sm"
                                         className="text-burgundy-600 border-burgundy-200 hover:bg-burgundy-50"
-                                        onClick={() => window.location.href = '/start-here'}
+                                        onClick={() => window.location.href = '/start-here/questions'}
                                     >
                                         <Pencil className="w-3 h-3 mr-1.5" />
                                         Update Goals
@@ -869,30 +872,83 @@ export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
                                     {/* Income Target */}
                                     {goals.incomeGoal && (
                                         <div className="p-4 bg-white rounded-xl border border-gray-100">
-                                            <p className="text-sm text-gray-500 mb-1">Income Target</p>
+                                            <p className="text-sm text-gray-500 mb-1">💰 Income Target</p>
                                             <p className="font-medium text-gold-700">
-                                                {goals.incomeGoal === 'empire' ? '$50K+/month (Empire Builder)' :
-                                                    goals.incomeGoal === 'full_time' ? '$10K-$50K/month (Full-Time)' :
-                                                        goals.incomeGoal === 'side_income' ? '$1K-$10K/month (Side Income)' :
-                                                            goals.incomeGoal.replace(/_/g, ' ')}
+                                                {goals.incomeGoal === '10k_plus' ? '$10,000+/month' :
+                                                    goals.incomeGoal === '5k_10k' ? '$5K-$10K/month' :
+                                                        goals.incomeGoal === '2k_5k' ? '$2K-$5K/month' :
+                                                            goals.incomeGoal === 'starter' ? 'First paying clients' :
+                                                                goals.incomeGoal.replace(/_/g, ' ')}
                                             </p>
+                                        </div>
+                                    )}
+                                    {/* First Client Date */}
+                                    {goals.firstClientDate && (
+                                        <div className={`p-4 rounded-xl border ${(() => {
+                                            const targetDate = new Date(goals.firstClientDate);
+                                            const today = new Date();
+                                            today.setHours(0, 0, 0, 0);
+                                            const diffDays = Math.ceil((targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                                            return diffDays <= 7 ? "bg-red-50 border-red-200" : diffDays <= 30 ? "bg-amber-50 border-amber-200" : "bg-white border-gray-100";
+                                        })()}`}>
+                                            <p className="text-sm text-gray-500 mb-1">📅 First Client Deadline</p>
+                                            {(() => {
+                                                const targetDate = new Date(goals.firstClientDate);
+                                                const today = new Date();
+                                                today.setHours(0, 0, 0, 0);
+                                                const diffDays = Math.ceil((targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                                                const formattedDate = targetDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                                return (
+                                                    <>
+                                                        <p className={`font-bold ${diffDays <= 7 ? "text-red-600" : diffDays <= 30 ? "text-amber-600" : "text-gray-900"}`}>
+                                                            {diffDays > 0 ? `${diffDays} days left` : diffDays === 0 ? "Today! 🎉" : "Deadline passed"}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500">{formattedDate}</p>
+                                                    </>
+                                                );
+                                            })()}
                                         </div>
                                     )}
                                     {/* Timeline */}
                                     {goals.timeline && (
                                         <div className="p-4 bg-white rounded-xl border border-gray-100">
-                                            <p className="text-sm text-gray-500 mb-1">Timeline</p>
+                                            <p className="text-sm text-gray-500 mb-1">⏰ Timeline</p>
                                             <p className="font-medium text-gray-900 capitalize">{goals.timeline.replace(/_/g, ' ')}</p>
                                         </div>
                                     )}
                                     {/* Current Situation */}
                                     {goals.situation && (
                                         <div className="p-4 bg-white rounded-xl border border-gray-100">
-                                            <p className="text-sm text-gray-500 mb-1">Current Situation</p>
+                                            <p className="text-sm text-gray-500 mb-1">🎯 Current Situation</p>
                                             <p className="font-medium text-gray-900 capitalize">{goals.situation.replace(/_/g, ' ')}</p>
                                         </div>
                                     )}
                                 </div>
+                                {/* Why I'm Doing This (Drivers) */}
+                                {goals.drivers && goals.drivers.length > 0 && (
+                                    <div className="mt-4">
+                                        <p className="text-sm text-gray-500 mb-2">❤️ Why I'm Doing This</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {goals.drivers.map((driver, i) => {
+                                                const driverLabels: Record<string, { label: string; emoji: string }> = {
+                                                    "financial_freedom": { label: "Financial freedom", emoji: "💰" },
+                                                    "flexibility": { label: "Work from home", emoji: "🏠" },
+                                                    "loved_one": { label: "Help someone I love", emoji: "👶" },
+                                                    "burnout": { label: "Escape burnout", emoji: "🔥" },
+                                                    "purpose": { label: "Make an impact", emoji: "💪" },
+                                                    "credibility": { label: "Gain credibility", emoji: "🎓" },
+                                                    "entrepreneur": { label: "Build a business", emoji: "🚀" },
+                                                };
+                                                const info = driverLabels[driver] || { label: driver.replace(/_/g, ' '), emoji: "✨" };
+                                                return (
+                                                    <Badge key={i} variant="secondary" className="bg-gradient-to-r from-burgundy-100 to-gold-100 text-burgundy-700 border-burgundy-200">
+                                                        {info.emoji} {info.label}
+                                                    </Badge>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
                                 {/* Focus Areas */}
                                 {goals.interests && goals.interests.length > 0 && (
                                     <div className="mt-4">
@@ -915,6 +971,7 @@ export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
                     )}
 
                     {/* Account Information - First */}
+
                     <Card className="card-premium lg:col-span-2">
                         <CardContent className="p-6">
                             <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">

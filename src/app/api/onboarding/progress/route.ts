@@ -30,24 +30,38 @@ export async function GET() {
             });
         }
 
-        // Calculate completion percentage
+        // Check if user has set their goals (has income_goal tag)
+        const hasIncomeGoalTag = await prisma.userTag.findFirst({
+            where: {
+                userId: session.user.id,
+                tag: { startsWith: "income_goal:" },
+            },
+        });
+        const goalsSet = !!hasIncomeGoalTag;
+
+        // Calculate completion percentage (now 7 steps)
         const steps = [
             progress.profileComplete,
             progress.welcomeVideoWatched,
+            goalsSet, // NEW: Set your goals step
             progress.firstMessageSent,
             progress.firstLessonComplete,
             progress.communityIntro,
             progress.resourceDownloaded,
         ];
         const completedCount = steps.filter(Boolean).length;
-        const percentage = Math.round((completedCount / 6) * 100);
+        const totalSteps = 7;
+        const percentage = Math.round((completedCount / totalSteps) * 100);
 
         return NextResponse.json({
-            progress,
+            progress: {
+                ...progress,
+                goalsSet, // Include in response
+            },
             completedCount,
-            totalSteps: 6,
+            totalSteps,
             percentage,
-            isComplete: completedCount === 6,
+            isComplete: completedCount === totalSteps,
         });
     } catch (error) {
         console.error("[Onboarding] Error fetching progress:", error);

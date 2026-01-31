@@ -17,6 +17,7 @@ interface OnboardingData {
     progress: {
         profileComplete: boolean;
         welcomeVideoWatched: boolean;
+        goalsSet: boolean;
         firstMessageSent: boolean;
         firstLessonComplete: boolean;
         communityIntro: boolean;
@@ -105,6 +106,13 @@ export default function OnboardingChecklist() {
             description: "Get started with Sarah",
             href: "/start-here",
             completed: data.progress.welcomeVideoWatched,
+        },
+        {
+            id: "goalsSet",
+            label: "Set your goals",
+            description: "Income, timeline & motivation",
+            href: "/start-here/questions",
+            completed: data.progress.goalsSet,
         },
         {
             id: "firstMessageSent",

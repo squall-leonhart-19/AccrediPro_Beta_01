@@ -79,6 +79,8 @@ async function getUserGoals(userId: string) {
   const investmentTag = userTags.find(t => t.tag.startsWith('investment:'));
   const obstaclesTags = userTags.filter(t => t.tag.startsWith('obstacle:'));
   const interestsTags = userTags.filter(t => t.tag.startsWith('interest:'));
+  const driversTags = userTags.filter(t => t.tag.startsWith('driver:'));
+  const firstClientDateTag = userTags.find(t => t.tag.startsWith('first_client_date:'));
 
   return {
     incomeGoal: incomeGoalTag?.tag.replace('income_goal:', '') || null,
@@ -87,8 +89,11 @@ async function getUserGoals(userId: string) {
     investmentReadiness: investmentTag?.tag.replace('investment:', '') || null,
     obstacles: obstaclesTags.map(t => t.tag.replace('obstacle:', '')),
     interests: interestsTags.map(t => t.tag.replace('interest:', '')),
+    drivers: driversTags.map(t => t.tag.replace('driver:', '')),
+    firstClientDate: firstClientDateTag?.tag.replace('first_client_date:', '') || null,
   };
 }
+
 
 async function getAllBadges() {
   return prisma.badge.findMany({

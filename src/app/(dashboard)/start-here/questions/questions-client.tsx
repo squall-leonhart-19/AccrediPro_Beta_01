@@ -185,6 +185,44 @@ I'm ready to start! What should I focus on first?`;
                         // Don't block navigation if message fails
                     }
 
+                    // Post to community if they opted in
+                    if (shareInCommunity && firstClientDate) {
+                        try {
+                            const dateObj = new Date(firstClientDate);
+                            const formattedDate = dateObj.toLocaleDateString('en-US', {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric'
+                            });
+                            const driverLabels = drivers.map(d => driverOptions.find(o => o.value === d)?.label || d);
+
+                            const postContent = `🚀 **Public Accountability Post**
+
+I'm committing to getting my first paying client by **${formattedDate}**!
+
+Here's why I'm doing this:
+${driverLabels.map(d => `• ${d}`).join('\n')}
+
+Keeping myself accountable by sharing this here. Let's do this! 💪
+
+Who else is working toward their first client? Drop a comment below and let's support each other!`;
+
+                            // Post to Introduce Yourself category (cmkvj0klb0000bim95cl2peji)
+                            await fetch("/api/community/posts", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    title: `My First Client Commitment: ${formattedDate}`,
+                                    content: postContent,
+                                    categoryId: "cmkvj0klb0000bim95cl2peji", // Introduce Yourself
+                                }),
+                            });
+                        } catch (postError) {
+                            console.error("Failed to create community post:", postError);
+                            // Don't block navigation if post fails
+                        }
+                    }
+
                     router.push("/start-here");
                 }
             } catch (error) {
