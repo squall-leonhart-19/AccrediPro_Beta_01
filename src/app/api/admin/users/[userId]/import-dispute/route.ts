@@ -324,7 +324,6 @@ export async function POST(
                             status: "DELIVERED",
                             sentAt: sentAt,
                             toEmail: user.email,
-                            metadata: {},
                         }
                     });
 
