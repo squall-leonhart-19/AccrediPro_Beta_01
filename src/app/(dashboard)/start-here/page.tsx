@@ -87,10 +87,10 @@ async function getStartHereData(userId: string) {
     const obstaclesTags = userTags.filter(t => t.tag.startsWith('obstacle:'));
     const interestsTags = userTags.filter(t => t.tag.startsWith('interest:'));
 
-    // Get first lesson URL
+    // Get first lesson URL - using /learning route which is the actual lesson player
     const firstLesson = enrollmentData?.course?.modules?.[0]?.lessons?.[0];
     const firstLessonUrl = firstLesson
-        ? `/courses/${enrollmentData.course.slug}/lesson/${firstLesson.id}`
+        ? `/learning/${enrollmentData.course.slug}/${firstLesson.id}`
         : null;
 
     return {

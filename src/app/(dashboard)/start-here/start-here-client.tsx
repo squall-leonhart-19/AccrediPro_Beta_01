@@ -297,29 +297,27 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
                     <div className="lg:col-span-2">
                         <Card className="card-premium overflow-hidden border-0 shadow-xl">
                             <CardContent className="p-0">
-                                {/* Header - Welcome + Checklist */}
-                                <div className="bg-white border-b border-gray-100 p-6 lg:p-8">
-                                    {/* Welcome badge */}
-                                    <div className="inline-flex items-center gap-2 text-burgundy-600 text-sm font-medium mb-3 bg-burgundy-50 px-3 py-1 rounded-full">
-                                        <Sparkles className="w-4 h-4" />
-                                        Welcome to AccrediPro Academy
+                                {/* Header - Welcome + Checklist - compact on mobile */}
+                                <div className="bg-white border-b border-gray-100 p-4 md:p-6 lg:p-8">
+                                    {/* Welcome badge - smaller on mobile */}
+                                    <div className="inline-flex items-center gap-1.5 text-burgundy-600 text-xs md:text-sm font-medium mb-2 md:mb-3 bg-burgundy-50 px-2.5 py-1 rounded-full">
+                                        <Sparkles className="w-3 h-3 md:w-4 md:h-4" />
+                                        Welcome to AccrediPro
                                     </div>
 
-                                    {/* Main heading */}
-                                    <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-5">
+                                    {/* Main heading - compact on mobile */}
+                                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 md:gap-4 mb-3 md:mb-5">
                                         <div>
-                                            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
-                                                Let's Get You Started, {user?.firstName || "Future Coach"}! 🎉
+                                            <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-gray-900 mb-0.5">
+                                                Get Started, {user?.firstName || "Future Coach"}! 🎉
                                             </h1>
-                                            <p className="text-gray-500 text-sm lg:text-base">
-                                                Complete 3 quick steps to unlock your learning journey
+                                            <p className="text-gray-500 text-xs md:text-sm lg:text-base">
+                                                Complete 3 steps to start learning
                                             </p>
                                         </div>
-                                        <div className="flex items-center gap-3 bg-burgundy-50 rounded-xl px-4 py-3 border border-burgundy-100">
-                                            <div className="text-center">
-                                                <div className="text-3xl font-bold text-burgundy-600">{completedCount}/{checklist.length}</div>
-                                                <div className="text-xs text-gray-500">Steps Done</div>
-                                            </div>
+                                        <div className="flex items-center gap-2 bg-burgundy-50 rounded-lg px-3 py-2 border border-burgundy-100 self-start">
+                                            <div className="text-xl md:text-2xl font-bold text-burgundy-600">{completedCount}/{checklist.length}</div>
+                                            <div className="text-xs text-gray-500">Done</div>
                                         </div>
                                     </div>
 
@@ -361,18 +359,18 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
                                     </div>
                                 </div>
 
-                                {/* Checklist Items */}
-                                <div className="p-6 space-y-3">
-                                    {/* Sarah Welcome Video */}
-                                    <div className="mb-6 rounded-xl overflow-hidden bg-burgundy-50 border border-burgundy-200">
-                                        <div className="p-4 border-b border-burgundy-200 bg-gradient-to-r from-burgundy-600 to-burgundy-700">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/30">
+                                {/* Checklist Items - compact padding on mobile */}
+                                <div className="p-4 md:p-6 space-y-2.5">
+                                    {/* Sarah Welcome Video - compact on mobile */}
+                                    <div className="mb-4 rounded-xl overflow-hidden bg-burgundy-50 border border-burgundy-200">
+                                        <div className="p-3 border-b border-burgundy-200 bg-gradient-to-r from-burgundy-600 to-burgundy-700">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white/30 flex-shrink-0">
                                                     <img src="/coaches/sarah-coach.webp" alt="Coach Sarah" className="w-full h-full object-cover" />
                                                 </div>
-                                                <div className="text-white">
-                                                    <p className="font-semibold text-sm">Welcome from Coach Sarah 👋</p>
-                                                    <p className="text-xs text-burgundy-200">Watch this first before getting started</p>
+                                                <div className="text-white min-w-0">
+                                                    <p className="font-semibold text-sm truncate">Welcome from Coach Sarah 👋</p>
+                                                    <p className="text-xs text-burgundy-200 truncate">Watch this first</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -386,75 +384,71 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
                                         const isLocked = item.locked && !item.completed;
 
                                         const content = (
-                                            <div className={`group relative flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 ${item.completed
+                                            <div className={`group relative flex items-center gap-3 p-3 rounded-xl border transition-all duration-200 ${item.completed
                                                 ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-200"
                                                 : isLocked
-                                                    ? "bg-gray-100 border-gray-200 opacity-60 cursor-not-allowed"
+                                                    ? "bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed"
                                                     : isNextStep
-                                                        ? "bg-gradient-to-r from-gold-50 to-amber-50 border-gold-300 shadow-md shadow-gold-100 hover:shadow-lg hover:shadow-gold-200 cursor-pointer"
-                                                        : "bg-gray-50 border-gray-200 hover:border-burgundy-200 hover:bg-burgundy-50/50 cursor-pointer"
+                                                        ? "bg-gradient-to-r from-gold-50 to-amber-50 border-gold-300 shadow-sm hover:shadow-md cursor-pointer"
+                                                        : "bg-white border-gray-200 hover:border-burgundy-200 hover:bg-burgundy-50/30 cursor-pointer"
                                                 }`}>
-                                                {/* Step indicator */}
-                                                <div className={`relative w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${item.completed
+                                                {/* Step indicator - compact 40px */}
+                                                <div className={`relative w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${item.completed
                                                     ? "bg-gradient-to-br from-green-500 to-emerald-600"
                                                     : isLocked
                                                         ? "bg-gray-200"
                                                         : isNextStep
-                                                            ? "bg-gradient-to-br from-gold-400 to-amber-500 animate-pulse"
+                                                            ? "bg-gradient-to-br from-gold-400 to-amber-500"
                                                             : `bg-${item.color}-100`
                                                     }`}>
                                                     {item.completed ? (
-                                                        <CheckCircle className="w-7 h-7 text-white" />
+                                                        <CheckCircle className="w-5 h-5 text-white" />
                                                     ) : isLocked ? (
-                                                        <Lock className="w-6 h-6 text-gray-400" />
+                                                        <Lock className="w-4 h-4 text-gray-400" />
                                                     ) : (
-                                                        <IconComponent className={`w-6 h-6 ${isNextStep ? "text-white" : `text-${item.color}-600`}`} />
+                                                        <IconComponent className={`w-5 h-5 ${isNextStep ? "text-white" : `text-${item.color}-600`}`} />
                                                     )}
-                                                    {/* Step number badge */}
-                                                    <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${item.completed
+                                                    {/* Step number - smaller */}
+                                                    <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center ${item.completed
                                                         ? "bg-green-600 text-white"
                                                         : isLocked
                                                             ? "bg-gray-300 text-gray-500"
-                                                            : "bg-white shadow border border-gray-200 text-gray-600"
+                                                            : "bg-white shadow-sm border border-gray-200 text-gray-600"
                                                         }`}>
-                                                        {item.completed ? "✓" : isLocked ? "🔒" : stepNumber}
+                                                        {item.completed ? "✓" : stepNumber}
                                                     </div>
                                                 </div>
 
-                                                {/* Content */}
+                                                {/* Content - compact text */}
                                                 <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-lg">{item.emoji}</span>
-                                                        <h3 className={`font-semibold text-base ${item.completed ? "text-green-700" : isLocked ? "text-gray-400" : "text-gray-900"
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="text-sm">{item.emoji}</span>
+                                                        <h3 className={`font-semibold text-sm ${item.completed ? "text-green-700" : isLocked ? "text-gray-400" : "text-gray-900"
                                                             }`}>
                                                             {item.label}
                                                         </h3>
                                                     </div>
-                                                    <p className={`text-sm mt-0.5 ${item.completed ? "text-green-600" : isLocked ? "text-gray-400" : "text-gray-500"
+                                                    <p className={`text-xs mt-0.5 line-clamp-1 ${item.completed ? "text-green-600" : isLocked ? "text-gray-400" : "text-gray-500"
                                                         }`}>
-                                                        {isLocked ? "Complete previous step to unlock" : item.description}
+                                                        {isLocked ? "Complete previous step" : item.description}
                                                     </p>
                                                 </div>
 
-                                                {/* Right side - XP reward or completed badge */}
-                                                <div className="flex items-center gap-3 flex-shrink-0">
+                                                {/* Right side - compact XP/status */}
+                                                <div className="flex items-center gap-2 flex-shrink-0">
                                                     {item.completed ? (
-                                                        <Badge className="bg-green-100 text-green-700 border-green-200">
-                                                            Completed
-                                                        </Badge>
-                                                    ) : isLocked ? (
-                                                        <Badge className="bg-gray-100 text-gray-400 border-gray-200">
-                                                            {item.reward}
+                                                        <Badge className="bg-green-100 text-green-700 border-green-200 text-xs py-0">
+                                                            Done
                                                         </Badge>
                                                     ) : (
                                                         <>
-                                                            <Badge className={`${isNextStep
+                                                            <Badge className={`text-xs py-0 ${isNextStep
                                                                 ? "bg-gold-100 text-gold-700 border-gold-300"
-                                                                : "bg-gray-100 text-gray-600 border-gray-200"
+                                                                : "bg-gray-100 text-gray-500 border-gray-200"
                                                                 }`}>
                                                                 {item.reward}
                                                             </Badge>
-                                                            <ArrowRight className={`w-5 h-5 transition-transform group-hover:translate-x-1 ${isNextStep ? "text-gold-600" : "text-gray-400"
+                                                            <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isNextStep ? "text-gold-600" : "text-gray-400"
                                                                 }`} />
                                                         </>
                                                     )}
