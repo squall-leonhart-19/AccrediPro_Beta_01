@@ -212,6 +212,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // ===== ONBOARDING: Mark first message sent =====
+    try {
+      await prisma.onboardingProgress.upsert({
+        where: { userId: session.user.id },
+        create: { userId: session.user.id, firstMessageSent: true },
+        update: { firstMessageSent: true },
+      });
+    } catch (e) {
+      // Silently fail - don't block message sending
+    }
+
     // ===== SEND PUSH NOTIFICATION =====
     try {
       const senderName = session.user.firstName || "Someone";

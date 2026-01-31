@@ -194,6 +194,9 @@ model User {
   vslSessions    LiveVSLSession[]   @relation("UserVSLSessions")
   smartNudges    SmartNudge[]       @relation("UserSmartNudges")
 
+  // Buyer Onboarding Steps
+  onboardingProgress OnboardingProgress?
+
   @@index([email])
   @@index([role])
   @@index([assignedCoachId])
@@ -3350,4 +3353,35 @@ model SmartNudge {
   @@index([userId])
   @@index([triggerType])
   @@index([sentAt])
+}
+
+// ==================== BUYER ONBOARDING ====================
+
+// Tracks onboarding step completion for new buyers
+model OnboardingProgress {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Step completion flags
+  profileComplete      Boolean @default(false)  // Added photo + bio
+  welcomeVideoWatched  Boolean @default(false)  // Watched intro video
+  firstMessageSent     Boolean @default(false)  // Sent message to coach
+  firstLessonComplete  Boolean @default(false)  // Completed a lesson
+  communityIntro       Boolean @default(false)  // Posted in community
+  resourceDownloaded   Boolean @default(false)  // Downloaded a resource
+
+  // Nudge tracking (prevent duplicate emails)
+  profileNudgeSentAt    DateTime?
+  messageNudgeSentAt    DateTime?
+  lessonNudgeSentAt     DateTime?
+  communityNudgeSentAt  DateTime?
+
+  // Completion
+  completedAt DateTime?  // All 6 steps done
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([completedAt])
+  @@index([createdAt])
 }

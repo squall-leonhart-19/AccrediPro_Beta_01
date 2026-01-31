@@ -60,6 +60,19 @@ export async function PATCH(request: NextRequest) {
             },
         });
 
+        // ===== ONBOARDING: Mark profile complete (if avatar or bio set) =====
+        if (updatedUser.avatar || updatedUser.bio) {
+            try {
+                await prisma.onboardingProgress.upsert({
+                    where: { userId: session.user.id },
+                    create: { userId: session.user.id, profileComplete: true },
+                    update: { profileComplete: true },
+                });
+            } catch (e) {
+                // Silently fail
+            }
+        }
+
         return NextResponse.json({
             success: true,
             user: updatedUser,
