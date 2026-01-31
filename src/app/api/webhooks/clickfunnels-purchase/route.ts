@@ -776,7 +776,7 @@ export async function POST(request: NextRequest) {
                     await sendDFYWelcomeEmail({
                         to: normalizedEmail,
                         firstName: firstName || "there",
-                        productName: dfyProduct.name,
+                        productName: dfyProduct.title,
                         intakeUrl,
                     });
                     console.log(`[CF Purchase] ✅ DFY welcome email sent`);

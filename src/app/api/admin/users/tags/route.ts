@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
-import { sendCourseEnrollmentEmail, sendProAcceleratorEnrollmentEmail } from "@/lib/email";
+import { sendCourseEnrollmentEmail, sendProAcceleratorEnrollmentEmail, sendDFYWelcomeEmail } from "@/lib/email";
 import { verifyEmail } from "@/lib/neverbounce";
 
 const addTagSchema = z.object({
@@ -296,6 +296,121 @@ export async function POST(request: NextRequest) {
         tag,
         miniDiplomaGranted: true,
         nurtureEnrolled,
+      });
+    }
+
+    // Special tag: dfy_purchased / done_for_you → create DFY purchase + send email + Jessica DM
+    if (data.tag === "dfy_purchased" || data.tag === "done_for_you") {
+      const targetUser = await prisma.user.findUnique({
+        where: { id: data.userId },
+        select: { id: true, email: true, firstName: true },
+      });
+
+      let dfyMessage = "Tag added";
+      const actions: string[] = [];
+
+      if (targetUser) {
+        try {
+          // Find or create DFY product
+          let dfyProduct = await prisma.dFYProduct.findFirst({
+            where: { slug: "dfy-program-ds" },
+          });
+
+          if (!dfyProduct) {
+            dfyProduct = await prisma.dFYProduct.create({
+              data: {
+                slug: "dfy-program-ds",
+                title: "Done For You Website Package",
+                description: "Complete coaching website setup",
+                price: 397,
+                productType: "CORE_PROGRAM",
+                category: "functional-medicine",
+                isActive: true,
+              },
+            });
+          }
+
+          // Find Jessica (DFY specialist)
+          const jessica = await prisma.user.findFirst({
+            where: { email: "jessica@accredipro-certificate.com" },
+            select: { id: true },
+          });
+
+          // Create DFY purchase record (upsert to avoid duplicates)
+          const dfyPurchase = await prisma.dFYPurchase.upsert({
+            where: {
+              userId_productId: { userId: targetUser.id, productId: dfyProduct.id },
+            },
+            update: {},
+            create: {
+              userId: targetUser.id,
+              productId: dfyProduct.id,
+              purchasePrice: 397,
+              status: "COMPLETED",
+              fulfillmentStatus: "PENDING",
+              assignedToId: jessica?.id || null,
+            },
+          });
+          actions.push("DFY purchase record created");
+
+          // Also add dfy_purchased if the tag was "done_for_you"
+          if (data.tag === "done_for_you") {
+            await prisma.userTag.upsert({
+              where: { userId_tag: { userId: targetUser.id, tag: "dfy_purchased" } },
+              update: {},
+              create: { userId: targetUser.id, tag: "dfy_purchased" },
+            });
+            actions.push("dfy_purchased tag added");
+          }
+
+          // Send DFY welcome email
+          if (targetUser.email) {
+            try {
+              const intakeUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://learn.accredipro.academy"}/dfy-intake?id=${dfyPurchase.id}`;
+              await sendDFYWelcomeEmail({
+                to: targetUser.email,
+                firstName: targetUser.firstName || "there",
+                productName: dfyProduct.title,
+                intakeUrl,
+              });
+              actions.push("DFY welcome email sent");
+              console.log(`[Tags API] ✅ DFY welcome email sent to ${targetUser.email}`);
+            } catch (emailError) {
+              console.error("[Tags API] DFY welcome email failed:", emailError);
+            }
+          }
+
+          // Send Jessica DM with intake link
+          if (jessica) {
+            try {
+              const intakeUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://learn.accredipro.academy"}/dfy-intake?id=${dfyPurchase.id}`;
+              await prisma.message.create({
+                data: {
+                  senderId: jessica.id,
+                  receiverId: targetUser.id,
+                  content: `Hey ${targetUser.firstName || "there"}! 👋\n\nI'm Jessica, and I'll be personally handling your Done For You website setup! 🎉\n\nTo get started, I just need you to fill out a quick intake form (about 15 minutes). It helps me understand your coaching, your vibe, and exactly how you want your website to look.\n\n👉 **Start your intake form here:**\n${intakeUrl}\n\nI'll have your website ready within 7 days of receiving your form. Can't wait to build something amazing for you!`,
+                  messageType: "DIRECT",
+                },
+              });
+              actions.push("Jessica DM sent");
+              console.log(`[Tags API] ✅ Jessica DM sent for DFY to ${targetUser.id}`);
+            } catch (dmError) {
+              console.error("[Tags API] Jessica DM failed:", dmError);
+            }
+          }
+
+          dfyMessage = `Tag added + ${actions.join(" + ")}`;
+        } catch (dfyError) {
+          console.error("[Tags API] DFY processing error:", dfyError);
+          dfyMessage = "Tag added (DFY processing had errors - check logs)";
+        }
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: dfyMessage,
+        tag,
+        dfyPurchaseCreated: true,
       });
     }
 
