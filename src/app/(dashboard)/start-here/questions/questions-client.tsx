@@ -127,14 +127,64 @@ export function QuestionsClient({ userId, firstName }: QuestionsClientProps) {
                         investmentReadiness: investment,
                         firstClientDate,
                         shareInCommunity,
-                        drivers, // Emotional drivers from step 6
+                        drivers,
                     }),
                 });
-
 
                 if (response.ok) {
                     // Store in localStorage for immediate UI update
                     localStorage.setItem(`onboarding-complete-${userId}`, "true");
+
+                    // Send intro message to Coach Sarah
+                    try {
+                        // Get formatted labels
+                        const incomeLabel = incomeOptions.find(o => o.value === incomeGoal)?.label || incomeGoal;
+                        const timelineLabel = timelineOptions.find(o => o.value === timeline)?.label || timeline;
+                        const situationLabel = situationOptions.find(o => o.value === situation)?.label || situation;
+                        const driverLabels = drivers.map(d => driverOptions.find(o => o.value === d)?.label || d);
+
+                        // Format the date nicely
+                        const dateObj = new Date(firstClientDate);
+                        const formattedDate = dateObj.toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+
+                        // Build the intro message
+                        const introMessage = `Hi Coach Sarah! 👋 I just completed my goal setting. Here's my plan:
+
+💰 Income Goal: ${incomeLabel}
+📅 First Client Deadline: ${formattedDate}
+🎯 Current Situation: ${situationLabel}
+⏰ Timeline: ${timelineLabel}
+❤️ Why I'm doing this: ${driverLabels.join(', ')}
+
+I'm ready to start! What should I focus on first?`;
+
+                        // Get Sarah's userId from mentors endpoint
+                        const mentorsRes = await fetch("/api/messages/mentors");
+                        const mentorsData = await mentorsRes.json();
+                        const sarah = mentorsData.mentors?.find((m: any) =>
+                            m.email?.includes("sarah") || m.firstName?.toLowerCase() === "sarah"
+                        );
+
+                        if (sarah?.id) {
+                            await fetch("/api/messages", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    receiverId: sarah.id,
+                                    content: introMessage,
+                                }),
+                            });
+                        }
+                    } catch (msgError) {
+                        console.error("Failed to send intro message:", msgError);
+                        // Don't block navigation if message fails
+                    }
+
                     router.push("/start-here");
                 }
             } catch (error) {
@@ -144,6 +194,7 @@ export function QuestionsClient({ userId, firstName }: QuestionsClientProps) {
             }
         }
     };
+
 
     const handleBack = () => {
         if (step > 1) {

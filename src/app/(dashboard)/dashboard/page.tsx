@@ -16,6 +16,7 @@ import { ReferralCard } from "@/components/dashboard/referral-card";
 import { DashboardPWABanner } from "@/components/dashboard/pwa-banner";
 import OnboardingChecklist from "@/components/dashboard/onboarding-checklist";
 import { UnansweredMessageBanner } from "@/components/dashboard/unanswered-message-banner";
+import { QualificationGoals } from "@/components/dashboard/qualification-goals";
 import { generateZombieSuccessEvents } from "@/lib/success-events";
 import { getSpecializationTrack } from "@/lib/specialization-tracks";
 import { getSocialProofStats } from "@/lib/social-proof";
@@ -334,6 +335,9 @@ export default async function DashboardPage() {
 
         {/* ========== ONBOARDING CHECKLIST (New Buyers) ========== */}
         <OnboardingChecklist />
+
+        {/* ========== QUALIFICATION GOALS (Income, First Client, Motivation) ========== */}
+        <QualificationGoals userId={session.user.id} />
 
         {/* ========== SECTION 1: HERO WITH AVATAR ========== */}
         <HeroCard
