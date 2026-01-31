@@ -201,7 +201,7 @@ export async function POST(request: NextRequest) {
       // Get module order for auto-message
       const moduleOrder = lesson.module.order;
 
-      return { newProgress, moduleJustCompleted, courseJustCompleted, actualCourseId, moduleOrder };
+      return { newProgress, moduleJustCompleted, courseJustCompleted, actualCourseId, moduleOrder, isModuleComplete };
     });
 
     // ASYNC: Fire-and-forget webhooks/certificates/auto-messages (don't block response)
@@ -219,8 +219,13 @@ export async function POST(request: NextRequest) {
             trigger: "module_complete",
             triggerValue: String(result.moduleOrder),
           });
-          // Create module certificate
-          await createModuleCertificate(userId, result.actualCourseId, actualModuleId);
+        }
+        // ALWAYS try to create module certificate when module is complete
+        // This ensures certificate is created even if module was already marked complete before
+        if (result.isModuleComplete) {
+          console.log(`[ModuleCertificate] Module complete, attempting to create certificate for user ${userId}, module ${actualModuleId}`);
+          const certResult = await createModuleCertificate(userId, result.actualCourseId, actualModuleId);
+          console.log(`[ModuleCertificate] Result:`, certResult);
         }
       } catch (error) {
         console.error("Background webhook error:", error);
