@@ -114,7 +114,7 @@ async function getTicketStats() {
 
     const [openTickets, ticketsToday, ticketsThisWeek, urgentTickets, avgResponseTime] = await Promise.all([
         prisma.supportTicket.count({
-            where: { status: { in: ["OPEN", "IN_PROGRESS"] } },
+            where: { status: { in: ["NEW", "OPEN", "PENDING"] } },
         }),
         prisma.supportTicket.count({
             where: { createdAt: { gte: today } },
@@ -124,7 +124,7 @@ async function getTicketStats() {
         }),
         prisma.supportTicket.count({
             where: {
-                status: { in: ["OPEN", "IN_PROGRESS"] },
+                status: { in: ["NEW", "OPEN", "PENDING"] },
                 priority: "HIGH",
             },
         }),
@@ -245,7 +245,7 @@ async function getUnansweredMessages() {
 // Get open tickets
 async function getOpenTickets() {
     return prisma.supportTicket.findMany({
-        where: { status: { in: ["OPEN", "IN_PROGRESS"] } },
+        where: { status: { in: ["NEW", "OPEN", "PENDING"] } },
         include: {
             user: {
                 select: { firstName: true, lastName: true, email: true, avatar: true },
