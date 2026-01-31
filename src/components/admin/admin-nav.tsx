@@ -93,6 +93,7 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/admin/oracle", label: "Oracle AI", icon: Brain, roles: ["ADMIN", "SUPERUSER"] },
       { href: "/admin/super-tools", label: "Super Tools", icon: Shield, roles: ["ADMIN", "SUPERUSER"] },
+      { href: "/admin/email-logs", label: "Email Logs", icon: Mail, roles: ["ADMIN", "SUPERUSER"] },
       { href: "/admin/settings", label: "Settings", icon: Settings, roles: ["ADMIN", "SUPERUSER"] },
     ],
   },
