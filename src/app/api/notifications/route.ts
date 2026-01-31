@@ -12,13 +12,27 @@ export async function GET() {
 
     const userId = session.user.id;
 
-    // Get unread message count
-    const unreadMessages = await prisma.message.count({
-      where: {
-        receiverId: userId,
-        isRead: false,
-      },
-    });
+    // Get unanswered message count (conversations needing user's reply)
+    // Count unread messages where sender is not the current user
+    // This gives the more accurate "messages needing response" rather than all unread
+    let unreadMessages = 0;
+    try {
+      unreadMessages = await prisma.message.count({
+        where: {
+          receiverId: userId,
+          isRead: false,
+          senderId: { not: userId },
+        },
+      });
+    } catch {
+      // Fallback: just count unread messages if query fails
+      unreadMessages = await prisma.message.count({
+        where: {
+          receiverId: userId,
+          isRead: false,
+        },
+      });
+    }
 
     // Get unread certificate notifications count
     // Includes CERTIFICATE_ISSUED (final course certs) and MODULE_COMPLETE (main certification module certs)

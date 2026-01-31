@@ -166,7 +166,7 @@ const nextConfig: NextConfig = {
               // Base URI: self only
               "base-uri 'self'",
               // Form actions: self only
-              "form-action 'self'",
+              "form-action 'self' https://*.facebook.com https://www.facebook.com",
               // Frame ancestors: none (same as X-Frame-Options DENY)
               "frame-ancestors 'none'",
               // Upgrade insecure requests
