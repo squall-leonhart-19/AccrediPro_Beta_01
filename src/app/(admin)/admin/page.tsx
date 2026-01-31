@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
+import { CustomerCareKPIWidget } from "@/components/admin/customer-care-kpi-widget";
 import {
   Users,
   BookOpen,
@@ -306,8 +307,10 @@ export default async function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Second Row - Progress Overview & Quick Stats */}
+      {/* Customer Care Dashboard Widget */}
       <div className="grid lg:grid-cols-3 gap-6">
+        <CustomerCareKPIWidget />
+
         {/* Platform Health */}
         <Card>
           <CardHeader className="pb-2">
