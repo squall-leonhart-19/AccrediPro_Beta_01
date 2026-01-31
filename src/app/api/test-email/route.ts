@@ -240,12 +240,73 @@ PS: Want to learn how to turn this knowledge into a $10K/month income? Just repl
 // Re-export for backward compatibility
 export const LEAD_EMAILS = MINI_DIPLOMA_EMAILS;
 
+// SECTION: ONBOARDING_NUDGES - Buyer Onboarding Step Nudges
+export const ONBOARDING_NUDGE_EMAILS = {
+    profile: {
+        subject: (firstName: string) => `Quick thing, ${firstName}...`,
+        content: (firstName: string) => `Hey ${firstName},
+
+I noticed you haven't finished setting up your profile yet.
+
+Adding a photo and a short bio helps me understand your goals better – and makes our community feel more connected.
+
+Takes 30 seconds: <a href="https://learn.accredipro.academy/settings" style="color: #8B1538; font-weight: bold;">Complete Your Profile →</a>
+
+– Sarah
+
+P.S. I love seeing who I'm working with! 📸`,
+    },
+    message: {
+        subject: () => `I'm right here if you need me`,
+        content: (firstName: string) => `Hey ${firstName},
+
+Just wanted to remind you – you can message me anytime.
+
+Whether you have questions about the curriculum, need help with a concept, or just want to chat about your goals... I'm here.
+
+<a href="https://learn.accredipro.academy/messages" style="color: #8B1538; font-weight: bold;">Send Me a Message →</a>
+
+Talk soon,
+Sarah
+
+P.S. No question is too small! 💬`,
+    },
+    lesson: {
+        subject: () => `Your first lesson takes 5 mins`,
+        content: (firstName: string) => `Hey ${firstName},
+
+I've been checking in and noticed you haven't started your first lesson yet.
+
+I get it – life is busy. But here's the thing: your first lesson literally takes 5 minutes and sets the foundation for everything.
+
+Ready to start? <a href="https://learn.accredipro.academy/courses" style="color: #8B1538; font-weight: bold;">Start Your First Lesson →</a>
+
+Rooting for you,
+Sarah
+
+P.S. You've got this! 🌟`,
+    },
+    community: {
+        subject: () => `The community is waiting for you`,
+        content: (firstName: string) => `Hey ${firstName},
+
+Quick one – have you introduced yourself in the community yet?
+
+It's a simple post and a great way to connect with others on the same path. Plus, the accountability and support are game-changers.
+
+<a href="https://learn.accredipro.academy/community" style="color: #8B1538; font-weight: bold;">Introduce Yourself →</a>
+
+See you in there?
+Sarah
+
+P.S. Everyone's super welcoming. No pressure, just support! 🤝`,
+    },
+};
+
 // Available sections for testing
 export const EMAIL_SECTIONS = {
     mini_diploma: Object.keys(MINI_DIPLOMA_EMAILS),
-    // Future sections:
-    // fm_diploma: Object.keys(FM_DIPLOMA_EMAILS),
-    // nurture: Object.keys(NURTURE_EMAILS),
+    onboarding: Object.keys(ONBOARDING_NUDGE_EMAILS),
 };
 
 /**
@@ -272,7 +333,11 @@ export async function POST(request: Request) {
         }
 
         // Get section
-        const sectionEmails = section === "mini_diploma" ? MINI_DIPLOMA_EMAILS : null;
+        const sectionEmails = section === "mini_diploma"
+            ? MINI_DIPLOMA_EMAILS
+            : section === "onboarding"
+                ? ONBOARDING_NUDGE_EMAILS
+                : null;
         if (!sectionEmails) {
             return NextResponse.json({
                 error: `Unknown section: ${section}`,
@@ -333,7 +398,11 @@ export async function GET(request: Request) {
         });
     }
 
-    const sectionEmails = section === "mini_diploma" ? MINI_DIPLOMA_EMAILS : null;
+    const sectionEmails = section === "mini_diploma"
+        ? MINI_DIPLOMA_EMAILS
+        : section === "onboarding"
+            ? ONBOARDING_NUDGE_EMAILS
+            : null;
     if (!sectionEmails) {
         return NextResponse.json({ error: `Unknown section: ${section}` }, { status: 400 });
     }
