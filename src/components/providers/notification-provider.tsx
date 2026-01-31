@@ -164,8 +164,8 @@ export function NotificationProvider({
   // Poll for updates - REDUCED frequency when realtime is connected
   useEffect(() => {
     // When realtime connected: poll every 60s as fallback
-    // When not connected: poll every 10s for responsiveness
-    const pollInterval = isRealtimeConnected ? 60000 : 10000;
+    // When not connected: poll every 30s (reduced from 10s to lower server load)
+    const pollInterval = isRealtimeConnected ? 60000 : 30000;
 
     const interval = setInterval(() => {
       // Skip if page not visible
