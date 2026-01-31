@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { resend } from "@/lib/email";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Vercel Cron: Every day at 8am UTC
 // Add to vercel.json: { "path": "/api/cron/customer-care-report", "schedule": "0 8 * * *" }
@@ -9,38 +11,38 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 interface DailyStats {
-    messagesYesterday: number;
-    messagesAwaitingResponse: number;
-    openTickets: number;
-    ticketsOpenedYesterday: number;
-    ticketsResolvedYesterday: number;
-    avgResponseTimeHours: number;
+  messagesYesterday: number;
+  messagesAwaitingResponse: number;
+  openTickets: number;
+  ticketsOpenedYesterday: number;
+  ticketsResolvedYesterday: number;
+  avgResponseTimeHours: number;
 }
 
 async function getYesterdayStats(): Promise<DailyStats> {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-    // Find Sarah's ID
-    const sarah = await prisma.user.findFirst({
-        where: { email: "sarah@accredipro-certificate.com" },
-        select: { id: true },
-    });
-    const sarahId = sarah?.id;
+  // Find Sarah's ID
+  const sarah = await prisma.user.findFirst({
+    where: { email: "sarah@accredipro-certificate.com" },
+    select: { id: true },
+  });
+  const sarahId = sarah?.id;
 
-    // Messages from students yesterday
-    const messagesYesterday = await prisma.message.count({
-        where: {
-            createdAt: { gte: yesterday, lt: today },
-            senderId: { not: sarahId },
-        },
-    });
+  // Messages from students yesterday
+  const messagesYesterday = await prisma.message.count({
+    where: {
+      createdAt: { gte: yesterday, lt: today },
+      senderId: { not: sarahId },
+    },
+  });
 
-    // Awaiting response (>24h)
-    const awaitingResponse = await prisma.$queryRaw<{ count: bigint }[]>`
+  // Awaiting response (>24h)
+  const awaitingResponse = await prisma.$queryRaw<{ count: bigint }[]>`
     WITH LastMessages AS (
       SELECT 
         CASE WHEN "senderId" = ${sarahId} THEN "receiverId" ELSE "senderId" END as student_id,
@@ -58,65 +60,65 @@ async function getYesterdayStats(): Promise<DailyStats> {
     AND last_msg_time < ${twentyFourHoursAgo}
   `;
 
-    // Ticket stats
-    const [openTickets, ticketsOpenedYesterday, ticketsResolvedYesterday, recentResolved] = await Promise.all([
-        prisma.supportTicket.count({
-            where: { status: { in: ["OPEN", "IN_PROGRESS"] } },
-        }),
-        prisma.supportTicket.count({
-            where: { createdAt: { gte: yesterday, lt: today } },
-        }),
-        prisma.supportTicket.count({
-            where: {
-                status: "RESOLVED",
-                resolvedAt: { gte: yesterday, lt: today },
-            },
-        }),
-        prisma.supportTicket.findMany({
-            where: {
-                status: "RESOLVED",
-                resolvedAt: { gte: yesterday },
-            },
-            select: { createdAt: true, resolvedAt: true },
-        }),
-    ]);
+  // Ticket stats
+  const [openTickets, ticketsOpenedYesterday, ticketsResolvedYesterday, recentResolved] = await Promise.all([
+    prisma.supportTicket.count({
+      where: { status: { in: ["OPEN", "IN_PROGRESS"] } },
+    }),
+    prisma.supportTicket.count({
+      where: { createdAt: { gte: yesterday, lt: today } },
+    }),
+    prisma.supportTicket.count({
+      where: {
+        status: "RESOLVED",
+        resolvedAt: { gte: yesterday, lt: today },
+      },
+    }),
+    prisma.supportTicket.findMany({
+      where: {
+        status: "RESOLVED",
+        resolvedAt: { gte: yesterday },
+      },
+      select: { createdAt: true, resolvedAt: true },
+    }),
+  ]);
 
-    // Average response time
-    let avgResponseTimeHours = 0;
-    if (recentResolved.length > 0) {
-        const totalMs = recentResolved.reduce((acc, t) => {
-            if (t.resolvedAt) {
-                return acc + (t.resolvedAt.getTime() - t.createdAt.getTime());
-            }
-            return acc;
-        }, 0);
-        avgResponseTimeHours = Math.round((totalMs / recentResolved.length) / (1000 * 60 * 60));
-    }
+  // Average response time
+  let avgResponseTimeHours = 0;
+  if (recentResolved.length > 0) {
+    const totalMs = recentResolved.reduce((acc, t) => {
+      if (t.resolvedAt) {
+        return acc + (t.resolvedAt.getTime() - t.createdAt.getTime());
+      }
+      return acc;
+    }, 0);
+    avgResponseTimeHours = Math.round((totalMs / recentResolved.length) / (1000 * 60 * 60));
+  }
 
-    return {
-        messagesYesterday,
-        messagesAwaitingResponse: Number(awaitingResponse[0]?.count || 0),
-        openTickets,
-        ticketsOpenedYesterday,
-        ticketsResolvedYesterday,
-        avgResponseTimeHours,
-    };
+  return {
+    messagesYesterday,
+    messagesAwaitingResponse: Number(awaitingResponse[0]?.count || 0),
+    openTickets,
+    ticketsOpenedYesterday,
+    ticketsResolvedYesterday,
+    avgResponseTimeHours,
+  };
 }
 
 function buildEmailHtml(stats: DailyStats): string {
-    const date = new Date();
-    date.setDate(date.getDate() - 1);
-    const dateStr = date.toLocaleDateString("en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    });
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  const dateStr = date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
 
-    const awaitingColor = stats.messagesAwaitingResponse > 0 ? "#dc2626" : "#16a34a";
-    const ticketsColor = stats.openTickets > 5 ? "#f59e0b" : "#16a34a";
+  const awaitingColor = stats.messagesAwaitingResponse > 0 ? "#dc2626" : "#16a34a";
+  const ticketsColor = stats.openTickets > 5 ? "#f59e0b" : "#16a34a";
 
-    return `
+  return `
 <!DOCTYPE html>
 <html>
 <head>
@@ -212,56 +214,56 @@ function buildEmailHtml(stats: DailyStats): string {
 }
 
 export async function GET(req: NextRequest) {
-    // Verify cron secret or allow in development
-    const authHeader = req.headers.get("authorization");
-    const cronSecret = process.env.CRON_SECRET;
+  // Verify cron secret or allow in development
+  const authHeader = req.headers.get("authorization");
+  const cronSecret = process.env.CRON_SECRET;
 
-    if (process.env.NODE_ENV === "production" && cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (process.env.NODE_ENV === "production" && cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    // Get stats
+    const stats = await getYesterdayStats();
+
+    // Get admin emails (all ADMIN users)
+    const admins = await prisma.user.findMany({
+      where: { role: "ADMIN" },
+      select: { email: true, firstName: true },
+    });
+
+    if (admins.length === 0) {
+      return NextResponse.json({ success: true, message: "No admins to send to" });
     }
 
-    try {
-        // Get stats
-        const stats = await getYesterdayStats();
+    // Build email
+    const html = buildEmailHtml(stats);
 
-        // Get admin emails (all ADMIN users)
-        const admins = await prisma.user.findMany({
-            where: { role: "ADMIN" },
-            select: { email: true, firstName: true },
-        });
+    // Send to all admins
+    const results = await Promise.allSettled(
+      admins.map(admin =>
+        resend.emails.send({
+          from: "AccrediPro Analytics <notifications@accredipro-certificate.com>",
+          to: admin.email,
+          subject: `📊 Daily Customer Care Report - ${stats.messagesAwaitingResponse > 0 ? `⚠️ ${stats.messagesAwaitingResponse} Awaiting Response` : "✅ All Caught Up"}`,
+          html,
+        })
+      )
+    );
 
-        if (admins.length === 0) {
-            return NextResponse.json({ success: true, message: "No admins to send to" });
-        }
+    const sent = results.filter(r => r.status === "fulfilled").length;
+    const failed = results.filter(r => r.status === "rejected").length;
 
-        // Build email
-        const html = buildEmailHtml(stats);
+    console.log(`[CustomerCareReport] Sent to ${sent} admins, ${failed} failed`);
 
-        // Send to all admins
-        const results = await Promise.allSettled(
-            admins.map(admin =>
-                resend.emails.send({
-                    from: "AccrediPro Analytics <notifications@accredipro-certificate.com>",
-                    to: admin.email,
-                    subject: `📊 Daily Customer Care Report - ${stats.messagesAwaitingResponse > 0 ? `⚠️ ${stats.messagesAwaitingResponse} Awaiting Response` : "✅ All Caught Up"}`,
-                    html,
-                })
-            )
-        );
-
-        const sent = results.filter(r => r.status === "fulfilled").length;
-        const failed = results.filter(r => r.status === "rejected").length;
-
-        console.log(`[CustomerCareReport] Sent to ${sent} admins, ${failed} failed`);
-
-        return NextResponse.json({
-            success: true,
-            stats,
-            recipients: sent,
-            failed,
-        });
-    } catch (error) {
-        console.error("[CustomerCareReport] Error:", error);
-        return NextResponse.json({ error: "Failed to generate report" }, { status: 500 });
-    }
+    return NextResponse.json({
+      success: true,
+      stats,
+      recipients: sent,
+      failed,
+    });
+  } catch (error) {
+    console.error("[CustomerCareReport] Error:", error);
+    return NextResponse.json({ error: "Failed to generate report" }, { status: 500 });
+  }
 }
