@@ -317,13 +317,13 @@ export async function POST(
                     // Create EmailSend Record
                     const email = await prisma.emailSend.create({
                         data: {
-                            userId,
+                            user: { connect: { id: userId } },
                             subject: type.subject,
-                            emailTemplateId: templateId, // Link to actual template
+                            emailTemplate: templateId ? { connect: { id: templateId } } : undefined,
                             emailType: type.template, // Store slug as type
                             status: "DELIVERED",
                             sentAt: sentAt,
-                            toEmail: user.email, // Correct field
+                            toEmail: user.email,
                             metadata: {},
                         }
                     });
