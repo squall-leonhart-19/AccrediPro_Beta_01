@@ -250,7 +250,7 @@ I noticed you haven't finished setting up your profile yet.
 
 Adding a photo and a short bio helps me understand your goals better – and makes our community feel more connected.
 
-Takes 30 seconds: <a href="https://learn.accredipro.academy/settings" style="color: #8B1538; font-weight: bold;">Complete Your Profile →</a>
+Takes 30 seconds: <a href="https://learn.accredipro.academy/dashboard" style="color: #8B1538; font-weight: bold;">Complete Your Profile →</a>
 
 – Sarah
 
@@ -279,7 +279,7 @@ I've been checking in and noticed you haven't started your first lesson yet.
 
 I get it – life is busy. But here's the thing: your first lesson literally takes 5 minutes and sets the foundation for everything.
 
-Ready to start? <a href="https://learn.accredipro.academy/courses" style="color: #8B1538; font-weight: bold;">Start Your First Lesson →</a>
+Ready to start? <a href="https://learn.accredipro.academy/my-courses" style="color: #8B1538; font-weight: bold;">Start Your First Lesson →</a>
 
 Rooting for you,
 Sarah
@@ -294,7 +294,7 @@ Quick one – have you introduced yourself in the community yet?
 
 It's a simple post and a great way to connect with others on the same path. Plus, the accountability and support are game-changers.
 
-<a href="https://learn.accredipro.academy/community" style="color: #8B1538; font-weight: bold;">Introduce Yourself →</a>
+<a href="https://learn.accredipro.academy/community/cmkvj0klb0000bim95cl2peji" style="color: #8B1538; font-weight: bold;">Introduce Yourself →</a>
 
 See you in there?
 Sarah

@@ -140,7 +140,7 @@ export async function GET(request: NextRequest) {
                 timeSinceSignup >= NUDGE_TEMPLATES.profile.delay) {
                 try {
                     const content = NUDGE_TEMPLATES.profile.content(firstName)
-                        .replace("{{PROFILE_LINK}}", `<a href="${baseUrl}/settings" style="color: #8B1538; font-weight: bold;">Complete Your Profile →</a>`);
+                        .replace("{{PROFILE_LINK}}", `<a href="${baseUrl}/dashboard" style="color: #8B1538; font-weight: bold;">Complete Your Profile →</a>`);
 
                     await sendEmail({
                         to: email,
@@ -194,7 +194,7 @@ export async function GET(request: NextRequest) {
                 timeSinceSignup >= NUDGE_TEMPLATES.lesson.delay) {
                 try {
                     const content = NUDGE_TEMPLATES.lesson.content(firstName)
-                        .replace("{{LESSON_LINK}}", `<a href="${baseUrl}/courses" style="color: #8B1538; font-weight: bold;">Start Your First Lesson →</a>`);
+                        .replace("{{LESSON_LINK}}", `<a href="${baseUrl}/my-courses" style="color: #8B1538; font-weight: bold;">Start Your First Lesson →</a>`);
 
                     await sendEmail({
                         to: email,
@@ -221,7 +221,7 @@ export async function GET(request: NextRequest) {
                 timeSinceSignup >= NUDGE_TEMPLATES.community.delay) {
                 try {
                     const content = NUDGE_TEMPLATES.community.content(firstName)
-                        .replace("{{COMMUNITY_LINK}}", `<a href="${baseUrl}/community" style="color: #8B1538; font-weight: bold;">Introduce Yourself →</a>`);
+                        .replace("{{COMMUNITY_LINK}}", `<a href="${baseUrl}/community/cmkvj0klb0000bim95cl2peji" style="color: #8B1538; font-weight: bold;">Introduce Yourself →</a>`);
 
                     await sendEmail({
                         to: email,

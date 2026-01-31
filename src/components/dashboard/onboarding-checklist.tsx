@@ -96,7 +96,7 @@ export default function OnboardingChecklist() {
             id: "profileComplete",
             label: "Complete your profile",
             description: "Add a photo and bio",
-            href: "/settings",
+            href: "/dashboard",
             completed: data.progress.profileComplete,
         },
         {
@@ -117,14 +117,14 @@ export default function OnboardingChecklist() {
             id: "firstLessonComplete",
             label: "Complete your first lesson",
             description: "Start learning today",
-            href: "/courses",
+            href: "/my-courses",
             completed: data.progress.firstLessonComplete,
         },
         {
             id: "communityIntro",
             label: "Introduce yourself",
             description: "Join the community",
-            href: "/community",
+            href: "/community/cmkvj0klb0000bim95cl2peji",
             completed: data.progress.communityIntro,
         },
         {
@@ -178,8 +178,8 @@ export default function OnboardingChecklist() {
                         key={step.id}
                         href={step.href}
                         className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 group ${step.completed
-                                ? "bg-green-50 hover:bg-green-100"
-                                : "bg-white hover:bg-burgundy-50 border border-gray-100"
+                            ? "bg-green-50 hover:bg-green-100"
+                            : "bg-white hover:bg-burgundy-50 border border-gray-100"
                             }`}
                     >
                         {step.completed ? (
