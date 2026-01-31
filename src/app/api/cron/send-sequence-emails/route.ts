@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       details: [] as string[],
     };
 
-    // Find all enrollments ready to send (exclude users with bounced/suppressed tags)
+    // Find all enrollments ready to send (exclude users with bounced/suppressed tags and internal emails)
     const enrollments = await prisma.sequenceEnrollment.findMany({
       where: {
         status: "ACTIVE",
@@ -54,6 +54,10 @@ export async function GET(request: NextRequest) {
                 slug: { in: ["bounced", "suppressed"] },
               },
             },
+          },
+          // Exclude internal team emails (@accredipro domains)
+          email: {
+            not: { contains: "@accredipro" },
           },
         },
       },
