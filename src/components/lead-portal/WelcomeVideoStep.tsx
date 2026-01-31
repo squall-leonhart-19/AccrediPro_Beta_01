@@ -4,6 +4,48 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Volume2 } from "lucide-react";
 
+// Wistia Player Component
+function WistiaEmbed({ mediaId }: { mediaId: string }) {
+    useEffect(() => {
+        // Load Wistia player script
+        const playerScript = document.createElement("script");
+        playerScript.src = "https://fast.wistia.com/player.js";
+        playerScript.async = true;
+        document.head.appendChild(playerScript);
+
+        // Load media-specific script
+        const mediaScript = document.createElement("script");
+        mediaScript.src = `https://fast.wistia.com/embed/${mediaId}.js`;
+        mediaScript.async = true;
+        mediaScript.type = "module";
+        document.head.appendChild(mediaScript);
+
+        return () => {
+            try {
+                document.head.removeChild(playerScript);
+                document.head.removeChild(mediaScript);
+            } catch (e) {
+                // Scripts may have already been removed
+            }
+        };
+    }, [mediaId]);
+
+    return (
+        <div className="aspect-video relative">
+            <style>{`
+                wistia-player[media-id='${mediaId}']:not(:defined) { 
+                    background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/${mediaId}/swatch'); 
+                    display: block; 
+                    filter: blur(5px); 
+                    padding-top: 56.25%; 
+                }
+            `}</style>
+            {/* @ts-ignore - Wistia web component */}
+            <wistia-player media-id={mediaId} aspect="1.7777777777777777"></wistia-player>
+        </div>
+    );
+}
+
 interface WelcomeVideoStepProps {
     onComplete: () => void;
     isCompleted: boolean;
@@ -77,16 +119,9 @@ export function WelcomeVideoStep({ onComplete, isCompleted, firstName = "there",
                 </div>
             </div>
 
-            {/* Vimeo Video Embed - Shows Immediately */}
-            <div style={{ padding: "56.25% 0 0 0", position: "relative" }}>
-                <iframe
-                    src="https://player.vimeo.com/video/1117011390?badge=0&autopause=0&player_id=0&app_id=58479"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-                    title="Welcome Message from Sarah"
-                />
+            {/* Wistia Video Embed */}
+            <div className="relative">
+                <WistiaEmbed mediaId="7w51vpdty2" />
             </div>
 
             {/* Continue Button - Shows after 10 seconds */}
