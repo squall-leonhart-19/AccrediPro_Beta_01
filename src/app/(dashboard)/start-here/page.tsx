@@ -30,7 +30,7 @@ async function getStartHereData(userId: string) {
         // Get first enrollment with course and first lesson
         prisma.enrollment.findFirst({
             where: { userId },
-            orderBy: { createdAt: 'asc' },
+            orderBy: { enrolledAt: 'asc' },
             include: {
                 course: {
                     select: {

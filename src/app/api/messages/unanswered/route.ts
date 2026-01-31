@@ -17,7 +17,7 @@ export async function GET() {
                 receiverId: session.user.id,
                 isRead: false,
                 sender: {
-                    role: { in: ["ADMIN", "MENTOR", "INSTRUCTOR", "COACH"] },
+                    role: { in: ["ADMIN", "MENTOR", "INSTRUCTOR"] },
                 },
             },
             orderBy: { createdAt: "desc" },

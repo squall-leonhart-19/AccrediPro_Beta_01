@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -65,6 +66,12 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
 
     const greeting = getGreeting();
     const name = userName || "there";
+    const pathname = usePathname();
+
+    // Hide widget entirely on /messages page to avoid overlapping the chat input
+    if (pathname === "/messages") {
+        return null;
+    }
 
     // Load hidden state from localStorage on mount
     useEffect(() => {
