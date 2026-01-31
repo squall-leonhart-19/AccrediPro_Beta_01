@@ -2916,7 +2916,8 @@ export function MessagesClient({
                         handleSendMessage(e);
                       }
                     }}
-                    className="border-0 bg-transparent focus-visible:ring-0 resize-none min-h-[40px] max-h-[120px] py-2 px-3 text-sm"
+                    className="border-0 bg-transparent focus-visible:ring-0 resize-none min-h-[40px] max-h-[120px] py-2 px-3"
+                    style={{ fontSize: '16px' }}
                     disabled={isRecording || !!audioBlob}
                     rows={1}
                   />
@@ -2927,6 +2928,7 @@ export function MessagesClient({
                       size="icon"
                       className="h-7 w-7 text-gray-400 hover:text-gray-600"
                       onClick={() => fileInputRef.current?.click()}
+                      onMouseDown={(e) => e.preventDefault()}
                       disabled={uploading || isRecording}
                     >
                       <Paperclip className="w-4 h-4" />
@@ -2937,6 +2939,7 @@ export function MessagesClient({
                       size="icon"
                       className="h-7 w-7 text-gray-400 hover:text-gray-600"
                       onClick={() => imageInputRef.current?.click()}
+                      onMouseDown={(e) => e.preventDefault()}
                       disabled={uploading || isRecording}
                     >
                       <ImageIcon className="w-4 h-4" />
@@ -2947,6 +2950,7 @@ export function MessagesClient({
                       size="icon"
                       className={cn("h-7 w-7", showEmojiPicker ? "text-burgundy-600 bg-burgundy-50" : "text-gray-400 hover:text-gray-600")}
                       onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                      onMouseDown={(e) => e.preventDefault()}
                       disabled={isRecording}
                     >
                       <Smile className="w-4 h-4" />
@@ -2957,6 +2961,7 @@ export function MessagesClient({
                       size="icon"
                       className={cn("h-7 w-7", isRecording ? "text-red-600 bg-red-50" : "text-gray-400 hover:text-gray-600")}
                       onClick={isRecording ? stopRecording : startRecording}
+                      onMouseDown={(e) => e.preventDefault()}
                       disabled={uploading || !!audioBlob || !!ttsPreviewAudio}
                     >
                       <Mic className="w-4 h-4" />
@@ -2976,6 +2981,7 @@ export function MessagesClient({
                               : "text-gray-300 cursor-not-allowed"
                         )}
                         onClick={generateAiVoice}
+                        onMouseDown={(e) => e.preventDefault()}
                         disabled={generatingTts || isRecording || !!audioBlob || !newMessage.trim()}
                         title={newMessage.trim() ? "Convert to AI Voice" : "Type a message first"}
                       >
@@ -2988,13 +2994,13 @@ export function MessagesClient({
                     )}
                   </div>
                 </div>
-                {/* Schedule Button */}
                 {isCoach && (
                   <Button
                     type="button"
                     variant="outline"
                     size="icon"
                     onClick={() => setShowScheduleModal(!showScheduleModal)}
+                    onMouseDown={(e) => e.preventDefault()}
                     disabled={!newMessage.trim()}
                     className={cn(
                       "rounded-xl h-10 w-10 border-gray-200",
@@ -3008,6 +3014,7 @@ export function MessagesClient({
                 <Button
                   type="submit"
                   disabled={loading || uploading || (!newMessage.trim() && !audioBlob) || isRecording}
+                  onMouseDown={(e) => e.preventDefault()}
                   size="icon"
                   className="bg-burgundy-600 hover:bg-burgundy-700 rounded-xl h-10 w-10"
                 >
