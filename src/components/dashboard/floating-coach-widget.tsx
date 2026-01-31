@@ -47,17 +47,21 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
     const [isChatMode, setIsChatMode] = useState(false);
     const [isHidden, setIsHidden] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
-    const [newMessage, setNewMessage] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const [isSending, setIsSending] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [coachId, setCoachId] = useState<string | null>(null);
     const [unreadCount, setUnreadCount] = useState(0);
     const [hasMore, setHasMore] = useState(false);
     const [loadingMore, setLoadingMore] = useState(false);
+
+    // Refs for stable references
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const messagesTopRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    // Use ref for input value to avoid re-renders that close keyboard
+    const inputValueRef = useRef("");
+    const [, forceRender] = useState(0);
 
     const greeting = getGreeting();
     const name = userName || "there";
@@ -83,7 +87,7 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
         });
     }, []);
 
-    // Fetch mentors to get Coach Sarah's ID - with AbortController to prevent race conditions
+    // Fetch mentors to get Coach Sarah's ID
     useEffect(() => {
         const abortController = new AbortController();
 
@@ -101,13 +105,12 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
             })
             .catch((err) => {
                 if (err.name === "AbortError") return;
-                // Silent fail - don't toast on initial load
             });
 
         return () => abortController.abort();
     }, []);
 
-    // Fetch unread count periodically (even when chat is closed)
+    // Fetch unread count periodically
     useEffect(() => {
         if (!coachId) return;
 
@@ -127,7 +130,7 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
         };
 
         checkUnread();
-        const interval = setInterval(checkUnread, 30000); // Check every 30s
+        const interval = setInterval(checkUnread, 30000);
         return () => clearInterval(interval);
     }, [coachId]);
 
@@ -145,19 +148,15 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
             const res = await fetch(`/api/messages?userId=${coachId}&limit=20&offset=${offset}`);
             const data = await res.json();
             if (data.success && data.data) {
-                // Filter out voice messages for simplified view
                 const textMessages = data.data.filter((m: any) => !m.attachmentType || m.attachmentType === null);
 
                 if (offset === 0) {
                     setMessages(textMessages);
-                    // Mark messages as read
                     setUnreadCount(0);
                 } else {
-                    // Prepend older messages
                     setMessages(prev => [...textMessages, ...prev]);
                 }
 
-                // Check if there are more messages
                 setHasMore(textMessages.length === 20);
             }
         } catch {
@@ -169,36 +168,30 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
     }, [coachId]);
 
     // Load more messages
-    const loadMoreMessages = () => {
+    const loadMoreMessages = useCallback(() => {
         if (!hasMore || loadingMore) return;
         fetchMessages(messages.length);
-    };
+    }, [hasMore, loadingMore, messages.length, fetchMessages]);
 
     useEffect(() => {
         if (isChatMode && coachId) fetchMessages();
     }, [isChatMode, coachId, fetchMessages]);
 
-    // Auto-scroll to bottom on new messages (only when sending)
+    // Scroll to bottom
     const scrollToBottom = useCallback(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, []);
 
-    // Focus input when entering chat mode - with delay for mobile keyboard
-    useEffect(() => {
-        if (isChatMode && inputRef.current) {
-            // Delay focus to prevent mobile keyboard issues
-            setTimeout(() => {
-                inputRef.current?.focus();
-            }, 300);
+    // Send message - using ref value, not state
+    const handleSendMessage = useCallback(async () => {
+        const content = inputValueRef.current.trim();
+        if (!content || !coachId || isSending) return;
+
+        // Clear input immediately
+        if (inputRef.current) {
+            inputRef.current.value = "";
         }
-    }, [isChatMode]);
-
-    // Send message
-    const handleSendMessage = async () => {
-        if (!newMessage.trim() || !coachId || isSending) return;
-
-        const content = newMessage.trim();
-        setNewMessage("");
+        inputValueRef.current = "";
         setIsSending(true);
 
         // Optimistic update
@@ -210,8 +203,6 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
             isRead: false,
         };
         setMessages(prev => [...prev, tempMessage]);
-
-        // Scroll to bottom after adding message
         setTimeout(scrollToBottom, 100);
 
         try {
@@ -232,13 +223,38 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
             // Keep focus on input after sending
             inputRef.current?.focus();
         }
-    };
+    }, [coachId, userId, isSending, scrollToBottom]);
 
-    // Handle form submit - prevent default and manage focus properly
-    const handleSubmit = (e: React.FormEvent) => {
+    // Handle form submit - prevent default
+    const handleSubmit = useCallback((e: React.FormEvent) => {
         e.preventDefault();
         handleSendMessage();
-    };
+    }, [handleSendMessage]);
+
+    // Handle input change - update ref, not state (prevents re-render)
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        inputValueRef.current = e.target.value;
+    }, []);
+
+    // Handle keyboard enter
+    const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
+        }
+    }, [handleSendMessage]);
+
+    // Close widget
+    const handleClose = useCallback(() => {
+        setIsExpanded(false);
+        setIsChatMode(false);
+    }, []);
+
+    // Open chat directly
+    const openChat = useCallback(() => {
+        setIsExpanded(true);
+        setIsChatMode(true);
+    }, []);
 
     // Show minimal "show chat" button when hidden
     if (isHidden) {
@@ -255,11 +271,11 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
     }
 
     return (
-        <div className="fixed bottom-4 right-4 z-50" style={{ maxHeight: 'calc(100vh - 80px)' }}>
-            {/* Expanded Card - Responsive sizing */}
+        <div className="fixed bottom-4 right-4 z-50">
+            {/* Expanded Card */}
             {isExpanded && (
-                <Card className="mb-3 w-80 max-w-[calc(100vw-32px)] shadow-2xl border-0 bg-white animate-in slide-in-from-bottom-2 duration-200 overflow-hidden" style={{ maxHeight: 'calc(100vh - 120px)' }}>
-                    <CardContent className="p-0 flex flex-col" style={{ maxHeight: 'calc(100vh - 120px)' }}>
+                <Card className="mb-3 w-80 max-w-[calc(100vw-32px)] shadow-2xl border-0 bg-white animate-in slide-in-from-bottom-2 duration-200 overflow-hidden flex flex-col" style={{ maxHeight: 'min(500px, calc(100vh - 100px))' }}>
+                    <CardContent className="p-0 flex flex-col flex-1 min-h-0">
                         {/* Header - Fixed */}
                         <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 p-3 flex-shrink-0">
                             <div className="flex items-center justify-between">
@@ -285,13 +301,15 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
                                 <div className="flex items-center gap-1">
                                     <button
                                         onClick={toggleHidden}
+                                        onMouseDown={(e) => e.preventDefault()}
                                         className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10"
                                         title="Hide chat widget"
                                     >
                                         <EyeOff className="w-4 h-4" />
                                     </button>
                                     <button
-                                        onClick={() => { setIsExpanded(false); setIsChatMode(false); }}
+                                        onClick={handleClose}
+                                        onMouseDown={(e) => e.preventDefault()}
                                         className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10"
                                         title="Close"
                                     >
@@ -301,19 +319,21 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
                             </div>
                         </div>
 
-                        {/* Chat Mode - Flexible Height */}
+                        {/* Chat Mode */}
                         {isChatMode ? (
-                            <div className="flex flex-col flex-1 min-h-0" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+                            <div className="flex flex-col flex-1 min-h-0">
                                 {/* Messages - Scrollable */}
                                 <div
                                     ref={scrollContainerRef}
-                                    className="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-50 min-h-[200px] max-h-[50vh]"
+                                    className="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-50"
+                                    style={{ minHeight: '200px', maxHeight: '300px' }}
                                 >
                                     {/* Load More Button */}
                                     {hasMore && (
-                                        <div ref={messagesTopRef} className="flex justify-center py-2">
+                                        <div className="flex justify-center py-2">
                                             <button
                                                 onClick={loadMoreMessages}
+                                                onMouseDown={(e) => e.preventDefault()}
                                                 disabled={loadingMore}
                                                 className="text-xs text-burgundy-600 hover:text-burgundy-700 flex items-center gap-1 px-3 py-1.5 bg-white rounded-full shadow-sm border hover:bg-gray-50 disabled:opacity-50"
                                             >
@@ -364,23 +384,26 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
                                             ref={inputRef}
                                             type="text"
                                             inputMode="text"
+                                            enterKeyHint="send"
                                             autoComplete="off"
                                             autoCorrect="off"
                                             autoCapitalize="sentences"
-                                            value={newMessage}
-                                            onChange={(e) => setNewMessage(e.target.value)}
+                                            spellCheck={false}
+                                            onChange={handleInputChange}
+                                            onKeyDown={handleKeyDown}
                                             placeholder="Type a message..."
-                                            className="flex-1 px-3 py-2 text-sm border rounded-full focus:outline-none focus:ring-2 focus:ring-burgundy-500 text-base"
-                                            style={{ fontSize: '16px' }} // Prevents iOS zoom on focus
+                                            className="flex-1 px-3 py-2 text-base border rounded-full focus:outline-none focus:ring-2 focus:ring-burgundy-500 bg-gray-50"
+                                            style={{ fontSize: '16px' }}
                                             disabled={isSending || !coachId}
                                         />
                                         <Button
                                             type="submit"
                                             size="sm"
-                                            disabled={!newMessage.trim() || isSending || !coachId}
-                                            className="rounded-full w-8 h-8 p-0 bg-burgundy-600 hover:bg-burgundy-700 flex-shrink-0"
+                                            disabled={isSending || !coachId}
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            className="rounded-full w-9 h-9 p-0 bg-burgundy-600 hover:bg-burgundy-700 flex-shrink-0"
                                         >
-                                            {isSending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
+                                            {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                                         </Button>
                                     </form>
                                     <p className="text-[10px] text-center text-gray-400 mt-1">
@@ -396,6 +419,7 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
                                 </div>
                                 <Button
                                     onClick={() => setIsChatMode(true)}
+                                    onMouseDown={(e) => e.preventDefault()}
                                     className="w-full bg-burgundy-600 hover:bg-burgundy-700 h-10 text-sm font-medium"
                                 >
                                     <MessageCircle className="w-4 h-4 mr-2" />
@@ -410,11 +434,12 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
 
             {/* Floating Button - With Notification Badge */}
             <button
-                onClick={() => { setIsExpanded(true); setIsChatMode(true); }}
+                onClick={openChat}
+                onMouseDown={(e) => e.preventDefault()}
                 aria-label="Open chat with Coach Sarah"
                 className="group relative flex items-center gap-2 shadow-lg transition-all duration-200 hover:scale-105 pl-1.5 pr-4 py-1.5 rounded-full bg-white border border-gray-200 hover:border-burgundy-300 hover:shadow-xl cursor-pointer"
             >
-                {/* Notification Badge - Shows unread count */}
+                {/* Notification Badge */}
                 {unreadCount > 0 ? (
                     <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-xs font-bold animate-pulse shadow-md">
                         {unreadCount > 9 ? "9+" : unreadCount}

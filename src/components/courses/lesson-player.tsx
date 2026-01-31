@@ -91,10 +91,10 @@ export function LessonPlayer({
 
     // Chat state - synced with /api/messages
     const [messages, setMessages] = useState<Message[]>([]);
-    const [chatInput, setChatInput] = useState("");
     const [chatLoading, setChatLoading] = useState(false);
     const [sendingMessage, setSendingMessage] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const chatInputRef = useRef<HTMLInputElement>(null); // Ref-based input to prevent keyboard close on mobile
     const contentInitializedRef = useRef<string | null>(null); // Track initialized content to prevent re-renders from wiping DOM state
 
     const coachId = course.coach?.id;
@@ -259,10 +259,11 @@ export function LessonPlayer({
     };
 
     const sendMessage = async () => {
-        if (!chatInput.trim() || !coachId || sendingMessage) return;
+        const inputValue = chatInputRef.current?.value || "";
+        if (!inputValue.trim() || !coachId || sendingMessage) return;
 
-        const content = chatInput.trim();
-        setChatInput("");
+        const content = inputValue.trim();
+        if (chatInputRef.current) chatInputRef.current.value = "";
         setSendingMessage(true);
 
         // Optimistic update
@@ -512,9 +513,12 @@ export function LessonPlayer({
             <div style={{ borderTop: "1px solid #eee", padding: "16px", flexShrink: 0 }}>
                 <div style={{ display: "flex", gap: "8px" }}>
                     <input
+                        ref={chatInputRef}
                         type="text"
-                        value={chatInput}
-                        onChange={(e) => setChatInput(e.target.value)}
+                        inputMode="text"
+                        enterKeyHint="send"
+                        autoComplete="off"
+                        autoCorrect="off"
                         onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                         placeholder="Type a message..."
                         style={{
@@ -522,13 +526,14 @@ export function LessonPlayer({
                             padding: "12px 16px",
                             border: "1px solid #ddd",
                             borderRadius: "24px",
-                            fontSize: "14px",
+                            fontSize: "16px",
                             outline: "none"
                         }}
                     />
                     <button
                         onClick={sendMessage}
-                        disabled={sendingMessage || !chatInput.trim()}
+                        onMouseDown={(e) => e.preventDefault()}
+                        disabled={sendingMessage}
                         style={{
                             padding: "12px 20px",
                             background: sendingMessage ? "#999" : "#722f37",
