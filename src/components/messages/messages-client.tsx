@@ -326,6 +326,7 @@ export function MessagesClient({
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
   const isMountedRef = useRef(true); // Track if component is still mounted
+  const markReadAbortRef = useRef<AbortController | null>(null); // Abort mark-as-read fetch on conversation switch
 
   // Cleanup on unmount - prevent memory leaks
   useEffect(() => {
@@ -341,6 +342,10 @@ export function MessagesClient({
       }
       if (recordingIntervalRef.current) {
         clearInterval(recordingIntervalRef.current);
+      }
+      // Abort any pending mark-as-read fetch
+      if (markReadAbortRef.current) {
+        markReadAbortRef.current.abort();
       }
     };
   }, []);
@@ -587,11 +592,22 @@ export function MessagesClient({
 
       fetchMessages(selectedUser.id);
       // Mark messages as read when opening conversation
+      // Abort any previous mark-as-read fetch to prevent stale requests
+      if (markReadAbortRef.current) {
+        markReadAbortRef.current.abort();
+      }
+      const abortController = new AbortController();
+      markReadAbortRef.current = abortController;
       fetch("/api/messages/read", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ senderId: selectedUser.id }),
-      }).catch(console.error);
+        signal: abortController.signal,
+      }).catch((error) => {
+        if (error.name !== "AbortError") {
+          console.error(error);
+        }
+      });
 
       // REALTIME: When realtime is connected, reduce polling to 30s (fallback only)
       // When NOT connected, poll every 5s for responsive feel
@@ -631,6 +647,10 @@ export function MessagesClient({
         clearInterval(interval);
         if (typingInterval) clearInterval(typingInterval);
         document.removeEventListener('visibilitychange', handleVisibilityChange);
+        // Abort any pending mark-as-read fetch when switching conversations
+        if (markReadAbortRef.current) {
+          markReadAbortRef.current.abort();
+        }
       };
     }
   }, [selectedUser, fetchMessages, realtimeConnected]);

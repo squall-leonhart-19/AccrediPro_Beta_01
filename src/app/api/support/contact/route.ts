@@ -22,6 +22,15 @@ export async function POST(request: NextRequest) {
     const userEmail = session.user.email;
     const userName = session.user.name || "Student";
 
+    // Escape HTML to prevent injection in email templates
+    const escapeHtml = (str: string) =>
+      str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
+    const safeUserName = escapeHtml(userName);
+    const safeSubject = escapeHtml(subject);
+    const safeMessage = escapeHtml(message);
+    const safeCategory = category ? escapeHtml(category) : "";
+
     // Send email to support
     const supportEmail = process.env.SUPPORT_EMAIL || "support@accredipro.academy";
 
@@ -42,26 +51,26 @@ export async function POST(request: NextRequest) {
           <div style="background: #f8f9fa; border-radius: 10px; padding: 30px; margin-bottom: 20px;">
             <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
               <p style="margin: 0; color: #666; font-size: 12px; text-transform: uppercase;">From</p>
-              <p style="margin: 5px 0 0 0; font-weight: bold;">${userName}</p>
+              <p style="margin: 5px 0 0 0; font-weight: bold;">${safeUserName}</p>
               <p style="margin: 2px 0 0 0; color: #666;">${userEmail}</p>
             </div>
 
             ${category ? `
             <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
               <p style="margin: 0; color: #666; font-size: 12px; text-transform: uppercase;">Category</p>
-              <p style="margin: 5px 0 0 0; font-weight: bold;">${category}</p>
+              <p style="margin: 5px 0 0 0; font-weight: bold;">${safeCategory}</p>
             </div>
             ` : ""}
 
             <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
               <p style="margin: 0; color: #666; font-size: 12px; text-transform: uppercase;">Subject</p>
-              <p style="margin: 5px 0 0 0; font-weight: bold;">${subject}</p>
+              <p style="margin: 5px 0 0 0; font-weight: bold;">${safeSubject}</p>
             </div>
 
             <div>
               <p style="margin: 0; color: #666; font-size: 12px; text-transform: uppercase;">Message</p>
               <div style="margin-top: 10px; padding: 15px; background: white; border-radius: 8px; border: 1px solid #e0e0e0;">
-                <p style="margin: 0; white-space: pre-wrap;">${message}</p>
+                <p style="margin: 0; white-space: pre-wrap;">${safeMessage}</p>
               </div>
             </div>
           </div>
@@ -104,13 +113,13 @@ export async function POST(request: NextRequest) {
 
           <div style="background: #f8f9fa; border-radius: 10px; padding: 30px; margin-bottom: 20px;">
             <h2 style="color: #333; margin-top: 0;">We Received Your Message</h2>
-            <p>Hi ${userName.split(" ")[0]},</p>
+            <p>Hi ${escapeHtml(userName.split(" ")[0])},</p>
             <p>Thank you for reaching out to AccrediPro Support. We've received your message and will get back to you within 24 hours.</p>
 
             <div style="background: white; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #722F37;">
               <p style="margin: 0 0 10px 0; font-weight: bold; color: #722F37;">Your Request:</p>
-              <p style="margin: 0; color: #666;"><strong>Subject:</strong> ${subject}</p>
-              ${category ? `<p style="margin: 5px 0 0 0; color: #666;"><strong>Category:</strong> ${category}</p>` : ""}
+              <p style="margin: 0; color: #666;"><strong>Subject:</strong> ${safeSubject}</p>
+              ${safeCategory ? `<p style="margin: 5px 0 0 0; color: #666;"><strong>Category:</strong> ${safeCategory}</p>` : ""}
             </div>
 
             <p style="color: #666; font-size: 14px;">In the meantime, you might find answers in our <a href="${process.env.NEXTAUTH_URL}/help" style="color: #722F37;">FAQ section</a> or reach out to your coach via <a href="${process.env.NEXTAUTH_URL}/messages" style="color: #722F37;">Live Chat</a>.</p>

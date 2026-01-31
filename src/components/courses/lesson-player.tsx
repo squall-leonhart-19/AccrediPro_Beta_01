@@ -96,6 +96,16 @@ export function LessonPlayer({
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const chatInputRef = useRef<HTMLInputElement>(null); // Ref-based input to prevent keyboard close on mobile
     const contentInitializedRef = useRef<string | null>(null); // Track initialized content to prevent re-renders from wiping DOM state
+    const isMountedRef = useRef(true); // Track mount state to prevent state updates after unmount
+    const abortControllerRef = useRef<AbortController | null>(null); // Abort AI stream on unmount
+
+    // Cleanup: mark unmounted and abort any in-flight AI stream
+    useEffect(() => {
+        return () => {
+            isMountedRef.current = false;
+            abortControllerRef.current?.abort();
+        };
+    }, []);
 
     const coachId = course.coach?.id;
     const coachName = course.coach
@@ -108,7 +118,8 @@ export function LessonPlayer({
 
     // Load chat hidden preference from localStorage
     useEffect(() => {
-        const hidden = localStorage.getItem("lesson-chat-hidden");
+        let hidden: string | null = null;
+        try { hidden = localStorage.getItem("lesson-chat-hidden"); } catch {}
         if (hidden === "true") {
             setChatHidden(true);
         }
@@ -126,7 +137,8 @@ export function LessonPlayer({
 
     // Load saved note
     useEffect(() => {
-        const savedNote = localStorage.getItem(`lesson-note-${lesson.id}`);
+        let savedNote: string | null = null;
+        try { savedNote = localStorage.getItem(`lesson-note-${lesson.id}`); } catch {}
         if (savedNote) {
             setNote(savedNote);
             setNoteExpanded(true);
@@ -252,7 +264,7 @@ export function LessonPlayer({
 
     const saveNote = () => {
         if (note.trim()) {
-            localStorage.setItem(`lesson-note-${lesson.id}`, note);
+            try { localStorage.setItem(`lesson-note-${lesson.id}`, note); } catch {}
             setNoteSaved(true);
             toast.success("Note saved!");
             setTimeout(() => setNoteSaved(false), 2000);
@@ -315,7 +327,10 @@ export function LessonPlayer({
                 }));
                 chatHistory.push({ role: "user" as const, content: content });
 
-                // Call AI chat API for Sarah's response
+                // Call AI chat API for Sarah's response (with abort support)
+                const abortController = new AbortController();
+                abortControllerRef.current = abortController;
+
                 const aiRes = await fetch("/api/ai/mentor-chat", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -323,6 +338,7 @@ export function LessonPlayer({
                         messages: chatHistory,
                         context: { currentLesson: `${module.title} - ${lesson.title}` },
                     }),
+                    signal: abortController.signal,
                 });
 
                 if (aiRes.ok) {
@@ -332,8 +348,18 @@ export function LessonPlayer({
                         let accumulatedContent = "";
 
                         while (true) {
+                            if (!isMountedRef.current) {
+                                reader.cancel();
+                                break;
+                            }
+
                             const { done, value } = await reader.read();
                             if (done) break;
+
+                            if (!isMountedRef.current) {
+                                reader.cancel();
+                                break;
+                            }
 
                             const chunk = decoder.decode(value);
                             const lines = chunk.split("\n");
@@ -347,6 +373,7 @@ export function LessonPlayer({
                                         const parsed = JSON.parse(lineData);
                                         if (parsed.text) {
                                             accumulatedContent += parsed.text;
+                                            if (!isMountedRef.current) break;
                                             setMessages(prev =>
                                                 prev.map(m =>
                                                     m.id === aiPlaceholderId
@@ -362,8 +389,8 @@ export function LessonPlayer({
                             }
                         }
 
-                        // Save AI response as a real message from Sarah
-                        if (accumulatedContent) {
+                        // Save AI response as a real message from Sarah (only if still mounted)
+                        if (accumulatedContent && isMountedRef.current) {
                             await fetch("/api/messages/ai-response", {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
@@ -376,6 +403,8 @@ export function LessonPlayer({
                         }
                     }
                 }
+
+                abortControllerRef.current = null;
             } else {
                 toast.error("Failed to send message");
                 setMessages(prev => prev.filter(m => m.id !== tempId));
@@ -446,7 +475,7 @@ export function LessonPlayer({
                     <button
                         onClick={() => {
                             setChatHidden(true);
-                            localStorage.setItem("lesson-chat-hidden", "true");
+                            try { localStorage.setItem("lesson-chat-hidden", "true"); } catch {}
                         }}
                         title="Hide chat panel"
                         style={{
@@ -967,7 +996,7 @@ export function LessonPlayer({
                     <button
                         onClick={() => {
                             setChatHidden(false);
-                            localStorage.setItem("lesson-chat-hidden", "false");
+                            try { localStorage.setItem("lesson-chat-hidden", "false"); } catch {}
                         }}
                         title="Show chat panel"
                         style={{

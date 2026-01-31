@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface PostDetailClientProps {
@@ -443,7 +444,7 @@ export default function PostDetailClient({
               {/* Clean prose */}
               <div
                 className="prose prose-gray max-w-none text-gray-700 prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-burgundy-600 prose-strong:text-gray-900 prose-p:leading-relaxed prose-p:mb-3 prose-ul:mb-3 prose-li:mb-1 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
               />
             </div>
 

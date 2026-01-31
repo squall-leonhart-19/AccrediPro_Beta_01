@@ -52,7 +52,8 @@ export function PWAInstallPrompt() {
     if (standalone) return;
 
     // Check if user dismissed recently (24 hours)
-    const dismissed = localStorage.getItem("pwa-prompt-dismissed");
+    let dismissed: string | null = null;
+    try { dismissed = localStorage.getItem("pwa-prompt-dismissed"); } catch {}
     if (dismissed) {
       const dismissedTime = parseInt(dismissed, 10);
       if (Date.now() - dismissedTime < 24 * 60 * 60 * 1000) return;
@@ -90,7 +91,7 @@ export function PWAInstallPrompt() {
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    localStorage.setItem("pwa-prompt-dismissed", Date.now().toString());
+    try { localStorage.setItem("pwa-prompt-dismissed", Date.now().toString()); } catch {}
   };
 
   // Don't render if already installed, shouldn't show, or on excluded pages

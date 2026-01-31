@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { sanitizeHtml } from "@/lib/sanitize";
 import {
   MessageSquare,
   Pin,
@@ -807,7 +808,7 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                         className="prose prose-sm max-w-none text-gray-700 leading-relaxed
                           prose-p:my-2 prose-ul:my-2 prose-li:my-0.5
                           prose-strong:text-burgundy-800 prose-em:text-burgundy-600"
-                        dangerouslySetInnerHTML={{ __html: post.content }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
                       />
 
                       {/* Reactions Bar */}

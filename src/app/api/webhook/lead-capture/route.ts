@@ -145,9 +145,24 @@ export async function POST(request: NextRequest) {
             // Don't fail the request if email fails
         }
 
-        // If redirectUrl provided, redirect there
+        // If redirectUrl provided, redirect there (only allow same-origin or trusted domains)
         if (redirectUrl) {
             const url = new URL(redirectUrl);
+            const allowedHosts = [
+                "learn.accredipro.academy",
+                "accredipro.academy",
+                "www.accredipro.academy",
+                "accredipro-certificate.com",
+                "www.accredipro-certificate.com",
+                "localhost",
+            ];
+            if (!allowedHosts.includes(url.hostname)) {
+                console.warn(`[Lead Capture] Blocked redirect to untrusted domain: ${url.hostname}`);
+                return NextResponse.json({
+                    success: true,
+                    message: "Account created. Redirect blocked (untrusted domain).",
+                });
+            }
             url.searchParams.set("success", "true");
             url.searchParams.set("email", email);
             url.searchParams.set("specialization", specialization);

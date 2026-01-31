@@ -19,7 +19,8 @@ export function UnansweredMessageBanner() {
 
     useEffect(() => {
         // Check if dismissed in this session
-        const sessionDismissed = sessionStorage.getItem("message-banner-dismissed");
+        let sessionDismissed: string | null = null;
+        try { sessionDismissed = sessionStorage.getItem("message-banner-dismissed"); } catch {}
         if (sessionDismissed) {
             setDismissed(true);
             setLoading(false);
@@ -40,7 +41,7 @@ export function UnansweredMessageBanner() {
 
     const handleDismiss = () => {
         setDismissed(true);
-        sessionStorage.setItem("message-banner-dismissed", "true");
+        try { sessionStorage.setItem("message-banner-dismissed", "true"); } catch {}
     };
 
     if (loading || dismissed || !message) return null;

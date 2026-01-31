@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { WistiaPlayer } from "@/components/courses/wistia-player";
 import { LessonContentReader } from "@/components/courses/lesson-content-reader";
 import { LessonNotes } from "@/components/courses/lesson-notes";
@@ -527,7 +528,7 @@ export function LearningClient({
                         prose-strong:text-gray-900
                         prose-ul:text-gray-600 prose-ol:text-gray-600
                         prose-li:marker:text-burgundy-500"
-                      dangerouslySetInnerHTML={{ __html: lesson.content }}
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(lesson.content) }}
                     />
                   ) : (
                     <LessonContentReader

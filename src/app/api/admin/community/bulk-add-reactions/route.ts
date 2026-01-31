@@ -14,13 +14,15 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { minAdd = 4, maxAdd = 19 } = body;
 
-    // Get all posts
+    // Get posts in batches to avoid memory issues
     const posts = await prisma.communityPost.findMany({
       select: {
         id: true,
         reactions: true,
         likeCount: true,
       },
+      take: 500,
+      orderBy: { createdAt: "desc" },
     });
 
     const EMOJIS = ["❤️", "🔥", "👏", "💯", "🎉", "💪", "⭐", "🙌"];

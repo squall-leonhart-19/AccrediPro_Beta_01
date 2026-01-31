@@ -150,10 +150,10 @@ export function Walkthrough({ userName, coachName, userId, onComplete }: Walkthr
     // Set tour complete in localStorage BEFORE redirect
     // Always set it - with userId if available, without as fallback
     if (userId) {
-      localStorage.setItem(`tour-complete-${userId}`, "true");
+      try { localStorage.setItem(`tour-complete-${userId}`, "true"); } catch {}
     }
     // Also set a general flag as fallback
-    localStorage.setItem("tour-complete-general", "true");
+    try { localStorage.setItem("tour-complete-general", "true"); } catch {}
 
     setIsVisible(false);
     onComplete();

@@ -584,15 +584,14 @@ export async function POST(request: NextRequest) {
       payloadPreview: rawPayload.substring(0, 500),
     });
 
-    // Skip signature verification for now - CF V2 uses different method
-    // TODO: Re-enable once we confirm the signature format
-    // if (secret && !verifySignature(rawPayload, signature, secret)) {
-    //   console.error("ClickFunnels webhook: Invalid signature");
-    //   return NextResponse.json(
-    //     { success: false, error: "Invalid signature" },
-    //     { status: 401 }
-    //   );
-    // }
+    // Verify webhook signature if secret is configured
+    if (secret && signature && !verifySignature(rawPayload, signature, secret)) {
+      console.error("ClickFunnels webhook: Invalid signature");
+      return NextResponse.json(
+        { success: false, error: "Invalid signature" },
+        { status: 401 }
+      );
+    }
 
     // Parse payload
     const body = JSON.parse(rawPayload);
