@@ -296,6 +296,7 @@ export function UsersClient({ courses }: UsersClientProps) {
     "mini_diploma_completed",
     "dfy_purchased",           // DFY package purchased
     "dfy_intake_completed",    // DFY intake form submitted
+    "done_for_you",            // DFY / Done For You tag
   ];
 
   // Tag packs for one-click application
@@ -2193,22 +2194,20 @@ export function UsersClient({ courses }: UsersClientProps) {
                             <Download className="w-4 h-4 mr-2" />
                             Export Evidence PDF
                           </Button>
-                          {selectedUser.isDisputed ? (
-                            /* Already Disputed: Show Evidence Builder Directly */
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                if (!selectedUser) return;
-                                setEvidenceDialogOpen(true);
-                              }}
-                              className="border-gray-300 text-gray-600 hover:bg-gray-50"
-                            >
-                              <Upload className="w-4 h-4 mr-2" />
-                              Evidence Builder
-                            </Button>
-                          ) : (
-                            /* Not Disputed: Mark then Build */
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              if (!selectedUser) return;
+                              setEvidenceDialogOpen(true);
+                            }}
+                            className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                          >
+                            <Upload className="w-4 h-4 mr-2" />
+                            Evidence Builder
+                          </Button>
+
+                          {!selectedUser.isDisputed && (
                             <Button
                               variant="outline"
                               size="sm"
@@ -2225,13 +2224,9 @@ export function UsersClient({ courses }: UsersClientProps) {
                                   });
                                   const data = await res.json();
                                   if (data.success) {
-                                    // Success: Refresh data AND open Evidence Modal
-                                    alert(`✅ User marked as disputed!\n\nEffects:\n${data.effects.join('\n')}\n\nOpening Evidence Builder...`);
+                                    // Success: Refresh data
+                                    alert(`✅ User marked as disputed!\n\nEffects:\n${data.effects.join('\n')}`);
                                     await fetchUsers(1, true);
-                                    // We need to wait a moment for the user to be updated in local state? 
-                                    // Actually fetchUsers updates the list, but 'selectedUser' might be stale here.
-                                    // However, the ID is the same, so we can just open the dialog.
-                                    setEvidenceDialogOpen(true);
                                   } else {
                                     alert(`❌ Failed: ${data.error}`);
                                   }
@@ -3294,12 +3289,12 @@ export function UsersClient({ courses }: UsersClientProps) {
                     Apply Tags (optional)
                   </Label>
 
-                  {/* Search existing tags or add custom */}
+                  {/* Search tags or add custom */}
                   <div className="flex gap-2">
                     <Input
                       value={createUserTagSearch}
                       onChange={(e) => setCreateUserTagSearch(e.target.value)}
-                      placeholder="Search or type custom tag..."
+                      placeholder="Search tags..."
                       className="flex-1"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && createUserTagSearch.trim()) {
@@ -3315,44 +3310,45 @@ export function UsersClient({ courses }: UsersClientProps) {
                         }
                       }}
                     />
-                    {createUserTagSearch.trim() && !existingTags.includes(createUserTagSearch.trim()) && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          const newTag = createUserTagSearch.trim();
-                          if (!newUserData.tags.includes(newTag)) {
-                            setNewUserData(prev => ({
-                              ...prev,
-                              tags: [...prev.tags, newTag]
-                            }));
-                          }
-                          setCreateUserTagSearch("");
-                        }}
-                        className="whitespace-nowrap"
-                      >
-                        + Add "{createUserTagSearch.trim()}"
-                      </Button>
-                    )}
+                    {createUserTagSearch.trim() && (() => {
+                      const allKnown = [...new Set([...existingTags, ...COMMON_TAGS, ...Object.values(TAG_PACKS).flat()])];
+                      return !allKnown.includes(createUserTagSearch.trim());
+                    })() && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            const newTag = createUserTagSearch.trim();
+                            if (!newUserData.tags.includes(newTag)) {
+                              setNewUserData(prev => ({
+                                ...prev,
+                                tags: [...prev.tags, newTag]
+                              }));
+                            }
+                            setCreateUserTagSearch("");
+                          }}
+                          className="whitespace-nowrap"
+                        >
+                          + Add &quot;{createUserTagSearch.trim()}&quot;
+                        </Button>
+                      )}
                   </div>
 
-                  {/* Existing tags from database */}
-                  {loadingTags ? (
-                    <div className="text-center py-2 text-gray-500 text-sm">Loading tags...</div>
-                  ) : (
-                    <div className="max-h-32 overflow-y-auto border rounded-lg p-2 bg-gray-50 mb-2">
-                      <div className="flex flex-wrap gap-2">
-                        {existingTags.length === 0 ? (
-                          <p className="text-center text-gray-400 text-sm py-1 w-full">No existing tags. Type above to add new tags.</p>
-                        ) : existingTags
-                          .filter((tag) => tag.toLowerCase().includes(createUserTagSearch.toLowerCase()))
-                          .length === 0 ? (
-                          <p className="text-center text-gray-400 text-sm py-1 w-full">No tags match. Press Enter or click + to add custom tag.</p>
+                  {/* Search results - unified across all tag sources */}
+                  {createUserTagSearch.trim() ? (() => {
+                    const query = createUserTagSearch.toLowerCase();
+                    const allKnown = [...new Set([...existingTags, ...COMMON_TAGS, ...Object.values(TAG_PACKS).flat()])].sort();
+                    const matches = allKnown.filter(tag => tag.toLowerCase().includes(query));
+                    return (
+                      <div className="max-h-40 overflow-y-auto border rounded-lg p-2 bg-white shadow-sm">
+                        {loadingTags ? (
+                          <div className="text-center py-2 text-gray-500 text-sm">Loading tags...</div>
+                        ) : matches.length === 0 ? (
+                          <p className="text-center text-gray-400 text-sm py-1">No tags match &quot;{createUserTagSearch.trim()}&quot;. Press Enter to add as custom tag.</p>
                         ) : (
-                          existingTags
-                            .filter((tag) => tag.toLowerCase().includes(createUserTagSearch.toLowerCase()))
-                            .map((tag) => (
+                          <div className="flex flex-wrap gap-2">
+                            {matches.map((tag) => (
                               <button
                                 key={tag}
                                 type="button"
@@ -3363,84 +3359,86 @@ export function UsersClient({ courses }: UsersClientProps) {
                                       ? prev.tags.filter(t => t !== tag)
                                       : [...prev.tags, tag]
                                   }));
+                                  setCreateUserTagSearch("");
                                 }}
                                 className={`px-2 py-1 text-xs rounded-full border transition-colors ${newUserData.tags.includes(tag)
                                   ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
                                   : "bg-white border-gray-200 text-gray-600 hover:bg-burgundy-50 hover:border-burgundy-200"
                                   }`}
                               >
-                                {tag}
+                                {newUserData.tags.includes(tag) ? "✓ " : "+ "}{tag}
                               </button>
-                            ))
+                            ))}
+                          </div>
                         )}
                       </div>
-                    </div>
-                  )}
-
-                  {/* Tag Packs - One-click bundles */}
-                  <p className="text-xs text-gray-500 mt-2 font-semibold">📦 Tag Packs (one-click):</p>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {Object.entries(TAG_PACKS).map(([packName, packTags]) => {
-                      const allSelected = packTags.every(tag => newUserData.tags.includes(tag));
-                      return (
-                        <button
-                          key={packName}
-                          type="button"
-                          onClick={() => {
-                            setNewUserData(prev => {
-                              if (allSelected) {
-                                // Remove all pack tags
-                                return {
-                                  ...prev,
-                                  tags: prev.tags.filter(t => !packTags.includes(t))
-                                };
-                              } else {
-                                // Add all pack tags (avoiding duplicates)
-                                const newTags = [...prev.tags];
-                                packTags.forEach(tag => {
-                                  if (!newTags.includes(tag)) {
-                                    newTags.push(tag);
+                    );
+                  })() : (
+                    <>
+                      {/* Tag Packs - One-click bundles */}
+                      <p className="text-xs text-gray-500 mt-2 font-semibold">Tag Packs (one-click):</p>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {Object.entries(TAG_PACKS).map(([packName, packTags]) => {
+                          const allSelected = packTags.every(tag => newUserData.tags.includes(tag));
+                          return (
+                            <button
+                              key={packName}
+                              type="button"
+                              onClick={() => {
+                                setNewUserData(prev => {
+                                  if (allSelected) {
+                                    return {
+                                      ...prev,
+                                      tags: prev.tags.filter(t => !packTags.includes(t))
+                                    };
+                                  } else {
+                                    const newTags = [...prev.tags];
+                                    packTags.forEach(tag => {
+                                      if (!newTags.includes(tag)) {
+                                        newTags.push(tag);
+                                      }
+                                    });
+                                    return { ...prev, tags: newTags };
                                   }
                                 });
-                                return { ...prev, tags: newTags };
-                              }
-                            });
-                          }}
-                          className={`px-3 py-1.5 text-xs rounded-lg border-2 transition-all font-medium ${allSelected
-                            ? "bg-green-100 border-green-500 text-green-700"
-                            : "bg-gradient-to-r from-burgundy-50 to-burgundy-100 border-burgundy-300 text-burgundy-700 hover:border-burgundy-500"
-                            }`}
-                        >
-                          {allSelected ? "✓ " : "🏷️ "}{packName} ({packTags.length} tags)
-                        </button>
-                      );
-                    })}
-                  </div>
+                              }}
+                              className={`px-3 py-1.5 text-xs rounded-lg border-2 transition-all font-medium ${allSelected
+                                ? "bg-green-100 border-green-500 text-green-700"
+                                : "bg-gradient-to-r from-burgundy-50 to-burgundy-100 border-burgundy-300 text-burgundy-700 hover:border-burgundy-500"
+                                }`}
+                            >
+                              {allSelected ? "✓ " : ""}{packName} ({packTags.length} tags)
+                            </button>
+                          );
+                        })}
+                      </div>
 
-                  {/* Quick select common tags */}
-                  <p className="text-xs text-gray-500 mt-2">Quick select:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {COMMON_TAGS.map((tag) => (
-                      <button
-                        key={tag}
-                        type="button"
-                        onClick={() => {
-                          setNewUserData(prev => ({
-                            ...prev,
-                            tags: prev.tags.includes(tag)
-                              ? prev.tags.filter(t => t !== tag)
-                              : [...prev.tags, tag]
-                          }));
-                        }}
-                        className={`px-2 py-1 text-xs rounded-full border transition-colors ${newUserData.tags.includes(tag)
-                          ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
-                          : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
-                          }`}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
+                      {/* Quick select common tags */}
+                      <p className="text-xs text-gray-500 mt-2">Quick select:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {COMMON_TAGS.map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => {
+                              setNewUserData(prev => ({
+                                ...prev,
+                                tags: prev.tags.includes(tag)
+                                  ? prev.tags.filter(t => t !== tag)
+                                  : [...prev.tags, tag]
+                              }));
+                            }}
+                            className={`px-2 py-1 text-xs rounded-full border transition-colors ${newUserData.tags.includes(tag)
+                              ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
+                              : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                              }`}
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
 
                   {/* Selected tags display */}
                   {newUserData.tags.length > 0 && (
@@ -3448,9 +3446,19 @@ export function UsersClient({ courses }: UsersClientProps) {
                       <p className="text-xs text-burgundy-700 mb-1"><strong>{newUserData.tags.length} tag(s) selected:</strong></p>
                       <div className="flex flex-wrap gap-1">
                         {newUserData.tags.map((tag) => (
-                          <span key={tag} className="px-2 py-0.5 text-xs bg-burgundy-100 text-burgundy-700 rounded-full">
-                            {tag}
-                          </span>
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => {
+                              setNewUserData(prev => ({
+                                ...prev,
+                                tags: prev.tags.filter(t => t !== tag)
+                              }));
+                            }}
+                            className="px-2 py-0.5 text-xs bg-burgundy-100 text-burgundy-700 rounded-full hover:bg-burgundy-200 transition-colors"
+                          >
+                            {tag} ×
+                          </button>
                         ))}
                       </div>
                     </div>
@@ -3511,59 +3519,18 @@ export function UsersClient({ courses }: UsersClientProps) {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            {/* Search existing tags */}
+            {/* Search tags */}
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Search className="w-4 h-4" />
                 Search & Select Tags
               </Label>
-              <Input
-                value={tagSearch}
-                onChange={(e) => setTagSearch(e.target.value)}
-                placeholder="Search tags..."
-                className="mb-2"
-              />
-              {loadingTags ? (
-                <div className="text-center py-4 text-gray-500 text-sm">Loading tags...</div>
-              ) : (
-                <div className="max-h-48 overflow-y-auto border rounded-lg p-2 bg-gray-50">
-                  {existingTags.length === 0 ? (
-                    <p className="text-center text-gray-400 text-sm py-2">No existing tags found</p>
-                  ) : (
-                    <div className="flex flex-wrap gap-2">
-                      {existingTags
-                        .filter((tag) => tag.toLowerCase().includes(tagSearch.toLowerCase()))
-                        .map((tag) => (
-                          <button
-                            key={tag}
-                            type="button"
-                            onClick={() => toggleTag(tag)}
-                            className={`px-2 py-1 text-xs rounded-full border transition-colors ${selectedTags.includes(tag)
-                              ? "bg-green-100 border-green-300 text-green-700"
-                              : "bg-white border-gray-200 text-gray-600 hover:bg-green-50 hover:border-green-200"
-                              }`}
-                          >
-                            {selectedTags.includes(tag) && "✓ "}{tag}
-                          </button>
-                        ))}
-                      {existingTags.filter((tag) => tag.toLowerCase().includes(tagSearch.toLowerCase())).length === 0 && (
-                        <p className="text-center text-gray-400 text-sm py-2 w-full">No tags match your search</p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Custom tag input */}
-            <div className="space-y-2">
-              <Label htmlFor="tagInput">Add custom tag</Label>
               <div className="flex gap-2">
                 <Input
-                  id="tagInput"
                   value={tagSearch}
                   onChange={(e) => setTagSearch(e.target.value)}
-                  placeholder="Type custom tag and press Add"
+                  placeholder="Search tags..."
+                  className="flex-1"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && tagSearch.trim() && !selectedTags.includes(tagSearch.trim())) {
                       e.preventDefault();
@@ -3572,20 +3539,76 @@ export function UsersClient({ courses }: UsersClientProps) {
                     }
                   }}
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    if (tagSearch.trim() && !selectedTags.includes(tagSearch.trim())) {
-                      setSelectedTags(prev => [...prev, tagSearch.trim()]);
-                      setTagSearch('');
-                    }
-                  }}
-                  disabled={!tagSearch.trim() || selectedTags.includes(tagSearch.trim())}
-                >
-                  Add
-                </Button>
+                {tagSearch.trim() && !selectedTags.includes(tagSearch.trim()) && (() => {
+                  const allKnown = [...new Set([...existingTags, ...COMMON_TAGS, ...Object.values(TAG_PACKS).flat()])];
+                  return !allKnown.some(t => t.toLowerCase() === tagSearch.trim().toLowerCase());
+                })() && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedTags(prev => [...prev, tagSearch.trim()]);
+                        setTagSearch('');
+                      }}
+                      className="whitespace-nowrap"
+                    >
+                      + Add
+                    </Button>
+                  )}
               </div>
+              {loadingTags ? (
+                <div className="text-center py-4 text-gray-500 text-sm">Loading tags...</div>
+              ) : tagSearch.trim() ? (() => {
+                const query = tagSearch.toLowerCase();
+                const allKnown = [...new Set([...existingTags, ...COMMON_TAGS, ...Object.values(TAG_PACKS).flat()])].sort();
+                const matches = allKnown.filter(tag => tag.toLowerCase().includes(query));
+                return (
+                  <div className="max-h-48 overflow-y-auto border rounded-lg p-2 bg-white shadow-sm">
+                    {matches.length === 0 ? (
+                      <p className="text-center text-gray-400 text-sm py-2">No tags match &quot;{tagSearch.trim()}&quot;. Press Enter to add as custom tag.</p>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        {matches.map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => {
+                              toggleTag(tag);
+                              setTagSearch('');
+                            }}
+                            className={`px-2 py-1 text-xs rounded-full border transition-colors ${selectedTags.includes(tag)
+                              ? "bg-green-100 border-green-300 text-green-700"
+                              : "bg-white border-gray-200 text-gray-600 hover:bg-green-50 hover:border-green-200"
+                              }`}
+                          >
+                            {selectedTags.includes(tag) ? "✓ " : "+ "}{tag}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })() : (
+                <div className="max-h-48 overflow-y-auto border rounded-lg p-2 bg-gray-50">
+                  <p className="text-xs text-gray-500 mb-2">Quick select:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {COMMON_TAGS.map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => toggleTag(tag)}
+                        className={`px-2 py-1 text-xs rounded-full border transition-colors ${selectedTags.includes(tag)
+                          ? "bg-green-100 border-green-300 text-green-700"
+                          : "bg-white border-gray-200 text-gray-600 hover:bg-green-50 hover:border-green-200"
+                          }`}
+                      >
+                        {selectedTags.includes(tag) && "✓ "}{tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Selected tags display */}
