@@ -56,7 +56,8 @@ async function main() {
         orderBy: { completedAt: "asc" },
     });
 
-    console.log("\n✅ COMPLETED LESSONS:", lessonProgress.filter(lp => lp.completed).length);
+    console.log("\n✅ COMPLETED LESSONS:", lessonProgress.filter(lp => lp.isCompleted).length);
+    console.log("📝 TOTAL LESSON PROGRESS RECORDS:", lessonProgress.length);
 
     // Group by module
     const byModule: Record<string, typeof lessonProgress> = {};
@@ -67,10 +68,10 @@ async function main() {
     }
 
     for (const [moduleTitle, lessons] of Object.entries(byModule)) {
-        const completed = lessons.filter(l => l.completed).length;
+        const completed = lessons.filter(l => l.isCompleted).length;
         console.log(`\n   📦 ${moduleTitle}: ${completed}/${lessons.length} completed`);
         for (const lp of lessons.sort((a, b) => (a.lesson.order || 0) - (b.lesson.order || 0))) {
-            console.log(`      ${lp.completed ? "✅" : "⬜"} ${lp.lesson.title}`);
+            console.log(`      ${lp.isCompleted ? "✅" : "⬜"} ${lp.lesson.title}`);
         }
     }
 
@@ -84,59 +85,95 @@ async function main() {
 
     console.log("\n🎓 CERTIFICATES:", certificates.length);
     for (const cert of certificates) {
-        console.log(`   - ${cert.course?.title || cert.type} (${cert.type}) - ${cert.createdAt}`);
+        console.log(`   - ${cert.course?.title || cert.type} (${cert.type}) - ${cert.issuedAt}`);
     }
 
     // Check module certificates specifically
     const moduleCerts = await prisma.certificate.findMany({
         where: {
             userId: user.id,
-            type: "MODULE",
+            type: "MODULE_COMPLETION",
         },
     });
     console.log("\n📜 MODULE CERTIFICATES:", moduleCerts.length);
 
-    // Check if all lessons in Module 1 are complete
-    const module1 = await prisma.module.findFirst({
-        where: {
-            order: 1,
-            course: {
-                enrollments: {
-                    some: { userId: user.id },
+    // Check all modules in enrolled courses
+    for (const enrollment of enrollments) {
+        const modules = await prisma.module.findMany({
+            where: { courseId: enrollment.courseId },
+            include: {
+                lessons: {
+                    where: { isPublished: true },
+                    select: { id: true, title: true, order: true },
+                    orderBy: { order: "asc" },
                 },
             },
-        },
+            orderBy: { order: "asc" },
+        });
+
+        console.log(`\n\n🔍 COURSE: ${enrollment.course.title}`);
+        console.log("=".repeat(50));
+
+        for (const mod of modules) {
+            const completedInModule = mod.lessons.filter(l =>
+                lessonProgress.some(lp => lp.lessonId === l.id && lp.isCompleted)
+            ).length;
+
+            const isComplete = completedInModule === mod.lessons.length && mod.lessons.length > 0;
+            const icon = isComplete ? "✅" : "⏳";
+
+            console.log(`\n   ${icon} Module ${mod.order}: ${mod.title}`);
+            console.log(`      Progress: ${completedInModule}/${mod.lessons.length} lessons`);
+
+            for (const lesson of mod.lessons) {
+                const progress = lessonProgress.find(lp => lp.lessonId === lesson.id);
+                console.log(`         ${progress?.isCompleted ? "✅" : "⬜"} Lesson ${lesson.order}: ${lesson.title}`);
+            }
+
+            if (isComplete) {
+                // Check if module certificate exists
+                const modCert = await prisma.certificate.findFirst({
+                    where: {
+                        userId: user.id,
+                        courseId: enrollment.courseId,
+                        moduleId: mod.id,
+                        type: "MODULE_COMPLETION",
+                    },
+                });
+
+                if (modCert) {
+                    console.log(`      🎓 Certificate: ${modCert.certificateNumber}`);
+                } else {
+                    console.log(`      ❌ NO CERTIFICATE FOUND - SHOULD EXIST!`);
+                }
+            }
+        }
+    }
+
+    // Check learning time
+    const streak = await prisma.userStreak.findUnique({
+        where: { userId: user.id },
+    });
+    console.log("\n⏱️ STREAK DATA:");
+    if (streak) {
+        console.log(`   Current Streak: ${streak.currentStreak} days`);
+        console.log(`   Longest Streak: ${streak.longestStreak} days`);
+        console.log(`   Total Points: ${streak.totalPoints}`);
+        console.log(`   Last Active: ${streak.lastActiveAt}`);
+    } else {
+        console.log("   No streak data found");
+    }
+
+    // Check module progress table
+    const moduleProgress = await prisma.moduleProgress.findMany({
+        where: { userId: user.id },
         include: {
-            lessons: {
-                select: { id: true, title: true, order: true },
-                orderBy: { order: "asc" },
-            },
-            course: { select: { id: true, title: true } },
+            module: { select: { title: true, order: true } },
         },
     });
-
-    if (module1) {
-        console.log("\n🔍 MODULE 1 ANALYSIS:");
-        console.log(`   Course: ${module1.course.title}`);
-        console.log(`   Module: ${module1.title}`);
-        console.log(`   Total Lessons: ${module1.lessons.length}`);
-
-        for (const lesson of module1.lessons) {
-            const progress = lessonProgress.find(lp => lp.lessonId === lesson.id);
-            console.log(`   ${progress?.completed ? "✅" : "⬜"} Lesson ${lesson.order}: ${lesson.title}`);
-        }
-
-        const completedInModule1 = module1.lessons.filter(l =>
-            lessonProgress.some(lp => lp.lessonId === l.id && lp.completed)
-        ).length;
-
-        console.log(`\n   Result: ${completedInModule1}/${module1.lessons.length} lessons complete`);
-
-        if (completedInModule1 === module1.lessons.length) {
-            console.log("   ✅ Module 1 IS COMPLETE - Certificate should exist!");
-        } else {
-            console.log("   ❌ Module 1 NOT COMPLETE - Need to finish all lessons");
-        }
+    console.log("\n📊 MODULE PROGRESS RECORDS:");
+    for (const mp of moduleProgress) {
+        console.log(`   - Module ${mp.module.order}: ${mp.module.title} - isCompleted: ${mp.isCompleted} - completedAt: ${mp.completedAt}`);
     }
 }
 
