@@ -93,6 +93,7 @@ const fullNavItems: NavItem[] = [
     children: [
       { href: "/my-library/course-materials", label: "📁 Course Materials", icon: Library, tourId: "course-materials" },
       { href: "/ebooks", label: "📖 Browse Guides", icon: Library, tourId: "browse-guides" },
+      { href: "/my-library?tab=resources", label: "🎁 Free Tools", icon: Gift, tourId: "free-tools" },
     ]
   },
 

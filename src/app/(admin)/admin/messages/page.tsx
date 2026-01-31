@@ -1,16 +1,104 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { MessagesClient } from "@/components/messages/messages-client";
 import { useSession } from "next-auth/react";
+import { MessageSquare, Clock, Users, TrendingUp } from "lucide-react";
+import Link from "next/link";
+
+// Analytics bar data type
+interface MessagesAnalytics {
+    totalConversations: number;
+    activeToday: number;
+    avgResponseTimeHours: number;
+    awaitingResponse: number;
+}
+
+// Analytics bar component
+function AnalyticsBar() {
+    const [analytics, setAnalytics] = useState<MessagesAnalytics | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchAnalytics() {
+            try {
+                const res = await fetch("/api/admin/messages/analytics");
+                if (res.ok) {
+                    const data = await res.json();
+                    setAnalytics(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch message analytics:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchAnalytics();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="bg-gradient-to-r from-burgundy-700 to-burgundy-800 px-4 py-2 flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                    {[...Array(4)].map((_, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                            <div className="w-4 h-4 bg-white/20 rounded animate-pulse" />
+                            <div className="w-16 h-4 bg-white/20 rounded animate-pulse" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+    if (!analytics) return null;
+
+    return (
+        <div className="bg-gradient-to-r from-burgundy-700 to-burgundy-800 px-4 py-2 flex items-center justify-between">
+            <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-gold-400" />
+                    <span className="text-white/80 text-xs">Conversations:</span>
+                    <span className="text-white font-semibold text-sm">{analytics.totalConversations}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-green-400" />
+                    <span className="text-white/80 text-xs">Active Today:</span>
+                    <span className="text-white font-semibold text-sm">{analytics.activeToday}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-blue-400" />
+                    <span className="text-white/80 text-xs">Avg Response:</span>
+                    <span className="text-white font-semibold text-sm">{analytics.avgResponseTimeHours}h</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <MessageSquare className={`w-4 h-4 ${analytics.awaitingResponse > 0 ? 'text-red-400' : 'text-green-400'}`} />
+                    <span className="text-white/80 text-xs">Awaiting Reply:</span>
+                    <span className={`font-semibold text-sm ${analytics.awaitingResponse > 0 ? 'text-red-400' : 'text-green-400'}`}>
+                        {analytics.awaitingResponse}
+                    </span>
+                </div>
+            </div>
+            <Link
+                href="/admin/customer-care"
+                className="text-xs text-gold-400 hover:text-gold-300 transition-colors"
+            >
+                Full Dashboard →
+            </Link>
+        </div>
+    );
+}
 
 // Admin Messages Page - keeps user in admin layout
 export default function AdminMessagesPage() {
     return (
-        <div className="h-[calc(100vh-4rem)] -mx-4 -my-4 lg:-mx-8 lg:-my-8">
-            <Suspense fallback={<MessagesLoadingSkeleton />}>
-                <AdminMessagesWrapper />
-            </Suspense>
+        <div className="h-[calc(100vh-4rem)] -mx-4 -my-4 lg:-mx-8 lg:-my-8 flex flex-col">
+            <AnalyticsBar />
+            <div className="flex-1 min-h-0">
+                <Suspense fallback={<MessagesLoadingSkeleton />}>
+                    <AdminMessagesWrapper />
+                </Suspense>
+            </div>
         </div>
     );
 }
