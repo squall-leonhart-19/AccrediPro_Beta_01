@@ -48,8 +48,12 @@ export async function POST(request: NextRequest) {
         },
       },
       update: {
-        watchTime: watchTime ?? existingProgress?.watchTime ?? 0,
+        // watchTime: Keep track of furthest position watched (player sends current position)
+        watchTime: watchTime !== undefined
+          ? Math.max(watchTime, existingProgress?.watchTime ?? 0)
+          : existingProgress?.watchTime ?? 0,
         lastPosition: lastPosition ?? existingProgress?.lastPosition ?? 0,
+
         // Accumulate time spent
         timeSpent: timeSpent
           ? (existingProgress?.timeSpent ?? 0) + timeSpent
