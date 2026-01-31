@@ -249,8 +249,8 @@ export function AdminNav() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-burgundy-900 pt-16">
-          <nav className="p-4 space-y-2">
+        <div className="lg:hidden fixed inset-0 z-40 bg-burgundy-900 pt-16 overflow-y-auto">
+          <nav className="p-4 space-y-2 pb-20">
             {filteredNavItems.map((item) => {
               const isActive = pathname === item.href ||
                 (item.href !== "/admin" && pathname.startsWith(item.href));

@@ -96,7 +96,7 @@ export default function OnboardingChecklist() {
             id: "profileComplete",
             label: "Complete your profile",
             description: "Add a photo and bio",
-            href: "/dashboard",
+            href: "/profile",
             completed: data.progress.profileComplete,
         },
         {
@@ -129,9 +129,9 @@ export default function OnboardingChecklist() {
         },
         {
             id: "resourceDownloaded",
-            label: "Download a resource",
-            description: "Get your first PDF",
-            href: "/resources",
+            label: "Browse your resources",
+            description: "Explore guides & PDFs",
+            href: "/my-library",
             completed: data.progress.resourceDownloaded,
         },
     ];

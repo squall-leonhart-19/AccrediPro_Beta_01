@@ -1,7 +1,11 @@
 import { Resend } from "resend";
+import * as postmark from "postmark";
 import prisma from "./prisma";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const postmarkClient = process.env.POSTMARK_API_KEY
+  ? new postmark.ServerClient(process.env.POSTMARK_API_KEY)
+  : null;
 
 // Suppression tag slugs - emails with these tags will be skipped
 const SUPPRESSION_TAGS = [
@@ -18,6 +22,10 @@ const FROM_EMAIL_TRANSACTIONAL = process.env.FROM_EMAIL || "AccrediPro Academy <
 const FROM_EMAIL_MARKETING = process.env.FROM_EMAIL_MARKETING || "Sarah <info@accredipro-certificate.com>";
 // Personal emails for login credentials - plain, personal, lands in Primary
 const FROM_EMAIL_PERSONAL = "Sarah Mitchell <sarah@accredipro-certificate.com>";
+
+// POSTMARK SENDER ADDRESSES (accredipro.academy domain verified)
+const POSTMARK_FROM_TRANSACTIONAL = "AccrediPro <info@accredipro.academy>";
+const POSTMARK_FROM_MARKETING = "Sarah <sarah@accredipro.academy>";
 
 // Use SITE_URL for emails, NOT NEXTAUTH_URL (which can be localhost for auth)
 const BASE_URL = process.env.SITE_URL || "https://learn.accredipro.academy";
@@ -406,7 +414,51 @@ export async function sendEmail({
     });
 
     if (error) {
-      console.error("Email send error:", error);
+      console.error("Resend email error, trying Postmark fallback:", error);
+
+      // POSTMARK FALLBACK - Try Postmark before failing
+      if (postmarkClient) {
+        try {
+          console.log(`📧 POSTMARK FALLBACK - Sending to ${to}`);
+          const toAddresses = Array.isArray(to) ? to.join(',') : to;
+          // Use Postmark-verified sender addresses
+          const postmarkFrom = type === 'marketing' ? POSTMARK_FROM_MARKETING : POSTMARK_FROM_TRANSACTIONAL;
+
+          const postmarkResult = await postmarkClient.sendEmail({
+            From: postmarkFrom,
+            To: toAddresses,
+            Subject: subject,
+            HtmlBody: html,
+            TextBody: plainText,
+            ReplyTo: effectiveReplyTo,
+            MessageStream: 'outbound',
+          });
+
+          // Update log with Postmark success
+          if (emailSendRecord) {
+            try {
+              await prisma.emailSend.update({
+                where: { id: emailSendRecord.id },
+                data: {
+                  status: 'SENT',
+                  provider: 'postmark',
+                  resendId: postmarkResult.MessageID || null,
+                  sentAt: new Date(),
+                  lastError: `Resend failed, Postmark succeeded`,
+                }
+              });
+            } catch (logError) {
+              console.error('[EmailLog] Failed to update email log:', logError);
+            }
+          }
+
+          console.log(`✅ POSTMARK SUCCESS - Email sent to ${to}: ${subject}`);
+          return { success: true, data: postmarkResult, emailSendId: emailSendRecord?.id, provider: 'postmark' };
+        } catch (postmarkError) {
+          console.error("Postmark fallback also failed:", postmarkError);
+          // Continue to fail with original error
+        }
+      }
 
       // Update log with failure
       if (emailSendRecord) {

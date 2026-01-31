@@ -262,22 +262,34 @@ export default function SupportPortalPage() {
     const stats = useMemo(() => {
         // Use stats from API response for global counts (accurate regardless of filter)
         const apiStats = data?.stats;
+        // Classify tickets as OPEN (actionable) or CLOSED (resolved)
+        // OPEN = NEW, OPEN, PENDING
+        // CLOSED = RESOLVED, CLOSED
         if (apiStats) {
             return {
-                new: apiStats.NEW || 0,
-                open: (apiStats.OPEN || 0) + (apiStats.PENDING || 0),
-                resolved: (apiStats.RESOLVED || 0) + (apiStats.CLOSED || 0),
+                open: (apiStats.NEW || 0) + (apiStats.OPEN || 0) + (apiStats.PENDING || 0),
+                closed: (apiStats.RESOLVED || 0) + (apiStats.CLOSED || 0),
                 total: apiStats.total || 0,
             };
         }
         // Fallback to counting from current tickets (less accurate when filtered)
         return {
-            new: tickets.filter(t => t.status === "NEW").length,
-            open: tickets.filter(t => t.status === "OPEN" || t.status === "PENDING").length,
-            resolved: tickets.filter(t => t.status === "RESOLVED" || t.status === "CLOSED").length,
+            open: tickets.filter(t => ["NEW", "OPEN", "PENDING"].includes(t.status)).length,
+            closed: tickets.filter(t => ["RESOLVED", "CLOSED"].includes(t.status)).length,
             total: tickets.length,
         };
     }, [tickets, data?.stats]);
+
+    // Category stats for analytics
+    const categoryStats = useMemo(() => {
+        const allTickets = data?.tickets || tickets;
+        const cats: Record<string, number> = {};
+        allTickets.forEach(t => {
+            const cat = detectCategory(t.subject);
+            cats[cat] = (cats[cat] || 0) + 1;
+        });
+        return Object.entries(cats).sort((a, b) => b[1] - a[1]);
+    }, [data?.tickets, tickets]);
 
     useEffect(() => {
         if (!selectedTicketId && tickets.length > 0) setSelectedTicketId(tickets[0].id);
@@ -405,20 +417,35 @@ export default function SupportPortalPage() {
                         </div>
                     </div>
 
-                    {/* Stats */}
-                    <div className="grid grid-cols-4 gap-2 text-center">
-                        {[
-                            { label: "New", value: stats.new, color: "bg-blue-400" },
-                            { label: "Open", value: stats.open, color: "bg-emerald-400" },
-                            { label: "Resolved", value: stats.resolved, color: "bg-purple-400" },
-                            { label: "Total", value: stats.total, color: "bg-slate-400" },
-                        ].map(s => (
-                            <div key={s.label}>
-                                <div className="text-2xl font-bold">{s.value}</div>
-                                <div className="text-[10px] uppercase text-white/70">{s.label}</div>
-                            </div>
-                        ))}
+                    {/* Stats - OPEN vs CLOSED */}
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                        <div className="cursor-pointer hover:opacity-80 transition-opacity" onClick={() => setStatusFilter("OPEN")}>
+                            <div className="text-2xl font-bold">{stats.open}</div>
+                            <div className="text-[10px] uppercase text-white/70">OPEN</div>
+                        </div>
+                        <div className="cursor-pointer hover:opacity-80 transition-opacity" onClick={() => setStatusFilter("CLOSED")}>
+                            <div className="text-2xl font-bold">{stats.closed}</div>
+                            <div className="text-[10px] uppercase text-white/70">CLOSED</div>
+                        </div>
+                        <div className="cursor-pointer hover:opacity-80 transition-opacity" onClick={() => setStatusFilter("all")}>
+                            <div className="text-2xl font-bold">{stats.total}</div>
+                            <div className="text-[10px] uppercase text-white/70">TOTAL</div>
+                        </div>
                     </div>
+
+                    {/* Category Analytics */}
+                    {categoryStats.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-white/20">
+                            <div className="text-[10px] uppercase text-white/60 mb-2">Cases by Type</div>
+                            <div className="flex flex-wrap gap-1">
+                                {categoryStats.slice(0, 4).map(([cat, count]) => (
+                                    <span key={cat} className="text-xs px-2 py-0.5 rounded-full bg-white/20 text-white">
+                                        {cat}: {count}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* AI Daily Digest Widget */}
                     {showDigest && (
@@ -479,27 +506,31 @@ export default function SupportPortalPage() {
                     )}
                 </div>
 
-                {/* Status Tabs */}
-                <div className="border-b flex overflow-x-auto bg-slate-50">
+                {/* Status Tabs - Simplified OPEN/CLOSED */}
+                <div className="border-b flex bg-slate-50">
                     {[
-                        { id: "NEW", label: "New", icon: Circle },
-                        { id: "OPEN", label: "Open", icon: MessageSquare },
-                        { id: "PENDING", label: "Pending", icon: Clock },
-                        { id: "RESOLVED", label: "Resolved", icon: CheckCheck },
-                        { id: "all", label: "All", icon: Inbox },
+                        { id: "OPEN", label: "Open", icon: Inbox, count: stats.open },
+                        { id: "CLOSED", label: "Closed", icon: CheckCheck, count: stats.closed },
+                        { id: "all", label: "All", icon: MessageSquare, count: stats.total },
                     ].map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setStatusFilter(tab.id)}
                             className={cn(
-                                "flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap",
+                                "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium border-b-2 transition-colors",
                                 statusFilter === tab.id
                                     ? "border-[#722F37] text-[#722F37] bg-white"
-                                    : "border-transparent text-slate-500 hover:text-slate-700"
+                                    : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100"
                             )}
                         >
-                            <tab.icon className="w-3.5 h-3.5" />
+                            <tab.icon className="w-4 h-4" />
                             {tab.label}
+                            <span className={cn(
+                                "text-xs px-1.5 py-0.5 rounded-full",
+                                statusFilter === tab.id ? "bg-[#722F37] text-white" : "bg-slate-200 text-slate-600"
+                            )}>
+                                {tab.count}
+                            </span>
                         </button>
                     ))}
                 </div>

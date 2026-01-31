@@ -24,7 +24,17 @@ export async function GET(request: NextRequest) {
     const where: Record<string, unknown> = {};
 
     if (status && status !== "ALL") {
-      where.status = status;
+      // Handle grouped status filters
+      if (status === "OPEN") {
+        // OPEN = actionable tickets (NEW, OPEN, PENDING)
+        where.status = { in: ["NEW", "OPEN", "PENDING"] };
+      } else if (status === "CLOSED") {
+        // CLOSED = resolved tickets (RESOLVED, CLOSED)
+        where.status = { in: ["RESOLVED", "CLOSED"] };
+      } else {
+        // Single status filter (legacy support)
+        where.status = status;
+      }
     }
     if (priority && priority !== "ALL") {
       where.priority = priority;
@@ -283,20 +293,20 @@ function detectPriority(subject: string, message: string): string {
 
   // URGENT: Financial issues, broken access, time-sensitive
   if (text.includes("urgent") || text.includes("asap") || text.includes("immediately") ||
-      text.includes("refund") || text.includes("chargeback") || text.includes("can't access") ||
-      text.includes("exam tomorrow") || text.includes("deadline")) {
+    text.includes("refund") || text.includes("chargeback") || text.includes("can't access") ||
+    text.includes("exam tomorrow") || text.includes("deadline")) {
     return "URGENT";
   }
 
   // HIGH: Access issues, payment problems
   if (text.includes("can't login") || text.includes("locked out") || text.includes("payment failed") ||
-      text.includes("not working") || text.includes("certificate not") || text.includes("stuck")) {
+    text.includes("not working") || text.includes("certificate not") || text.includes("stuck")) {
     return "HIGH";
   }
 
   // LOW: General questions, feedback
   if (text.includes("question") || text.includes("curious") || text.includes("wondering") ||
-      text.includes("suggestion") || text.includes("feedback") || text.includes("just wanted")) {
+    text.includes("suggestion") || text.includes("feedback") || text.includes("just wanted")) {
     return "LOW";
   }
 

@@ -240,17 +240,18 @@ PS: Want to learn how to turn this knowledge into a $10K/month income? Just repl
 // Re-export for backward compatibility
 export const LEAD_EMAILS = MINI_DIPLOMA_EMAILS;
 
-// SECTION: ONBOARDING_NUDGES - Buyer Onboarding Step Nudges (Branded HTML)
-// Sarah signature in italic for personal touch
+// Sarah signature in italic/cursive like a real handwritten signature
 const SARAH_SIGNATURE = `
 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-    <p style="margin: 0; font-style: italic; color: #722F37; font-size: 16px;">– Sarah Mitchell</p>
+    <p style="margin: 0; font-family: 'Georgia', 'Times New Roman', serif; font-style: italic; color: #722F37; font-size: 20px;">– Sarah</p>
     <p style="margin: 5px 0 0 0; color: #999; font-size: 12px;">Your Coach at AccrediPro Academy</p>
 </div>`;
 
+// SECTION: ONBOARDING_NUDGES - Buyer Onboarding Step Nudges (Branded HTML)
 export const ONBOARDING_NUDGE_EMAILS = {
     profile: {
         subject: (firstName: string) => `Quick thing, ${firstName}...`,
+        preheader: "Complete your profile in 30 seconds – I'd love to see who I'm working with!",
         content: (firstName: string) => `
             <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
             <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">I noticed you haven't finished setting up your profile yet.</p>
@@ -265,6 +266,7 @@ export const ONBOARDING_NUDGE_EMAILS = {
     },
     message: {
         subject: () => `I'm right here if you need me`,
+        preheader: "Whether you have questions or just want to chat – I'm here for you.",
         content: (firstName: string) => `
             <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
             <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Just wanted to remind you – you can message me anytime.</p>
@@ -278,6 +280,7 @@ export const ONBOARDING_NUDGE_EMAILS = {
     },
     lesson: {
         subject: () => `Your first lesson takes 5 mins`,
+        preheader: "Just 5 minutes to start your certification journey. Ready?",
         content: (firstName: string) => `
             <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
             <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">I've been checking in and noticed you haven't started your first lesson yet.</p>
@@ -292,6 +295,7 @@ export const ONBOARDING_NUDGE_EMAILS = {
     },
     community: {
         subject: () => `The community is waiting for you`,
+        preheader: "Introduce yourself – everyone's super welcoming!",
         content: (firstName: string) => `
             <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
             <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Quick one – have you introduced yourself in the community yet?</p>
@@ -360,14 +364,17 @@ export async function POST(request: Request) {
         content = content.replace(/\{\{lessonsRemaining\}\}/g, lessonsRemaining);
 
         // Use branded emailWrapper for onboarding, personalEmailWrapper for mini_diploma
+        // Onboarding emails get preheader and reply-to for trust/warming
+        const preheader = section === "onboarding" ? (template as any).preheader : undefined;
         const wrapContent = section === "onboarding"
-            ? emailWrapper(content)
+            ? emailWrapper(content, preheader)
             : personalEmailWrapper(content.replace(/\n/g, '<br>'));
 
         const result = await sendEmail({
             to: email,
             subject,
             html: wrapContent,
+            replyTo: section === "onboarding" ? "sarah@accredipro-certificate.com" : undefined,
             type: "transactional",
         });
 
@@ -423,15 +430,17 @@ export async function GET(request: Request) {
             let content = template.content("Test");
             content = content.replace(/\{\{lessonsRemaining\}\}/g, "3");
 
-            // Use branded emailWrapper for onboarding, personalEmailWrapper for mini_diploma
+            // Use branded emailWrapper for onboarding with preheader, personalEmailWrapper for mini_diploma
+            const preheader = section === "onboarding" ? (template as any).preheader : undefined;
             const wrapContent = section === "onboarding"
-                ? emailWrapper(content)
+                ? emailWrapper(content, preheader)
                 : personalEmailWrapper(content.replace(/\n/g, '<br>'));
 
             const result = await sendEmail({
                 to: email,
                 subject: `[TEST] ${subject}`,
                 html: wrapContent,
+                replyTo: section === "onboarding" ? "sarah@accredipro-certificate.com" : undefined,
                 type: "transactional",
             });
 

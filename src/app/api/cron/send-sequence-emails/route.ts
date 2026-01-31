@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
           marketingTags: {
             none: {
               tag: {
-                slug: { in: ["bounced", "suppressed"] },
+                slug: { in: ["suppress_bounced", "suppress_complained", "suppress_unsubscribed", "suppress_do_not_contact"] },
               },
             },
           },

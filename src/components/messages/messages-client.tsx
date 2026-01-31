@@ -214,12 +214,14 @@ const SARAH_CREDENTIALS = {
   accreditations: ["CPD", "IPHM", "CMA"],
 };
 
-// Quick reply buttons for students
+// Quick reply buttons for students - contextual & engaging
 const STUDENT_QUICK_REPLIES = [
-  { emoji: "👋", text: "Thanks Sarah!" },
-  { emoji: "❓", text: "I have a question" },
-  { emoji: "🚀", text: "Ready to start!" },
-  { emoji: "💬", text: "Tell me more" },
+  { emoji: "👋", text: "Hi Sarah! Just wanted to check in" },
+  { emoji: "🆘", text: "I'm stuck on my current lesson" },
+  { emoji: "📜", text: "When do I get my certificate?" },
+  { emoji: "💼", text: "How can I start practicing?" },
+  { emoji: "🙋", text: "Quick question..." },
+  { emoji: "🎯", text: "I'd love some guidance!" },
 ];
 
 // Helper function for relative time formatting
@@ -289,6 +291,7 @@ export function MessagesClient({
   const [scheduleDate, setScheduleDate] = useState("");
   const [scheduleTime, setScheduleTime] = useState("");
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingDebounceRef = useRef<NodeJS.Timeout | null>(null); // Debounce for mobile input fix
 
   // New DM modal state (for coaches)
   const [showNewDmModal, setShowNewDmModal] = useState(false);
@@ -317,6 +320,7 @@ export function MessagesClient({
   const isInitialLoadRef = useRef(true); // Track initial load for force scroll
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null); // WhatsApp-style: keep focus on textarea
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -331,6 +335,9 @@ export function MessagesClient({
       // Cleanup any pending timeouts/intervals
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
+      }
+      if (typingDebounceRef.current) {
+        clearTimeout(typingDebounceRef.current);
       }
       if (recordingIntervalRef.current) {
         clearInterval(recordingIntervalRef.current);
@@ -703,6 +710,17 @@ export function MessagesClient({
       }
     }, 3000);
   };
+
+  // DEBOUNCED typing handler - prevents mobile keyboard from closing on every keystroke
+  // Only triggers handleTyping after 300ms pause in typing
+  const debouncedHandleTyping = useCallback(() => {
+    if (typingDebounceRef.current) {
+      clearTimeout(typingDebounceRef.current);
+    }
+    typingDebounceRef.current = setTimeout(() => {
+      handleTyping();
+    }, 300);
+  }, []);
 
   // Message search
   const handleSearch = async (query: string) => {
@@ -1112,10 +1130,12 @@ export function MessagesClient({
     }
   };
 
-  // Emoji picker
+  // Emoji picker - WhatsApp style: add emoji and immediately refocus textarea
   const addEmoji = (emoji: string) => {
     setNewMessage((prev) => prev + emoji);
     setShowEmojiPicker(false);
+    // WhatsApp-style: immediately refocus textarea so keyboard doesn't close
+    setTimeout(() => textareaRef.current?.focus(), 10);
   };
 
   // Search students for new DM (coaches only)
@@ -2769,7 +2789,9 @@ export function MessagesClient({
                   {STUDENT_QUICK_REPLIES.map((reply) => (
                     <button
                       key={reply.text}
-                      onClick={() => setNewMessage(reply.text)}
+                      type="button"
+                      onClick={() => { setNewMessage(reply.text); setTimeout(() => textareaRef.current?.focus(), 10); }}
+                      onMouseDown={(e) => e.preventDefault()} // WhatsApp-style: prevent keyboard close
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full border border-gray-200 text-xs font-medium text-gray-700 hover:bg-burgundy-50 hover:border-burgundy-200 hover:text-burgundy-700 transition-all"
                     >
                       <span>{reply.emoji}</span>
@@ -2784,7 +2806,10 @@ export function MessagesClient({
             <div className="px-4 py-3 bg-white border-t border-gray-100 relative">
               {/* Emoji Picker */}
               {showEmojiPicker && (
-                <div className="absolute bottom-full left-4 mb-2 bg-white rounded-xl shadow-xl border border-gray-200 p-3 w-72 z-50 max-h-64 overflow-y-auto">
+                <div
+                  className="absolute bottom-full left-4 mb-2 bg-white rounded-xl shadow-xl border border-gray-200 p-3 w-72 z-50 max-h-64 overflow-y-auto"
+                  onMouseDown={(e) => e.preventDefault()} // Prevent focus loss on mobile
+                >
                   {EMOJI_CATEGORIES.map((category) => (
                     <div key={category.name} className="mb-3">
                       <p className="text-[10px] font-semibold text-gray-500 mb-1">{category.name}</p>
@@ -2792,7 +2817,9 @@ export function MessagesClient({
                         {category.emojis.map((emoji) => (
                           <button
                             key={emoji}
+                            type="button"
                             onClick={() => addEmoji(emoji)}
+                            onMouseDown={(e) => e.preventDefault()} // WhatsApp-style: prevent keyboard close
                             className="w-7 h-7 flex items-center justify-center text-lg hover:bg-gray-100 rounded-lg transition-colors"
                           >
                             {emoji}
@@ -2879,9 +2906,10 @@ export function MessagesClient({
               <form onSubmit={handleSendMessage} className="flex items-end gap-2">
                 <div className="flex-1 bg-gray-50 rounded-2xl border border-gray-200 focus-within:border-burgundy-300 focus-within:ring-2 focus-within:ring-burgundy-100 transition-all">
                   <Textarea
+                    ref={textareaRef}
                     placeholder="Type your message..."
                     value={newMessage}
-                    onChange={(e) => { setNewMessage(e.target.value); handleTyping(); }}
+                    onChange={(e) => { setNewMessage(e.target.value); debouncedHandleTyping(); }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();

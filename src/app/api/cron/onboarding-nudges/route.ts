@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { sendEmail, emailWrapper } from "@/lib/email";
 
-// Sarah signature in italic for personal touch
+// Sarah signature in italic/cursive like a real handwritten signature
 const SARAH_SIGNATURE = `
 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-    <p style="margin: 0; font-style: italic; color: #722F37; font-size: 16px;">– Sarah Mitchell</p>
+    <p style="margin: 0; font-family: 'Georgia', 'Times New Roman', serif; font-style: italic; color: #722F37; font-size: 20px;">– Sarah</p>
     <p style="margin: 5px 0 0 0; color: #999; font-size: 12px;">Your Coach at AccrediPro Academy</p>
 </div>`;
 
@@ -14,6 +14,7 @@ const NUDGE_TEMPLATES = {
     profile: {
         delay: 24 * 60 * 60 * 1000, // 24 hours
         subject: "Quick thing, {{firstName}}...",
+        preheader: "Complete your profile in 30 seconds – I'd love to see who I'm working with!",
         content: (firstName: string, profileLink: string) => `
             <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
             <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">I noticed you haven't finished setting up your profile yet.</p>
@@ -29,6 +30,7 @@ const NUDGE_TEMPLATES = {
     message: {
         delay: 48 * 60 * 60 * 1000, // 48 hours
         subject: "I'm right here if you need me",
+        preheader: "Whether you have questions or just want to chat – I'm here for you.",
         content: (firstName: string, messageLink: string) => `
             <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
             <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Just wanted to remind you – you can message me anytime.</p>
@@ -43,6 +45,7 @@ const NUDGE_TEMPLATES = {
     lesson: {
         delay: 72 * 60 * 60 * 1000, // 72 hours
         subject: "Your first lesson takes 5 mins",
+        preheader: "Just 5 minutes to start your certification journey. Ready?",
         content: (firstName: string, lessonLink: string) => `
             <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
             <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">I've been checking in and noticed you haven't started your first lesson yet.</p>
@@ -58,6 +61,7 @@ const NUDGE_TEMPLATES = {
     community: {
         delay: 5 * 24 * 60 * 60 * 1000, // 5 days
         subject: "The community is waiting for you",
+        preheader: "Introduce yourself – everyone's super welcoming!",
         content: (firstName: string, communityLink: string) => `
             <h2 style="color: #722F37; margin: 0 0 20px 0; font-size: 22px;">Hey ${firstName},</h2>
             <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Quick one – have you introduced yourself in the community yet?</p>
@@ -138,7 +142,8 @@ export async function GET(request: NextRequest) {
                     await sendEmail({
                         to: email,
                         subject: NUDGE_TEMPLATES.profile.subject.replace("{{firstName}}", firstName),
-                        html: emailWrapper(content),
+                        html: emailWrapper(content, NUDGE_TEMPLATES.profile.preheader),
+                        replyTo: "sarah@accredipro-certificate.com",
                         type: "transactional",
                     });
 
@@ -164,7 +169,8 @@ export async function GET(request: NextRequest) {
                     await sendEmail({
                         to: email,
                         subject: NUDGE_TEMPLATES.message.subject,
-                        html: emailWrapper(content),
+                        html: emailWrapper(content, NUDGE_TEMPLATES.message.preheader),
+                        replyTo: "sarah@accredipro-certificate.com",
                         type: "transactional",
                     });
 
@@ -190,7 +196,8 @@ export async function GET(request: NextRequest) {
                     await sendEmail({
                         to: email,
                         subject: NUDGE_TEMPLATES.lesson.subject,
-                        html: emailWrapper(content),
+                        html: emailWrapper(content, NUDGE_TEMPLATES.lesson.preheader),
+                        replyTo: "sarah@accredipro-certificate.com",
                         type: "transactional",
                     });
 
@@ -216,7 +223,8 @@ export async function GET(request: NextRequest) {
                     await sendEmail({
                         to: email,
                         subject: NUDGE_TEMPLATES.community.subject,
-                        html: emailWrapper(content),
+                        html: emailWrapper(content, NUDGE_TEMPLATES.community.preheader),
+                        replyTo: "sarah@accredipro-certificate.com",
                         type: "transactional",
                     });
 

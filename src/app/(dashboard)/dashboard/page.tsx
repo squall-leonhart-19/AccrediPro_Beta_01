@@ -15,6 +15,7 @@ import { PodLeaderboardPreview } from "@/components/dashboard/pod-leaderboard-pr
 import { ReferralCard } from "@/components/dashboard/referral-card";
 import { DashboardPWABanner } from "@/components/dashboard/pwa-banner";
 import OnboardingChecklist from "@/components/dashboard/onboarding-checklist";
+import { UnansweredMessageBanner } from "@/components/dashboard/unanswered-message-banner";
 import { generateZombieSuccessEvents } from "@/lib/success-events";
 import { getSpecializationTrack } from "@/lib/specialization-tracks";
 import { getSocialProofStats } from "@/lib/social-proof";
@@ -324,6 +325,9 @@ export default async function DashboardPage() {
 
         {/* ========== ANNOUNCEMENT BANNER ========== */}
         <AnnouncementBanner announcements={announcements} />
+
+        {/* ========== UNANSWERED MESSAGE REMINDER ========== */}
+        <UnansweredMessageBanner />
 
         {/* ========== PWA INSTALL BANNER ========== */}
         <DashboardPWABanner />
