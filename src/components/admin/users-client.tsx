@@ -239,6 +239,10 @@ export function UsersClient({ courses }: UsersClientProps) {
   // Clone user state
   const [cloningUser, setCloningUser] = useState(false);
 
+  // Mark as Disputed state
+  const [markingDisputed, setMarkingDisputed] = useState(false);
+  const [disputeReason, setDisputeReason] = useState("");
+
   // Impersonation
   const { startImpersonation, loading: impersonating } = useImpersonation();
 
@@ -2273,6 +2277,52 @@ Terms: https://learn.accredipro.academy/terms-of-service
                           >
                             <Download className="w-4 h-4 mr-2" />
                             Export Evidence
+                          </Button>
+                          {/* Download PDF Evidence */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              window.open(`/api/admin/users/${selectedUser?.id}/dispute-evidence/pdf?reason=general`, '_blank');
+                            }}
+                            className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                          >
+                            <Download className="w-4 h-4 mr-2" />
+                            PDF Evidence
+                          </Button>
+                          {/* Mark as Disputed Button */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                              if (!selectedUser) return;
+                              const reason = prompt('Enter dispute/chargeback reason (optional):') || 'Chargeback filed';
+                              if (!confirm(`⚠️ Mark ${selectedUser.firstName} ${selectedUser.lastName} as DISPUTED?\n\nThis will:\n- Block account access\n- Suppress all emails\n- Deactivate the account\n\nReason: ${reason}`)) return;
+                              setMarkingDisputed(true);
+                              try {
+                                const res = await fetch(`/api/admin/users/${selectedUser.id}/mark-disputed`, {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ reason })
+                                });
+                                const data = await res.json();
+                                if (data.success) {
+                                  alert(`✅ User marked as disputed!\n\nEffects:\n${data.effects.join('\n')}`);
+                                  fetchUsers(1, true);
+                                } else {
+                                  alert(`❌ Failed: ${data.error}`);
+                                }
+                              } catch (e) {
+                                alert(`❌ Error: ${e}`);
+                              } finally {
+                                setMarkingDisputed(false);
+                              }
+                            }}
+                            disabled={markingDisputed}
+                            className="border-red-500 text-red-600 hover:bg-red-50"
+                          >
+                            <Shield className="w-4 h-4 mr-2" />
+                            {markingDisputed ? 'Marking...' : 'Mark as Disputed'}
                           </Button>
                         </div>
 
