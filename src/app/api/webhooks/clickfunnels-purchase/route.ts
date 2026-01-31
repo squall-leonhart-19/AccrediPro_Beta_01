@@ -272,11 +272,58 @@ async function sendPurchaseToMeta(params: {
     }
 }
 
-// Determine course slug from product name
-function getCourseSlug(productName: string): string {
-    const lowerName = productName.toLowerCase();
+// Check if a product is a DFY (Done-For-You) product - used to skip course enrollment
+function isDFYProduct(productName: string, productSku: string): boolean {
+    const nameLower = productName.toLowerCase();
+    const skuLower = productSku.toLowerCase();
 
-    // Check direct mappings first
+    return skuLower.includes("dfy_program") ||
+        skuLower.includes("dfy_business") ||
+        skuLower.includes("dfy-business") ||
+        nameLower.includes("dfy_program") ||
+        nameLower.includes("dfy program") ||
+        nameLower.includes("done for you") ||
+        nameLower.includes("done-for-you") ||
+        nameLower.includes("dfy business") ||
+        (nameLower.includes("business accelerator") && !nameLower.includes("pro accelerator"));
+}
+
+// Determine course slug from product name
+function getCourseSlug(productName: string, productSku: string = ""): string {
+    const lowerName = productName.toLowerCase();
+    const lowerSku = productSku.toLowerCase();
+
+    // === PRIORITY 1: Check DFY products FIRST (before any generic keywords) ===
+    // DFY products should NOT enroll in courses, return special slug
+    if (isDFYProduct(productName, productSku)) {
+        console.log(`[CF Purchase] Product "${productName}" (SKU: ${productSku}) is a DFY product - skipping course enrollment`);
+        return "dfy-business-accelerator"; // Special slug that won't match any course
+    }
+
+    // === PRIORITY 2: Check longer, more specific patterns first ===
+    // This prevents "accelerator" from matching before "done-for-you business accelerator"
+    const priorityPatterns = [
+        // DFY patterns (backup check)
+        ["done-for-you business accelerator", "dfy-business-accelerator"],
+        ["done for you business accelerator", "dfy-business-accelerator"],
+        ["dfy business accelerator", "dfy-business-accelerator"],
+        ["dfy-business-accelerator", "dfy-business-accelerator"],
+        // Pro Accelerator patterns (more specific)
+        ["fm-pro-accelerator", "fm-pro-accelerator"],
+        ["fm pro accelerator", "fm-pro-accelerator"],
+        ["hn-pro-accelerator", "hn-pro-accelerator"],
+        ["wh-pro-accelerator", "wh-pro-accelerator"],
+        ["gh-pro-accelerator", "gh-pro-accelerator"],
+    ];
+
+    for (const [pattern, slug] of priorityPatterns) {
+        if (lowerName.includes(pattern) || lowerSku.includes(pattern.replace(/-/g, "_"))) {
+            console.log(`[CF Purchase] Product "${productName}" matched priority pattern: ${slug}`);
+            return slug;
+        }
+    }
+
+    // === PRIORITY 3: Check standard mappings ===
     for (const [key, slug] of Object.entries(PRODUCT_COURSE_MAP)) {
         if (lowerName.includes(key)) {
             console.log(`[CF Purchase] Product "${productName}" matched to course slug: ${slug}`);
@@ -437,7 +484,7 @@ export async function POST(request: NextRequest) {
         // 2. DETERMINE COURSE AND ENROLL
         // =====================================================
 
-        const courseSlug = getCourseSlug(productName);
+        const courseSlug = getCourseSlug(productName, productSku);
 
         // Try to find course with flexible slug matching
         let course = await prisma.course.findFirst({
