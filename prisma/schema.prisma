@@ -1627,17 +1627,24 @@ model EmailSend {
   id String @id @default(cuid())
 
   // Who and what
-  userId          String
+  userId          String?
   emailTemplateId String?
   sequenceEmailId String?
 
-  // Resend data
-  resendId String? @unique // Resend message ID for tracking
+  // Provider tracking
+  provider         String   @default("resend") // resend, postmark, sendgrid
+  resendId         String?  @unique // Resend message ID for tracking
+  externalId       String?  // ID from other providers (postmark, sendgrid)
 
   // Email details (snapshot at send time)
   toEmail   String
   subject   String
   preheader String?
+  emailType String? // welcome, enrollment, nurture, marketing, etc.
+
+  // NeverBounce validation
+  neverBounceResult String? // valid, invalid, catchall, unknown, disposable
+  neverBounceChecked Boolean @default(false)
 
   // Status
   status         EmailStatus @default(QUEUED)
@@ -1649,18 +1656,24 @@ model EmailSend {
   complainedAt   DateTime?
   unsubscribedAt DateTime?
 
+  // Retry tracking
+  attemptCount Int       @default(0)
+  maxAttempts  Int       @default(5)
+  retryAfter   DateTime? // When to retry if failed
+  lastError    String?   @db.Text // Last error message
+
   // Engagement
   openCount    Int      @default(0)
   clickCount   Int      @default(0)
   clickedLinks String[] // URLs that were clicked
 
-  // Error tracking
+  // Error tracking (legacy, kept for compatibility)
   errorMessage String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
   emailTemplate EmailTemplate? @relation(fields: [emailTemplateId], references: [id])
   sequenceEmail SequenceEmail? @relation(fields: [sequenceEmailId], references: [id])
   events        EmailEvent[]
@@ -1671,6 +1684,9 @@ model EmailSend {
   @@index([resendId])
   @@index([status])
   @@index([sentAt])
+  @@index([provider])
+  @@index([retryAfter])
+  @@index([toEmail])
 }
 
 enum EmailStatus {

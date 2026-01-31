@@ -311,7 +311,19 @@ async function isEmailSuppressed(email: string): Promise<{ suppressed: boolean; 
 }
 
 // Main send function for transactional emails (default)
-export async function sendEmail({ to, subject, html, text, replyTo, type = 'transactional' }: SendEmailOptions) {
+export async function sendEmail({
+  to,
+  subject,
+  html,
+  text,
+  replyTo,
+  type = 'transactional',
+  emailType,
+  userId,
+}: SendEmailOptions & { emailType?: string; userId?: string }) {
+  const primaryEmail = Array.isArray(to) ? to[0] : to;
+  let emailSendRecord: any = null;
+
   try {
     // Skip if no email address provided (fake profiles have null email)
     if (!to || (Array.isArray(to) && to.length === 0)) {
@@ -319,22 +331,57 @@ export async function sendEmail({ to, subject, html, text, replyTo, type = 'tran
       return { success: false, error: 'No recipient email' };
     }
 
-    // Get the primary email address for suppression check
-    const primaryEmail = Array.isArray(to) ? to[0] : to;
-
     // Skip suppression check for test emails (at.seed* pattern)
     const isTestEmail = primaryEmail.toLowerCase().includes('at.seed');
+    let suppressionReason: string | undefined;
 
     if (!isTestEmail) {
       // Check if email is suppressed (bounced, complained, unsubscribed)
       const suppression = await isEmailSuppressed(primaryEmail);
       if (suppression.suppressed) {
         console.log(`📧 SUPPRESSED - Not sending to ${primaryEmail} (${suppression.reason})`);
+
+        // Log suppressed emails too for visibility
+        try {
+          await prisma.emailSend.create({
+            data: {
+              userId: userId || null,
+              toEmail: primaryEmail,
+              subject,
+              emailType: emailType || type,
+              provider: 'none',
+              status: 'FAILED',
+              lastError: `Suppressed: ${suppression.reason}`,
+              attemptCount: 1,
+            }
+          });
+        } catch (logError) {
+          console.error('[EmailLog] Failed to log suppressed email:', logError);
+        }
+
         return { success: false, error: `Email suppressed: ${suppression.reason}` };
       }
     }
 
     const fromEmail = type === 'marketing' ? FROM_EMAIL_MARKETING : FROM_EMAIL_TRANSACTIONAL;
+
+    // Create email log record BEFORE sending (status: SENDING)
+    try {
+      emailSendRecord = await prisma.emailSend.create({
+        data: {
+          userId: userId || null,
+          toEmail: primaryEmail,
+          subject,
+          emailType: emailType || type,
+          provider: 'resend',
+          status: 'SENDING',
+          attemptCount: 1,
+        }
+      });
+    } catch (logError) {
+      console.error('[EmailLog] Failed to create email log:', logError);
+      // Continue sending even if logging fails
+    }
 
     // Debug log to verify subject being sent
     console.log(`📧 SENDING EMAIL - Subject: "${subject}" | To: ${to}`);
@@ -360,13 +407,64 @@ export async function sendEmail({ to, subject, html, text, replyTo, type = 'tran
 
     if (error) {
       console.error("Email send error:", error);
+
+      // Update log with failure
+      if (emailSendRecord) {
+        try {
+          await prisma.emailSend.update({
+            where: { id: emailSendRecord.id },
+            data: {
+              status: 'FAILED',
+              lastError: JSON.stringify(error),
+              // Schedule retry in 5 minutes
+              retryAfter: new Date(Date.now() + 5 * 60 * 1000),
+            }
+          });
+        } catch (logError) {
+          console.error('[EmailLog] Failed to update email log:', logError);
+        }
+      }
+
       throw error;
     }
 
+    // Update log with success
+    if (emailSendRecord) {
+      try {
+        await prisma.emailSend.update({
+          where: { id: emailSendRecord.id },
+          data: {
+            status: 'SENT',
+            resendId: data?.id || null,
+            sentAt: new Date(),
+          }
+        });
+      } catch (logError) {
+        console.error('[EmailLog] Failed to update email log:', logError);
+      }
+    }
+
     console.log(`Email sent successfully to ${to}: ${subject} (${type})`);
-    return { success: true, data };
+    return { success: true, data, emailSendId: emailSendRecord?.id };
   } catch (error) {
     console.error("Failed to send email:", error);
+
+    // Update log with failure if not already updated
+    if (emailSendRecord) {
+      try {
+        await prisma.emailSend.update({
+          where: { id: emailSendRecord.id },
+          data: {
+            status: 'FAILED',
+            lastError: error instanceof Error ? error.message : JSON.stringify(error),
+            retryAfter: new Date(Date.now() + 5 * 60 * 1000),
+          }
+        });
+      } catch (logError) {
+        console.error('[EmailLog] Failed to update email log:', logError);
+      }
+    }
+
     return { success: false, error };
   }
 }
