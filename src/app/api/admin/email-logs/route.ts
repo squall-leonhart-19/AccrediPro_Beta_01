@@ -16,7 +16,8 @@ export async function GET(req: Request) {
         const email = searchParams.get("email");
         const provider = searchParams.get("provider");
         const emailType = searchParams.get("emailType");
-        const limit = parseInt(searchParams.get("limit") || "100");
+        const fromDate = searchParams.get("fromDate");
+        const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 10000);
         const offset = parseInt(searchParams.get("offset") || "0");
 
         // Build where clause
@@ -32,6 +33,9 @@ export async function GET(req: Request) {
         }
         if (emailType && emailType !== "all") {
             where.emailType = emailType;
+        }
+        if (fromDate) {
+            where.createdAt = { gte: new Date(fromDate) };
         }
 
         const [emails, total] = await Promise.all([
@@ -54,7 +58,7 @@ export async function GET(req: Request) {
             prisma.emailSend.count({ where }),
         ]);
 
-        // Calculate stats
+        // Calculate stats (for all time, ignoring current filters for overview)
         const allEmails = await prisma.emailSend.groupBy({
             by: ["status"],
             _count: true,
@@ -63,6 +67,7 @@ export async function GET(req: Request) {
         const stats = {
             sent: allEmails.find(e => e.status === "SENT")?._count || 0,
             delivered: allEmails.find(e => e.status === "DELIVERED")?._count || 0,
+            opened: allEmails.find(e => e.status === "OPENED")?._count || 0,
             failed: allEmails.find(e => e.status === "FAILED")?._count || 0,
             bounced: allEmails.find(e => e.status === "BOUNCED")?._count || 0,
             queued: allEmails.find(e => e.status === "QUEUED")?._count || 0,
