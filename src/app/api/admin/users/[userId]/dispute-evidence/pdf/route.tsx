@@ -609,78 +609,75 @@ export async function GET(
                             </View>
                         </Page>
                     </Document>
-                    );        </View>
-            </Page>
-                    </Document >
                     );
 
-        // Render PDF to buffer
-        const pdfBuffer = await renderToBuffer(<EvidenceDocument />);
+                    // Render PDF to buffer
+                    const pdfBuffer = await renderToBuffer(<EvidenceDocument />);
 
-        // Return PDF response
-        return new NextResponse(pdfBuffer, {
-            status: 200,
-            headers: {
-                "Content-Type": "application/pdf",
-                "Content-Disposition": `attachment; filename="dispute-evidence-${user.email.split("@")[0]}-${new Date().toISOString().slice(0, 10)}.pdf"`,
+                    // Return PDF response
+                    return new NextResponse(pdfBuffer, {
+                        status: 200,
+                    headers: {
+                        "Content-Type": "application/pdf",
+                    "Content-Disposition": `attachment; filename="dispute-evidence-${user.email.split("@")[0]}-${new Date().toISOString().slice(0, 10)}.pdf"`,
             },
         });
     } catch (error) {
-        console.error("Error generating dispute evidence PDF:", error);
-        return NextResponse.json(
-            { error: "Failed to generate evidence PDF", details: String(error) },
-            { status: 500 }
-        );
+                        console.error("Error generating dispute evidence PDF:", error);
+                    return NextResponse.json(
+                    {error: "Failed to generate evidence PDF", details: String(error) },
+                    {status: 500 }
+                    );
     }
 }
 
 
-// Helper for Forensic Affidavit Generation
-function generateAffidavitSummary(
-    user: any,
-    lessonsStarted: number,
-    lessonsCompleted: number,
-    totalMessages: number,
-    communityActivity: number,
-    quizzes: number,
-    reason: DisputeReason
-): string {
+                    // Helper for Forensic Affidavit Generation
+                    function generateAffidavitSummary(
+                    user: any,
+                    lessonsStarted: number,
+                    lessonsCompleted: number,
+                    totalMessages: number,
+                    communityActivity: number,
+                    quizzes: number,
+                    reason: DisputeReason
+                    ): string {
     const name = `${user.firstName || ""} ${user.lastName || ""}`.trim();
-    const email = user.email;
-    const ip = user.registrationIp || "Securely Logged IP";
-    const date = user.createdAt?.toISOString().slice(0, 10) || "N/A";
+                    const email = user.email;
+                    const ip = user.registrationIp || "Securely Logged IP";
+                    const date = user.createdAt?.toISOString().slice(0, 10) || "N/A";
 
-    let text = `AFFIDAVIT OF DIGITAL DELIVERY: I, the undersigned System Administrator for AccrediPro Standards Institute, certify that the following digital forensics record is a true and accurate extraction from our secure database regarding user ${name} (${email}).\n\n`;
+                    let text = `AFFIDAVIT OF DIGITAL DELIVERY: I, the undersigned System Administrator for AccrediPro Standards Institute, certify that the following digital forensics record is a true and accurate extraction from our secure database regarding user ${name} (${email}).\n\n`;
 
-    text += `The records confirm that the user successfully registered an account on ${date} from IP Address ${ip}. Immediately upon registration, the user was granted full access to the purchased educational content. \n\n`;
+                    text += `The records confirm that the user successfully registered an account on ${date} from IP Address ${ip}. Immediately upon registration, the user was granted full access to the purchased educational content. \n\n`;
 
-    text += `EVIDENCE OF CONSUMPTION: The user has affirmatively logged in ${user.loginCount || 0} times, utilizing the provided credentials. During these sessions, the user accessed ${lessonsStarted} unique learning modules and fully completed ${lessonsCompleted} lessons. `;
+                    text += `EVIDENCE OF CONSUMPTION: The user has affirmatively logged in ${user.loginCount || 0} times, utilizing the provided credentials. During these sessions, the user accessed ${lessonsStarted} unique learning modules and fully completed ${lessonsCompleted} lessons. `;
 
     if (quizzes > 0) {
-        text += `Furthermore, the user actively participated in ${quizzes} assessments, demonstrating clear intent and consumption of the material. `;
+                        text += `Furthermore, the user actively participated in ${quizzes} assessments, demonstrating clear intent and consumption of the material. `;
     }
 
     if (totalMessages > 0 || communityActivity > 0) {
-        text += `The user also utilized the included mentorship and community features, sending ${totalMessages + communityActivity} messages, further proving successful delivery and usage of the service. \n\n`;
+                        text += `The user also utilized the included mentorship and community features, sending ${totalMessages + communityActivity} messages, further proving successful delivery and usage of the service. \n\n`;
     } else {
-        text += `\n\n`;
+                        text += `\n\n`;
     }
 
-    text += `CONCLUSION: The digital goods were instantly delivered and extensively utilized by the customer. The customer's claim of "${getReasonLabel(reason)}" is contradicted by these immutable server logs. Under the bound Terms of Service (Section 4.1), this purchase is final and non-refundable.`;
+                    text += `CONCLUSION: The digital goods were instantly delivered and extensively utilized by the customer. The customer's claim of "${getReasonLabel(reason)}" is contradicted by these immutable server logs. Under the bound Terms of Service (Section 4.1), this purchase is final and non-refundable.`;
 
-    return text;
+                    return text;
 }
 
-function getReasonLabel(reason: DisputeReason): string {
+                    function getReasonLabel(reason: DisputeReason): string {
     const labels: Record<DisputeReason, string> = {
-        fraud: "Fraud - Card Absent Transaction (10.4)",
-        services_not_received: "Merchandise/Services Not Received (13.1)",
-        canceled: "Canceled Merchandise/Services",
-        misrepresentation: "Misrepresentation of Terms",
-        general: "General Dispute",
+                        fraud: "Fraud - Card Absent Transaction (10.4)",
+                    services_not_received: "Merchandise/Services Not Received (13.1)",
+                    canceled: "Canceled Merchandise/Services",
+                    misrepresentation: "Misrepresentation of Terms",
+                    general: "General Dispute",
     };
-    return labels[reason] || "General Dispute";
+                    return labels[reason] || "General Dispute";
 }
 
-// Types
-type DisputeReason = "fraud" | "services_not_received" | "canceled" | "misrepresentation" | "general";
+                    // Types
+                    type DisputeReason = "fraud" | "services_not_received" | "canceled" | "misrepresentation" | "general";
