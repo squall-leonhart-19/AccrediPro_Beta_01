@@ -242,6 +242,7 @@ export function UsersClient({ courses }: UsersClientProps) {
 
   // Mark as Disputed state
   const [markingDisputed, setMarkingDisputed] = useState(false);
+  const [disputeDialogOpen, setDisputeDialogOpen] = useState(false);
   const [disputeReason, setDisputeReason] = useState("");
 
   // Evidence Builder state
@@ -2211,30 +2212,9 @@ export function UsersClient({ courses }: UsersClientProps) {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={async () => {
-                                if (!selectedUser) return;
-                                const reason = prompt('Enter dispute/chargeback reason (optional):') || 'Chargeback filed';
-                                if (!confirm(`⚠️ Mark ${selectedUser.firstName} ${selectedUser.lastName} as DISPUTED?\n\nThis will:\n- Block account access\n- Suppress all emails\n- Deactivate the account\n\nReason: ${reason}`)) return;
-                                setMarkingDisputed(true);
-                                try {
-                                  const res = await fetch(`/api/admin/users/${selectedUser.id}/mark-disputed`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ reason })
-                                  });
-                                  const data = await res.json();
-                                  if (data.success) {
-                                    // Success: Refresh data
-                                    alert(`✅ User marked as disputed!\n\nEffects:\n${data.effects.join('\n')}`);
-                                    await fetchUsers(1, true);
-                                  } else {
-                                    alert(`❌ Failed: ${data.error}`);
-                                  }
-                                } catch (e: any) {
-                                  alert(`❌ Error: ${e.message}`);
-                                } finally {
-                                  setMarkingDisputed(false);
-                                }
+                              onClick={() => {
+                                setDisputeReason('');
+                                setDisputeDialogOpen(true);
                               }}
                               disabled={markingDisputed}
                               className="bg-red-600 text-white hover:bg-red-700 border-none"
@@ -3982,6 +3962,93 @@ export function UsersClient({ courses }: UsersClientProps) {
                 </>
               ) : (
                 "Run Evidence Builder"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Mark as Dispute Confirmation Dialog */}
+      <Dialog open={disputeDialogOpen} onOpenChange={setDisputeDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <Shield className="w-5 h-5" />
+              Mark User as Disputed
+            </DialogTitle>
+            <DialogDescription>
+              {selectedUser && (
+                <span>
+                  Flag <strong>{selectedUser.firstName} {selectedUser.lastName}</strong> ({selectedUser.email}) as a disputed account.
+                </span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="p-4 bg-red-50 rounded-lg border border-red-200 text-sm text-red-700 space-y-1">
+              <p className="font-semibold flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> This action will:</p>
+              <p>• Block account access immediately</p>
+              <p>• Suppress all automated emails</p>
+              <p>• Deactivate the account</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="dispute-reason">Dispute Reason</Label>
+              <Input
+                id="dispute-reason"
+                value={disputeReason}
+                onChange={(e) => setDisputeReason(e.target.value)}
+                placeholder="e.g., Chargeback filed, Fraudulent activity"
+              />
+              <p className="text-xs text-gray-500">Optional. Describe why this account is being disputed.</p>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setDisputeDialogOpen(false)}
+              disabled={markingDisputed}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                if (!selectedUser) return;
+                setMarkingDisputed(true);
+                try {
+                  const res = await fetch(`/api/admin/users/${selectedUser.id}/mark-disputed`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason: disputeReason || 'Chargeback filed' })
+                  });
+                  const data = await res.json();
+                  if (data.success) {
+                    setDisputeDialogOpen(false);
+                    await fetchUsers(1, true);
+                  } else {
+                    alert(`❌ Failed: ${data.error}`);
+                  }
+                } catch (e: any) {
+                  alert(`❌ Error: ${e.message}`);
+                } finally {
+                  setMarkingDisputed(false);
+                }
+              }}
+              disabled={markingDisputed}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {markingDisputed ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Shield className="w-4 h-4 mr-2" />
+                  Confirm Dispute
+                </>
               )}
             </Button>
           </DialogFooter>
