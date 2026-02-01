@@ -454,161 +454,165 @@ export async function GET(
                         </View>
                         <View style={styles.row}>
                             <Text style={styles.label}>Dispute Reason:</Text>
-                            {/* Legal Acceptance */}
-                            <View style={styles.section}>
-                                <Text style={styles.sectionTitle}>2. LEGAL CONTRACT ACCEPTANCE</Text>
-                                <View style={styles.highlight}>
-                                    <Text style={styles.highlightText}>
-                                        The customer affirmatively accepted the Terms of Service & Refund Policy.
-                                    </Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.label}>TOS Accepted At:</Text>
-                                    <Text style={styles.value}>{user.tosAcceptedAt?.toISOString().replace("T", " ").slice(0, 19) || "During Checkout Process"}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.label}>Refund Policy Accepted:</Text>
-                                    <Text style={styles.value}>{user.refundPolicyAcceptedAt?.toISOString().replace("T", " ").slice(0, 19) || "During Checkout Process"}</Text>
-                                </View>
-                            </View>
+                            <Text style={styles.value}>{disputeReason || "Not specified"}</Text>
+                        </View>
+                    </View>
 
-                            {/* Device Info */}
-                            <View style={styles.section}>
-                                <Text style={styles.sectionTitle}>3. USER VERIFICATION & DIGITAL FINGERPRINT</Text>
-                                <View style={styles.row}>
-                                    <Text style={styles.label}>Registration IP:</Text>
-                                    <Text style={styles.value}>{user.registrationIp || firstLoginRecord?.ipAddress || "Recorded"}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.label}>Device Info:</Text>
-                                    <Text style={styles.value}>{deviceInfo.formatted}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.label}>Geo-Location:</Text>
-                                    <Text style={styles.value}>{firstLoginRecord?.location || "Verified US/Canada/UK/AU"}</Text>
-                                </View>
-                            </View>
+                    {/* Legal Acceptance */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>2. LEGAL CONTRACT ACCEPTANCE</Text>
+                        <View style={styles.highlight}>
+                            <Text style={styles.highlightText}>
+                                The customer affirmatively accepted the Terms of Service & Refund Policy.
+                            </Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>TOS Accepted At:</Text>
+                            <Text style={styles.value}>{user.tosAcceptedAt?.toISOString().replace("T", " ").slice(0, 19) || "During Checkout Process"}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Refund Policy Accepted:</Text>
+                            <Text style={styles.value}>{user.refundPolicyAcceptedAt?.toISOString().replace("T", " ").slice(0, 19) || "During Checkout Process"}</Text>
+                        </View>
+                    </View>
 
-                            {/* Access & Usage - Tabular feel */}
-                            <View style={styles.section}>
-                                <Text style={styles.sectionTitle}>4. SERVICE DELIVERY & CONSUMPTION</Text>
-                                <View style={styles.row}>
-                                    <Text style={styles.label}>Total Logins:</Text>
-                                    <Text style={styles.value}>{user.loginCount || 0}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.label}>Course Progress:</Text>
-                                    <Text style={styles.value}>{totalLessonsStarted} Modules Accessed / {totalLessonsCompleted} Completed</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.label}>Time on Platform:</Text>
-                                    {/* Calculate time from lesson progress if available, else standard fallback */}
-                                    <Text style={styles.value}>{lessonProgress.length > 0 ? Math.round(lessonProgress.reduce((acc, p) => acc + (p.timeSpent || 0), 0) / 60) : 120} Minutes Verified Active Usage</Text>
-                                </View>
+                    {/* Device Info */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>3. USER VERIFICATION & DIGITAL FINGERPRINT</Text>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Registration IP:</Text>
+                            <Text style={styles.value}>{user.registrationIp || firstLoginRecord?.ipAddress || "Recorded"}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Device Info:</Text>
+                            <Text style={styles.value}>{deviceInfo.formatted}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Geo-Location:</Text>
+                            <Text style={styles.value}>{firstLoginRecord?.location || "Verified US/Canada/UK/AU"}</Text>
+                        </View>
+                    </View>
 
-                                {lessonProgress.length > 0 && (
-                                    <View style={{ marginTop: 6 }}>
-                                        <Text style={{ fontSize: 9, fontFamily: 'Times-Bold', marginBottom: 2 }}>Recent Access Log:</Text>
-                                        {lessonProgress.slice(0, 8).map((p, i) => (
-                                            <View key={i} style={{ flexDirection: 'row', marginBottom: 1 }}>
-                                                <Text style={{ width: '25%', fontSize: 8, color: '#444' }}>{p.completedAt.toISOString().slice(0, 10)}</Text>
-                                                <Text style={{ width: '75%', fontSize: 8 }}>Accessed "{p.lesson.title}" ({p.timeSpent ? Math.round(p.timeSpent / 60) : 5} mins)</Text>
-                                            </View>
-                                        ))}
+                    {/* Access & Usage - Tabular feel */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>4. SERVICE DELIVERY & CONSUMPTION</Text>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Total Logins:</Text>
+                            <Text style={styles.value}>{user.loginCount || 0}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Course Progress:</Text>
+                            <Text style={styles.value}>{totalLessonsStarted} Modules Accessed / {totalLessonsCompleted} Completed</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Time on Platform:</Text>
+                            {/* Calculate time from lesson progress if available, else standard fallback */}
+                            <Text style={styles.value}>{lessonProgress.length > 0 ? Math.round(lessonProgress.reduce((acc, p) => acc + (p.timeSpent || 0), 0) / 60) : 120} Minutes Verified Active Usage</Text>
+                        </View>
+
+                        {lessonProgress.length > 0 && (
+                            <View style={{ marginTop: 6 }}>
+                                <Text style={{ fontSize: 9, fontFamily: 'Times-Bold', marginBottom: 2 }}>Recent Access Log:</Text>
+                                {lessonProgress.slice(0, 8).map((p, i) => (
+                                    <View key={i} style={{ flexDirection: 'row', marginBottom: 1 }}>
+                                        <Text style={{ width: '25%', fontSize: 8, color: '#444' }}>{p.completedAt.toISOString().slice(0, 10)}</Text>
+                                        <Text style={{ width: '75%', fontSize: 8 }}>Accessed &quot;{p.lesson.title}&quot; ({p.timeSpent ? Math.round(p.timeSpent / 60) : 5} mins)</Text>
                                     </View>
-                                )}
+                                ))}
                             </View>
+                        )}
+                    </View>
 
-                            {/* Downloads Evidence */}
-                            {(resourceDownloads.length > 0) && (
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionTitle}>4b. DIGITAL GOODS DELIVERY & DOWNLOADS</Text>
-                                    <View style={styles.highlight}>
-                                        <Text style={styles.highlightText}>
-                                            Customer downloaded {resourceDownloads.length} proprietary files to their device.
-                                        </Text>
-                                    </View>
-                                    {resourceDownloads.map((dl, i) => (
-                                        <View key={i} style={styles.row}>
-                                            <Text style={styles.label}>{dl.createdAt.toISOString().slice(0, 10)}:</Text>
-                                            <Text style={styles.value}>Downloaded "{dl.resource.title}"</Text>
+                    {/* Downloads Evidence */}
+                    {(resourceDownloads.length > 0) && (
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>4b. DIGITAL GOODS DELIVERY & DOWNLOADS</Text>
+                            <View style={styles.highlight}>
+                                <Text style={styles.highlightText}>
+                                    Customer downloaded {resourceDownloads.length} proprietary files to their device.
+                                </Text>
+                            </View>
+                            {resourceDownloads.map((dl, i) => (
+                                <View key={i} style={styles.row}>
+                                    <Text style={styles.label}>{dl.createdAt.toISOString().slice(0, 10)}:</Text>
+                                    <Text style={styles.value}>Downloaded &quot;{dl.resource.title}&quot;</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
+
+                    {/* Communication Evidence */}
+                    {(emailsSent.length > 0 || mentorshipMessages.length > 0) && (
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>4c. COMMUNICATION LOGS</Text>
+
+                            {mentorshipMessages.length > 0 && (
+                                <View style={{ marginBottom: 6 }}>
+                                    <Text style={{ fontSize: 9, fontFamily: 'Times-Bold', marginBottom: 2, color: '#4b5563' }}>Mentorship & Support (Coach Sarah):</Text>
+                                    {mentorshipMessages.map((msg, i) => (
+                                        <View key={i} style={{ flexDirection: 'row', marginBottom: 2, paddingLeft: 4 }}>
+                                            <Text style={{ width: '20%', fontSize: 8, color: '#6b7280' }}>
+                                                {msg.createdAt.toISOString().slice(0, 10)}
+                                            </Text>
+                                            <Text style={{ width: '80%', fontSize: 8, fontStyle: msg.senderId === user.id ? 'italic' : 'normal' }}>
+                                                {msg.senderId === user.id ? `Customer: "${msg.content.slice(0, 50)}..."` : `Coach: "${msg.content.slice(0, 50)}..."`}
+                                            </Text>
                                         </View>
                                     ))}
                                 </View>
                             )}
 
-                            {/* Communication Evidence */}
-                            {(emailsSent.length > 0 || mentorshipMessages.length > 0) && (
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionTitle}>4c. COMMUNICATION LOGS</Text>
-
-                                    {mentorshipMessages.length > 0 && (
-                                        <View style={{ marginBottom: 6 }}>
-                                            <Text style={{ fontSize: 9, fontFamily: 'Times-Bold', marginBottom: 2, color: '#4b5563' }}>Mentorship & Support (Coach Sarah):</Text>
-                                            {mentorshipMessages.map((msg, i) => (
-                                                <View key={i} style={{ flexDirection: 'row', marginBottom: 2, paddingLeft: 4 }}>
-                                                    <Text style={{ width: '20%', fontSize: 8, color: '#6b7280' }}>
-                                                        {msg.createdAt.toISOString().slice(0, 10)}
-                                                    </Text>
-                                                    <Text style={{ width: '80%', fontSize: 8, fontStyle: msg.senderId === user.id ? 'italic' : 'normal' }}>
-                                                        {msg.senderId === user.id ? `Customer: "${msg.content.slice(0, 50)}..."` : `Coach: "${msg.content.slice(0, 50)}..."`}
-                                                    </Text>
-                                                </View>
-                                            ))}
-                                        </View>
-                                    )}
-
-                                    {emailsSent.slice(0, 5).map((email, i) => {
-                                        const opened = email.events.find(e => e.eventType === "opened");
-                                        return (
-                                            <View key={i} style={styles.row}>
-                                                <Text style={styles.label}>{email.sentAt.toISOString().slice(0, 16).replace('T', ' ')}</Text>
-                                                <Text style={styles.value}>
-                                                    "{email.subject}" {opened ? `[OPENED]` : `[DELIVERED]`}
-                                                </Text>
-                                            </View>
-                                        );
-                                    })}
-                                </View>
-                            )}
-
-                            {/* Review Evidence */}
-                            {courseReviews.length > 0 && (
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionTitle}>5. CUSTOMER SATISFACTION & REVIEWS</Text>
-                                    <View style={styles.highlight}>
-                                        <Text style={styles.highlightText}>
-                                            Customer rated product {courseReviews[0].rating}/5 Stars
+                            {emailsSent.slice(0, 5).map((email, i) => {
+                                const opened = email.events.find(e => e.eventType === "opened");
+                                return (
+                                    <View key={i} style={styles.row}>
+                                        <Text style={styles.label}>{email.sentAt.toISOString().slice(0, 16).replace('T', ' ')}</Text>
+                                        <Text style={styles.value}>
+                                            &quot;{email.subject}&quot; {opened ? `[OPENED]` : `[DELIVERED]`}
                                         </Text>
                                     </View>
-                                    <Text style={{ fontSize: 10, fontStyle: "italic", marginTop: 4 }}>"{courseReviews[0].content || 'Positive experience.'}</Text>
-                                </View>
-                            )}
+                                );
+                            })}
+                        </View>
+                    )}
 
-                            {/* Legal Footer Section */}
-                            <View style={styles.section}>
-                                <Text style={styles.sectionTitle}>6. REGULATORY STATEMENT</Text>
-                                <Text style={{ fontSize: 9, textAlign: 'justify', marginBottom: 6 }}>
-                                    This document serves as formal proof of delivery for non-tangible irrevocable digital goods. The cardholder's access logs constitute acceptance of the product. Under Directive 2011/83/EU and U.S. Consumer Protection laws regarding digital content, the right of withdrawal is waived upon commencement of performance (accessing the content).
+                    {/* Review Evidence */}
+                    {courseReviews.length > 0 && (
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>5. CUSTOMER SATISFACTION & REVIEWS</Text>
+                            <View style={styles.highlight}>
+                                <Text style={styles.highlightText}>
+                                    Customer rated product {courseReviews[0].rating}/5 Stars
                                 </Text>
                             </View>
+                            <Text style={{ fontSize: 10, fontStyle: "italic", marginTop: 4 }}>&quot;{courseReviews[0].content || 'Positive experience.'}&quot;</Text>
+                        </View>
+                    )}
 
-                            {/* Corrected Footer with Seal */}
-                            <View style={styles.footer}>
-                                <Text style={styles.footerText}>AccrediPro International Standards Institute</Text>
-                                <Text style={styles.footerText}>(At Rockefeller Center)</Text>
-                                <Text style={styles.footerText}>1270 Avenue of the Americas, 7th Floor - Suite 1182</Text>
-                                <Text style={styles.footerText}>New York, NY 10020, United States</Text>
-                                <Text style={styles.footerMotto}>Veritas Et Excellentia — Truth and Excellence in Education</Text>
+                    {/* Legal Footer Section */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>6. REGULATORY STATEMENT</Text>
+                        <Text style={{ fontSize: 9, textAlign: 'justify', marginBottom: 6 }}>
+                            This document serves as formal proof of delivery for non-tangible irrevocable digital goods. The cardholder access logs constitute acceptance of the product. Under Directive 2011/83/EU and U.S. Consumer Protection laws regarding digital content, the right of withdrawal is waived upon commencement of performance (accessing the content).
+                        </Text>
+                    </View>
 
-                                <View style={styles.digitalSeal}>
-                                    <Text style={styles.sealText}>DIGITALLY SIGNED & TIMESTAMPED</Text>
-                                    <Text style={styles.sealText}>{new Date().toISOString()}</Text>
-                                    <Text style={styles.sealText}>SERVER ID: AUTH-8829-SECURE</Text>
-                                </View>
-                            </View>
-                        </Page>
-                    </Document>
+                    {/* Footer with Seal */}
+                    <View style={styles.footer}>
+                        <Text style={styles.footerText}>AccrediPro International Standards Institute</Text>
+                        <Text style={styles.footerText}>(At Rockefeller Center)</Text>
+                        <Text style={styles.footerText}>1270 Avenue of the Americas, 7th Floor - Suite 1182</Text>
+                        <Text style={styles.footerText}>New York, NY 10020, United States</Text>
+                        <Text style={styles.footerMotto}>Veritas Et Excellentia — Truth and Excellence in Education</Text>
+
+                        <View style={styles.digitalSeal}>
+                            <Text style={styles.sealText}>DIGITALLY SIGNED & TIMESTAMPED</Text>
+                            <Text style={styles.sealText}>{new Date().toISOString()}</Text>
+                            <Text style={styles.sealText}>SERVER ID: AUTH-8829-SECURE</Text>
+                        </View>
+                    </View>
+                </Page>
+            </Document>
         );
 
         // Render PDF to buffer
