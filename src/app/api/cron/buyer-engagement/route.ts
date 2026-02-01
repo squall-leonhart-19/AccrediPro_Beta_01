@@ -1,44 +1,38 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { sendEmail, personalEmailWrapper } from "@/lib/email";
-import { FM_BUYER_SPRINT_SEQUENCE } from "@/lib/fm-buyer-sprint-sequence";
-import { FM_PROGRESS_MILESTONES, FM_ENGAGEMENT_REMINDERS } from "@/lib/fm-buyer-milestones";
+import {
+    SPRINT_SEQUENCE,
+    RECOVERY_SEQUENCE,
+    STALLED_SEQUENCE,
+    MILESTONE_EMAILS,
+    REENGAGEMENT_EMAILS,
+    fillTemplateVariables,
+} from "@/lib/buyer-retention-system";
 import { differenceInDays, differenceInHours } from "date-fns";
 
 /**
- * BUYER ENGAGEMENT CRON JOB
+ * UNIVERSAL BUYER ENGAGEMENT CRON JOB
  * 
- * Runs daily (or hourly for sprint emails)
+ * Works for ALL course purchases, not just FM.
  * 
- * 1. Send sprint sequence emails (0-48h after purchase)
- * 2. Send progress milestone emails (module completions)
- * 3. Send engagement reminders (stalled buyers)
+ * Sequences:
+ * 1. SPRINT - Push to start (0-5 days)
+ * 2. RECOVERY - Never logged in (3-30 days)
+ * 3. STALLED - Logged in but no progress (3-14 days)
+ * 4. MILESTONE - Celebrate achievements
+ * 5. RE-ENGAGEMENT - Welcome back after absence
  * 
- * Call with: /api/cron/buyer-engagement
- * Vercel Cron or external cron service
+ * Runs hourly via Vercel Cron
  */
 
-// Verify cron secret to prevent abuse
 function verifyCronSecret(request: Request): boolean {
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
-
-    // Allow if no secret configured (dev mode)
     if (!cronSecret) return true;
-
     return authHeader === `Bearer ${cronSecret}`;
 }
 
-// Replace template variables
-function replaceTemplateVars(content: string, vars: Record<string, string>): string {
-    let result = content;
-    for (const [key, value] of Object.entries(vars)) {
-        result = result.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), value);
-    }
-    return result;
-}
-
-// Send email with proper formatting
 async function sendBuyerEmail(
     to: string,
     subject: string,
@@ -46,8 +40,8 @@ async function sendBuyerEmail(
     vars: Record<string, string>
 ): Promise<boolean> {
     try {
-        const finalContent = replaceTemplateVars(content, vars);
-        const finalSubject = replaceTemplateVars(subject, vars);
+        const finalContent = fillTemplateVariables(content, vars);
+        const finalSubject = fillTemplateVariables(subject, vars);
 
         await sendEmail({
             to,
@@ -70,212 +64,180 @@ export async function GET(request: Request) {
 
     const results = {
         sprintEmailsSent: 0,
+        recoveryEmailsSent: 0,
+        stalledEmailsSent: 0,
         milestoneEmailsSent: 0,
-        reminderEmailsSent: 0,
+        reengagementEmailsSent: 0,
         errors: 0,
     };
 
     const now = new Date();
+    const dashboardUrl = "https://learn.accredipro.academy/dashboard";
 
     try {
         // ============================================
-        // 1. SPRINT SEQUENCE EMAILS (0-48h buyers)
+        // Get all STUDENTS who purchased courses
+        // (userType = STUDENT means they bought something)
         // ============================================
 
-        // Find buyers with fm_certification_purchased tag in last 3 days
-        // who haven't completed module 1
-        const recentBuyers = await prisma.userTag.findMany({
+        const students = await prisma.user.findMany({
             where: {
-                tag: "functional_medicine_complete_certification_purchased",
-                createdAt: { gte: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000) },
+                userType: "STUDENT",
+                isFakeProfile: false,
+                email: { not: null },
             },
-            include: {
-                user: {
+            select: {
+                id: true,
+                email: true,
+                firstName: true,
+                createdAt: true,
+                firstLoginAt: true,
+                lastLoginAt: true,
+                tags: { select: { tag: true, createdAt: true } },
+                enrollments: {
+                    where: { status: "ACTIVE" },
                     select: {
-                        id: true,
-                        email: true,
-                        firstName: true,
-                    },
+                        courseId: true,
+                        progress: true,
+                        enrolledAt: true,
+                    }
                 },
-            },
+            }
         });
 
-        for (const buyerTag of recentBuyers) {
-            const user = buyerTag.user;
+        for (const user of students) {
             if (!user.email) continue;
 
-            const hoursSincePurchase = differenceInHours(now, buyerTag.createdAt);
+            const tagSet = new Set(user.tags.map(t => t.tag));
+            const daysSinceCreated = differenceInDays(now, user.createdAt);
+            const hoursSinceCreated = differenceInHours(now, user.createdAt);
+            const hasLoggedIn = !!user.firstLoginAt;
+            const hasProgress = user.enrollments.some(e => e.progress > 0);
 
-            // Check which sprint email to send
-            for (const email of FM_BUYER_SPRINT_SEQUENCE) {
-                const emailHours = email.day * 24 + email.delayHours;
-                const sendTag = `sprint_email_${email.id}_sent`;
+            const vars = {
+                firstName: user.firstName || "there",
+                dashboardUrl,
+            };
 
-                // Check if eligible (within 1 hour window of scheduled time)
-                if (hoursSincePurchase >= emailHours && hoursSincePurchase < emailHours + 24) {
-                    // Check if already sent
-                    const alreadySent = await prisma.userTag.findUnique({
-                        where: { userId_tag: { userId: user.id, tag: sendTag } },
-                    });
+            // ============================================
+            // 1. SPRINT SEQUENCE (Days 0-5, everyone)
+            // Stop if they complete module 1
+            // ============================================
 
-                    if (alreadySent) continue;
+            if (daysSinceCreated <= 6 && !tagSet.has("module_1_completed")) {
+                for (const email of SPRINT_SEQUENCE) {
+                    const sendTag = `sprint_${email.id}_sent`;
+                    if (tagSet.has(sendTag)) continue;
 
-                    // Check if module 1 completed (stop sprint)
-                    const module1Complete = await prisma.userTag.findFirst({
-                        where: { userId: user.id, tag: { contains: "module_1_completed" } },
-                    });
-
-                    if (module1Complete) continue;
-
-                    // Send email
-                    const sent = await sendBuyerEmail(
-                        user.email,
-                        email.subject,
-                        email.content,
-                        {
-                            firstName: user.firstName || "there",
-                            email: user.email,
+                    // Check if within send window
+                    if (hoursSinceCreated >= email.delayHours && hoursSinceCreated < email.delayHours + 24) {
+                        const sent = await sendBuyerEmail(user.email, email.subject, email.content, vars);
+                        if (sent) {
+                            await prisma.userTag.create({ data: { userId: user.id, tag: sendTag } });
+                            results.sprintEmailsSent++;
+                        } else {
+                            results.errors++;
                         }
-                    );
-
-                    if (sent) {
-                        await prisma.userTag.create({
-                            data: { userId: user.id, tag: sendTag },
-                        });
-                        results.sprintEmailsSent++;
-                        console.log(`[buyer-engagement] Sprint email ${email.id} sent to ${user.email}`);
-                    } else {
-                        results.errors++;
                     }
                 }
             }
-        }
 
-        // ============================================
-        // 2. PROGRESS MILESTONE EMAILS
-        // ============================================
+            // ============================================
+            // 2. RECOVERY SEQUENCE (Never logged in)
+            // ============================================
 
-        // Check for users with milestone tags but no email sent
-        const milestoneChecks = [
-            { tag: "module_1_completed", milestone: FM_PROGRESS_MILESTONES.module_1_complete },
-            { tag: "module_3_completed", milestone: FM_PROGRESS_MILESTONES.module_3_complete },
-            { tag: "course_completed", milestone: FM_PROGRESS_MILESTONES.course_complete },
-            { tag: "certificate_claimed", milestone: FM_PROGRESS_MILESTONES.certificate_claimed },
-        ];
+            if (!hasLoggedIn && daysSinceCreated >= 3) {
+                for (const email of RECOVERY_SEQUENCE) {
+                    if (email.preventTag && tagSet.has(email.preventTag)) continue;
 
-        for (const check of milestoneChecks) {
-            // Find users with milestone tag who haven't received email
-            const usersWithMilestone = await prisma.userTag.findMany({
-                where: { tag: check.tag },
-                include: {
-                    user: {
-                        include: {
-                            tags: {
-                                where: { tag: `${check.milestone.id}_email_sent` },
-                            },
-                        },
-                    },
-                },
-            });
-
-            for (const milestoneTag of usersWithMilestone) {
-                const user = milestoneTag.user;
-
-                // Skip if email already sent
-                if (user.tags.length > 0) continue;
-                if (!user.email) continue;
-
-                // Send milestone email
-                const sent = await sendBuyerEmail(
-                    user.email,
-                    check.milestone.subject,
-                    check.milestone.content,
-                    { firstName: user.firstName || "there" }
-                );
-
-                if (sent) {
-                    await prisma.userTag.create({
-                        data: { userId: user.id, tag: `${check.milestone.id}_email_sent` },
-                    });
-                    results.milestoneEmailsSent++;
-                    console.log(`[buyer-engagement] Milestone ${check.milestone.id} email sent to ${user.email}`);
-                } else {
-                    results.errors++;
+                    const requiredDays = email.delayHours / 24;
+                    if (daysSinceCreated >= requiredDays && daysSinceCreated < requiredDays + 1) {
+                        const sent = await sendBuyerEmail(user.email, email.subject, email.content, vars);
+                        if (sent && email.preventTag) {
+                            await prisma.userTag.create({ data: { userId: user.id, tag: email.preventTag } });
+                            results.recoveryEmailsSent++;
+                        } else if (!sent) {
+                            results.errors++;
+                        }
+                    }
                 }
             }
-        }
 
-        // ============================================
-        // 3. ENGAGEMENT REMINDERS (Stalled Buyers)
-        // ============================================
+            // ============================================
+            // 3. STALLED SEQUENCE (Logged in, no progress)
+            // ============================================
 
-        const reminderChecks = [
-            { days: 7, reminder: FM_ENGAGEMENT_REMINDERS.no_login_7d },
-            { days: 14, reminder: FM_ENGAGEMENT_REMINDERS.no_progress_14d },
-            { days: 30, reminder: FM_ENGAGEMENT_REMINDERS.stalled_30d },
-            { days: 45, reminder: FM_ENGAGEMENT_REMINDERS.dormant_45d },
-        ];
+            if (hasLoggedIn && !hasProgress && daysSinceCreated >= 3) {
+                for (const email of STALLED_SEQUENCE) {
+                    if (email.preventTag && tagSet.has(email.preventTag)) continue;
 
-        for (const check of reminderChecks) {
-            // Find buyers who purchased X+ days ago
-            const cutoffDate = new Date(now.getTime() - check.days * 24 * 60 * 60 * 1000);
+                    const requiredDays = email.delayHours / 24;
+                    if (daysSinceCreated >= requiredDays && daysSinceCreated < requiredDays + 1) {
+                        const sent = await sendBuyerEmail(user.email, email.subject, email.content, vars);
+                        if (sent && email.preventTag) {
+                            await prisma.userTag.create({ data: { userId: user.id, tag: email.preventTag } });
+                            results.stalledEmailsSent++;
+                        } else if (!sent) {
+                            results.errors++;
+                        }
+                    }
+                }
+            }
 
-            const stalledBuyers = await prisma.userTag.findMany({
-                where: {
-                    tag: "functional_medicine_complete_certification_purchased",
-                    createdAt: { lte: cutoffDate },
-                },
-                include: {
-                    user: {
-                        include: {
-                            tags: true,
-                        },
-                    },
-                },
-            });
+            // ============================================
+            // 4. MILESTONE EMAILS (Celebrate progress)
+            // ============================================
 
-            for (const buyerTag of stalledBuyers) {
-                const user = buyerTag.user;
-                if (!user.email) continue;
-
-                // Skip if reminder already sent
-                const alreadySent = user.tags.some(t => t.tag === check.reminder.preventTag);
-                if (alreadySent) continue;
-
-                // Skip if course completed
-                const courseComplete = user.tags.some(t => t.tag === "course_completed");
-                if (courseComplete) continue;
-
-                // Skip if logged in recently (check lastLoginAt)
-                // This would need lastLoginAt field which we don't have, so use recent progress instead
-                const recentProgress = user.tags.some(t =>
-                    t.tag.includes("module_") &&
-                    t.createdAt > new Date(now.getTime() - check.days * 24 * 60 * 60 * 1000)
-                );
-                if (recentProgress) continue;
-
-                // Calculate deadline for 45d email
-                const deadline = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                });
-
-                // Send reminder email
-                const sent = await sendBuyerEmail(
-                    user.email,
-                    check.reminder.subject,
-                    check.reminder.content,
-                    { firstName: user.firstName || "there", deadline }
-                );
-
+            // Module 1 complete
+            if (tagSet.has("module_1_completed") && !tagSet.has("milestone_module1_sent")) {
+                const sent = await sendBuyerEmail(user.email, MILESTONE_EMAILS.module_1_complete.subject, MILESTONE_EMAILS.module_1_complete.content, vars);
                 if (sent) {
-                    await prisma.userTag.create({
-                        data: { userId: user.id, tag: check.reminder.preventTag },
-                    });
-                    results.reminderEmailsSent++;
-                    console.log(`[buyer-engagement] Reminder ${check.reminder.id} sent to ${user.email}`);
-                } else {
-                    results.errors++;
+                    await prisma.userTag.create({ data: { userId: user.id, tag: "milestone_module1_sent" } });
+                    results.milestoneEmailsSent++;
+                }
+            }
+
+            // Check progress milestones
+            const maxProgress = Math.max(0, ...user.enrollments.map(e => e.progress || 0));
+
+            if (maxProgress >= 25 && !tagSet.has("milestone_25_sent")) {
+                const sent = await sendBuyerEmail(user.email, MILESTONE_EMAILS.progress_25.subject, MILESTONE_EMAILS.progress_25.content, vars);
+                if (sent) await prisma.userTag.create({ data: { userId: user.id, tag: "milestone_25_sent" } });
+                results.milestoneEmailsSent++;
+            }
+
+            if (maxProgress >= 50 && !tagSet.has("milestone_50_sent")) {
+                const sent = await sendBuyerEmail(user.email, MILESTONE_EMAILS.progress_50.subject, MILESTONE_EMAILS.progress_50.content, vars);
+                if (sent) await prisma.userTag.create({ data: { userId: user.id, tag: "milestone_50_sent" } });
+                results.milestoneEmailsSent++;
+            }
+
+            if (maxProgress >= 90 && !tagSet.has("milestone_90_sent")) {
+                const sent = await sendBuyerEmail(user.email, MILESTONE_EMAILS.progress_90.subject, MILESTONE_EMAILS.progress_90.content, vars);
+                if (sent) await prisma.userTag.create({ data: { userId: user.id, tag: "milestone_90_sent" } });
+                results.milestoneEmailsSent++;
+            }
+
+            // Course complete
+            if (tagSet.has("course_completed") && !tagSet.has("milestone_complete_sent")) {
+                const sent = await sendBuyerEmail(user.email, MILESTONE_EMAILS.completion.subject, MILESTONE_EMAILS.completion.content, vars);
+                if (sent) await prisma.userTag.create({ data: { userId: user.id, tag: "milestone_complete_sent" } });
+                results.milestoneEmailsSent++;
+            }
+
+            // ============================================
+            // 5. RE-ENGAGEMENT (Welcome back)
+            // ============================================
+
+            if (user.lastLoginAt && !tagSet.has("reengagement_7d_sent")) {
+                const lastLoginDaysAgo = differenceInDays(now, user.lastLoginAt);
+                const todayLogin = differenceInDays(now, user.lastLoginAt) === 0;
+
+                // If they logged in today but hadn't for 7+ days before
+                if (todayLogin && lastLoginDaysAgo >= 7) {
+                    const sent = await sendBuyerEmail(user.email, REENGAGEMENT_EMAILS.return_after_7d.subject, REENGAGEMENT_EMAILS.return_after_7d.content, vars);
+                    if (sent) await prisma.userTag.create({ data: { userId: user.id, tag: "reengagement_7d_sent" } });
+                    results.reengagementEmailsSent++;
                 }
             }
         }
@@ -283,6 +245,7 @@ export async function GET(request: Request) {
         return NextResponse.json({
             success: true,
             timestamp: now.toISOString(),
+            studentsProcessed: students.length,
             results,
         });
 

@@ -63,6 +63,11 @@ import {
     ChevronRight,
     ArrowLeft,
     AlertCircle,
+    Infinity,
+    TrendingUp,
+    UserCheck,
+    Award,
+    LogIn,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -178,6 +183,14 @@ export default function SequenceHQDashboard() {
         totalClicks: 0,
     });
 
+    // Evergreen stats
+    interface EvergreenStats {
+        sequences: Record<string, { name: string; emails: number; sent: number; description: string }>;
+        totals: { totalBuyers: number; neverLoggedIn: number; withProgress: number; totalSent: number };
+    }
+    const [evergreenStats, setEvergreenStats] = useState<EvergreenStats | null>(null);
+    const [evergreenLoading, setEvergreenLoading] = useState(false);
+
     // Fetch data
     const fetchSequences = useCallback(async () => {
         try {
@@ -228,10 +241,32 @@ export default function SequenceHQDashboard() {
         }
     }, []);
 
+    const fetchEvergreenStats = useCallback(async () => {
+        setEvergreenLoading(true);
+        try {
+            const res = await fetch("/api/admin/marketing/evergreen-stats");
+            if (res.ok) {
+                const data = await res.json();
+                setEvergreenStats(data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch evergreen stats:", error);
+        } finally {
+            setEvergreenLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
         fetchSequences();
         fetchTags();
     }, [fetchSequences, fetchTags]);
+
+    // Fetch evergreen stats when tab changes to evergreen
+    useEffect(() => {
+        if (activeTab === "evergreen" && !evergreenStats) {
+            fetchEvergreenStats();
+        }
+    }, [activeTab, evergreenStats, fetchEvergreenStats]);
 
     // Toggle sequence active state
     const toggleSequenceActive = async (sequence: Sequence) => {
@@ -497,6 +532,10 @@ export default function SequenceHQDashboard() {
                     <TabsTrigger value="enrollments" className="gap-2">
                         <Users className="w-4 h-4" />
                         Enrollments
+                    </TabsTrigger>
+                    <TabsTrigger value="evergreen" className="gap-2">
+                        <Infinity className="w-4 h-4" />
+                        Evergreen Buyers
                     </TabsTrigger>
                     <TabsTrigger value="triggers" className="gap-2">
                         <Tag className="w-4 h-4" />
@@ -813,7 +852,291 @@ export default function SequenceHQDashboard() {
                     <EnrollmentMonitor sequences={sequences} />
                 </TabsContent>
 
+                {/* Evergreen Buyers Tab - Automatic for ALL buyers */}
+                <TabsContent value="evergreen">
+                    <div className="space-y-6">
+                        {/* Header Banner */}
+                        <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4">
+                            <div className="flex items-start justify-between">
+                                <div className="flex items-start gap-3">
+                                    <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center shrink-0">
+                                        <Infinity className="w-5 h-5 text-purple-600" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900">Evergreen Buyer Sequences</h3>
+                                        <p className="text-sm text-gray-600 mt-1">
+                                            Automatic sequences for <strong>ALL course purchases</strong>. Triggers based on login, progress, and milestones.
+                                        </p>
+                                        <Badge className="mt-2 bg-green-100 text-green-700 border-green-300">
+                                            ACTIVE • Runs Hourly
+                                        </Badge>
+                                    </div>
+                                </div>
+                                <Button variant="outline" size="sm" onClick={fetchEvergreenStats} disabled={evergreenLoading}>
+                                    <RefreshCw className={`w-4 h-4 mr-2 ${evergreenLoading ? 'animate-spin' : ''}`} />
+                                    Refresh
+                                </Button>
+                            </div>
+                        </div>
+
+                        {/* Stats Overview Cards */}
+                        {evergreenStats && (
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <Card>
+                                    <CardContent className="pt-4 pb-4">
+                                        <p className="text-xs text-gray-500">Total Buyers</p>
+                                        <p className="text-2xl font-bold">{evergreenStats.totals.totalBuyers.toLocaleString()}</p>
+                                    </CardContent>
+                                </Card>
+                                <Card className="bg-red-50 border-red-200">
+                                    <CardContent className="pt-4 pb-4">
+                                        <p className="text-xs text-red-600">Never Logged In</p>
+                                        <p className="text-2xl font-bold text-red-700">{evergreenStats.totals.neverLoggedIn.toLocaleString()}</p>
+                                    </CardContent>
+                                </Card>
+                                <Card className="bg-green-50 border-green-200">
+                                    <CardContent className="pt-4 pb-4">
+                                        <p className="text-xs text-green-600">With Progress</p>
+                                        <p className="text-2xl font-bold text-green-700">{evergreenStats.totals.withProgress.toLocaleString()}</p>
+                                    </CardContent>
+                                </Card>
+                                <Card className="bg-purple-50 border-purple-200">
+                                    <CardContent className="pt-4 pb-4">
+                                        <p className="text-xs text-purple-600">Total Emails Sent</p>
+                                        <p className="text-2xl font-bold text-purple-700">{evergreenStats.totals.totalSent.toLocaleString()}</p>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
+
+                        {/* Sequences Table */}
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between">
+                                <div>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Mail className="w-5 h-5 text-purple-600" />
+                                        Buyer Email Sequences
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Automatic retention sequences for all certification purchases
+                                    </CardDescription>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                {evergreenLoading && !evergreenStats ? (
+                                    <div className="py-8 text-center">
+                                        <RefreshCw className="w-8 h-8 text-gray-300 mx-auto mb-4 animate-spin" />
+                                        <p className="text-gray-500">Loading stats...</p>
+                                    </div>
+                                ) : evergreenStats ? (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Sequence</TableHead>
+                                                <TableHead className="text-center">Trigger</TableHead>
+                                                <TableHead className="text-center">Emails</TableHead>
+                                                <TableHead className="text-center">Sent</TableHead>
+                                                <TableHead className="text-center">Status</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {/* Sprint */}
+                                            <TableRow>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-2 h-8 rounded-full bg-blue-500"></div>
+                                                        <div>
+                                                            <p className="font-medium">Sprint Sequence</p>
+                                                            <p className="text-xs text-gray-500">Days 0-5 after purchase</p>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge variant="outline" className="text-xs">PURCHASE</Badge>
+                                                </TableCell>
+                                                <TableCell className="text-center font-medium">6</TableCell>
+                                                <TableCell className="text-center font-medium text-blue-600">
+                                                    {evergreenStats.sequences.sprint?.sent || 0}
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge className="bg-green-100 text-green-700 border-green-300">Active</Badge>
+                                                </TableCell>
+                                            </TableRow>
+
+                                            {/* Recovery */}
+                                            <TableRow>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-2 h-8 rounded-full bg-red-500"></div>
+                                                        <div>
+                                                            <p className="font-medium">Recovery Sequence</p>
+                                                            <p className="text-xs text-gray-500">Never logged in (Days 3-30)</p>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge variant="outline" className="text-xs border-red-200 text-red-600">NO LOGIN</Badge>
+                                                </TableCell>
+                                                <TableCell className="text-center font-medium">5</TableCell>
+                                                <TableCell className="text-center font-medium text-red-600">
+                                                    {evergreenStats.sequences.recovery?.sent || 0}
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge className="bg-green-100 text-green-700 border-green-300">Active</Badge>
+                                                </TableCell>
+                                            </TableRow>
+
+                                            {/* Stalled */}
+                                            <TableRow>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-2 h-8 rounded-full bg-amber-500"></div>
+                                                        <div>
+                                                            <p className="font-medium">Stalled Sequence</p>
+                                                            <p className="text-xs text-gray-500">Logged in, no progress (Days 3-14)</p>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge variant="outline" className="text-xs border-amber-200 text-amber-600">0% PROGRESS</Badge>
+                                                </TableCell>
+                                                <TableCell className="text-center font-medium">4</TableCell>
+                                                <TableCell className="text-center font-medium text-amber-600">
+                                                    {evergreenStats.sequences.stalled?.sent || 0}
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge className="bg-green-100 text-green-700 border-green-300">Active</Badge>
+                                                </TableCell>
+                                            </TableRow>
+
+                                            {/* Milestone */}
+                                            <TableRow>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-2 h-8 rounded-full bg-green-500"></div>
+                                                        <div>
+                                                            <p className="font-medium">Milestone Emails</p>
+                                                            <p className="text-xs text-gray-500">Module 1, 25%, 50%, 90%, Complete</p>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge variant="outline" className="text-xs border-green-200 text-green-600">PROGRESS</Badge>
+                                                </TableCell>
+                                                <TableCell className="text-center font-medium">5</TableCell>
+                                                <TableCell className="text-center font-medium text-green-600">
+                                                    {evergreenStats.sequences.milestone?.sent || 0}
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge className="bg-green-100 text-green-700 border-green-300">Active</Badge>
+                                                </TableCell>
+                                            </TableRow>
+
+                                            {/* Re-engagement */}
+                                            <TableRow>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-2 h-8 rounded-full bg-purple-500"></div>
+                                                        <div>
+                                                            <p className="font-medium">Re-engagement</p>
+                                                            <p className="text-xs text-gray-500">Welcome back after 7+ day absence</p>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge variant="outline" className="text-xs border-purple-200 text-purple-600">RETURN</Badge>
+                                                </TableCell>
+                                                <TableCell className="text-center font-medium">1</TableCell>
+                                                <TableCell className="text-center font-medium text-purple-600">
+                                                    {evergreenStats.sequences.reengagement?.sent || 0}
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge className="bg-green-100 text-green-700 border-green-300">Active</Badge>
+                                                </TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                ) : (
+                                    <div className="py-8 text-center">
+                                        <Mail className="w-8 h-8 text-gray-300 mx-auto mb-4" />
+                                        <p className="text-gray-500">Click refresh to load stats</p>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Email Details */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">All Emails in Sequences</CardTitle>
+                                <CardDescription>21 unique emails across 5 sequences</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div className="space-y-2">
+                                        <p className="text-sm font-medium flex items-center gap-2">
+                                            <Zap className="w-4 h-4 text-blue-500" /> Sprint (6 emails)
+                                        </p>
+                                        <div className="text-xs text-gray-500 space-y-0.5 pl-6">
+                                            <p>Immediate: "your access is ready"</p>
+                                            <p>+2h: "quick hello"</p>
+                                            <p>Day 1: "thinking about you"</p>
+                                            <p>Day 2: "a little something"</p>
+                                            <p>Day 3: "one thing I've noticed"</p>
+                                            <p>Day 5: "before the weekend"</p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-sm font-medium flex items-center gap-2">
+                                            <LogIn className="w-4 h-4 text-red-500" /> Recovery (5 emails)
+                                        </p>
+                                        <div className="text-xs text-gray-500 space-y-0.5 pl-6">
+                                            <p>Day 3: "everything okay?"</p>
+                                            <p>Day 5: "here for you"</p>
+                                            <p>Day 7: "thinking of you"</p>
+                                            <p>Day 14: "still here for you"</p>
+                                            <p>Day 30: "sending love your way"</p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-sm font-medium flex items-center gap-2">
+                                            <Pause className="w-4 h-4 text-amber-500" /> Stalled (4 emails)
+                                        </p>
+                                        <div className="text-xs text-gray-500 space-y-0.5 pl-6">
+                                            <p>Day 3: "can I help?"</p>
+                                            <p>Day 5: "stuck on something?"</p>
+                                            <p>Day 7: "no pressure"</p>
+                                            <p>Day 14: "whenever you're ready"</p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-sm font-medium flex items-center gap-2">
+                                            <Award className="w-4 h-4 text-green-500" /> Milestone (5 emails)
+                                        </p>
+                                        <div className="text-xs text-gray-500 space-y-0.5 pl-6">
+                                            <p>Module 1: "you did it!"</p>
+                                            <p>25%: "look how far you've come"</p>
+                                            <p>50%: "halfway there!"</p>
+                                            <p>90%: "almost at finish line"</p>
+                                            <p>100%: "congratulations!"</p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-sm font-medium flex items-center gap-2">
+                                            <UserCheck className="w-4 h-4 text-purple-500" /> Re-engagement (1 email)
+                                        </p>
+                                        <div className="text-xs text-gray-500 space-y-0.5 pl-6">
+                                            <p>Return: "so good to see you back!"</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </TabsContent>
+
                 {/* Triggers Tab - Separated by Category */}
+
                 <TabsContent value="triggers">
                     <div className="grid gap-6 md:grid-cols-2">
                         {/* Lead Triggers */}
