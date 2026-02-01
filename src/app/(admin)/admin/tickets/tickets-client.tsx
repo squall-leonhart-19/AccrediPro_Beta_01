@@ -35,6 +35,15 @@ const ASI = {
   division: "Student Success Division",
 };
 
+// Department Signatures
+const DEPARTMENT_SIGNATURES: Record<string, { name: string; tagline: string }> = {
+  SUPPORT: { name: "Student Success Team", tagline: "Here to help you succeed" },
+  BILLING: { name: "Billing & Accounts Team", tagline: "Managing your account with care" },
+  LEGAL: { name: "Compliance & Legal Team", tagline: "Ensuring your protection" },
+  ACADEMIC: { name: "Academic Excellence Team", tagline: "Supporting your learning journey" },
+  CREDENTIALING: { name: "Credentialing & Certification Team", tagline: "Your credentials, our priority" },
+};
+
 // Status configuration
 const STATUS_CONFIG = {
   NEW: { label: "New", color: "bg-blue-500", textColor: "text-blue-700", bgLight: "bg-blue-50", icon: Circle },
@@ -395,9 +404,16 @@ export default function TicketsClient() {
   const handleSendReply = async () => {
     if (!selectedTicketId || !replyText.trim()) return;
     try {
+      // Auto-append department signature for public replies
+      let finalMessage = replyText.trim();
+      if (!isInternalNote && selectedTicket) {
+        const sig = DEPARTMENT_SIGNATURES[selectedTicket.department] || DEPARTMENT_SIGNATURES.SUPPORT;
+        finalMessage += `\n\n—\n${sig.name}\n${ASI.name}\n${sig.tagline}`;
+      }
+
       await replyTicket.mutateAsync({
         ticketId: selectedTicketId,
-        message: replyText,
+        message: finalMessage,
         isInternal: isInternalNote
       });
       setReplyText("");
