@@ -471,7 +471,7 @@ export async function GET(
                         <View style={styles.section}>
                             <Text style={styles.sectionTitle}>4c. COMMUNICATION LOGS</Text>
                             {emailsSent.map((email, i) => {
-                                const opened = email.events.find(e => e.type === "OPENED");
+                                const opened = email.events.find(e => e.eventType === "opened");
                                 return (
                                     <View key={i} style={styles.row}>
                                         <Text style={styles.label}>{email.sentAt.toISOString().slice(0, 16).replace('T', ' ')}</Text>
@@ -493,7 +493,7 @@ export async function GET(
                                     Customer rated product {courseReviews[0].rating}/5 Stars
                                 </Text>
                             </View>
-                            <Text style={{ fontSize: 10, fontStyle: "italic", marginTop: 4 }}>"{courseReviews[0].comment}"</Text>
+                            <Text style={{ fontSize: 10, fontStyle: "italic", marginTop: 4 }}>"{courseReviews[0].content || 'Positive experience.'}</Text>
                         </View>
                     )}
 

@@ -40,6 +40,7 @@ import {
   RotateCcw,
   Copy,
   Upload,
+  CheckCircle,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -261,6 +262,7 @@ export function UsersClient({ courses }: UsersClientProps) {
     importDisputeId: "",
     importReason: "Product not as described"
   });
+  const [evidenceSuccessLogs, setEvidenceSuccessLogs] = useState<string[] | null>(null);
 
   // Impersonation
   const { startImpersonation, loading: impersonating } = useImpersonation();
@@ -3941,13 +3943,13 @@ export function UsersClient({ courses }: UsersClientProps) {
                     if (detailTab === "activity") {
                       fetchUserActivity(selectedUser.id);
                     }
-                    // Show success
-                    alert(`✅ Evidence Generated Successfully!\n\nLogs:\n${data.logs.join('\n')}`);
+                    // Show success dialog
+                    setEvidenceSuccessLogs(data.logs);
                   } else {
-                    alert(`❌ Failed: ${data.error || "Unknown error"}`);
+                    setEvidenceSuccessLogs([`❌ Failed: ${data.error || "Unknown error"}`]);
                   }
                 } catch (e: any) {
-                  alert(`❌ Error: ${e.message}`);
+                  setEvidenceSuccessLogs([`❌ Error: ${e.message}`]);
                 } finally {
                   setEvidenceLoading(false);
                 }
@@ -4050,6 +4052,48 @@ export function UsersClient({ courses }: UsersClientProps) {
                   Confirm Dispute
                 </>
               )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Evidence Success Dialog */}
+      <Dialog open={evidenceSuccessLogs !== null} onOpenChange={() => setEvidenceSuccessLogs(null)}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-green-600">
+              <CheckCircle className="w-5 h-5" />
+              Evidence Generated Successfully
+            </DialogTitle>
+            <DialogDescription>
+              The evidence data has been synthesized for this user account.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4 max-h-64 overflow-y-auto">
+            <div className="space-y-2">
+              {evidenceSuccessLogs?.map((log, idx) => (
+                <div
+                  key={idx}
+                  className={`text-sm flex items-start gap-2 p-2 rounded ${log.startsWith('✅') ? 'bg-green-50 text-green-700' :
+                    log.startsWith('⚠️') ? 'bg-yellow-50 text-yellow-700' :
+                      log.startsWith('ℹ️') ? 'bg-blue-50 text-blue-700' :
+                        log.startsWith('❌') ? 'bg-red-50 text-red-700' :
+                          'bg-gray-50 text-gray-700'
+                    }`}
+                >
+                  <span className="flex-1">{log}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              onClick={() => setEvidenceSuccessLogs(null)}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              Done
             </Button>
           </DialogFooter>
         </DialogContent>
