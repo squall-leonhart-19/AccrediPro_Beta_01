@@ -45,6 +45,78 @@ export function fillTemplateVariables(content: string, vars: Record<string, stri
 const SARAH = `Sarah`;
 
 // ============================================
+// BRANDED HTML WRAPPER - Subtle Professional Footer
+// ============================================
+
+export function wrapInBrandedTemplate(content: string, vars: { firstName: string; dashboardUrl: string }): string {
+    // Convert plain text line breaks to HTML
+    const htmlContent = content
+        .replace(/\n\n/g, '</p><p style="margin: 0 0 16px 0;">')
+        .replace(/\n/g, '<br>');
+
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; padding: 32px 16px;">
+        <tr>
+            <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 32px 32px 24px 32px;">
+                            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6; color: #1f2937;">
+                                ${htmlContent}
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 24px 32px; border-top: 1px solid #e5e7eb; background-color: #f9fafb; border-radius: 0 0 8px 8px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #6b21a8;">
+                                            🏛️ AccrediPro Academy
+                                        </p>
+                                        <p style="margin: 0 0 12px 0; font-size: 12px; color: #6b7280;">
+                                            Professional Certification Programs
+                                        </p>
+                                        <p style="margin: 0; font-size: 12px;">
+                                            <a href="${vars.dashboardUrl}" style="color: #7c3aed; text-decoration: none;">Access Your Dashboard</a>
+                                            <span style="color: #d1d5db; margin: 0 8px;">|</span>
+                                            <span style="color: #9ca3af;">Questions? Just reply to this email</span>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                
+                <!-- Unsubscribe -->
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px;">
+                    <tr>
+                        <td style="padding: 16px; text-align: center;">
+                            <p style="margin: 0; font-size: 11px; color: #9ca3af;">
+                                AccrediPro Academy • 45 Rockefeller Plaza, New York, NY 10111
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>`;
+}
+
+// ============================================
 // 1. SPRINT SEQUENCE (Everyone gets these)
 // Push them to start within 72 hours
 // ============================================

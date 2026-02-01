@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sendEmail, personalEmailWrapper } from "@/lib/email";
+import { sendEmail } from "@/lib/email";
 import {
     SPRINT_SEQUENCE,
     RECOVERY_SEQUENCE,
@@ -8,8 +8,10 @@ import {
     MILESTONE_EMAILS,
     REENGAGEMENT_EMAILS,
     fillTemplateVariables,
+    wrapInBrandedTemplate,
 } from "@/lib/buyer-retention-system";
 import { differenceInDays, differenceInHours } from "date-fns";
+
 
 /**
  * UNIVERSAL BUYER ENGAGEMENT CRON JOB
@@ -43,10 +45,17 @@ async function sendBuyerEmail(
         const finalContent = fillTemplateVariables(content, vars);
         const finalSubject = fillTemplateVariables(subject, vars);
 
+        // Use branded HTML template with subtle footer
+        const htmlEmail = wrapInBrandedTemplate(finalContent, {
+            firstName: vars.firstName || 'there',
+            dashboardUrl: vars.dashboardUrl || 'https://learn.accredipro.academy/dashboard',
+        });
+
         await sendEmail({
             to,
             subject: finalSubject,
-            html: personalEmailWrapper(finalContent),
+            html: htmlEmail,
+            text: finalContent, // Plain text fallback
             type: 'transactional',
         });
 
