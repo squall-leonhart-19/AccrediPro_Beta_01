@@ -47,7 +47,7 @@ export async function POST(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== "ADMIN") {
+    if (!session?.user || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -56,9 +56,13 @@ export async function POST(
     const {
       emailTemplateId,
       subject,
+      customSubject,
       htmlContent,
+      customContent,
       delayDays,
       delayHours,
+      order,
+      isActive,
     } = body;
 
     // Verify sequence exists
@@ -73,19 +77,19 @@ export async function POST(
       return NextResponse.json({ error: "Sequence not found" }, { status: 404 });
     }
 
-    // Get next order number
-    const nextOrder = sequence._count.emails + 1;
+    // Get next order number if not provided
+    const nextOrder = order !== undefined ? order : sequence._count.emails;
 
     const email = await prisma.sequenceEmail.create({
       data: {
         sequenceId,
         emailTemplateId: emailTemplateId || null,
-        customSubject: subject || "Untitled Email",
-        customContent: htmlContent || "",
+        customSubject: customSubject || subject || "Untitled Email",
+        customContent: customContent || htmlContent || "",
         delayDays: delayDays || 0,
         delayHours: delayHours || 0,
         order: nextOrder,
-        isActive: true,
+        isActive: isActive !== undefined ? isActive : true,
       },
       include: {
         emailTemplate: {

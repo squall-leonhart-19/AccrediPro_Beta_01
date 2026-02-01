@@ -50,7 +50,7 @@ export async function PUT(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== "ADMIN") {
+    if (!session?.user || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -59,7 +59,9 @@ export async function PUT(
     const {
       emailTemplateId,
       subject,
+      customSubject,
       htmlContent,
+      customContent,
       textContent,
       delayDays,
       delayHours,
@@ -76,12 +78,16 @@ export async function PUT(
       return NextResponse.json({ error: "Email not found" }, { status: 404 });
     }
 
+    // Accept both field name conventions
+    const newSubject = customSubject ?? subject;
+    const newContent = customContent ?? htmlContent;
+
     const email = await prisma.sequenceEmail.update({
       where: { id: emailId },
       data: {
         emailTemplateId: emailTemplateId !== undefined ? emailTemplateId : existing.emailTemplateId,
-        customSubject: subject ?? existing.customSubject,
-        customContent: htmlContent ?? existing.customContent,
+        customSubject: newSubject !== undefined ? newSubject : existing.customSubject,
+        customContent: newContent !== undefined ? newContent : existing.customContent,
         delayDays: delayDays !== undefined ? delayDays : existing.delayDays,
         delayHours: delayHours !== undefined ? delayHours : existing.delayHours,
         requiresTagId: body.requiresTagId !== undefined ? body.requiresTagId : existing.requiresTagId,
