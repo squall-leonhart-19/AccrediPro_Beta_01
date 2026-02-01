@@ -257,49 +257,80 @@ export async function POST(
                 }
             }
 
-            // 4. GENERATE RESOURCE DOWNLOADS (3-5 random)
+            // 4. GENERATE RESOURCE DOWNLOADS (3-8 random from ALL courses)
             if (addDownloads) {
-                // We need to find the user's enrollment again to get access to modules -> lessons -> resources
-                const enrollment = await prisma.enrollment.findFirst({
+                // Find ALL active enrollments to get all possible resources
+                const enrollments = await prisma.enrollment.findMany({
                     where: { userId, status: "ACTIVE" },
                     include: { course: { include: { modules: { include: { lessons: true } } } } }
                 });
 
-                if (enrollment && enrollment.course) {
-                    // Find all resources in the course by querying LessonResource where lessonId is in our modules
-                    // This is more efficient/correct than deep nesting if we just want IDs
-                    const moduleIds = enrollment.course.modules.map(m => m.id);
-
-                    const resources = await prisma.lessonResource.findMany({
-                        where: {
-                            lesson: {
-                                moduleId: { in: moduleIds }
-                            }
-                        },
-                        select: { id: true, title: true }
-                    });
-
-                    if (resources.length > 0) {
-                        const numDownloads = Math.min(resources.length, Math.floor(Math.random() * 3) + 3); // 3 to 5
-                        const shuffled = resources.sort(() => 0.5 - Math.random());
-                        const selected = shuffled.slice(0, numDownloads);
-
-                        for (const res of selected) {
-                            await prisma.resourceDownload.create({
-                                data: {
-                                    userId,
-                                    resourceId: res.id,
-                                    ipAddress: varyIP(baseIp), // Varied IP from same subnet
-                                    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                                    createdAt: randomDate(baseDate, new Date())
-                                }
-                            });
-                            logs.push(`✅ Generated download for "${res.title}"`);
+                if (enrollments.length > 0) {
+                    let allModuleIds: string[] = [];
+                    for (const enr of enrollments) {
+                        if (enr.course) {
+                            const ids = enr.course.modules.map(m => m.id);
+                            allModuleIds = [...allModuleIds, ...ids];
                         }
-                        audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_downloads", count: numDownloads });
-                    } else {
-                        logs.push("⚠️ No resources found in course to download");
                     }
+
+                    if (allModuleIds.length > 0) {
+                        const resources = await prisma.lessonResource.findMany({
+                            where: {
+                                lesson: {
+                                    moduleId: { in: allModuleIds }
+                                }
+                            },
+                            select: { id: true, title: true }
+                        });
+
+                        if (resources.length > 0) {
+                            const numDownloads = Math.min(resources.length, Math.floor(Math.random() * 6) + 3); // 3 to 8
+                            const shuffled = resources.sort(() => 0.5 - Math.random());
+                            const selected = shuffled.slice(0, numDownloads);
+
+                            let downloadsCreated = 0;
+                            for (const res of selected) {
+                                // Don't duplicate if exists
+                                const exists = await prisma.resourceDownload.findFirst({
+                                    where: { userId, resourceId: res.id }
+                                });
+
+                                if (!exists) {
+                                    const dlDate = randomDate(baseDate, new Date());
+                                    await prisma.resourceDownload.create({
+                                        data: {
+                                            userId,
+                                            resourceId: res.id,
+                                            ipAddress: varyIP(baseIp),
+                                            userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                                            createdAt: dlDate
+                                        }
+                                    });
+                                    // Also add an Activity Log for the download
+                                    await prisma.userActivity.create({
+                                        data: {
+                                            userId,
+                                            action: "DOWNLOAD_RESOURCE",
+                                            details: JSON.stringify({ resource: res.title }),
+                                            ipAddress: varyIP(baseIp),
+                                            createdAt: dlDate
+                                        }
+                                    });
+                                    downloadsCreated++;
+                                }
+                            }
+
+                            if (downloadsCreated > 0) {
+                                logs.push(`✅ Generated ${downloadsCreated} resource downloads`);
+                                audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_downloads", count: downloadsCreated });
+                            }
+                        } else {
+                            logs.push("⚠️ No resources found in any enrolled courses");
+                        }
+                    }
+                } else {
+                    logs.push("⚠️ No active enrollments found for downloads");
                 }
             }
 

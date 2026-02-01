@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sendEmail, emailWrapper } from "@/lib/email";
+import { sendEmail, emailWrapper, wasRecentlyEmailed } from "@/lib/email";
 
 // Sarah signature in italic/cursive like a real handwritten signature
 const SARAH_SIGNATURE = `
@@ -86,6 +86,7 @@ export async function GET(request: NextRequest) {
     const results = {
         checked: 0,
         nudgesSent: 0,
+        skipped: 0,
         errors: 0,
         details: [] as string[],
     };
@@ -98,11 +99,25 @@ export async function GET(request: NextRequest) {
         const recentBuyers = await prisma.user.findMany({
             where: {
                 userType: "STUDENT",
-                email: { not: null },
                 isFakeProfile: false,
                 createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
                 // Exclude internal emails
                 email: { not: { contains: "@accredipro" } },
+                // Exclude users already in an ACTIVE recovery sequence (avoid stacking)
+                sequenceEnrollments: {
+                    none: {
+                        status: "ACTIVE",
+                        sequence: {
+                            slug: {
+                                in: [
+                                    "recovery-never-logged-in",
+                                    "recovery-never-started",
+                                    "recovery-abandoned-learning",
+                                ],
+                            },
+                        },
+                    },
+                },
             },
             include: {
                 onboardingProgress: true,
@@ -121,6 +136,14 @@ export async function GET(request: NextRequest) {
 
             // Skip if all complete
             if (progress?.completedAt) continue;
+
+            // Global guard: skip if user was emailed by ANY system in the last 4 hours
+            const recentlyEmailed = await wasRecentlyEmailed(email, 4);
+            if (recentlyEmailed) {
+                results.skipped++;
+                results.details.push(`${email}: Skipped - recently emailed (cross-system guard)`);
+                continue;
+            }
 
             // Create progress record if doesn't exist
             let progressRecord = progress;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sendEmail, personalEmailWrapper } from "@/lib/email";
+import { sendEmail, personalEmailWrapper, wasRecentlyEmailed } from "@/lib/email";
 
 /**
  * CRON: Login Recovery Email Sequence
@@ -109,6 +109,7 @@ export async function GET(request: NextRequest) {
     // - Are not fake profiles
     // - Have an email address
     // - Are STUDENT type (paid users, not leads)
+    // - Are NOT already in a recovery sequence (avoid double-emailing with check-recovery-triggers)
     const usersToCheck = await prisma.user.findMany({
       where: {
         firstLoginAt: null, // Never logged in
@@ -117,6 +118,21 @@ export async function GET(request: NextRequest) {
         email: { not: null },
         userType: "STUDENT", // Only paid users, not leads
         isActive: true,
+        // Exclude users already in an ACTIVE recovery sequence enrollment
+        sequenceEnrollments: {
+          none: {
+            status: "ACTIVE",
+            sequence: {
+              slug: {
+                in: [
+                  "recovery-never-logged-in",
+                  "recovery-never-started",
+                  "recovery-abandoned-learning",
+                ],
+              },
+            },
+          },
+        },
       },
       select: {
         id: true,
@@ -135,6 +151,13 @@ export async function GET(request: NextRequest) {
 
     for (const user of usersToCheck) {
       if (!user.email) continue;
+
+      // Global guard: skip if user was emailed by ANY system in the last 4 hours
+      const recentlyEmailed = await wasRecentlyEmailed(user.email, 4);
+      if (recentlyEmailed) {
+        console.log(`[CRON-LOGIN-RECOVERY] Skipping ${user.email} - recently emailed (cross-system guard)`);
+        continue;
+      }
 
       const firstName = user.firstName || "there";
       const createdAt = new Date(user.createdAt);

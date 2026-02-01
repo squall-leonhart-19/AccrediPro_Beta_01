@@ -541,6 +541,30 @@ export async function sendEmail({
   }
 }
 
+/**
+ * Check if a user was recently emailed (within the given hours window).
+ * Used by cron jobs to prevent cross-system email stacking.
+ *
+ * Returns true if the user received a SENT email within the window.
+ */
+export async function wasRecentlyEmailed(
+  email: string,
+  withinHours: number = 4,
+): Promise<boolean> {
+  const since = new Date(Date.now() - withinHours * 60 * 60 * 1000);
+
+  const recentSend = await prisma.emailSend.findFirst({
+    where: {
+      toEmail: email.toLowerCase(),
+      status: "SENT",
+      sentAt: { gte: since },
+    },
+    select: { id: true },
+  });
+
+  return !!recentSend;
+}
+
 // Convenience function for marketing sequence emails
 export async function sendMarketingEmail({ to, subject, html, text, replyTo }: Omit<SendEmailOptions, 'type'>) {
   return sendEmail({ to, subject, html, text, replyTo, type: 'transactional' });

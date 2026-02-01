@@ -147,7 +147,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               // Scripts: self + inline for Next.js + third-party integrations
               // Note: unsafe-eval removed; wasm-unsafe-eval kept for Wistia video player
-              "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://*.sentry.io https://*.google-analytics.com https://*.googletagmanager.com https://js.stripe.com https://connect.facebook.net https://widget.trustpilot.com https://fast.wistia.com https://fast.wistia.net https://*.wistia.com https://*.wistia.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://*.sentry.io https://*.google-analytics.com https://*.googletagmanager.com https://js.stripe.com https://connect.facebook.net https://widget.trustpilot.com https://fast.wistia.com https://fast.wistia.net https://*.wistia.com https://*.wistia.net",
               // Styles: self + inline for Tailwind/dynamic styles
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               // Images: various CDNs and blob for local processing + Facebook

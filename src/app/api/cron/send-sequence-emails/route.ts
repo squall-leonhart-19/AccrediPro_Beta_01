@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sendEmail, brandedEmailWrapper } from "@/lib/email";
+import { sendEmail, brandedEmailWrapper, wasRecentlyEmailed } from "@/lib/email";
 
 /**
  * CRON: Send sequence emails (nurture + recovery)
@@ -89,6 +89,13 @@ export async function GET(request: NextRequest) {
       const { user, sequence } = enrollment;
       const currentIndex = enrollment.currentEmailIndex;
 
+      // Skip users without email
+      if (!user.email) {
+        results.skipped++;
+        continue;
+      }
+      const userEmail = user.email;
+
       // Check if we have an email at this index
       if (currentIndex >= sequence.emails.length) {
         // Sequence complete
@@ -107,7 +114,7 @@ export async function GET(request: NextRequest) {
         });
 
         results.completed++;
-        results.details.push(`${user.email}: Sequence completed`);
+        results.details.push(`${userEmail}: Sequence completed`);
         continue;
       }
 
@@ -115,7 +122,15 @@ export async function GET(request: NextRequest) {
 
       if (!emailToSend) {
         results.skipped++;
-        results.details.push(`${user.email}: No email at index ${currentIndex}`);
+        results.details.push(`${userEmail}: No email at index ${currentIndex}`);
+        continue;
+      }
+
+      // Global guard: skip if user was emailed by ANY system in the last 2 hours
+      const recentlyEmailed = await wasRecentlyEmailed(userEmail, 2);
+      if (recentlyEmailed) {
+        results.skipped++;
+        results.details.push(`${userEmail}: Skipped - recently emailed (cross-system guard)`);
         continue;
       }
 
@@ -129,7 +144,7 @@ export async function GET(request: NextRequest) {
         let htmlContent = (emailToSend.customContent || "")
           .replace(/\{\{firstName\}\}/g, firstName)
           .replace(/\{\{lastName\}\}/g, lastName)
-          .replace(/\{\{email\}\}/g, user.email)
+          .replace(/\{\{email\}\}/g, userEmail)
           .replace(/\{\{fullName\}\}/g, fullName)
           // URL replacements
           .replace(/\{\{MINI_DIPLOMA_URL\}\}/g, `${baseUrl}/my-mini-diploma`)
@@ -148,49 +163,44 @@ export async function GET(request: NextRequest) {
         const subject = (emailToSend.customSubject || "Your Mini Diploma Journey")
           .replace(/\{\{firstName\}\}/g, firstName);
 
-        // Send the email
+        // CRITICAL: Advance the enrollment index BEFORE sending to prevent
+        // re-sending the same email if the DB update fails after a successful send.
+        // Missing one email (if send fails) is far better than spamming repeatedly.
+        const nextIndex = currentIndex + 1;
+        let nextSendAt: Date | null = null;
+
+        if (nextIndex < sequence.emails.length) {
+          const nextEmail = sequence.emails[nextIndex];
+          nextSendAt = calculateNextSendTime(now, nextEmail.delayDays, nextEmail.delayHours);
+        }
+
+        await prisma.sequenceEnrollment.update({
+          where: { id: enrollment.id },
+          data: {
+            currentEmailIndex: nextIndex,
+            emailsReceived: { increment: 1 },
+            nextSendAt,
+          },
+        });
+
+        // Now send the email (enrollment is already advanced, safe from re-send loops)
         const result = await sendEmail({
-          to: user.email,
+          to: userEmail,
           subject,
           html: brandedEmailWrapper(htmlContent),
           type: "transactional",
         });
 
         if (result.success) {
-          // Create EmailSend record for tracking
-          const resendId = result.data?.id;
+          // Link the EmailSend record (created by sendEmail) to the sequence email
+          // sendEmail already creates an EmailSend record — update it with sequenceEmailId
+          const resendId = (result.data as { id?: string })?.id;
           if (resendId) {
-            await prisma.emailSend.create({
-              data: {
-                userId: user.id,
-                sequenceEmailId: emailToSend.id,
-                resendId,
-                toEmail: user.email,
-                subject,
-                status: "SENT",
-                sentAt: now,
-              },
+            await prisma.emailSend.updateMany({
+              where: { resendId },
+              data: { sequenceEmailId: emailToSend.id },
             });
           }
-
-          // Calculate next send time
-          const nextIndex = currentIndex + 1;
-          let nextSendAt: Date | null = null;
-
-          if (nextIndex < sequence.emails.length) {
-            const nextEmail = sequence.emails[nextIndex];
-            nextSendAt = calculateNextSendTime(now, nextEmail.delayDays, nextEmail.delayHours);
-          }
-
-          // Update enrollment
-          await prisma.sequenceEnrollment.update({
-            where: { id: enrollment.id },
-            data: {
-              currentEmailIndex: nextIndex,
-              emailsReceived: { increment: 1 },
-              nextSendAt,
-            },
-          });
 
           // Update email stats
           await prisma.sequenceEmail.update({
@@ -199,18 +209,20 @@ export async function GET(request: NextRequest) {
           });
 
           results.sent++;
-          results.details.push(`${user.email}: Sent email ${currentIndex + 1}/${sequence.emails.length} - "${subject}"`);
-          console.log(`[CRON-EMAIL] Sent to ${user.email}: ${subject}`);
+          results.details.push(`${userEmail}: Sent email ${currentIndex + 1}/${sequence.emails.length} - "${subject}"`);
+          console.log(`[CRON-EMAIL] Sent to ${userEmail}: ${subject}`);
         } else {
+          // Email failed but index already advanced — log the failure.
+          // This prevents spam loops. The user misses this email but won't be re-spammed.
           results.errors++;
-          results.details.push(`${user.email}: Failed to send - ${result.error}`);
-          console.error(`[CRON-EMAIL] Failed to send to ${user.email}:`, result.error);
+          results.details.push(`${userEmail}: Failed to send (index advanced to prevent re-send) - ${result.error}`);
+          console.error(`[CRON-EMAIL] Failed to send to ${userEmail} (index advanced):`, result.error);
         }
       } catch (error) {
         results.errors++;
         const errMsg = error instanceof Error ? error.message : "Unknown error";
-        results.details.push(`${user.email}: Error - ${errMsg}`);
-        console.error(`[CRON-EMAIL] Error for ${user.email}:`, error);
+        results.details.push(`${userEmail}: Error - ${errMsg}`);
+        console.error(`[CRON-EMAIL] Error for ${userEmail}:`, error);
       }
     }
 
@@ -241,6 +253,9 @@ export async function GET(request: NextRequest) {
  *
  * Day 0 (delayDays=0, delayHours=0): Send in 5 minutes
  * Day 1+: Send at 7 PM EST (00:00 UTC) after the delay
+ *
+ * The key invariant: the returned date must always be in the future
+ * AND at least delayDays ahead of fromDate (to respect the intended spacing).
  */
 function calculateNextSendTime(fromDate: Date, delayDays: number, delayHours: number): Date {
   // If immediate (Day 0), send in 5 minutes
@@ -248,19 +263,23 @@ function calculateNextSendTime(fromDate: Date, delayDays: number, delayHours: nu
     return new Date(fromDate.getTime() + 5 * 60 * 1000);
   }
 
-  // Calculate the target date
+  // Start from fromDate + delayDays + delayHours
   const targetDate = new Date(fromDate);
-  targetDate.setDate(targetDate.getDate() + delayDays);
-  targetDate.setHours(targetDate.getHours() + delayHours);
+  targetDate.setUTCDate(targetDate.getUTCDate() + delayDays);
+  targetDate.setUTCHours(targetDate.getUTCHours() + delayHours);
 
-  // Set to 7 PM EST (00:00 UTC next day for standard time, 23:00 UTC for daylight)
-  // Using 00:00 UTC as a simple approximation (7 PM EST)
+  // Set to the send hour (00:00 UTC = 7 PM EST) on the target day
   const sendDate = new Date(targetDate);
   sendDate.setUTCHours(SEND_HOUR_UTC, 0, 0, 0);
 
-  // If the calculated send time is in the past (same day but we're past 7 PM), move to next day
-  if (sendDate <= fromDate) {
-    sendDate.setDate(sendDate.getDate() + 1);
+  // Ensure the send date is strictly in the future.
+  // If truncating to SEND_HOUR_UTC pushed the date before now (e.g., cron runs
+  // at 00:05 UTC and sendDate lands at 00:00 UTC same day), move to next day.
+  // But also ensure we don't shorten the intended delay — the send date must be
+  // at least (delayDays - 1) full days after fromDate to respect spacing.
+  const minimumSendTime = new Date(fromDate.getTime() + Math.max(0, delayDays - 1) * 24 * 60 * 60 * 1000);
+  while (sendDate <= fromDate || sendDate < minimumSendTime) {
+    sendDate.setUTCDate(sendDate.getUTCDate() + 1);
   }
 
   return sendDate;
