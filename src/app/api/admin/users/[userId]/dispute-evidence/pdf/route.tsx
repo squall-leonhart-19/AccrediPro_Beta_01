@@ -595,7 +595,7 @@ export async function GET(
 
                             {/* Corrected Footer with Seal */}
                             <View style={styles.footer}>
-                                <Text style={styles.footerText}>AccrediPro International Standards Institute</Text> // Fixed typo in institution name
+                                <Text style={styles.footerText}>AccrediPro International Standards Institute</Text>
                                 <Text style={styles.footerText}>(At Rockefeller Center)</Text>
                                 <Text style={styles.footerText}>1270 Avenue of the Americas, 7th Floor - Suite 1182</Text>
                                 <Text style={styles.footerText}>New York, NY 10020, United States</Text>
