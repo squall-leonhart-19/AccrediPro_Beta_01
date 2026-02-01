@@ -812,60 +812,74 @@ export default function SequenceHQDashboard() {
                     <EnrollmentMonitor sequences={sequences} />
                 </TabsContent>
 
-                {/* Triggers Tab */}
+                {/* Triggers Tab - Separated by Category */}
                 <TabsContent value="triggers">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Tag className="w-5 h-5 text-burgundy-600" />
-                                Trigger Configuration
-                            </CardTitle>
-                            <CardDescription>
-                                View which sequences are triggered by which events
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                {TRIGGER_TYPES.map((trigger) => {
+                    <div className="grid gap-6 md:grid-cols-2">
+                        {/* Lead Triggers */}
+                        <Card>
+                            <CardHeader className="pb-3">
+                                <CardTitle className="flex items-center gap-2 text-base">
+                                    <Users className="w-4 h-4 text-blue-600" />
+                                    Lead Triggers
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                {[
+                                    { value: "USER_REGISTERED", label: "User Registered", icon: Users },
+                                    { value: "MINI_DIPLOMA_STARTED", label: "Mini Diploma Started", icon: Play },
+                                    { value: "MINI_DIPLOMA_COMPLETED", label: "Mini Diploma Completed", icon: CheckCircle },
+                                    { value: "TAG_ADDED", label: "Tag Added", icon: Tag },
+                                ].map((trigger) => {
                                     const matchingSequences = sequences.filter(s => s.triggerType === trigger.value);
                                     const TriggerIcon = trigger.icon;
-
                                     return (
-                                        <div key={trigger.value} className="border rounded-lg p-4">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <div className="flex items-center gap-2">
-                                                    <TriggerIcon className="w-5 h-5 text-gray-500" />
-                                                    <span className="font-medium">{trigger.label}</span>
-                                                </div>
-                                                <Badge variant="outline">
-                                                    {matchingSequences.length} sequence{matchingSequences.length !== 1 ? "s" : ""}
-                                                </Badge>
+                                        <div key={trigger.value} className="flex items-center justify-between py-2 border-b last:border-0">
+                                            <div className="flex items-center gap-2">
+                                                <TriggerIcon className="w-4 h-4 text-gray-400" />
+                                                <span className="text-sm">{trigger.label}</span>
                                             </div>
-                                            {matchingSequences.length > 0 ? (
-                                                <div className="flex flex-wrap gap-2 mt-2">
-                                                    {matchingSequences.map(seq => (
-                                                        <Badge
-                                                            key={seq.id}
-                                                            className={seq.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}
-                                                        >
-                                                            {seq.name}
-                                                            {seq.isActive ? (
-                                                                <Play className="w-3 h-3 ml-1" />
-                                                            ) : (
-                                                                <Pause className="w-3 h-3 ml-1" />
-                                                            )}
-                                                        </Badge>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <p className="text-sm text-gray-400">No sequences use this trigger</p>
-                                            )}
+                                            <Badge variant={matchingSequences.length > 0 ? "default" : "secondary"} className="text-xs">
+                                                {matchingSequences.length}
+                                            </Badge>
                                         </div>
                                     );
                                 })}
-                            </div>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+
+                        {/* Student Triggers */}
+                        <Card>
+                            <CardHeader className="pb-3">
+                                <CardTitle className="flex items-center gap-2 text-base">
+                                    <Mail className="w-4 h-4 text-green-600" />
+                                    Student Triggers
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                {[
+                                    { value: "COURSE_ENROLLED", label: "Course Enrolled", icon: Users },
+                                    { value: "TRAINING_STARTED", label: "Training Started", icon: Play },
+                                    { value: "CHALLENGE_STARTED", label: "Challenge Started", icon: Zap },
+                                    { value: "CHALLENGE_COMPLETED", label: "Challenge Completed", icon: CheckCircle },
+                                    { value: "MANUAL", label: "Manual Enrollment", icon: Settings },
+                                ].map((trigger) => {
+                                    const matchingSequences = sequences.filter(s => s.triggerType === trigger.value);
+                                    const TriggerIcon = trigger.icon;
+                                    return (
+                                        <div key={trigger.value} className="flex items-center justify-between py-2 border-b last:border-0">
+                                            <div className="flex items-center gap-2">
+                                                <TriggerIcon className="w-4 h-4 text-gray-400" />
+                                                <span className="text-sm">{trigger.label}</span>
+                                            </div>
+                                            <Badge variant={matchingSequences.length > 0 ? "default" : "secondary"} className="text-xs">
+                                                {matchingSequences.length}
+                                            </Badge>
+                                        </div>
+                                    );
+                                })}
+                            </CardContent>
+                        </Card>
+                    </div>
                 </TabsContent>
             </Tabs>
 
