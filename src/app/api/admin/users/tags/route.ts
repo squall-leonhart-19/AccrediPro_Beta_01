@@ -299,8 +299,9 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Special tag: dfy_purchased / done_for_you → create DFY purchase + send email + Jessica DM
-    if (data.tag === "dfy_purchased" || data.tag === "done_for_you") {
+    // Special tag: any DFY/done-for-you variant → create DFY purchase + send email + Jessica DM
+    const isDfyTag = data.tag.toLowerCase().startsWith("dfy") || data.tag.toLowerCase().includes("done_for_you") || data.tag.toLowerCase().includes("done for you");
+    if (isDfyTag) {
       const targetUser = await prisma.user.findUnique({
         where: { id: data.userId },
         select: { id: true, email: true, firstName: true },
@@ -353,8 +354,8 @@ export async function POST(request: NextRequest) {
           });
           actions.push("DFY purchase record created");
 
-          // Also add dfy_purchased if the tag was "done_for_you"
-          if (data.tag === "done_for_you") {
+          // Also add dfy_purchased tag for consistency
+          if (data.tag !== "dfy_purchased") {
             await prisma.userTag.upsert({
               where: { userId_tag: { userId: targetUser.id, tag: "dfy_purchased" } },
               update: {},
