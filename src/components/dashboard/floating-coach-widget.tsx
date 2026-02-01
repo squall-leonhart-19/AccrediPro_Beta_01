@@ -68,11 +68,6 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
     const name = userName || "there";
     const pathname = usePathname();
 
-    // Hide widget entirely on /messages page to avoid overlapping the chat input
-    if (pathname === "/messages") {
-        return null;
-    }
-
     // Load hidden state from localStorage on mount
     useEffect(() => {
         const stored = localStorage.getItem(CHAT_HIDDEN_KEY);
@@ -267,6 +262,11 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
         setIsExpanded(true);
         setIsChatMode(true);
     }, []);
+
+    // Hide widget entirely on /messages page to avoid overlapping the chat input
+    if (pathname === "/messages") {
+        return null;
+    }
 
     // Show minimal "show chat" button when hidden
     if (isHidden) {
