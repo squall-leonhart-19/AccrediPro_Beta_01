@@ -11,7 +11,8 @@ import {
   DollarSign, CreditCard, Copy, ExternalLink, Tag as TagIcon, Plus, X,
   Inbox, CheckCheck, Archive, Filter, SlidersHorizontal, Star,
   AlertCircle, Circle, Phone, Globe, Calendar, Hash, BookOpen, GraduationCap,
-  Pencil, Save, Loader2, Wrench, Paperclip, Brain, PanelRightClose, PanelRightOpen
+  Pencil, Save, Loader2, Wrench, Paperclip, Brain, PanelRightClose, PanelRightOpen,
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -461,9 +462,20 @@ export default function TicketsClient() {
               <LifeBuoy className="w-5 h-5" />
               {ASI.division}
             </h1>
-            <Button variant="ghost" size="icon" onClick={() => refetch()} className="text-white/80 hover:text-white hover:bg-white/10">
-              <RefreshCcw className={cn("w-4 h-4", isLoading && "animate-spin")} />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => window.open("/api/admin/tickets/export", "_blank")}
+                className="text-white/80 hover:text-white hover:bg-white/10"
+                title="Export all tickets"
+              >
+                <Download className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => refetch()} className="text-white/80 hover:text-white hover:bg-white/10">
+                <RefreshCcw className={cn("w-4 h-4", isLoading && "animate-spin")} />
+              </Button>
+            </div>
           </div>
 
           {/* Stats */}
