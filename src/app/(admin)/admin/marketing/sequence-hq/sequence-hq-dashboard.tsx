@@ -68,6 +68,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import SequenceBuilder from "./sequence-builder";
 import EnrollmentMonitor from "./enrollment-monitor";
+import { TagCombobox } from "@/components/ui/tag-combobox";
 
 // Types
 interface SequenceEmail {
@@ -272,7 +273,7 @@ export default function SequenceHQDashboard() {
                     description: newSequence.description || null,
                     triggerType: newSequence.triggerType,
                     triggerTagId: newSequence.triggerTagId || null,
-                    exitTagId: newSequence.exitTagId || null,
+                    exitTagId: newSequence.exitTagId && newSequence.exitTagId !== "none" ? newSequence.exitTagId : null,
                 }),
             });
 
@@ -933,41 +934,24 @@ export default function SequenceHQDashboard() {
                         {newSequence.triggerType === "TAG_ADDED" && (
                             <div className="space-y-2">
                                 <Label>Trigger Tag</Label>
-                                <Select
+                                <TagCombobox
+                                    tags={tags}
                                     value={newSequence.triggerTagId}
-                                    onValueChange={(value) => setNewSequence(prev => ({ ...prev, triggerTagId: value }))}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a tag" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {tags.map((tag) => (
-                                            <SelectItem key={tag.id} value={tag.id}>
-                                                {tag.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                    onChange={(value) => setNewSequence(prev => ({ ...prev, triggerTagId: value }))}
+                                    placeholder="Search and select a tag..."
+                                />
                             </div>
                         )}
                         <div className="space-y-2">
                             <Label>Exit Tag (Optional)</Label>
-                            <Select
+                            <TagCombobox
+                                tags={tags}
                                 value={newSequence.exitTagId}
-                                onValueChange={(value) => setNewSequence(prev => ({ ...prev, exitTagId: value }))}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Exit when tag added..." />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="none">None</SelectItem>
-                                    {tags.map((tag) => (
-                                        <SelectItem key={tag.id} value={tag.id}>
-                                            {tag.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                onChange={(value) => setNewSequence(prev => ({ ...prev, exitTagId: value }))}
+                                placeholder="Exit when tag added..."
+                                allowNone
+                                noneLabel="None"
+                            />
                             <p className="text-xs text-gray-500">
                                 Users will exit the sequence when this tag is added
                             </p>

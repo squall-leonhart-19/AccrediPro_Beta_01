@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
     MessageSquare,
     Inbox,
@@ -12,9 +14,13 @@ import {
     Calendar,
     BarChart3,
     AlertCircle,
-    Reply
+    Reply,
+    Download,
+    FileText,
+    Loader2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 export interface AnalyticsProps {
     messageStats: {
@@ -38,6 +44,33 @@ export interface AnalyticsProps {
 }
 
 export default function CustomerCareAnalytics({ messageStats, ticketStats }: AnalyticsProps) {
+    const [exporting, setExporting] = useState(false);
+
+    const handleExportTickets = async () => {
+        setExporting(true);
+        try {
+            const res = await fetch("/api/admin/tickets/export");
+            if (!res.ok) throw new Error("Export failed");
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `tickets-export-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            toast.success("Tickets exported successfully!");
+        } catch (error) {
+            console.error("Export failed:", error);
+            toast.error("Failed to export tickets");
+        } finally {
+            setExporting(false);
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -46,6 +79,20 @@ export default function CustomerCareAnalytics({ messageStats, ticketStats }: Ana
                     <p className="text-gray-500 mt-1">Real-time performance metrics</p>
                 </div>
                 <div className="flex items-center gap-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleExportTickets}
+                        disabled={exporting}
+                        className="gap-2"
+                    >
+                        {exporting ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <Download className="w-4 h-4" />
+                        )}
+                        Export Tickets
+                    </Button>
                     <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 px-3 py-1">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
                         Live System Status
