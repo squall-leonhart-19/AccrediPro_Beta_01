@@ -609,25 +609,25 @@ export async function GET(
                             </View>
                         </Page>
                     </Document>
-                    );
+        );
 
-                    // Render PDF to buffer
-                    const pdfBuffer = await renderToBuffer(<EvidenceDocument />);
+        // Render PDF to buffer
+        const pdfBuffer = await renderToBuffer(<EvidenceDocument />);
 
-                    // Return PDF response
-                    return new NextResponse(pdfBuffer, {
-                        status: 200,
-                    headers: {
-                        "Content-Type": "application/pdf",
-                    "Content-Disposition": `attachment; filename="dispute-evidence-${user.email.split("@")[0]}-${new Date().toISOString().slice(0, 10)}.pdf"`,
+        // Return PDF response
+        return new NextResponse(pdfBuffer, {
+            status: 200,
+            headers: {
+                "Content-Type": "application/pdf",
+                "Content-Disposition": `attachment; filename="dispute-evidence-${user.email.split("@")[0]}-${new Date().toISOString().slice(0, 10)}.pdf"`,
             },
         });
     } catch (error) {
-                        console.error("Error generating dispute evidence PDF:", error);
-                    return NextResponse.json(
-                    {error: "Failed to generate evidence PDF", details: String(error) },
-                    {status: 500 }
-                    );
+        console.error("Error generating dispute evidence PDF:", error);
+        return NextResponse.json(
+            { error: "Failed to generate evidence PDF", details: String(error) },
+            { status: 500 }
+        );
     }
 }
 
