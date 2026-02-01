@@ -84,6 +84,7 @@ const navGroups: NavGroup[] = [
   {
     title: "Marketing",
     items: [
+      { href: "/admin/email-panel", label: "Email Panel", icon: Mail, roles: ["ADMIN", "SUPERUSER"] },
       { href: "/admin/marketing", label: "Email Campaigns", icon: Mail, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/communications", label: "Notifications", icon: Bell, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
