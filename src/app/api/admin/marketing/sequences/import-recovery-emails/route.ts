@@ -3,8 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import {
-    RECOVERY_SEQUENCES,
-    RecoverySequenceType
+    NEVER_LOGGED_IN_EMAILS,
+    NEVER_STARTED_EMAILS,
+    ABANDONED_LEARNING_EMAILS,
 } from "@/lib/recovery-emails";
 
 // POST /api/admin/marketing/sequences/import-recovery-emails
@@ -20,31 +21,22 @@ export async function POST(request: NextRequest) {
         let totalImported = 0;
         let totalEmails = 0;
 
-        // Process each recovery sequence
-        const sequenceTypes: RecoverySequenceType[] = [
-            "never_logged_in",
-            "never_started",
-            "abandoned_learning",
+        const sequenceConfigs = [
+            { slug: "recovery-never-logged-in", name: "Recovery: Never Logged In", emails: NEVER_LOGGED_IN_EMAILS },
+            { slug: "recovery-never-started", name: "Recovery: Never Started", emails: NEVER_STARTED_EMAILS },
+            { slug: "recovery-abandoned-learning", name: "Recovery: Abandoned Learning", emails: ABANDONED_LEARNING_EMAILS },
         ];
 
-        for (const type of sequenceTypes) {
-            const recoverySequence = RECOVERY_SEQUENCES[type];
-            if (!recoverySequence) continue;
-
+        for (const config of sequenceConfigs) {
             try {
                 // Check if sequence already exists
-                const existingSequence = await prisma.sequence.findFirst({
-                    where: {
-                        OR: [
-                            { slug: type.replace(/_/g, "-") },
-                            { name: { contains: type.replace(/_/g, " "), mode: "insensitive" } },
-                        ],
-                    },
+                const existingSequence = await prisma.sequence.findUnique({
+                    where: { slug: config.slug },
                 });
 
                 if (existingSequence) {
                     results.push({
-                        sequence: recoverySequence.name,
+                        sequence: config.name,
                         emails: 0,
                         error: "Sequence already exists",
                     });
@@ -54,43 +46,40 @@ export async function POST(request: NextRequest) {
                 // Create the sequence
                 const sequence = await prisma.sequence.create({
                     data: {
-                        name: recoverySequence.name,
-                        slug: type.replace(/_/g, "-"),
-                        description: `Recovery sequence for ${type.replace(/_/g, " ")} users`,
-                        triggerType: "TAG_ADDED",
+                        name: config.name,
+                        slug: config.slug,
+                        description: `Recovery sequence for ${config.name.replace("Recovery: ", "").toLowerCase()} users`,
+                        triggerType: "MANUAL",
                         isActive: false, // Start inactive for review
                         isSystem: true,
                     },
                 });
 
                 // Create emails for this sequence
-                let emailOrder = 0;
-                for (const email of recoverySequence.emails) {
+                for (const email of config.emails) {
                     await prisma.sequenceEmail.create({
                         data: {
                             sequenceId: sequence.id,
                             customSubject: email.subject,
-                            customContent: email.htmlContent,
-                            delayDays: email.sendAfterDays,
-                            delayHours: 0,
-                            delayMinutes: 0,
-                            order: emailOrder,
+                            customContent: email.content,
+                            delayDays: email.delayDays,
+                            delayHours: email.delayHours,
+                            order: email.order,
                             isActive: true,
                         },
                     });
-                    emailOrder++;
                     totalEmails++;
                 }
 
                 results.push({
-                    sequence: recoverySequence.name,
-                    emails: recoverySequence.emails.length,
+                    sequence: config.name,
+                    emails: config.emails.length,
                 });
                 totalImported++;
             } catch (error) {
-                console.error(`Error importing ${type}:`, error);
+                console.error(`Error importing ${config.slug}:`, error);
                 results.push({
-                    sequence: type,
+                    sequence: config.name,
                     emails: 0,
                     error: "Import failed",
                 });
