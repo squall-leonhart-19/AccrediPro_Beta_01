@@ -960,7 +960,7 @@ export default function SequenceHQDashboard() {
                                     <SelectValue placeholder="Exit when tag added..." />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">None</SelectItem>
+                                    <SelectItem value="none">None</SelectItem>
                                     {tags.map((tag) => (
                                         <SelectItem key={tag.id} value={tag.id}>
                                             {tag.name}

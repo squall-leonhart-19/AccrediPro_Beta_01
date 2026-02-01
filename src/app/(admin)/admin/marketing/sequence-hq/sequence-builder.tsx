@@ -399,7 +399,7 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
 
     // Render HTML preview with variable substitution
     const getPreviewHtml = () => {
-        return emailForm.content
+        const processed = emailForm.content
             .replace(/\{\{firstName\}\}/g, "Test")
             .replace(/\{\{lastName\}\}/g, "User")
             .replace(/\{\{email\}\}/g, "test@example.com")
@@ -409,9 +409,14 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
             .replace(/\{\{LOGIN_URL\}\}/g, "#")
             .replace(/\{\{DASHBOARD_URL\}\}/g, "#")
             .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-            .replace(/\*([^*]+)\*/g, "<em>$1</em>")
-            .replace(/\n\n/g, "</p><p>")
-            .replace(/\n/g, "<br>");
+            .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+
+        // Convert line breaks to HTML
+        const paragraphs = processed.split(/\n\n+/).filter(p => p.trim());
+        if (paragraphs.length > 0) {
+            return paragraphs.map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+        }
+        return `<p>${processed.replace(/\n/g, "<br>")}</p>`;
     };
 
     return (
@@ -848,7 +853,7 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
                             <TabsContent value="preview">
                                 <div
                                     className="border rounded-lg p-4 bg-gray-50 min-h-[300px] prose prose-sm max-w-none"
-                                    dangerouslySetInnerHTML={{ __html: `<p>${getPreviewHtml()}</p>` }}
+                                    dangerouslySetInnerHTML={{ __html: getPreviewHtml() }}
                                 />
                             </TabsContent>
                         </Tabs>

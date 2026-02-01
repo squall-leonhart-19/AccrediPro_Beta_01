@@ -113,8 +113,8 @@ export default function EnrollmentMonitor({ sequences }: EnrollmentMonitorProps)
 
     // Filters
     const [searchQuery, setSearchQuery] = useState("");
-    const [statusFilter, setStatusFilter] = useState<string>("ACTIVE");
-    const [sequenceFilter, setSequenceFilter] = useState<string>("");
+    const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [sequenceFilter, setSequenceFilter] = useState<string>("all");
 
     // Action modal
     const [actionTarget, setActionTarget] = useState<Enrollment | null>(null);
@@ -190,8 +190,8 @@ export default function EnrollmentMonitor({ sequences }: EnrollmentMonitorProps)
             const params = new URLSearchParams();
             params.set("page", page.toString());
             params.set("pageSize", pageSize.toString());
-            if (statusFilter) params.set("status", statusFilter);
-            if (sequenceFilter) params.set("sequenceId", sequenceFilter);
+            if (statusFilter && statusFilter !== "all") params.set("status", statusFilter);
+            if (sequenceFilter && sequenceFilter !== "all") params.set("sequenceId", sequenceFilter);
             if (searchQuery) params.set("search", searchQuery);
 
             const res = await fetch(`/api/admin/marketing/sequences/enrollments?${params.toString()}`);
@@ -297,7 +297,7 @@ export default function EnrollmentMonitor({ sequences }: EnrollmentMonitorProps)
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">All Statuses</SelectItem>
+                            <SelectItem value="all">All Statuses</SelectItem>
                             <SelectItem value="ACTIVE">Active</SelectItem>
                             <SelectItem value="PAUSED">Paused</SelectItem>
                             <SelectItem value="COMPLETED">Completed</SelectItem>
@@ -309,7 +309,7 @@ export default function EnrollmentMonitor({ sequences }: EnrollmentMonitorProps)
                             <SelectValue placeholder="All Sequences" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">All Sequences</SelectItem>
+                            <SelectItem value="all">All Sequences</SelectItem>
                             {sequences.map((seq) => (
                                 <SelectItem key={seq.id} value={seq.id}>
                                     {seq.name}
