@@ -196,21 +196,32 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (existingTag) {
+    // For special tags (DFY, mini diploma), still run side effects even if tag exists
+    const isDfyTag = data.tag.toLowerCase().startsWith("dfy") || data.tag.toLowerCase().includes("done_for_you") || data.tag.toLowerCase().includes("done for you");
+    const isMiniDiplomaTag = data.tag === "fm_free_mini_diploma_lead";
+    const isSpecialTag = isDfyTag || isMiniDiplomaTag;
+
+    if (existingTag && !isSpecialTag) {
       return NextResponse.json(
         { error: "This tag already exists for this user" },
         { status: 400 }
       );
     }
 
-    // Create the tag
-    const tag = await prisma.userTag.create({
-      data: {
-        userId: data.userId,
-        tag: data.tag,
-        value: data.value || null,
-      },
-    });
+    // Create the tag (upsert to handle special tags that may already exist)
+    const tag = isSpecialTag
+      ? await prisma.userTag.upsert({
+          where: { userId_tag: { userId: data.userId, tag: data.tag } },
+          update: {},
+          create: { userId: data.userId, tag: data.tag, value: data.value || null },
+        })
+      : await prisma.userTag.create({
+          data: {
+            userId: data.userId,
+            tag: data.tag,
+            value: data.value || null,
+          },
+        });
 
     // Special tag: fm_free_mini_diploma_lead grants mini-diploma access + enrolls in nurture sequence
     if (data.tag === "fm_free_mini_diploma_lead") {
@@ -300,7 +311,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Special tag: any DFY/done-for-you variant → create DFY purchase + send email + Jessica DM
-    const isDfyTag = data.tag.toLowerCase().startsWith("dfy") || data.tag.toLowerCase().includes("done_for_you") || data.tag.toLowerCase().includes("done for you");
     if (isDfyTag) {
       const targetUser = await prisma.user.findUnique({
         where: { id: data.userId },
