@@ -764,7 +764,7 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
 
             {/* Edit Email Modal */}
             <Dialog open={!!editingEmail} onOpenChange={() => setEditingEmail(null)}>
-                <DialogContent className="max-w-5xl w-[95vw] max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-6xl w-[98vw] h-[90vh] max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>Edit Email</DialogTitle>
                         <DialogDescription>
