@@ -1,9 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import {
     MessageSquare,
     Inbox,
@@ -18,6 +26,11 @@ import {
     Download,
     FileText,
     Loader2,
+    RefreshCw,
+    Users,
+    BookOpen,
+    Mail,
+    Award,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -43,8 +56,65 @@ export interface AnalyticsProps {
     };
 }
 
+interface DailyReport {
+    id: string;
+    reportDate: string;
+    newStudentsToday: number;
+    newLeadsToday: number;
+    totalStudents: number;
+    totalLeads: number;
+    newEnrollmentsToday: number;
+    ticketsOpenedToday: number;
+    ticketsResolvedToday: number;
+    ticketsPending: number;
+    messagesReceivedToday: number;
+    messagesSentToday: number;
+    miniDiplomasStarted: number;
+    miniDiplomasCompleted: number;
+    sequenceEnrollmentsToday: number;
+    emailsSentToday: number;
+}
+
 export default function CustomerCareAnalytics({ messageStats, ticketStats }: AnalyticsProps) {
     const [exporting, setExporting] = useState(false);
+    const [reports, setReports] = useState<DailyReport[]>([]);
+    const [loadingReports, setLoadingReports] = useState(false);
+    const [generatingReport, setGeneratingReport] = useState(false);
+
+    // Fetch daily reports when tab is clicked
+    const fetchReports = async () => {
+        setLoadingReports(true);
+        try {
+            const res = await fetch("/api/admin/reports/daily?limit=14");
+            if (res.ok) {
+                const data = await res.json();
+                setReports(data.reports || []);
+            }
+        } catch (error) {
+            console.error("Failed to fetch reports:", error);
+        } finally {
+            setLoadingReports(false);
+        }
+    };
+
+    // Generate report manually
+    const handleGenerateReport = async () => {
+        setGeneratingReport(true);
+        try {
+            const res = await fetch("/api/admin/reports/daily", { method: "POST" });
+            if (res.ok) {
+                toast.success("Report generated!");
+                fetchReports();
+            } else {
+                toast.error("Failed to generate report");
+            }
+        } catch (error) {
+            console.error("Failed to generate report:", error);
+            toast.error("Failed to generate report");
+        } finally {
+            setGeneratingReport(false);
+        }
+    };
 
     const handleExportTickets = async () => {
         setExporting(true);
@@ -101,14 +171,22 @@ export default function CustomerCareAnalytics({ messageStats, ticketStats }: Ana
             </div>
 
             <Tabs defaultValue="messages" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-8 h-12">
+                <TabsList className="grid w-full grid-cols-3 mb-8 h-12">
                     <TabsTrigger value="messages" className="text-base font-medium data-[state=active]:bg-blue-600 data-[state=active]:text-white transition-all">
                         <MessageSquare className="w-4 h-4 mr-2" />
-                        Messages Analysis
+                        Messages
                     </TabsTrigger>
                     <TabsTrigger value="tickets" className="text-base font-medium data-[state=active]:bg-purple-600 data-[state=active]:text-white transition-all">
                         <Inbox className="w-4 h-4 mr-2" />
-                        Tickets Analysis
+                        Tickets
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="daily-reports"
+                        className="text-base font-medium data-[state=active]:bg-amber-600 data-[state=active]:text-white transition-all"
+                        onClick={() => reports.length === 0 && fetchReports()}
+                    >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Daily Reports
                     </TabsTrigger>
                 </TabsList>
 
@@ -359,6 +437,164 @@ export default function CustomerCareAnalytics({ messageStats, ticketStats }: Ana
                             </CardContent>
                         </Card>
                     </div>
+                </TabsContent>
+
+                {/* DAILY REPORTS TAB */}
+                <TabsContent value="daily-reports" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-2 duration-500">
+                    <Card className="shadow-sm">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Calendar className="w-5 h-5 text-amber-600" />
+                                    Daily Platform Reports
+                                </CardTitle>
+                                <CardDescription>
+                                    Automatic daily scanning at midnight Alaska time (10:00 AM Rome)
+                                </CardDescription>
+                            </div>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={fetchReports}
+                                    disabled={loadingReports}
+                                >
+                                    <RefreshCw className={`w-4 h-4 mr-2 ${loadingReports ? "animate-spin" : ""}`} />
+                                    Refresh
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    onClick={handleGenerateReport}
+                                    disabled={generatingReport}
+                                    className="bg-amber-600 hover:bg-amber-700"
+                                >
+                                    {generatingReport ? (
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    ) : (
+                                        <FileText className="w-4 h-4 mr-2" />
+                                    )}
+                                    Generate Now
+                                </Button>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            {loadingReports ? (
+                                <div className="flex items-center justify-center py-12">
+                                    <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+                                </div>
+                            ) : reports.length > 0 ? (
+                                <div className="overflow-x-auto">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Date</TableHead>
+                                                <TableHead className="text-center">
+                                                    <div className="flex items-center justify-center gap-1">
+                                                        <Users className="w-3 h-3" />
+                                                        Students
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead className="text-center">
+                                                    <div className="flex items-center justify-center gap-1">
+                                                        <User className="w-3 h-3" />
+                                                        Leads
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead className="text-center">
+                                                    <div className="flex items-center justify-center gap-1">
+                                                        <BookOpen className="w-3 h-3" />
+                                                        Enrollments
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead className="text-center">
+                                                    <div className="flex items-center justify-center gap-1">
+                                                        <Inbox className="w-3 h-3" />
+                                                        Tickets
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead className="text-center">
+                                                    <div className="flex items-center justify-center gap-1">
+                                                        <MessageSquare className="w-3 h-3" />
+                                                        Messages
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead className="text-center">
+                                                    <div className="flex items-center justify-center gap-1">
+                                                        <Award className="w-3 h-3" />
+                                                        Mini Diplomas
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead className="text-center">
+                                                    <div className="flex items-center justify-center gap-1">
+                                                        <Mail className="w-3 h-3" />
+                                                        Emails Sent
+                                                    </div>
+                                                </TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {reports.map((report) => (
+                                                <TableRow key={report.id}>
+                                                    <TableCell className="font-medium">
+                                                        {new Date(report.reportDate).toLocaleDateString("en-US", {
+                                                            weekday: "short",
+                                                            month: "short",
+                                                            day: "numeric"
+                                                        })}
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <Badge variant="outline" className="bg-green-50 text-green-700">
+                                                            +{report.newStudentsToday}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                                                            +{report.newLeadsToday}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <span className="font-medium">{report.newEnrollmentsToday}</span>
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <div className="flex items-center justify-center gap-2 text-sm">
+                                                            <span className="text-amber-600">+{report.ticketsOpenedToday}</span>
+                                                            <span className="text-gray-400">/</span>
+                                                            <span className="text-green-600">✓{report.ticketsResolvedToday}</span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <div className="flex items-center justify-center gap-2 text-sm">
+                                                            <span className="text-blue-600">↓{report.messagesReceivedToday}</span>
+                                                            <span className="text-gray-400">/</span>
+                                                            <span className="text-purple-600">↑{report.messagesSentToday}</span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <div className="flex items-center justify-center gap-2 text-sm">
+                                                            <span>{report.miniDiplomasStarted}</span>
+                                                            <span className="text-gray-400">→</span>
+                                                            <span className="text-green-600">{report.miniDiplomasCompleted}</span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-center text-sm">
+                                                        {report.emailsSentToday}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            ) : (
+                                <div className="text-center py-12">
+                                    <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                                    <p className="text-gray-500">No reports yet</p>
+                                    <p className="text-sm text-gray-400 mt-1">
+                                        Click "Generate Now" to create your first report
+                                    </p>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
                 </TabsContent>
             </Tabs>
         </div>

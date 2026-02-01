@@ -3386,3 +3386,46 @@ model OnboardingProgress {
   @@index([completedAt])
   @@index([createdAt])
 }
+
+// ==================== DAILY REPORTS ====================
+
+// Daily platform scanning reports (runs at midnight Alaska time)
+model DailyReport {
+  id        String   @id @default(cuid())
+  reportDate DateTime @unique // Date of the report (midnight UTC)
+
+  // User Stats
+  newStudentsToday     Int @default(0) // Users with userType = STUDENT created today
+  newLeadsToday        Int @default(0) // Users with userType = LEAD created today
+  totalStudents        Int @default(0) // Total students as of this report
+  totalLeads           Int @default(0) // Total leads as of this report
+
+  // Enrollment Stats
+  newEnrollmentsToday  Int @default(0) // Course enrollments created today
+  courseBreakdown      Json? // { "course-slug": count, ... }
+
+  // Ticket Stats
+  ticketsOpenedToday   Int @default(0)
+  ticketsResolvedToday Int @default(0)
+  ticketsPending       Int @default(0) // Open/pending at end of day
+
+  // Message Stats
+  messagesReceivedToday Int @default(0) // Messages from students
+  messagesSentToday     Int @default(0) // Messages from Sarah/staff
+
+  // Mini Diploma Stats
+  miniDiplomasStarted   Int @default(0)
+  miniDiplomasCompleted Int @default(0)
+
+  // Sequence Stats
+  sequenceEnrollmentsToday Int @default(0)
+  emailsSentToday          Int @default(0)
+
+  // Full JSON data for detailed breakdown
+  rawData Json? // Full detailed data for drilling down
+
+  createdAt DateTime @default(now())
+
+  @@index([reportDate])
+  @@index([createdAt])
+}
