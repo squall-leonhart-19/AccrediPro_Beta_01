@@ -102,8 +102,13 @@ export function wrapInBrandedTemplate(content: string, vars: { firstName: string
                 <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px;">
                     <tr>
                         <td style="padding: 16px; text-align: center;">
-                            <p style="margin: 0; font-size: 11px; color: #9ca3af;">
+                            <p style="margin: 0 0 8px 0; font-size: 11px; color: #9ca3af;">
                                 AccrediPro Academy • 45 Rockefeller Plaza, New York, NY 10111
+                            </p>
+                            <p style="margin: 0; font-size: 11px;">
+                                <a href="https://learn.accredipro.academy/unsubscribe" style="color: #9ca3af; text-decoration: underline;">Unsubscribe</a>
+                                <span style="color: #d1d5db; margin: 0 4px;">•</span>
+                                <a href="https://learn.accredipro.academy/preferences" style="color: #9ca3af; text-decoration: underline;">Email Preferences</a>
                             </p>
                         </td>
                     </tr>
