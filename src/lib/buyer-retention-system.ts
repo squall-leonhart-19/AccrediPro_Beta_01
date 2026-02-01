@@ -81,9 +81,7 @@ export function wrapInBrandedTemplate(content: string, vars: { firstName: string
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td>
-                                        <p style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #6b21a8;">
-                                            🏛️ AccrediPro Academy
-                                        </p>
+                                        <img src="https://learn.accredipro.academy/ASI_LOGO-removebg-preview.png" alt="AccrediPro Academy" style="height: 64px; width: auto; margin: 0 auto 12px auto; display: block;" />
                                         <p style="margin: 0 0 12px 0; font-size: 12px; color: #6b7280;">
                                             Professional Certification Programs
                                         </p>
@@ -97,6 +95,7 @@ export function wrapInBrandedTemplate(content: string, vars: { firstName: string
                             </table>
                         </td>
                     </tr>
+
                 </table>
                 
                 <!-- Unsubscribe -->
