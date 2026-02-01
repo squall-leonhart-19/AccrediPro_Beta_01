@@ -207,6 +207,7 @@ export function UsersClient({ courses }: UsersClientProps) {
   const [sequenceEnrollments, setSequenceEnrollments] = useState<any[]>([]);
   const [loadingSequences, setLoadingSequences] = useState(false);
   const [stoppingSequence, setStoppingSequence] = useState<string | null>(null);
+  const [sequencesLoadedForUserId, setSequencesLoadedForUserId] = useState<string | null>(null);
 
   // Role change state
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
@@ -1905,7 +1906,10 @@ export function UsersClient({ courses }: UsersClientProps) {
                 <button
                   onClick={() => {
                     setDetailTab("sequences");
-                    if (sequenceEnrollments.length === 0 && !loadingSequences) {
+                    // Reset if viewing a different user's sequences
+                    if (sequencesLoadedForUserId !== selectedUser.id && !loadingSequences) {
+                      setSequenceEnrollments([]);
+                      setSequencesLoadedForUserId(selectedUser.id);
                       fetchUserSequences(selectedUser.id);
                     }
                   }}
@@ -2821,10 +2825,10 @@ export function UsersClient({ courses }: UsersClientProps) {
                                     enrollment.status === "ACTIVE"
                                       ? "bg-green-100 text-green-700 border-green-200"
                                       : enrollment.status === "COMPLETED"
-                                      ? "bg-blue-100 text-blue-700 border-blue-200"
-                                      : enrollment.status === "PAUSED"
-                                      ? "bg-yellow-100 text-yellow-700 border-yellow-200"
-                                      : "bg-red-100 text-red-700 border-red-200"
+                                        ? "bg-blue-100 text-blue-700 border-blue-200"
+                                        : enrollment.status === "PAUSED"
+                                          ? "bg-yellow-100 text-yellow-700 border-yellow-200"
+                                          : "bg-red-100 text-red-700 border-red-200"
                                   }
                                 >
                                   {enrollment.status}

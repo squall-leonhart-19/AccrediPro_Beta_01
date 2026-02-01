@@ -525,6 +525,7 @@ export default function SequenceHQDashboard() {
                                             <TableHead>Sequence</TableHead>
                                             <TableHead className="text-center">Status</TableHead>
                                             <TableHead className="text-center">Trigger</TableHead>
+                                            <TableHead className="text-center">Scope</TableHead>
                                             <TableHead className="text-center">Emails</TableHead>
                                             <TableHead className="text-center">Enrolled</TableHead>
                                             <TableHead className="text-center">Sent</TableHead>
@@ -572,8 +573,27 @@ export default function SequenceHQDashboard() {
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="text-center">
-                                                        <Badge variant="outline" className="text-xs">
-                                                            {seq.triggerType.replace(/_/g, " ")}
+                                                        <div className="flex flex-col items-center gap-0.5">
+                                                            <Badge variant="outline" className="text-xs">
+                                                                {seq.triggerType.replace(/_/g, " ")}
+                                                            </Badge>
+                                                            {seq.triggerType === "TAG_ADDED" && seq.triggerTag && (
+                                                                <span className="text-[10px] text-gray-500">
+                                                                    → {seq.triggerTag.name}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <Badge
+                                                            variant="outline"
+                                                            className={`text-xs ${seq.courseCategory === "MINI_DIPLOMA" ? "border-blue-300 bg-blue-50 text-blue-700" :
+                                                                    seq.courseCategory === "FUNCTIONAL_MEDICINE" ? "border-green-300 bg-green-50 text-green-700" :
+                                                                        seq.courseCategory === "NUTRITION" ? "border-orange-300 bg-orange-50 text-orange-700" :
+                                                                            "border-gray-300 bg-gray-50 text-gray-600"
+                                                                }`}
+                                                        >
+                                                            {seq.courseCategory ? seq.courseCategory.replace(/_/g, " ") : "All"}
                                                         </Badge>
                                                     </TableCell>
                                                     <TableCell className="text-center font-medium">

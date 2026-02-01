@@ -764,7 +764,7 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
 
             {/* Edit Email Modal */}
             <Dialog open={!!editingEmail} onOpenChange={() => setEditingEmail(null)}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-5xl w-[95vw] max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>Edit Email</DialogTitle>
                         <DialogDescription>
@@ -811,7 +811,7 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
 
                         {/* Editor/Preview Tabs */}
                         <Tabs defaultValue="editor" className="w-full">
-                            <div className="flex items-center justify-between mb-2">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                                 <TabsList>
                                     <TabsTrigger value="editor" className="gap-1">
                                         <Code className="w-3 h-3" />
@@ -822,7 +822,7 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
                                         Preview
                                     </TabsTrigger>
                                 </TabsList>
-                                <div className="flex gap-1">
+                                <div className="flex flex-wrap gap-1">
                                     {VARIABLES.map((v) => (
                                         <Button
                                             key={v.token}
@@ -862,7 +862,7 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
                             <Label htmlFor="edit-active">Email is active</Label>
                         </div>
                     </div>
-                    <DialogFooter className="flex-row justify-between sm:justify-between">
+                    <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 justify-between">
                         <Button
                             variant="outline"
                             onClick={handleTestSend}
