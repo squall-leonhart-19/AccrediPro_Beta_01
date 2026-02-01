@@ -16,6 +16,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Mail,
     Plus,
@@ -32,6 +33,8 @@ import {
     ChevronUp,
     Save,
     X,
+    TestTube,
+    Code,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -124,6 +127,9 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
     // Delete confirmation
     const [deleteTarget, setDeleteTarget] = useState<SequenceEmail | null>(null);
     const [deleting, setDeleting] = useState(false);
+
+    // Test send
+    const [sendingTest, setSendingTest] = useState(false);
 
     // Fetch latest emails
     const fetchEmails = async () => {
@@ -303,6 +309,49 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
             ...prev,
             content: prev.content + token,
         }));
+    };
+
+    // Send test email
+    const handleTestSend = async () => {
+        if (!editingEmail) return;
+
+        setSendingTest(true);
+        try {
+            const res = await fetch(
+                `/api/admin/marketing/sequences/${sequence.id}/emails/${editingEmail.id}/test`,
+                { method: "POST" }
+            );
+
+            if (res.ok) {
+                const data = await res.json();
+                toast.success(`Test email sent to ${data.sentTo}`);
+            } else {
+                const error = await res.json();
+                toast.error(error.error || "Failed to send test email");
+            }
+        } catch (error) {
+            console.error("Failed to send test:", error);
+            toast.error("Failed to send test email");
+        } finally {
+            setSendingTest(false);
+        }
+    };
+
+    // Render HTML preview with variable substitution
+    const getPreviewHtml = () => {
+        return emailForm.content
+            .replace(/\{\{firstName\}\}/g, "Test")
+            .replace(/\{\{lastName\}\}/g, "User")
+            .replace(/\{\{email\}\}/g, "test@example.com")
+            .replace(/\{\{fullName\}\}/g, "Test User")
+            .replace(/\{\{nicheName\}\}/g, "Functional Medicine")
+            .replace(/\{\{nicheDisplayName\}\}/g, "Functional Medicine Certification")
+            .replace(/\{\{LOGIN_URL\}\}/g, "#")
+            .replace(/\{\{DASHBOARD_URL\}\}/g, "#")
+            .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+            .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+            .replace(/\n\n/g, "</p><p>")
+            .replace(/\n/g, "<br>");
     };
 
     return (
@@ -527,7 +576,7 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
 
             {/* Edit Email Modal */}
             <Dialog open={!!editingEmail} onOpenChange={() => setEditingEmail(null)}>
-                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>Edit Email</DialogTitle>
                         <DialogDescription>
@@ -571,9 +620,20 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
                             />
                             <p className="text-xs text-gray-500">{emailForm.subject.length} characters</p>
                         </div>
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <Label>Content</Label>
+
+                        {/* Editor/Preview Tabs */}
+                        <Tabs defaultValue="editor" className="w-full">
+                            <div className="flex items-center justify-between mb-2">
+                                <TabsList>
+                                    <TabsTrigger value="editor" className="gap-1">
+                                        <Code className="w-3 h-3" />
+                                        Editor
+                                    </TabsTrigger>
+                                    <TabsTrigger value="preview" className="gap-1">
+                                        <Eye className="w-3 h-3" />
+                                        Preview
+                                    </TabsTrigger>
+                                </TabsList>
                                 <div className="flex gap-1">
                                     {VARIABLES.map((v) => (
                                         <Button
@@ -588,14 +648,23 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
                                     ))}
                                 </div>
                             </div>
-                            <Textarea
-                                value={emailForm.content}
-                                onChange={(e) => setEmailForm(prev => ({ ...prev, content: e.target.value }))}
-                                placeholder="Email content (HTML supported)..."
-                                rows={12}
-                                className="font-mono text-sm"
-                            />
-                        </div>
+                            <TabsContent value="editor">
+                                <Textarea
+                                    value={emailForm.content}
+                                    onChange={(e) => setEmailForm(prev => ({ ...prev, content: e.target.value }))}
+                                    placeholder="Email content (HTML supported)..."
+                                    rows={14}
+                                    className="font-mono text-sm"
+                                />
+                            </TabsContent>
+                            <TabsContent value="preview">
+                                <div
+                                    className="border rounded-lg p-4 bg-gray-50 min-h-[300px] prose prose-sm max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: `<p>${getPreviewHtml()}</p>` }}
+                                />
+                            </TabsContent>
+                        </Tabs>
+
                         <div className="flex items-center gap-2">
                             <Switch
                                 id="edit-active"
@@ -605,23 +674,42 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
                             <Label htmlFor="edit-active">Email is active</Label>
                         </div>
                     </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setEditingEmail(null)}>
-                            Cancel
-                        </Button>
-                        <Button onClick={handleSaveEmail} disabled={saving}>
-                            {saving ? (
+                    <DialogFooter className="flex-row justify-between sm:justify-between">
+                        <Button
+                            variant="outline"
+                            onClick={handleTestSend}
+                            disabled={sendingTest || !editingEmail}
+                        >
+                            {sendingTest ? (
                                 <>
                                     <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                                    Saving...
+                                    Sending...
                                 </>
                             ) : (
                                 <>
-                                    <Save className="w-4 h-4 mr-2" />
-                                    Save Changes
+                                    <TestTube className="w-4 h-4 mr-2" />
+                                    Send Test to Me
                                 </>
                             )}
                         </Button>
+                        <div className="flex gap-2">
+                            <Button variant="outline" onClick={() => setEditingEmail(null)}>
+                                Cancel
+                            </Button>
+                            <Button onClick={handleSaveEmail} disabled={saving}>
+                                {saving ? (
+                                    <>
+                                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                        Saving...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="w-4 h-4 mr-2" />
+                                        Save Changes
+                                    </>
+                                )}
+                            </Button>
+                        </div>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
