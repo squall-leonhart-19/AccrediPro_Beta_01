@@ -16,166 +16,122 @@ import {
   GraduationCap,
   Play,
   AlertCircle,
-  CheckCircle2,
-  TrendingUp,
   BookOpen,
-  Award,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 export const dynamic = "force-dynamic";
 
-interface CourseModuleStats {
-  courseId: string;
-  courseTitle: string;
-  courseSlug: string;
-  totalStudents: number;
-  neverLogged: number;
-  neverStarted: number;
-  started: number;
-  moduleBreakdown: {
-    moduleId: string;
-    moduleTitle: string;
-    moduleOrder: number;
-    completedCount: number;
-    percentage: number;
-  }[];
-  fullCompletions: number;
-}
-
 async function getStudentProgressData() {
-  // Get all students (userType = STUDENT, no fake profiles)
-  const totalStudents = await prisma.user.count({
-    where: {
-      userType: "STUDENT",
-      isFakeProfile: false,
-    }
-  });
+  // Run all overview stats in parallel
+  const [totalStudents, neverLoggedIn, loggedIn] = await Promise.all([
+    prisma.user.count({
+      where: { userType: "STUDENT", isFakeProfile: false }
+    }),
+    prisma.user.count({
+      where: { userType: "STUDENT", isFakeProfile: false, firstLoginAt: null }
+    }),
+    prisma.user.count({
+      where: { userType: "STUDENT", isFakeProfile: false, firstLoginAt: { not: null } }
+    }),
+  ]);
 
-  // Students who never logged in
-  const neverLoggedIn = await prisma.user.count({
-    where: {
-      userType: "STUDENT",
-      isFakeProfile: false,
-      firstLoginAt: null,
-    }
-  });
-
-  // Students who logged in at least once
-  const loggedIn = await prisma.user.count({
-    where: {
-      userType: "STUDENT",
-      isFakeProfile: false,
-      firstLoginAt: { not: null },
-    }
-  });
-
-  // Get all courses with their modules
+  // Get courses with enrollments in one query
   const courses = await prisma.course.findMany({
     where: { isPublished: true },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
       modules: {
         where: { isPublished: true },
         orderBy: { order: "asc" },
-        select: {
-          id: true,
-          title: true,
-          order: true,
-        }
+        select: { id: true, title: true, order: true }
       },
       enrollments: {
         where: {
-          user: {
-            userType: "STUDENT",
-            isFakeProfile: false,
-          }
+          user: { userType: "STUDENT", isFakeProfile: false }
         },
-        include: {
-          user: {
-            select: {
-              id: true,
-              firstLoginAt: true,
-            }
-          }
+        select: {
+          userId: true,
+          status: true,
+          user: { select: { firstLoginAt: true } }
         }
       }
     },
     orderBy: { title: "asc" }
   });
 
-  // Build per-course stats
-  const courseStats: CourseModuleStats[] = [];
+  // Get all module progress in one query
+  const allModuleProgress = await prisma.moduleProgress.findMany({
+    where: { isCompleted: true },
+    select: { userId: true, moduleId: true }
+  });
 
-  for (const course of courses) {
-    const enrolledStudentIds = course.enrollments.map(e => e.userId);
-    const totalEnrolled = enrolledStudentIds.length;
+  // Get all lesson progress (for "started" detection) in one query
+  const allLessonProgress = await prisma.lessonProgress.findMany({
+    select: { userId: true, lesson: { select: { module: { select: { courseId: true } } } } }
+  });
 
-    if (totalEnrolled === 0) continue;
-
-    // Never logged in (enrolled but firstLoginAt is null)
-    const neverLoggedCount = course.enrollments.filter(e => !e.user.firstLoginAt).length;
-
-    // Get lesson progress to determine "started"
-    const userLessonProgress = await prisma.lessonProgress.groupBy({
-      by: ["userId"],
-      where: {
-        userId: { in: enrolledStudentIds },
-        lesson: { module: { courseId: course.id } },
-      },
-    });
-    const usersWithProgress = new Set(userLessonProgress.map(p => p.userId));
-    const startedCount = usersWithProgress.size;
-    const neverStartedCount = totalEnrolled - startedCount;
-
-    // Module completion breakdown
-    const moduleBreakdown: CourseModuleStats["moduleBreakdown"] = [];
-
-    for (const mod of course.modules) {
-      const completedCount = await prisma.moduleProgress.count({
-        where: {
-          moduleId: mod.id,
-          isCompleted: true,
-          userId: { in: enrolledStudentIds },
-        }
-      });
-
-      moduleBreakdown.push({
-        moduleId: mod.id,
-        moduleTitle: mod.title,
-        moduleOrder: mod.order,
-        completedCount,
-        percentage: totalEnrolled > 0 ? Math.round((completedCount / totalEnrolled) * 100) : 0,
-      });
+  // Build lookup maps
+  const moduleCompletionMap = new Map<string, Set<string>>();
+  for (const mp of allModuleProgress) {
+    if (!moduleCompletionMap.has(mp.moduleId)) {
+      moduleCompletionMap.set(mp.moduleId, new Set());
     }
-
-    // Full course completions
-    const fullCompletions = await prisma.enrollment.count({
-      where: {
-        courseId: course.id,
-        status: "COMPLETED",
-        userId: { in: enrolledStudentIds },
-      }
-    });
-
-    courseStats.push({
-      courseId: course.id,
-      courseTitle: course.title,
-      courseSlug: course.slug,
-      totalStudents: totalEnrolled,
-      neverLogged: neverLoggedCount,
-      neverStarted: neverStartedCount,
-      started: startedCount,
-      moduleBreakdown,
-      fullCompletions,
-    });
+    moduleCompletionMap.get(mp.moduleId)!.add(mp.userId);
   }
 
-  return {
-    totalStudents,
-    neverLoggedIn,
-    loggedIn,
-    courseStats,
-  };
+  const courseStartedMap = new Map<string, Set<string>>();
+  for (const lp of allLessonProgress) {
+    const courseId = lp.lesson.module.courseId;
+    if (!courseStartedMap.has(courseId)) {
+      courseStartedMap.set(courseId, new Set());
+    }
+    courseStartedMap.get(courseId)!.add(lp.userId);
+  }
+
+  // Build course stats from in-memory data
+  const courseStats = courses
+    .filter(c => c.enrollments.length > 0)
+    .map(course => {
+      const enrolledUserIds = new Set(course.enrollments.map(e => e.userId));
+      const totalEnrolled = enrolledUserIds.size;
+
+      const neverLogged = course.enrollments.filter(e => !e.user.firstLoginAt).length;
+
+      const startedSet = courseStartedMap.get(course.id) || new Set();
+      const startedInCourse = [...enrolledUserIds].filter(id => startedSet.has(id)).length;
+      const neverStarted = totalEnrolled - startedInCourse;
+
+      const fullCompletions = course.enrollments.filter(e => e.status === "COMPLETED").length;
+
+      const moduleBreakdown = course.modules.map(mod => {
+        const completedUsers = moduleCompletionMap.get(mod.id) || new Set();
+        const completedCount = [...enrolledUserIds].filter(id => completedUsers.has(id)).length;
+        return {
+          moduleId: mod.id,
+          moduleTitle: mod.title,
+          moduleOrder: mod.order,
+          completedCount,
+          percentage: totalEnrolled > 0 ? Math.round((completedCount / totalEnrolled) * 100) : 0,
+        };
+      });
+
+      return {
+        courseId: course.id,
+        courseTitle: course.title,
+        courseSlug: course.slug,
+        totalStudents: totalEnrolled,
+        neverLogged,
+        neverStarted,
+        started: startedInCourse,
+        moduleBreakdown,
+        fullCompletions,
+      };
+    });
+
+  return { totalStudents, neverLoggedIn, loggedIn, courseStats };
 }
 
 export default async function StudentProgressAnalyticsPage() {
@@ -188,7 +144,6 @@ export default async function StudentProgressAnalyticsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-gray-900">Student Progress Analytics</h2>
@@ -200,7 +155,6 @@ export default async function StudentProgressAnalyticsPage() {
         </Badge>
       </div>
 
-      {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border-t-4 border-t-blue-500 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -251,7 +205,6 @@ export default async function StudentProgressAnalyticsPage() {
         </Card>
       </div>
 
-      {/* Per-Course Breakdown */}
       <div className="space-y-6">
         {data.courseStats.map((course) => (
           <Card key={course.courseId} className="shadow-sm">
@@ -263,7 +216,7 @@ export default async function StudentProgressAnalyticsPage() {
                     {course.courseTitle}
                   </CardTitle>
                   <CardDescription className="mt-1">
-                    {course.totalStudents} enrolled students • {course.moduleBreakdown.length} modules
+                    {course.totalStudents} enrolled • {course.moduleBreakdown.length} modules
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-4">
@@ -283,7 +236,6 @@ export default async function StudentProgressAnalyticsPage() {
               </div>
             </CardHeader>
             <CardContent className="pt-4">
-              {/* Quick Stats */}
               <div className="grid grid-cols-4 gap-4 mb-6">
                 <div className="bg-blue-50 rounded-lg p-3 text-center">
                   <div className="text-sm text-gray-600">Enrolled</div>
@@ -305,7 +257,6 @@ export default async function StudentProgressAnalyticsPage() {
                 </div>
               </div>
 
-              {/* Module Progress Table */}
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -318,18 +269,12 @@ export default async function StudentProgressAnalyticsPage() {
                 <TableBody>
                   {course.moduleBreakdown.map((mod) => (
                     <TableRow key={mod.moduleId}>
-                      <TableCell className="font-medium text-gray-500">
-                        {mod.moduleOrder}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {mod.moduleTitle}
-                      </TableCell>
+                      <TableCell className="font-medium text-gray-500">{mod.moduleOrder}</TableCell>
+                      <TableCell className="font-medium">{mod.moduleTitle}</TableCell>
                       <TableCell className="text-right">
                         <Badge variant="outline" className={
-                          mod.percentage >= 50
-                            ? "bg-green-50 text-green-700"
-                            : mod.percentage >= 25
-                              ? "bg-amber-50 text-amber-700"
+                          mod.percentage >= 50 ? "bg-green-50 text-green-700"
+                            : mod.percentage >= 25 ? "bg-amber-50 text-amber-700"
                               : "bg-gray-50 text-gray-700"
                         }>
                           {mod.completedCount} / {course.totalStudents}
@@ -338,9 +283,7 @@ export default async function StudentProgressAnalyticsPage() {
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Progress value={mod.percentage} className="h-2" />
-                          <span className="text-sm font-medium text-gray-600 w-12">
-                            {mod.percentage}%
-                          </span>
+                          <span className="text-sm font-medium text-gray-600 w-12">{mod.percentage}%</span>
                         </div>
                       </TableCell>
                     </TableRow>
