@@ -258,6 +258,8 @@ export function UsersClient({ courses }: UsersClientProps) {
     addDownloads: true,
     addEmails: true,
     addReview: true,
+    addMentorship: true,
+    addCommunity: true,
     importPlatform: "Stripe",
     importDisputeId: "",
     importReason: "Product not as described"
@@ -3900,6 +3902,36 @@ export function UsersClient({ courses }: UsersClientProps) {
                     Simulate 5-Star Course Review
                   </label>
                 </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="genMentorship"
+                    checked={evidenceConfig.addMentorship}
+                    onChange={(e) => setEvidenceConfig(prev => ({ ...prev, addMentorship: e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor="genMentorship"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Simulate Mentorship Messages (2-4 Private DMs + Coach Reply)
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="genCommunity"
+                    checked={evidenceConfig.addCommunity}
+                    onChange={(e) => setEvidenceConfig(prev => ({ ...prev, addCommunity: e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor="genCommunity"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Simulate Community Posts (Engagement Evidence)
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -3926,6 +3958,8 @@ export function UsersClient({ courses }: UsersClientProps) {
                     addDownloads: evidenceConfig.addDownloads,
                     addEmails: evidenceConfig.addEmails,
                     addReview: evidenceConfig.addReview,
+                    addMentorship: evidenceConfig.addMentorship,
+                    addCommunity: evidenceConfig.addCommunity,
                     targetDate: selectedUser.createdAt
                   };
 

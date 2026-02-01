@@ -153,94 +153,107 @@ export async function POST(
                 audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_logins", count: numLogins });
             }
 
-            // 3. GENERATE COURSE PROGRESS (12-19% "One-Module-Done" Pattern)
+            // 3. GENERATE COURSE PROGRESS FOR ALL ENROLLMENTS (7-19% per course)
             if (addProgress) {
-                // Find main course enrollment
-                const enrollment = await prisma.enrollment.findFirst({
+                // Find ALL active enrollments
+                const enrollments = await prisma.enrollment.findMany({
                     where: { userId, status: "ACTIVE" },
                     include: { course: { include: { modules: { include: { lessons: true, quiz: true } } } } }
                 });
 
-                if (enrollment && enrollment.course) {
-                    const modules = enrollment.course.modules.sort((a, b) => (a.order || 0) - (b.order || 0));
-                    const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
+                if (enrollments.length === 0) {
+                    logs.push("⚠️ No active enrollments found to generate progress for");
+                } else {
+                    let totalLessonsMarked = 0;
+                    let totalCourses = 0;
 
-                    // Target: 12% to 19% completion
-                    // This typically looks like: Module 1 done + part of Module 2
-                    const targetPercent = 0.12 + (Math.random() * 0.07); // 0.12 to 0.19
-                    const targetLessonCount = Math.max(1, Math.round(totalLessons * targetPercent));
+                    for (const enrollment of enrollments) {
+                        if (!enrollment.course) continue;
 
-                    let lessonsMarked = 0;
-                    const flatLessons = modules.flatMap(m => m.lessons); // Assuming sorted by module via flatMap order
+                        const modules = enrollment.course.modules.sort((a, b) => (a.order || 0) - (b.order || 0));
+                        const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
 
-                    // Get target lessons (Linear progression is most realistic for "started" users)
-                    const lessonsToComplete = flatLessons.slice(0, targetLessonCount);
+                        if (totalLessons === 0) continue;
 
-                    for (const lesson of lessonsToComplete) {
-                        const viewedAt = randomDate(baseDate, new Date());
+                        // Target: 7% to 19% completion per course (randomize for variety)
+                        const targetPercent = 0.07 + (Math.random() * 0.12); // 0.07 to 0.19
+                        const targetLessonCount = Math.max(1, Math.round(totalLessons * targetPercent));
 
-                        await prisma.lessonProgress.upsert({
-                            where: { userId_lessonId: { userId, lessonId: lesson.id } },
-                            update: {
-                                isCompleted: true,
-                                completedAt: viewedAt,
-                                visitCount: { increment: Math.floor(Math.random() * 3) + 1 },
-                                timeSpent: Math.floor(Math.random() * 1200) + 300 // 5-20 mins
-                            },
-                            create: {
-                                userId,
-                                lessonId: lesson.id,
-                                isCompleted: true,
-                                completedAt: viewedAt,
-                                visitCount: 1,
-                                timeSpent: Math.floor(Math.random() * 1200) + 300,
-                                lastVisitedAt: viewedAt
-                            }
-                        });
-                        lessonsMarked++;
-                    }
+                        let lessonsMarked = 0;
+                        const flatLessons = modules.flatMap(m => m.lessons);
 
-                    // STRENGTHENER: Add Quiz Attempt for Module 1 if completed
-                    // If we completed enough lessons to finish Module 1, let's pass the quiz
-                    if (modules.length > 0 && lessonsMarked >= modules[0].lessons.length) {
-                        const firstModule = modules[0];
-                        // Check if module has a quiz
-                        const quiz = firstModule.quiz || await prisma.moduleQuiz.findUnique({ where: { moduleId: firstModule.id } });
+                        // Get target lessons (Linear progression is most realistic)
+                        const lessonsToComplete = flatLessons.slice(0, targetLessonCount);
 
-                        if (quiz) {
-                            await prisma.quizAttempt.create({
-                                data: {
+                        for (const lesson of lessonsToComplete) {
+                            const viewedAt = randomDate(baseDate, new Date());
+                            // Generate realistic watch time: 5-25 minutes per lesson
+                            const watchTimeSeconds = (Math.floor(Math.random() * 20) + 5) * 60; // 300-1500 seconds
+
+                            await prisma.lessonProgress.upsert({
+                                where: { userId_lessonId: { userId, lessonId: lesson.id } },
+                                update: {
+                                    isCompleted: true,
+                                    completedAt: viewedAt,
+                                    visitCount: { increment: Math.floor(Math.random() * 3) + 1 },
+                                    timeSpent: watchTimeSeconds
+                                },
+                                create: {
                                     userId,
-                                    quizId: quiz.id,
-                                    score: Math.floor(Math.random() * 20) + 80, // 80-100%
-                                    passed: true,
-                                    completedAt: randomDate(baseDate, new Date()),
-                                    startedAt: baseDate,
-                                    answers: {} // Empty JSON is fine for evidence logs
+                                    lessonId: lesson.id,
+                                    isCompleted: true,
+                                    completedAt: viewedAt,
+                                    visitCount: Math.floor(Math.random() * 3) + 1,
+                                    timeSpent: watchTimeSeconds,
+                                    lastVisitedAt: viewedAt
                                 }
                             });
-                            logs.push(`✅ Generated passed quiz attempt for "${firstModule.title}"`);
+                            lessonsMarked++;
                         }
+
+                        // STRENGTHENER: Add Quiz Attempt for Module 1 if completed
+                        if (modules.length > 0 && lessonsMarked >= modules[0].lessons.length) {
+                            const firstModule = modules[0];
+                            const quiz = firstModule.quiz || await prisma.moduleQuiz.findUnique({ where: { moduleId: firstModule.id } });
+
+                            if (quiz) {
+                                // Check if quiz attempt already exists
+                                const existingAttempt = await prisma.quizAttempt.findFirst({
+                                    where: { userId, quizId: quiz.id }
+                                });
+                                if (!existingAttempt) {
+                                    await prisma.quizAttempt.create({
+                                        data: {
+                                            userId,
+                                            quizId: quiz.id,
+                                            score: Math.floor(Math.random() * 20) + 80, // 80-100%
+                                            passed: true,
+                                            completedAt: randomDate(baseDate, new Date()),
+                                            startedAt: baseDate,
+                                            answers: {}
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        // Update Enrollment progress
+                        const progressPercent = Math.min(100, Math.round((lessonsMarked / Math.max(1, totalLessons)) * 100));
+                        await prisma.enrollment.update({
+                            where: { id: enrollment.id },
+                            data: {
+                                progress: progressPercent,
+                                lastAccessedAt: randomDate(baseDate, new Date()),
+                                status: "ACTIVE"
+                            }
+                        });
+
+                        totalLessonsMarked += lessonsMarked;
+                        totalCourses++;
                     }
 
-                    // Update Enrollment
-                    const progressPercent = Math.min(100, Math.round((lessonsMarked / Math.max(1, totalLessons)) * 100));
-                    await prisma.enrollment.update({
-                        where: { id: enrollment.id },
-                        data: {
-                            progress: progressPercent,
-                            lastAccessedAt: new Date(),
-                            status: "ACTIVE"
-                        }
-                    });
-
-                    logs.push(`✅ Generated realistic progress: ${lessonsMarked}/${totalLessons} lessons (${progressPercent}%)`);
-                    if (progressPercent >= 12 && progressPercent <= 19) {
-                        logs.push(`✅ Target Accuracy Hit: ${progressPercent}% (Requested 12-19%)`);
-                    }
-                    audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_progress", lessons: lessonsMarked, percent: progressPercent });
-                } else {
-                    logs.push("⚠️ No active enrollment found to generate progress for");
+                    logs.push(`✅ Generated progress for ${totalCourses} courses (${totalLessonsMarked} total lessons completed)`);
+                    audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_progress", courses: totalCourses, lessons: totalLessonsMarked });
                 }
             }
 
@@ -408,6 +421,99 @@ export async function POST(
                 } else {
                     logs.push("⚠️ No active enrollment found for review generation");
                 }
+            }
+
+            // 7. GENERATE MENTORSHIP MESSAGES (Private Coach Interaction)
+            if (body.addMentorship) {
+                // Find the coach/mentor user (typically Sarah)
+                const coach = await prisma.user.findFirst({
+                    where: {
+                        OR: [
+                            { email: { contains: "sarah" } },
+                            { role: "MENTOR" }
+                        ]
+                    },
+                    select: { id: true }
+                });
+
+                if (coach) {
+                    const mentorMessages = [
+                        "Hi! I just started Module 1 and wanted to reach out. This content is amazing so far!",
+                        "Quick question - for the supplement protocols, do you recommend starting with the basics first?",
+                        "Thank you so much for this program! I'm already applying what I've learned with my first client.",
+                        "Just finished the case study section. So practical! Can't wait to implement this.",
+                        "I really appreciate your teaching style - everything is so clear and actionable."
+                    ];
+
+                    const numMessages = Math.floor(Math.random() * 3) + 2; // 2-4 messages
+                    let created = 0;
+
+                    for (let i = 0; i < numMessages; i++) {
+                        const msgDate = randomDate(baseDate, new Date());
+                        await prisma.message.create({
+                            data: {
+                                senderId: userId,
+                                receiverId: coach.id,
+                                content: mentorMessages[i % mentorMessages.length],
+                                messageType: "DIRECT",
+                                isRead: true,
+                                readAt: new Date(msgDate.getTime() + 3600000), // Read 1hr later
+                                createdAt: msgDate
+                            }
+                        });
+                        created++;
+                    }
+
+                    // Also create a reply FROM coach (shows two-way communication)
+                    await prisma.message.create({
+                        data: {
+                            senderId: coach.id,
+                            receiverId: userId,
+                            content: "Great to hear from you! You're making excellent progress. Keep up the great work, and don't hesitate to reach out if you have any questions! 🙌",
+                            messageType: "DIRECT",
+                            isRead: true,
+                            readAt: randomDate(baseDate, new Date()),
+                            createdAt: randomDate(baseDate, new Date())
+                        }
+                    });
+
+                    logs.push(`✅ Generated ${created + 1} mentorship messages (2-way conversation)`);
+                    audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_mentorship", count: created + 1 });
+                } else {
+                    logs.push("⚠️ No mentor/coach found to generate messages with");
+                }
+            }
+
+            // 8. GENERATE COMMUNITY POSTS (Public Engagement)
+            if (body.addCommunity) {
+                // Find a community channel/category to post in
+                const channel = await prisma.communityChannel.findFirst({
+                    where: { isActive: true },
+                    select: { id: true }
+                });
+
+                const communityPosts = [
+                    { title: "Just enrolled! 🎉", content: "So excited to start this journey! The first module already blew my mind. Can't wait to learn more." },
+                    { title: "Module 1 Complete!", content: "Just finished the foundation module. The content quality is incredible. Highly recommend taking detailed notes!" },
+                    { title: "Quick win today", content: "Applied what I learned about client intake and already got positive feedback. This program is legit!" }
+                ];
+
+                const post = communityPosts[Math.floor(Math.random() * communityPosts.length)];
+
+                await prisma.communityPost.create({
+                    data: {
+                        authorId: userId,
+                        title: post.title,
+                        content: post.content,
+                        channelId: channel?.id || null,
+                        viewCount: Math.floor(Math.random() * 50) + 10,
+                        likeCount: Math.floor(Math.random() * 15) + 3,
+                        createdAt: randomDate(baseDate, new Date())
+                    }
+                });
+
+                logs.push(`✅ Generated community post: "${post.title}"`);
+                audit(AuditAction.USER_UPDATE, "user", userId, { action: "evidence_generate_community" });
             }
 
             return NextResponse.json({ success: true, logs });
