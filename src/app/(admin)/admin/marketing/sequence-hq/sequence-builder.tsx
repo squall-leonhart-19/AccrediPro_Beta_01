@@ -18,6 +18,13 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
     Mail,
     Plus,
     RefreshCw,
@@ -35,6 +42,8 @@ import {
     X,
     TestTube,
     Code,
+    Settings,
+    Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -130,6 +139,57 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
 
     // Test send
     const [sendingTest, setSendingTest] = useState(false);
+
+    // Settings panel
+    const [settingsExpanded, setSettingsExpanded] = useState(false);
+    const [tags, setTags] = useState<MarketingTag[]>([]);
+    const [savingSettings, setSavingSettings] = useState(false);
+    const [settings, setSettings] = useState({
+        triggerTagId: sequence.triggerTagId || "",
+        exitTagId: sequence.exitTagId || "",
+        exitOnReply: sequence.exitOnReply,
+        exitOnClick: sequence.exitOnClick,
+        priority: sequence.priority,
+    });
+
+    // Fetch tags for selector
+    useEffect(() => {
+        fetch("/api/admin/marketing/tags")
+            .then(res => res.json())
+            .then(data => setTags(data.tags || []))
+            .catch(err => console.error("Failed to fetch tags:", err));
+    }, []);
+
+    // Save settings
+    const handleSaveSettings = async () => {
+        setSavingSettings(true);
+        try {
+            const res = await fetch(`/api/admin/marketing/sequences/${sequence.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    triggerTagId: settings.triggerTagId || null,
+                    exitTagId: settings.exitTagId || null,
+                    exitOnReply: settings.exitOnReply,
+                    exitOnClick: settings.exitOnClick,
+                    priority: settings.priority,
+                }),
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                onUpdate(data.sequence);
+                toast.success("Settings saved");
+            } else {
+                toast.error("Failed to save settings");
+            }
+        } catch (error) {
+            console.error("Failed to save settings:", error);
+            toast.error("Failed to save settings");
+        } finally {
+            setSavingSettings(false);
+        }
+    };
 
     // Fetch latest emails
     const fetchEmails = async () => {
@@ -430,6 +490,134 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Settings Panel (Collapsible) */}
+            <Card className="border-[#C9A227]/30">
+                <CardHeader
+                    className="cursor-pointer hover:bg-gray-50 transition-colors"
+                    onClick={() => setSettingsExpanded(!settingsExpanded)}
+                >
+                    <CardTitle className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Settings className="w-5 h-5 text-[#C9A227]" />
+                            Sequence Settings
+                        </div>
+                        <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${settingsExpanded ? "rotate-180" : ""}`} />
+                    </CardTitle>
+                    <CardDescription>
+                        Trigger: {sequence.triggerType.replace(/_/g, " ")}
+                        {sequence.triggerTag && ` • Tag: ${sequence.triggerTag.name}`}
+                        {sequence.exitTag && ` • Exit: ${sequence.exitTag.name}`}
+                    </CardDescription>
+                </CardHeader>
+                {settingsExpanded && (
+                    <CardContent className="border-t pt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {/* Trigger Tag */}
+                            <div className="space-y-2">
+                                <Label className="flex items-center gap-1">
+                                    <Tag className="w-3 h-3" />
+                                    Trigger Tag
+                                </Label>
+                                <Select
+                                    value={settings.triggerTagId}
+                                    onValueChange={(v) => setSettings(prev => ({ ...prev, triggerTagId: v }))}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select tag..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="">None</SelectItem>
+                                        {tags.map(tag => (
+                                            <SelectItem key={tag.id} value={tag.id}>
+                                                {tag.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-xs text-gray-500">Starts sequence when this tag is added</p>
+                            </div>
+
+                            {/* Exit Tag */}
+                            <div className="space-y-2">
+                                <Label className="flex items-center gap-1">
+                                    <Tag className="w-3 h-3" />
+                                    Exit Tag
+                                </Label>
+                                <Select
+                                    value={settings.exitTagId}
+                                    onValueChange={(v) => setSettings(prev => ({ ...prev, exitTagId: v }))}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select tag..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="">None</SelectItem>
+                                        {tags.map(tag => (
+                                            <SelectItem key={tag.id} value={tag.id}>
+                                                {tag.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-xs text-gray-500">Exits sequence when this tag is added</p>
+                            </div>
+
+                            {/* Exit Conditions */}
+                            <div className="space-y-3">
+                                <Label>Exit Conditions</Label>
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <Switch
+                                            id="exit-reply"
+                                            checked={settings.exitOnReply}
+                                            onCheckedChange={(v) => setSettings(prev => ({ ...prev, exitOnReply: v }))}
+                                        />
+                                        <Label htmlFor="exit-reply" className="font-normal">Exit on reply</Label>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Switch
+                                            id="exit-click"
+                                            checked={settings.exitOnClick}
+                                            onCheckedChange={(v) => setSettings(prev => ({ ...prev, exitOnClick: v }))}
+                                        />
+                                        <Label htmlFor="exit-click" className="font-normal">Exit on click</Label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Priority */}
+                            <div className="space-y-2">
+                                <Label>Priority</Label>
+                                <Input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value={settings.priority}
+                                    onChange={(e) => setSettings(prev => ({ ...prev, priority: parseInt(e.target.value) || 0 }))}
+                                />
+                                <p className="text-xs text-gray-500">Higher = runs first if multiple match</p>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end mt-4">
+                            <Button onClick={handleSaveSettings} disabled={savingSettings}>
+                                {savingSettings ? (
+                                    <>
+                                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                        Saving...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="w-4 h-4 mr-2" />
+                                        Save Settings
+                                    </>
+                                )}
+                            </Button>
+                        </div>
+                    </CardContent>
+                )}
+            </Card>
 
             {/* Email Timeline */}
             <Card>

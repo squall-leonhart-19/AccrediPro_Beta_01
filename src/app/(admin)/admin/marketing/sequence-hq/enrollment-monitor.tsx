@@ -40,9 +40,11 @@ import {
     Clock,
     User,
     Eye,
+    UserPlus,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { Label } from "@/components/ui/label";
 
 // Types
 interface SequenceEmail {
@@ -88,6 +90,13 @@ interface EnrollmentMonitorProps {
     sequences: Sequence[];
 }
 
+interface SearchedUser {
+    id: string;
+    email: string;
+    firstName: string | null;
+    lastName: string | null;
+}
+
 const STATUS_COLORS: Record<string, string> = {
     ACTIVE: "bg-green-100 text-green-700",
     COMPLETED: "bg-blue-100 text-blue-700",
@@ -111,6 +120,68 @@ export default function EnrollmentMonitor({ sequences }: EnrollmentMonitorProps)
     const [actionTarget, setActionTarget] = useState<Enrollment | null>(null);
     const [actionType, setActionType] = useState<"pause" | "resume" | "exit" | "forward" | null>(null);
     const [processing, setProcessing] = useState(false);
+
+    // Enroll modal
+    const [enrollModalOpen, setEnrollModalOpen] = useState(false);
+    const [enrollSequenceId, setEnrollSequenceId] = useState<string>("");
+    const [userSearchQuery, setUserSearchQuery] = useState("");
+    const [searchResults, setSearchResults] = useState<SearchedUser[]>([]);
+    const [searching, setSearching] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<SearchedUser | null>(null);
+    const [enrolling, setEnrolling] = useState(false);
+
+    // Search users for enrollment
+    const searchUsers = async (query: string) => {
+        if (query.length < 2) {
+            setSearchResults([]);
+            return;
+        }
+
+        setSearching(true);
+        try {
+            const res = await fetch(`/api/admin/users/search?q=${encodeURIComponent(query)}&limit=10`);
+            if (res.ok) {
+                const data = await res.json();
+                setSearchResults(data.users || []);
+            }
+        } catch (error) {
+            console.error("Failed to search users:", error);
+        } finally {
+            setSearching(false);
+        }
+    };
+
+    // Enroll user
+    const handleEnrollUser = async () => {
+        if (!selectedUser || !enrollSequenceId) return;
+
+        setEnrolling(true);
+        try {
+            const res = await fetch(`/api/admin/marketing/sequences/${enrollSequenceId}/enroll`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: selectedUser.id }),
+            });
+
+            if (res.ok) {
+                toast.success(`Enrolled ${selectedUser.email} successfully`);
+                setEnrollModalOpen(false);
+                setSelectedUser(null);
+                setUserSearchQuery("");
+                setSearchResults([]);
+                setEnrollSequenceId("");
+                fetchEnrollments();
+            } else {
+                const error = await res.json();
+                toast.error(error.error || "Failed to enroll user");
+            }
+        } catch (error) {
+            console.error("Failed to enroll user:", error);
+            toast.error("Failed to enroll user");
+        } finally {
+            setEnrolling(false);
+        }
+    };
 
     // Fetch enrollments
     const fetchEnrollments = useCallback(async () => {
@@ -249,6 +320,10 @@ export default function EnrollmentMonitor({ sequences }: EnrollmentMonitorProps)
                     <Button variant="outline" onClick={fetchEnrollments}>
                         <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
                         Refresh
+                    </Button>
+                    <Button onClick={() => setEnrollModalOpen(true)} className="bg-[#C9A227] hover:bg-[#b8922a] text-[#4e1f24]">
+                        <UserPlus className="w-4 h-4 mr-2" />
+                        Enroll User
                     </Button>
                 </div>
 
@@ -471,6 +546,124 @@ export default function EnrollmentMonitor({ sequences }: EnrollmentMonitorProps)
                                 <RefreshCw className="w-4 h-4 animate-spin" />
                             ) : (
                                 "Confirm"
+                            )}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Enroll User Modal */}
+            <Dialog open={enrollModalOpen} onOpenChange={(open) => {
+                setEnrollModalOpen(open);
+                if (!open) {
+                    setSelectedUser(null);
+                    setUserSearchQuery("");
+                    setSearchResults([]);
+                    setEnrollSequenceId("");
+                }
+            }}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <UserPlus className="w-5 h-5 text-[#C9A227]" />
+                            Enroll User in Sequence
+                        </DialogTitle>
+                        <DialogDescription>
+                            Search for a user and select a sequence to enroll them in.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        {/* Sequence selector */}
+                        <div className="space-y-2">
+                            <Label>Select Sequence</Label>
+                            <Select value={enrollSequenceId} onValueChange={setEnrollSequenceId}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Choose a sequence..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {sequences.map((seq) => (
+                                        <SelectItem key={seq.id} value={seq.id}>
+                                            {seq.name} ({seq.emails.length} emails)
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {/* User search */}
+                        <div className="space-y-2">
+                            <Label>Search User</Label>
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                <Input
+                                    placeholder="Search by email or name..."
+                                    className="pl-9"
+                                    value={userSearchQuery}
+                                    onChange={(e) => {
+                                        setUserSearchQuery(e.target.value);
+                                        searchUsers(e.target.value);
+                                    }}
+                                />
+                            </div>
+
+                            {/* Search results */}
+                            {searching && (
+                                <div className="text-center py-2 text-sm text-gray-500">
+                                    <RefreshCw className="w-4 h-4 animate-spin inline mr-2" />
+                                    Searching...
+                                </div>
+                            )}
+
+                            {searchResults.length > 0 && (
+                                <div className="border rounded-lg max-h-40 overflow-y-auto">
+                                    {searchResults.map((user) => (
+                                        <div
+                                            key={user.id}
+                                            className={`p-2 cursor-pointer hover:bg-gray-50 border-b last:border-b-0 ${selectedUser?.id === user.id ? "bg-[#C9A227]/10 border-[#C9A227]" : ""
+                                                }`}
+                                            onClick={() => setSelectedUser(user)}
+                                        >
+                                            <p className="font-medium text-sm">
+                                                {user.firstName || user.lastName
+                                                    ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
+                                                    : "No name"}
+                                            </p>
+                                            <p className="text-xs text-gray-500">{user.email}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Selected user */}
+                            {selectedUser && (
+                                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                    <p className="text-sm font-medium text-green-700">
+                                        Selected: {selectedUser.firstName || ""} {selectedUser.lastName || ""}
+                                    </p>
+                                    <p className="text-xs text-green-600">{selectedUser.email}</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setEnrollModalOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleEnrollUser}
+                            disabled={enrolling || !selectedUser || !enrollSequenceId}
+                            className="bg-[#C9A227] hover:bg-[#b8922a] text-[#4e1f24]"
+                        >
+                            {enrolling ? (
+                                <>
+                                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                    Enrolling...
+                                </>
+                            ) : (
+                                <>
+                                    <UserPlus className="w-4 h-4 mr-2" />
+                                    Enroll User
+                                </>
                             )}
                         </Button>
                     </DialogFooter>

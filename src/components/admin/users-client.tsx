@@ -195,13 +195,18 @@ export function UsersClient({ courses }: UsersClientProps) {
   const [changingName, setChangingName] = useState(false);
 
   // Activity tab states for dispute resolution
-  const [detailTab, setDetailTab] = useState<"overview" | "tags" | "activity" | "ai">("overview");
+  const [detailTab, setDetailTab] = useState<"overview" | "tags" | "activity" | "ai" | "sequences">("overview");
   const [activityData, setActivityData] = useState<any>(null);
   const [loadingActivity, setLoadingActivity] = useState(false);
 
   // AI Summary state
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [loadingAiSummary, setLoadingAiSummary] = useState(false);
+
+  // Sequences tab state
+  const [sequenceEnrollments, setSequenceEnrollments] = useState<any[]>([]);
+  const [loadingSequences, setLoadingSequences] = useState(false);
+  const [stoppingSequence, setStoppingSequence] = useState<string | null>(null);
 
   // Role change state
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
@@ -496,6 +501,53 @@ export function UsersClient({ courses }: UsersClientProps) {
     }
   }, [detailTab, selectedUser, activityData, loadingActivity]);
 
+  // Fetch sequence enrollments for user
+  const fetchUserSequences = async (userId: string) => {
+    setLoadingSequences(true);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/sequences`);
+      if (res.ok) {
+        const data = await res.json();
+        setSequenceEnrollments(data.enrollments || []);
+      } else {
+        setSequenceEnrollments([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch sequences:", error);
+      setSequenceEnrollments([]);
+    } finally {
+      setLoadingSequences(false);
+    }
+  };
+
+  // Stop/exit a sequence enrollment
+  const handleStopSequence = async (enrollment: any) => {
+    setStoppingSequence(enrollment.id);
+    try {
+      const res = await fetch(
+        `/api/admin/marketing/sequences/${enrollment.sequenceId}/enrollments/${enrollment.id}/action`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "exit" }),
+        }
+      );
+      if (res.ok) {
+        setSequenceEnrollments((prev) =>
+          prev.map((e) =>
+            e.id === enrollment.id
+              ? { ...e, status: "EXITED", exitedAt: new Date().toISOString(), exitReason: "Manual exit by admin" }
+              : e
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Failed to stop sequence:", error);
+    } finally {
+      setStoppingSequence(null);
+    }
+  };
+
   // Only apply ENROLLED/NOT_ENROLLED filters locally (others are server-side)
   const filteredUsers = users.filter((user) => {
     if (statusFilter === "ENROLLED") return user.enrollments.length > 0;
@@ -718,6 +770,7 @@ export function UsersClient({ courses }: UsersClientProps) {
     setDetailTab("overview");
     setActivityData(null);
     setAiSummary(null);
+    setSequenceEnrollments([]);
     setDetailDialogOpen(true);
   };
 
@@ -1849,6 +1902,18 @@ export function UsersClient({ courses }: UsersClientProps) {
                   <Sparkles className="w-4 h-4" />
                   AI Summary
                 </button>
+                <button
+                  onClick={() => {
+                    setDetailTab("sequences");
+                    if (sequenceEnrollments.length === 0 && !loadingSequences) {
+                      fetchUserSequences(selectedUser.id);
+                    }
+                  }}
+                  className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors flex items-center gap-2 ${detailTab === "sequences" ? "border-burgundy-600 text-burgundy-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
+                >
+                  <Mail className="w-4 h-4" />
+                  Sequences
+                </button>
               </div>
 
               {detailTab === "overview" && (
@@ -2723,6 +2788,90 @@ export function UsersClient({ courses }: UsersClientProps) {
                       </div>
                     )}
                   </div>
+                </div>
+              )}
+
+              {detailTab === "sequences" && (
+                <div className="space-y-4 mt-4">
+                  {loadingSequences ? (
+                    <div className="flex items-center justify-center py-12">
+                      <Loader2 className="w-8 h-8 animate-spin text-burgundy-600" />
+                      <span className="ml-3 text-gray-600">Loading sequences...</span>
+                    </div>
+                  ) : sequenceEnrollments.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      <Mail className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                      <p>No email sequences for this user.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {sequenceEnrollments.map((enrollment: any) => (
+                        <div
+                          key={enrollment.id}
+                          className="p-4 bg-gray-50 rounded-lg border"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium text-gray-900">
+                                  {enrollment.sequenceName}
+                                </p>
+                                <Badge
+                                  className={
+                                    enrollment.status === "ACTIVE"
+                                      ? "bg-green-100 text-green-700 border-green-200"
+                                      : enrollment.status === "COMPLETED"
+                                      ? "bg-blue-100 text-blue-700 border-blue-200"
+                                      : enrollment.status === "PAUSED"
+                                      ? "bg-yellow-100 text-yellow-700 border-yellow-200"
+                                      : "bg-red-100 text-red-700 border-red-200"
+                                  }
+                                >
+                                  {enrollment.status}
+                                </Badge>
+                              </div>
+                              <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
+                                <span>
+                                  Email {enrollment.emailsReceived} of {enrollment.totalEmails}
+                                </span>
+                                {enrollment.nextSendAt && enrollment.status === "ACTIVE" && (
+                                  <span className="flex items-center gap-1">
+                                    <Clock className="w-3 h-3" />
+                                    Next: {new Date(enrollment.nextSendAt).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                                  </span>
+                                )}
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  Enrolled: {new Date(enrollment.enrolledAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                </span>
+                              </div>
+                              {enrollment.exitReason && (
+                                <p className="text-xs text-red-500 mt-1">
+                                  Exit reason: {enrollment.exitReason}
+                                </p>
+                              )}
+                            </div>
+                            {(enrollment.status === "ACTIVE" || enrollment.status === "PAUSED") && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-600 border-red-200 hover:bg-red-50"
+                                disabled={stoppingSequence === enrollment.id}
+                                onClick={() => handleStopSequence(enrollment)}
+                              >
+                                {stoppingSequence === enrollment.id ? (
+                                  <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                                ) : (
+                                  <AlertTriangle className="w-4 h-4 mr-1" />
+                                )}
+                                Stop Emails
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </>

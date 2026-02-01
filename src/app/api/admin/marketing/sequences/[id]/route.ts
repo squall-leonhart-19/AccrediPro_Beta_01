@@ -101,6 +101,9 @@ export async function PUT(
       fromName,
       fromEmail,
       isActive,
+      exitOnReply,
+      exitOnClick,
+      priority,
     } = body;
 
     const existing = await prisma.sequence.findUnique({
@@ -121,6 +124,9 @@ export async function PUT(
         triggerType: triggerType !== undefined ? triggerType : existing.triggerType,
         courseCategory: courseCategory !== undefined ? courseCategory : existing.courseCategory,
         isActive: isActive !== undefined ? isActive : existing.isActive,
+        exitOnReply: exitOnReply !== undefined ? exitOnReply : existing.exitOnReply,
+        exitOnClick: exitOnClick !== undefined ? exitOnClick : existing.exitOnClick,
+        priority: priority !== undefined ? priority : existing.priority,
       },
       include: {
         triggerTag: true,

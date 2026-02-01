@@ -321,23 +321,17 @@ export default function SequenceHQDashboard() {
         }
     };
 
-    // Duplicate sequence
+    // Duplicate sequence (with all emails)
     const handleDuplicateSequence = async (sequence: Sequence) => {
         try {
-            const res = await fetch("/api/admin/marketing/sequences", {
+            const res = await fetch(`/api/admin/marketing/sequences/${sequence.id}/duplicate`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name: `${sequence.name} (Copy)`,
-                    description: sequence.description,
-                    triggerType: "MANUAL",
-                    triggerTagId: null,
-                    exitTagId: sequence.exitTagId,
-                }),
             });
 
             if (res.ok) {
-                toast.success("Sequence duplicated");
+                const data = await res.json();
+                toast.success(`Sequence duplicated with ${data.emailsCloned} emails`);
                 fetchSequences();
             } else {
                 toast.error("Failed to duplicate sequence");
