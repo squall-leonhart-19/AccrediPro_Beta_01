@@ -762,9 +762,9 @@ export default function SequenceBuilder({ sequence, onBack, onUpdate }: Sequence
                 </CardContent>
             </Card>
 
-            {/* Edit Email Modal */}
+            {/* Edit Email Modal - Full Screen */}
             <Dialog open={!!editingEmail} onOpenChange={() => setEditingEmail(null)}>
-                <DialogContent className="max-w-6xl w-[98vw] h-[90vh] max-h-[90vh] overflow-y-auto">
+                <DialogContent className="fixed inset-4 max-w-none w-auto h-auto max-h-none overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>Edit Email</DialogTitle>
                         <DialogDescription>
