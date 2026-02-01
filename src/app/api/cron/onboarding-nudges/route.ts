@@ -103,10 +103,9 @@ export async function GET(request: NextRequest) {
                 createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
                 // Exclude internal emails
                 email: { not: { contains: "@accredipro" } },
-                // Exclude users already in an ACTIVE recovery sequence (avoid stacking)
+                // Exclude users in ANY recovery sequence (any status — avoid stacking)
                 sequenceEnrollments: {
                     none: {
-                        status: "ACTIVE",
                         sequence: {
                             slug: {
                                 in: [

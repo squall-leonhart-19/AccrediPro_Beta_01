@@ -66,23 +66,28 @@ export async function GET(request: NextRequest) {
     // ============================================
     // 1. NEVER LOGGED IN
     // Users who signed up for mini-diploma but never logged in
+    // Only targets LEAD users — STUDENT users are handled by login-recovery cron
     // ============================================
     const neverLoggedInSequence = sequenceMap.get(RECOVERY_SEQUENCES.NEVER_LOGGED_IN);
 
     if (neverLoggedInSequence) {
       // Find users with mini-diploma access but no lastLoginAt
-      // Who signed up at least 1 day ago
+      // Who signed up at least 1 day ago but not more than 30 days ago
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
       const neverLoggedInUsers = await prisma.user.findMany({
         where: {
           miniDiplomaOptinAt: {
             not: null,
             lte: oneDayAgo, // At least 1 day old
+            gte: thirtyDaysAgo, // Not more than 30 days old
           },
           lastLoginAt: null, // Never logged in
           isActive: true,
           isFakeProfile: false,
+          // Exclude STUDENT users — they are handled by the login-recovery cron
+          userType: { not: "STUDENT" },
         },
         select: {
           id: true,
@@ -144,25 +149,31 @@ export async function GET(request: NextRequest) {
     // ============================================
     // 2. NEVER STARTED LEARNING
     // Users who logged in but have 0% progress
+    // Only targets LEAD users — STUDENT users are handled by onboarding-nudges
     // ============================================
     const neverStartedSequence = sequenceMap.get(RECOVERY_SEQUENCES.NEVER_STARTED);
 
     if (neverStartedSequence) {
       const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
       // Find users who:
       // - Have mini-diploma access
-      // - Logged in at least 2 days ago
+      // - Logged in at least 2 days ago (but not more than 30 days ago to avoid stale users)
       // - Have 0 progress records
+      // - Are NOT STUDENT type (students have their own onboarding-nudges system)
       const loggedInUsers = await prisma.user.findMany({
         where: {
           miniDiplomaOptinAt: { not: null },
           lastLoginAt: {
             not: null,
             lte: twoDaysAgo,
+            gte: thirtyDaysAgo,
           },
           isActive: true,
           isFakeProfile: false,
+          // Exclude STUDENT users — they are handled by the onboarding-nudges cron
+          userType: { not: "STUDENT" },
         },
         select: {
           id: true,
@@ -226,21 +237,27 @@ export async function GET(request: NextRequest) {
     // ============================================
     // 3. ABANDONED LEARNING
     // Users who started but haven't been active for 7+ days
+    // Only targets LEAD users — STUDENT users are handled by sarah-nudges/behavioral-nudges
     // ============================================
     const abandonedSequence = sequenceMap.get(RECOVERY_SEQUENCES.ABANDONED);
 
     if (abandonedSequence) {
       const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
 
       // Find users who:
       // - Have mini-diploma access
       // - Have some progress (started learning)
       // - Haven't had activity in 7+ days
+      // - Not more than 90 days inactive (avoid stale users)
+      // - Are NOT STUDENT type (students have their own nudge systems)
       const activeUsers = await prisma.user.findMany({
         where: {
           miniDiplomaOptinAt: { not: null },
           isActive: true,
           isFakeProfile: false,
+          // Exclude STUDENT users
+          userType: { not: "STUDENT" },
           progress: {
             some: {}, // Has at least one progress record
           },
@@ -257,10 +274,10 @@ export async function GET(request: NextRequest) {
         },
       });
 
-      // Filter to those with no activity in 7+ days
+      // Filter to those with no activity in 7-90 days (avoid stale users)
       const abandonedUsers = activeUsers.filter((u) => {
         const lastActivity = u.progress[0]?.updatedAt || u.lastLoginAt;
-        return lastActivity && new Date(lastActivity) <= sevenDaysAgo;
+        return lastActivity && new Date(lastActivity) <= sevenDaysAgo && new Date(lastActivity) >= ninetyDaysAgo;
       });
 
       results.abandoned.checked = abandonedUsers.length;
