@@ -828,42 +828,88 @@ export async function POST(request: NextRequest) {
         try {
             const course = await prisma.course.findFirst({ where: { slug: courseSlug } });
 
-            // Use CF Order ID if available, otherwise fallback to timestamp
+            // Use CF Order ID if available, otherwise create deterministic ID from email+product+amount+date
             // This prevents duplicate payments if the webhook fires multiple times
             const cfOrderId = data.id || data.order_id;
-            const transactionId = cfOrderId ? `cf_${cfOrderId}` : `cf_${Date.now()}`;
+            let transactionId: string;
 
-            // Upsert to handle retries/duplicates idempotently
-            const payment = await prisma.payment.upsert({
+            if (cfOrderId) {
+                transactionId = `cf_${cfOrderId}`;
+            } else {
+                // Create deterministic ID based on email + product + amount + today's date
+                // This ensures retries on same day for same product don't create duplicates
+                const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+                const hash = crypto.createHash('sha256')
+                    .update(`${normalizedEmail}-${courseSlug}-${purchaseValue}-${today}`)
+                    .digest('hex')
+                    .substring(0, 16);
+                transactionId = `cf_${hash}`;
+            }
+
+            // Detect payment type: FRONTEND (main purchase) vs OTO (upsell)
+            // OTOs typically have: "accelerator", "pro", "guarantee", "upgrade", "special offer" in name
+            // Or higher prices than the base certification
+            const productNameLower = productName.toLowerCase();
+            let paymentType: 'FRONTEND' | 'OTO' | 'BUMP' = 'FRONTEND';
+
+            if (
+                productNameLower.includes('accelerator') ||
+                productNameLower.includes('guarantee') ||
+                productNameLower.includes('special offer') ||
+                productNameLower.includes('upgrade') ||
+                productNameLower.includes('one-for-you') ||
+                productNameLower.includes('done-for-you') ||
+                productNameLower.includes('dfy') ||
+                productNameLower.includes('oto') ||
+                purchaseValue >= 297 // Base cert is $97-164, OTOs are $297+
+            ) {
+                paymentType = 'OTO';
+            }
+
+            // Bumps are usually small add-ons with specific keywords
+            if (
+                productNameLower.includes('bump') ||
+                productNameLower.includes('order bump') ||
+                (purchaseValue <= 47 && productNameLower.includes('bonus'))
+            ) {
+                paymentType = 'BUMP';
+            }
+
+            // Check for existing payment with this transaction ID
+            const existingPayment = await prisma.payment.findUnique({
                 where: { transactionId },
-                update: {
-                    // Update fields that might change or fix previous data
-                    userId: user.id,
-                    amount: purchaseValue,
-                    status: "COMPLETED",
-                    productName: contentName,
-                },
-                create: {
-                    userId: user.id,
-                    amount: purchaseValue,
-                    currency: "USD",
-                    transactionId,
-                    paymentMethod: "clickfunnels",
-                    productName: contentName,
-                    productSku: courseSlug,
-                    courseId: course?.id,
-                    ipAddress: purchaseIp,
-                    userAgent: purchaseUserAgent,
-                    billingEmail: normalizedEmail,
-                    billingName: `${firstName || ""} ${lastName || ""}`.trim() || undefined,
-                    status: "COMPLETED",
-                },
             });
-            paymentId = payment.id;
-            console.log(`[CF Purchase] ✅ Processed Payment record: $${purchaseValue} - ${payment.id} (TxID: ${transactionId})`);
+
+            if (existingPayment) {
+                paymentId = existingPayment.id;
+                console.log(`[CF Purchase] ⏭️ Payment already exists: ${paymentId} (TxID: ${transactionId})`);
+            } else {
+                // Create new payment record
+                const payment = await prisma.payment.create({
+                    data: {
+                        userId: user.id,
+                        amount: purchaseValue,
+                        currency: "USD",
+                        transactionId,
+                        paymentMethod: "clickfunnels",
+                        paymentType, // FRONTEND, OTO, or BUMP
+                        productName: contentName,
+                        productSku: courseSlug,
+                        courseId: course?.id,
+                        ipAddress: purchaseIp,
+                        userAgent: purchaseUserAgent,
+                        billingEmail: normalizedEmail,
+                        billingName: `${firstName || ""} ${lastName || ""}`.trim() || undefined,
+                        status: "COMPLETED",
+                    },
+                });
+                paymentId = payment.id;
+                console.log(`[CF Purchase] ✅ Created Payment: $${purchaseValue} (${paymentType}) - ${payment.id} (TxID: ${transactionId})`);
+            }
         } catch (paymentError) {
             console.error("[CF Purchase] Failed to create Payment record:", paymentError);
         }
+
 
         // =====================================================
         // 8. LOG WEBHOOK EVENT (Upsert or Create new only if distinct)
