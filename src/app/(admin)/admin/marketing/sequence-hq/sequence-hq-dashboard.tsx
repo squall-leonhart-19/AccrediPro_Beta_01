@@ -142,7 +142,7 @@ export default function SequenceHQDashboard() {
     const [sequences, setSequences] = useState<Sequence[]>([]);
     const [tags, setTags] = useState<MarketingTag[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState("sequences");
+    const [activeTab, setActiveTab] = useState("leads");
 
     // Selected sequence for builder view
     const [selectedSequence, setSelectedSequence] = useState<Sequence | null>(null);
@@ -485,9 +485,13 @@ export default function SequenceHQDashboard() {
             {/* Main Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="mb-4">
-                    <TabsTrigger value="sequences" className="gap-2">
+                    <TabsTrigger value="leads" className="gap-2">
+                        <Users className="w-4 h-4" />
+                        Lead Sequences
+                    </TabsTrigger>
+                    <TabsTrigger value="students" className="gap-2">
                         <Mail className="w-4 h-4" />
-                        Sequences
+                        Student Sequences
                     </TabsTrigger>
                     <TabsTrigger value="enrollments" className="gap-2">
                         <Users className="w-4 h-4" />
@@ -499,17 +503,18 @@ export default function SequenceHQDashboard() {
                     </TabsTrigger>
                 </TabsList>
 
-                {/* Sequences Tab */}
-                <TabsContent value="sequences">
+
+                {/* Lead Sequences Tab (Mini Diploma / Free) */}
+                <TabsContent value="leads">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <div>
                                 <CardTitle className="flex items-center gap-2">
-                                    <Mail className="w-5 h-5 text-burgundy-600" />
-                                    All Sequences
+                                    <Users className="w-5 h-5 text-blue-600" />
+                                    Lead Sequences
                                 </CardTitle>
                                 <CardDescription>
-                                    Manage your email automation sequences
+                                    Email automations for Mini Diploma leads and free users
                                 </CardDescription>
                             </div>
                             <Button variant="outline" size="sm" onClick={fetchSequences}>
@@ -518,157 +523,286 @@ export default function SequenceHQDashboard() {
                             </Button>
                         </CardHeader>
                         <CardContent>
-                            {sequences.length > 0 ? (
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Sequence</TableHead>
-                                            <TableHead className="text-center">Status</TableHead>
-                                            <TableHead className="text-center">Trigger</TableHead>
-                                            <TableHead className="text-center">Scope</TableHead>
-                                            <TableHead className="text-center">Emails</TableHead>
-                                            <TableHead className="text-center">Enrolled</TableHead>
-                                            <TableHead className="text-center">Sent</TableHead>
-                                            <TableHead className="text-center">Opens</TableHead>
-                                            <TableHead className="text-center">Clicks</TableHead>
-                                            <TableHead></TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {sequences.map((seq) => {
-                                            const totalSent = seq.emails.reduce((a, e) => a + e.sentCount, 0);
-                                            const totalOpens = seq.emails.reduce((a, e) => a + e.openCount, 0);
-                                            const totalClicks = seq.emails.reduce((a, e) => a + e.clickCount, 0);
-                                            const openRate = totalSent > 0 ? Math.round((totalOpens / totalSent) * 100) : 0;
-                                            const clickRate = totalSent > 0 ? Math.round((totalClicks / totalSent) * 100) : 0;
+                            {(() => {
+                                const leadSequences = sequences.filter(s =>
+                                    s.courseCategory === "MINI_DIPLOMA" ||
+                                    s.triggerType === "MINI_DIPLOMA_STARTED" ||
+                                    s.triggerType === "MINI_DIPLOMA_COMPLETED" ||
+                                    s.triggerType === "USER_REGISTERED" ||
+                                    (s.triggerTag?.name?.toLowerCase().includes("mini") || false)
+                                );
 
-                                            return (
-                                                <TableRow
-                                                    key={seq.id}
-                                                    className="cursor-pointer hover:bg-gray-50"
-                                                    onClick={() => setSelectedSequence(seq)}
-                                                >
-                                                    <TableCell>
-                                                        <div>
-                                                            <p className="font-medium flex items-center gap-2">
-                                                                {seq.name}
-                                                                {seq.isSystem && (
-                                                                    <span className="text-xs border border-gray-300 rounded px-1.5 py-0.5 text-gray-500">System</span>
+                                return leadSequences.length > 0 ? (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Sequence</TableHead>
+                                                <TableHead className="text-center">Status</TableHead>
+                                                <TableHead className="text-center">Trigger</TableHead>
+                                                <TableHead className="text-center">Emails</TableHead>
+                                                <TableHead className="text-center">Enrolled</TableHead>
+                                                <TableHead className="text-center">Sent</TableHead>
+                                                <TableHead className="text-center">Opens</TableHead>
+                                                <TableHead className="text-center">Clicks</TableHead>
+                                                <TableHead></TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {leadSequences.map((seq) => {
+                                                const totalSent = seq.emails.reduce((a, e) => a + e.sentCount, 0);
+                                                const totalOpens = seq.emails.reduce((a, e) => a + e.openCount, 0);
+                                                const totalClicks = seq.emails.reduce((a, e) => a + e.clickCount, 0);
+                                                const openRate = totalSent > 0 ? Math.round((totalOpens / totalSent) * 100) : 0;
+                                                const clickRate = totalSent > 0 ? Math.round((totalClicks / totalSent) * 100) : 0;
+
+                                                return (
+                                                    <TableRow
+                                                        key={seq.id}
+                                                        className="cursor-pointer hover:bg-gray-50"
+                                                        onClick={() => setSelectedSequence(seq)}
+                                                    >
+                                                        <TableCell>
+                                                            <div>
+                                                                <p className="font-medium flex items-center gap-2">
+                                                                    {seq.name}
+                                                                    {seq.isSystem && (
+                                                                        <span className="text-xs border border-gray-300 rounded px-1.5 py-0.5 text-gray-500">System</span>
+                                                                    )}
+                                                                </p>
+                                                                <p className="text-xs text-gray-500 line-clamp-1">
+                                                                    {seq.description || "No description"}
+                                                                </p>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell className="text-center">
+                                                            <div className="inline-flex items-center" onClick={(e) => e.stopPropagation()}>
+                                                                <Switch checked={seq.isActive} onCheckedChange={() => toggleSequenceActive(seq)} />
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell className="text-center">
+                                                            <div className="flex flex-col items-center gap-0.5">
+                                                                <Badge variant="outline" className="text-xs">
+                                                                    {seq.triggerType.replace(/_/g, " ")}
+                                                                </Badge>
+                                                                {seq.triggerType === "TAG_ADDED" && seq.triggerTag && (
+                                                                    <span className="text-[10px] text-gray-500">→ {seq.triggerTag.name}</span>
                                                                 )}
-                                                            </p>
-                                                            <p className="text-xs text-gray-500 line-clamp-1">
-                                                                {seq.description || "No description"}
-                                                            </p>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell className="text-center">
-                                                        <div
-                                                            className="inline-flex items-center"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <Switch
-                                                                checked={seq.isActive}
-                                                                onCheckedChange={() => toggleSequenceActive(seq)}
-                                                            />
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell className="text-center">
-                                                        <div className="flex flex-col items-center gap-0.5">
-                                                            <Badge variant="outline" className="text-xs">
-                                                                {seq.triggerType.replace(/_/g, " ")}
-                                                            </Badge>
-                                                            {seq.triggerType === "TAG_ADDED" && seq.triggerTag && (
-                                                                <span className="text-[10px] text-gray-500">
-                                                                    → {seq.triggerTag.name}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell className="text-center">
-                                                        <Badge
-                                                            variant="outline"
-                                                            className={`text-xs ${seq.courseCategory === "MINI_DIPLOMA" ? "border-blue-300 bg-blue-50 text-blue-700" :
-                                                                    seq.courseCategory === "FUNCTIONAL_MEDICINE" ? "border-green-300 bg-green-50 text-green-700" :
-                                                                        seq.courseCategory === "NUTRITION" ? "border-orange-300 bg-orange-50 text-orange-700" :
-                                                                            "border-gray-300 bg-gray-50 text-gray-600"
-                                                                }`}
-                                                        >
-                                                            {seq.courseCategory ? seq.courseCategory.replace(/_/g, " ") : "All"}
-                                                        </Badge>
-                                                    </TableCell>
-                                                    <TableCell className="text-center font-medium">
-                                                        {seq.emailCount}
-                                                    </TableCell>
-                                                    <TableCell className="text-center">
-                                                        {seq.totalEnrolled.toLocaleString()}
-                                                    </TableCell>
-                                                    <TableCell className="text-center">
-                                                        {totalSent.toLocaleString()}
-                                                    </TableCell>
-                                                    <TableCell className="text-center">
-                                                        <span className={openRate >= 30 ? "text-green-600" : openRate >= 20 ? "text-amber-600" : "text-gray-500"}>
-                                                            {openRate}%
-                                                        </span>
-                                                    </TableCell>
-                                                    <TableCell className="text-center">
-                                                        <span className={clickRate >= 5 ? "text-green-600" : clickRate >= 2 ? "text-amber-600" : "text-gray-500"}>
-                                                            {clickRate}%
-                                                        </span>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div onClick={(e) => e.stopPropagation()}>
-                                                            <DropdownMenu>
-                                                                <DropdownMenuTrigger asChild>
-                                                                    <Button variant="ghost" size="sm">
-                                                                        <MoreVertical className="w-4 h-4" />
-                                                                    </Button>
-                                                                </DropdownMenuTrigger>
-                                                                <DropdownMenuContent align="end">
-                                                                    <DropdownMenuItem onClick={() => setSelectedSequence(seq)}>
-                                                                        <Edit className="w-4 h-4 mr-2" />
-                                                                        Edit Emails
-                                                                    </DropdownMenuItem>
-                                                                    <DropdownMenuItem onClick={() => handleDuplicateSequence(seq)}>
-                                                                        <Copy className="w-4 h-4 mr-2" />
-                                                                        Duplicate
-                                                                    </DropdownMenuItem>
-                                                                    <DropdownMenuSeparator />
-                                                                    <DropdownMenuItem
-                                                                        className="text-red-600"
-                                                                        onClick={() => setDeleteTarget(seq)}
-                                                                        disabled={seq.isSystem}
-                                                                    >
-                                                                        <Trash2 className="w-4 h-4 mr-2" />
-                                                                        Delete
-                                                                    </DropdownMenuItem>
-                                                                </DropdownMenuContent>
-                                                            </DropdownMenu>
-                                                        </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            ) : (
-                                <div className="text-center py-12">
-                                    <Mail className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                                    <p className="text-gray-500 mb-2">No sequences yet</p>
-                                    <p className="text-sm text-gray-400 mb-4">
-                                        Create your first sequence or import existing templates
-                                    </p>
-                                    <div className="flex gap-2 justify-center">
-                                        <Button variant="outline" onClick={() => setImportModalOpen(true)}>
-                                            <Upload className="w-4 h-4 mr-2" />
-                                            Import Templates
-                                        </Button>
-                                        <Button onClick={() => setCreateModalOpen(true)}>
-                                            <Plus className="w-4 h-4 mr-2" />
-                                            Create Sequence
-                                        </Button>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell className="text-center font-medium">{seq.emailCount}</TableCell>
+                                                        <TableCell className="text-center">{seq.totalEnrolled.toLocaleString()}</TableCell>
+                                                        <TableCell className="text-center">{totalSent.toLocaleString()}</TableCell>
+                                                        <TableCell className="text-center">
+                                                            <span className={openRate >= 30 ? "text-green-600" : openRate >= 20 ? "text-amber-600" : "text-gray-500"}>
+                                                                {openRate}%
+                                                            </span>
+                                                        </TableCell>
+                                                        <TableCell className="text-center">
+                                                            <span className={clickRate >= 5 ? "text-green-600" : clickRate >= 2 ? "text-amber-600" : "text-gray-500"}>
+                                                                {clickRate}%
+                                                            </span>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div onClick={(e) => e.stopPropagation()}>
+                                                                <DropdownMenu>
+                                                                    <DropdownMenuTrigger asChild>
+                                                                        <Button variant="ghost" size="sm"><MoreVertical className="w-4 h-4" /></Button>
+                                                                    </DropdownMenuTrigger>
+                                                                    <DropdownMenuContent align="end">
+                                                                        <DropdownMenuItem onClick={() => setSelectedSequence(seq)}>
+                                                                            <Edit className="w-4 h-4 mr-2" /> Edit Emails
+                                                                        </DropdownMenuItem>
+                                                                        <DropdownMenuItem onClick={() => handleDuplicateSequence(seq)}>
+                                                                            <Copy className="w-4 h-4 mr-2" /> Duplicate
+                                                                        </DropdownMenuItem>
+                                                                        <DropdownMenuSeparator />
+                                                                        <DropdownMenuItem className="text-red-600" onClick={() => setDeleteTarget(seq)} disabled={seq.isSystem}>
+                                                                            <Trash2 className="w-4 h-4 mr-2" /> Delete
+                                                                        </DropdownMenuItem>
+                                                                    </DropdownMenuContent>
+                                                                </DropdownMenu>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                ) : (
+                                    <div className="text-center py-12">
+                                        <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                                        <p className="text-gray-500 mb-2">No lead sequences</p>
+                                        <p className="text-sm text-gray-400 mb-4">
+                                            Create sequences for Mini Diploma leads
+                                        </p>
+                                        <div className="flex gap-2 justify-center">
+                                            <Button variant="outline" onClick={() => setImportModalOpen(true)}>
+                                                <Upload className="w-4 h-4 mr-2" /> Import Templates
+                                            </Button>
+                                            <Button onClick={() => setCreateModalOpen(true)}>
+                                                <Plus className="w-4 h-4 mr-2" /> Create Sequence
+                                            </Button>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                );
+                            })()}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                {/* Student Sequences Tab (Purchases / Paid) */}
+                <TabsContent value="students">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Mail className="w-5 h-5 text-green-600" />
+                                    Student Sequences
+                                </CardTitle>
+                                <CardDescription>
+                                    Email automations for paying students and course enrollees
+                                </CardDescription>
+                            </div>
+                            <Button variant="outline" size="sm" onClick={fetchSequences}>
+                                <RefreshCw className="w-4 h-4 mr-2" />
+                                Refresh
+                            </Button>
+                        </CardHeader>
+                        <CardContent>
+                            {(() => {
+                                const studentSequences = sequences.filter(s =>
+                                    s.courseCategory === "FUNCTIONAL_MEDICINE" ||
+                                    s.courseCategory === "NUTRITION" ||
+                                    s.triggerType === "COURSE_ENROLLED" ||
+                                    s.triggerType === "TRAINING_STARTED" ||
+                                    s.triggerType === "CHALLENGE_STARTED" ||
+                                    s.triggerType === "CHALLENGE_COMPLETED" ||
+                                    (s.courseCategory !== "MINI_DIPLOMA" && s.triggerType !== "MINI_DIPLOMA_STARTED" && s.triggerType !== "MINI_DIPLOMA_COMPLETED" && s.triggerType !== "USER_REGISTERED" && s.triggerType !== "MANUAL")
+                                );
+
+                                return studentSequences.length > 0 ? (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Sequence</TableHead>
+                                                <TableHead className="text-center">Status</TableHead>
+                                                <TableHead className="text-center">Trigger</TableHead>
+                                                <TableHead className="text-center">Course</TableHead>
+                                                <TableHead className="text-center">Emails</TableHead>
+                                                <TableHead className="text-center">Enrolled</TableHead>
+                                                <TableHead className="text-center">Sent</TableHead>
+                                                <TableHead className="text-center">Opens</TableHead>
+                                                <TableHead className="text-center">Clicks</TableHead>
+                                                <TableHead></TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {studentSequences.map((seq) => {
+                                                const totalSent = seq.emails.reduce((a, e) => a + e.sentCount, 0);
+                                                const totalOpens = seq.emails.reduce((a, e) => a + e.openCount, 0);
+                                                const totalClicks = seq.emails.reduce((a, e) => a + e.clickCount, 0);
+                                                const openRate = totalSent > 0 ? Math.round((totalOpens / totalSent) * 100) : 0;
+                                                const clickRate = totalSent > 0 ? Math.round((totalClicks / totalSent) * 100) : 0;
+
+                                                return (
+                                                    <TableRow
+                                                        key={seq.id}
+                                                        className="cursor-pointer hover:bg-gray-50"
+                                                        onClick={() => setSelectedSequence(seq)}
+                                                    >
+                                                        <TableCell>
+                                                            <div>
+                                                                <p className="font-medium flex items-center gap-2">
+                                                                    {seq.name}
+                                                                    {seq.isSystem && (
+                                                                        <span className="text-xs border border-gray-300 rounded px-1.5 py-0.5 text-gray-500">System</span>
+                                                                    )}
+                                                                </p>
+                                                                <p className="text-xs text-gray-500 line-clamp-1">
+                                                                    {seq.description || "No description"}
+                                                                </p>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell className="text-center">
+                                                            <div className="inline-flex items-center" onClick={(e) => e.stopPropagation()}>
+                                                                <Switch checked={seq.isActive} onCheckedChange={() => toggleSequenceActive(seq)} />
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell className="text-center">
+                                                            <div className="flex flex-col items-center gap-0.5">
+                                                                <Badge variant="outline" className="text-xs">
+                                                                    {seq.triggerType.replace(/_/g, " ")}
+                                                                </Badge>
+                                                                {seq.triggerType === "TAG_ADDED" && seq.triggerTag && (
+                                                                    <span className="text-[10px] text-gray-500">→ {seq.triggerTag.name}</span>
+                                                                )}
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell className="text-center">
+                                                            <Badge
+                                                                variant="outline"
+                                                                className={`text-xs ${seq.courseCategory === "FUNCTIONAL_MEDICINE" ? "border-green-300 bg-green-50 text-green-700" :
+                                                                    seq.courseCategory === "NUTRITION" ? "border-orange-300 bg-orange-50 text-orange-700" :
+                                                                        "border-gray-300 bg-gray-50 text-gray-600"
+                                                                    }`}
+                                                            >
+                                                                {seq.courseCategory ? seq.courseCategory.replace(/_/g, " ") : "All Courses"}
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell className="text-center font-medium">{seq.emailCount}</TableCell>
+                                                        <TableCell className="text-center">{seq.totalEnrolled.toLocaleString()}</TableCell>
+                                                        <TableCell className="text-center">{totalSent.toLocaleString()}</TableCell>
+                                                        <TableCell className="text-center">
+                                                            <span className={openRate >= 30 ? "text-green-600" : openRate >= 20 ? "text-amber-600" : "text-gray-500"}>
+                                                                {openRate}%
+                                                            </span>
+                                                        </TableCell>
+                                                        <TableCell className="text-center">
+                                                            <span className={clickRate >= 5 ? "text-green-600" : clickRate >= 2 ? "text-amber-600" : "text-gray-500"}>
+                                                                {clickRate}%
+                                                            </span>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div onClick={(e) => e.stopPropagation()}>
+                                                                <DropdownMenu>
+                                                                    <DropdownMenuTrigger asChild>
+                                                                        <Button variant="ghost" size="sm"><MoreVertical className="w-4 h-4" /></Button>
+                                                                    </DropdownMenuTrigger>
+                                                                    <DropdownMenuContent align="end">
+                                                                        <DropdownMenuItem onClick={() => setSelectedSequence(seq)}>
+                                                                            <Edit className="w-4 h-4 mr-2" /> Edit Emails
+                                                                        </DropdownMenuItem>
+                                                                        <DropdownMenuItem onClick={() => handleDuplicateSequence(seq)}>
+                                                                            <Copy className="w-4 h-4 mr-2" /> Duplicate
+                                                                        </DropdownMenuItem>
+                                                                        <DropdownMenuSeparator />
+                                                                        <DropdownMenuItem className="text-red-600" onClick={() => setDeleteTarget(seq)} disabled={seq.isSystem}>
+                                                                            <Trash2 className="w-4 h-4 mr-2" /> Delete
+                                                                        </DropdownMenuItem>
+                                                                    </DropdownMenuContent>
+                                                                </DropdownMenu>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                ) : (
+                                    <div className="text-center py-12">
+                                        <Mail className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                                        <p className="text-gray-500 mb-2">No student sequences yet</p>
+                                        <p className="text-sm text-gray-400 mb-4">
+                                            Create sequences for paying students: welcome emails, re-activation, completion, etc.
+                                        </p>
+                                        <div className="flex gap-2 justify-center">
+                                            <Button onClick={() => setCreateModalOpen(true)}>
+                                                <Plus className="w-4 h-4 mr-2" /> Create Sequence
+                                            </Button>
+                                        </div>
+                                    </div>
+                                );
+                            })()}
                         </CardContent>
                     </Card>
                 </TabsContent>
