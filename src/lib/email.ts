@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import * as postmark from "postmark";
 import prisma from "./prisma";
+import { addTrackingToEmail } from "./email-tracking";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const postmarkClient = process.env.POSTMARK_API_KEY
@@ -417,6 +418,9 @@ export async function sendEmail({
     // ALWAYS include plain text version for better deliverability (multipart MIME)
     const plainText = text || htmlToPlainText(html);
 
+    // Add tracking pixel and link tracking to HTML (if we have an emailSendId)
+    const trackedHtml = emailSendRecord?.id ? addTrackingToEmail(html, emailSendRecord.id) : html;
+
     // For marketing emails, use a reply-to that looks personal
     const effectiveReplyTo = replyTo || (type === 'marketing' ? 'info@accredipro-certificate.com' : undefined);
 
@@ -424,7 +428,7 @@ export async function sendEmail({
       from: fromEmail,
       to: Array.isArray(to) ? to : [to],
       subject,
-      html,
+      html: trackedHtml,
       text: plainText,
       replyTo: effectiveReplyTo,
       // For marketing: minimal headers to avoid spam triggers
@@ -448,7 +452,7 @@ export async function sendEmail({
             From: postmarkFrom,
             To: toAddresses,
             Subject: subject,
-            HtmlBody: html,
+            HtmlBody: trackedHtml,
             TextBody: plainText,
             ReplyTo: effectiveReplyTo,
             MessageStream: 'outbound',
