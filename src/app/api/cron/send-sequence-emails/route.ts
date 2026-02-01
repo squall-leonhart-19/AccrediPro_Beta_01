@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
           .replace(/\{\{email\}\}/g, userEmail)
           .replace(/\{\{fullName\}\}/g, fullName)
           // URL replacements
-          .replace(/\{\{MINI_DIPLOMA_URL\}\}/g, `${baseUrl}/my-mini-diploma`)
+          .replace(/\{\{MINI_DIPLOMA_URL\}\}/g, `${baseUrl}/login`)
           .replace(/\{\{GRADUATE_TRAINING_URL\}\}/g, `${baseUrl}/training`)
           .replace(/\{\{CERTIFICATION_URL\}\}/g, `${baseUrl}/courses/functional-medicine-certification`)
           .replace(/\{\{DASHBOARD_URL\}\}/g, `${baseUrl}/dashboard`)
