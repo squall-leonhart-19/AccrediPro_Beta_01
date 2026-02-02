@@ -12,6 +12,13 @@ import { FUNCTIONAL_MEDICINE_NURTURE_SEQUENCE } from "./functional-medicine-nurt
 import { FUNCTIONAL_MEDICINE_DMS } from "./functional-medicine-dms";
 import { WH_NURTURE_60_DAY_V3 } from "./wh-nurture-60-day-v3";
 import { TIME_BASED_DMS as WH_DMS, SarahDM } from "./wh-sarah-dms";
+// Niche-specific nurture sequences (no fallback needed)
+import { SPIRITUAL_HEALING_NURTURE_SEQUENCE } from "./spiritual-healing-nurture-60-day";
+import { ENERGY_HEALING_NURTURE_SEQUENCE } from "./energy-healing-nurture-60-day";
+import { CHRISTIAN_COACHING_NURTURE_SEQUENCE } from "./christian-coaching-nurture-60-day";
+import { REIKI_HEALING_NURTURE_SEQUENCE } from "./reiki-healing-nurture-60-day";
+import { ADHD_COACHING_NURTURE_SEQUENCE } from "./adhd-coaching-nurture-60-day";
+import { PET_NUTRITION_NURTURE_SEQUENCE } from "./pet-nutrition-nurture-60-day";
 
 // Lesson definition for portal
 export interface DiplomaLesson {
@@ -323,9 +330,8 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         checkoutUrl: DEFAULT_CHECKOUT_URL,
         examCategory: "spiritual-healing",
         lessonTagPrefix: "spiritual-healing-lesson-complete",
-        // No dedicated nurture/DM sequences yet - use health coach as fallback
-        nurtureSequence: HEALTH_COACH_NURTURE_SEQUENCE,
-        dmSequence: HEALTH_COACH_DMS,
+        nurtureSequence: SPIRITUAL_HEALING_NURTURE_SEQUENCE,
+        dmSequence: HEALTH_COACH_DMS, // DMs still use health coach fallback
         nudgePrefix: "spiritual-healing-nudge",
         nurturePrefix: "spiritual-healing-nurture",
         completionTag: "spiritual-healing-mini-diploma:completed"
@@ -340,9 +346,8 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         checkoutUrl: DEFAULT_CHECKOUT_URL,
         examCategory: "energy-healing-exam",
         lessonTagPrefix: "energy-healing-lesson-complete",
-        // No dedicated nurture/DM sequences yet - use health coach as fallback
-        nurtureSequence: HEALTH_COACH_NURTURE_SEQUENCE,
-        dmSequence: HEALTH_COACH_DMS,
+        nurtureSequence: ENERGY_HEALING_NURTURE_SEQUENCE,
+        dmSequence: HEALTH_COACH_DMS, // DMs still use health coach fallback
         nudgePrefix: "energy-healing-nudge",
         nurturePrefix: "energy-healing-nurture",
         completionTag: "energy-healing-mini-diploma:completed"
@@ -357,9 +362,8 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         checkoutUrl: DEFAULT_CHECKOUT_URL,
         examCategory: "christian-coaching",
         lessonTagPrefix: "christian-coaching-lesson-complete",
-        // No dedicated nurture/DM sequences yet - use health coach as fallback
-        nurtureSequence: HEALTH_COACH_NURTURE_SEQUENCE,
-        dmSequence: HEALTH_COACH_DMS,
+        nurtureSequence: CHRISTIAN_COACHING_NURTURE_SEQUENCE,
+        dmSequence: HEALTH_COACH_DMS, // DMs still use health coach fallback
         nudgePrefix: "christian-coaching-nudge",
         nurturePrefix: "christian-coaching-nurture",
         completionTag: "christian-coaching-mini-diploma:completed"
@@ -374,9 +378,8 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         checkoutUrl: DEFAULT_CHECKOUT_URL,
         examCategory: "reiki-healing",
         lessonTagPrefix: "reiki-healing-lesson-complete",
-        // No dedicated nurture/DM sequences yet - use health coach as fallback
-        nurtureSequence: HEALTH_COACH_NURTURE_SEQUENCE,
-        dmSequence: HEALTH_COACH_DMS,
+        nurtureSequence: REIKI_HEALING_NURTURE_SEQUENCE,
+        dmSequence: HEALTH_COACH_DMS, // DMs still use health coach fallback
         nudgePrefix: "reiki-healing-nudge",
         nurturePrefix: "reiki-healing-nurture",
         completionTag: "reiki-healing-mini-diploma:completed"
@@ -391,9 +394,8 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         checkoutUrl: DEFAULT_CHECKOUT_URL,
         examCategory: "adhd-coaching",
         lessonTagPrefix: "adhd-coaching-lesson-complete",
-        // No dedicated nurture/DM sequences yet - use health coach as fallback
-        nurtureSequence: HEALTH_COACH_NURTURE_SEQUENCE,
-        dmSequence: HEALTH_COACH_DMS,
+        nurtureSequence: ADHD_COACHING_NURTURE_SEQUENCE,
+        dmSequence: HEALTH_COACH_DMS, // DMs still use health coach fallback
         nudgePrefix: "adhd-coaching-nudge",
         nurturePrefix: "adhd-coaching-nurture",
         completionTag: "adhd-coaching-mini-diploma:completed"
@@ -408,9 +410,8 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         checkoutUrl: DEFAULT_CHECKOUT_URL,
         examCategory: "pet-nutrition",
         lessonTagPrefix: "pet-nutrition-lesson-complete",
-        // No dedicated nurture/DM sequences yet - use health coach as fallback
-        nurtureSequence: HEALTH_COACH_NURTURE_SEQUENCE,
-        dmSequence: HEALTH_COACH_DMS,
+        nurtureSequence: PET_NUTRITION_NURTURE_SEQUENCE,
+        dmSequence: HEALTH_COACH_DMS, // DMs still use health coach fallback
         nudgePrefix: "pet-nutrition-nudge",
         nurturePrefix: "pet-nutrition-nurture",
         completionTag: "pet-nutrition-mini-diploma:completed"

@@ -39,11 +39,12 @@ const PRODUCT_PIXEL_MAP: Record<string, PixelKey> = {
     "functional-medicine-practitioner": "RoyalCertified",
     "fm078": "RoyalCertified",
     "fm-certification": "RoyalCertified",
-    "fm-pro-accelerator": "RoyalCertified", // Assuming legacy FM accelerator also goes here
+    "fm-pro-accelerator": "RoyalCertified",
 
-    // FUNctional Medicine (New Silo - if applicable, otherwise overrides above)
-    // "functional-medicine": "SarahFunctionalMedicine", 
-    "fm-mini-diploma": "SarahFunctionalMedicine", // Leads go to Niche? Or Royal? Keeping Niche for now based on 'mini diploma' context
+    // FUNctional Medicine - ALL FM products use RoyalCertified (has valid access token)
+    "fm-mini-diploma": "RoyalCertified",
+    "functional-medicine": "RoyalCertified",
+    "mini-diploma": "RoyalCertified",
 
     // Women's Health
     "womens-hormone": "SarahWomensHormones",
@@ -114,7 +115,7 @@ const PRODUCT_PIXEL_MAP: Record<string, PixelKey> = {
 
 /**
  * Resolves the correct Pixel ID based on Product ID or Name.
- * Strategy: Check exact map -> Check keyword inclusion -> Default to SarahFM
+ * Strategy: Check exact map -> Check keyword inclusion -> Default to RoyalCertified
  */
 export const resolvePixelForProduct = (productId: string | undefined, productName: string | undefined): string => {
     const searchString = `${productId || ''} ${productName || ''}`.toLowerCase();
@@ -126,9 +127,9 @@ export const resolvePixelForProduct = (productId: string | undefined, productNam
         }
     }
 
-    // 2. Fallback to Functional Medicine (Safe Default)
-    // console.warn(`[PixelRegistry] Unknown product: ${searchString}. Defaulting to SarahFM.`);
-    return PIXEL_REGISTRY.SarahFunctionalMedicine;
+    // 2. Fallback to RoyalCertified (has valid access token for CAPI)
+    console.warn(`[PixelRegistry] Unknown product: ${searchString}. Defaulting to RoyalCertified.`);
+    return PIXEL_REGISTRY.RoyalCertified;
 };
 
 // 3. The Tag Map (generated from CSV + Legacy Overrides)

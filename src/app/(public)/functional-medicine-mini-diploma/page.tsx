@@ -217,22 +217,34 @@ function HealthcareWorkersMiniDiplomaContent() {
                     <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 items-start">
                         {/* Left Column - Copy */}
                         <div className="text-white">
-                            {/* Healthcare Badge */}
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ backgroundColor: `${BRAND.gold}20`, border: `1px solid ${BRAND.gold}40` }}>
-                                <Stethoscope className="w-4 h-4" style={{ color: BRAND.gold }} />
-                                <span className="text-sm font-medium" style={{ color: BRAND.gold }}>1-Hour Certification for Healthcare Pros</span>
+                            {/* Healthcare Badge + Level */}
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
+                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full" style={{ backgroundColor: `${BRAND.gold}20`, border: `1px solid ${BRAND.gold}40` }}>
+                                    <Stethoscope className="w-4 h-4" style={{ color: BRAND.gold }} />
+                                    <span className="text-sm font-medium" style={{ color: BRAND.gold }}>1-Hour Mini Diploma for Healthcare Pros</span>
+                                </div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}>
+                                    <Shield className="w-3.5 h-3.5" style={{ color: BRAND.gold }} />
+                                    <span className="text-xs font-medium" style={{ color: BRAND.goldLight }}>ASI Level 0 – Foundations</span>
+                                </div>
                             </div>
 
-                            <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1] mb-6">
-                                <span style={{ color: BRAND.goldLight }}>RNs: Start Earning</span><br />
-                                <span className="text-white">$4K-$8K/Month</span><br />
-                                <span className="text-white/80 text-2xl md:text-3xl lg:text-4xl">From Home. No More 12-Hour Shifts.</span>
+                            <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1] mb-2">
+                                <span className="text-white">Functional Medicine</span><br />
+                                <span style={{ color: BRAND.goldLight }}>Mini Diploma</span>
                             </h1>
+                            <p className="text-lg md:text-xl font-medium mb-4" style={{ color: BRAND.gold }}>
+                                Level 0 – Foundations
+                            </p>
+                            <p className="text-xs text-white/50 mb-6 uppercase tracking-wider">
+                                Aligned with the competency framework of AccrediPro International Standards Institute
+                            </p>
 
                             <p className="text-lg md:text-xl text-white/80 mb-8 max-w-lg leading-relaxed">
-                                Get <strong className="text-white">certified in 1 hour</strong>. Your clinical skills are worth more than hospital wages.
-                                Discover how nurses this week turned their healthcare background into a flexible, high-paying coaching career.
+                                <strong className="text-white">RNs:</strong> Get certified in 1 hour. Start earning <strong className="text-white">$4K-$8K/month</strong> from home.
+                                Your clinical skills are worth more than hospital wages. No more 12-hour shifts.
                             </p>
+
 
                             {/* Proof Points - Optimized */}
                             <div className="flex flex-wrap gap-4 md:gap-6 mb-8">
@@ -419,7 +431,7 @@ function HealthcareWorkersMiniDiplomaContent() {
             <section className="py-16 md:py-20" style={{ backgroundColor: "#faf5eb" }}>
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-4">
-                        <p className="font-bold text-sm uppercase tracking-wide mb-3" style={{ color: BRAND.burgundy }}>Join 4,247 Healthcare Professionals Who Made The Switch</p>
+                        <p className="font-bold text-sm uppercase tracking-wide mb-3" style={{ color: BRAND.burgundy }}>Join a Professional Learning Community Aligned with ASI Standards</p>
                         <h2 className="text-3xl md:text-4xl font-black text-gray-900">
                             They Left the Hospital Floor.<br />
                             <span style={{ color: BRAND.burgundy }}>Now They Heal on Their Terms.</span>
@@ -491,6 +503,30 @@ function HealthcareWorkersMiniDiplomaContent() {
                                     email me personally. I'll coach you until you do — <strong>no limits, no extra cost, no fine print.</strong>
                                 </p>
                                 <p className="text-sm text-gray-500 mt-3 italic">— Sarah Mitchell, Your Coach</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* PROFESSIONAL SCOPE & SAFETY - ASI Authority */}
+            <section className="py-10" style={{ backgroundColor: '#f8fafc' }}>
+                <div className="max-w-3xl mx-auto px-4">
+                    <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${BRAND.burgundy}10` }}>
+                                <Shield className="w-6 h-6" style={{ color: BRAND.burgundy }} />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-black text-gray-900 mb-2">Professional Scope & Safety</h3>
+                                <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                                    This Mini Diploma is educational in nature and designed to support licensed and non-licensed
+                                    professionals within appropriate scope-of-practice boundaries.
+                                </p>
+                                <p className="text-gray-500 text-xs leading-relaxed">
+                                    AccrediPro International Standards Institute emphasizes ethical, non-diagnostic, non-prescriptive
+                                    application of functional and integrative concepts at the foundational level.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -621,7 +657,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                             </h2>
 
                             <p className="text-gray-600 mb-6 leading-relaxed">
-                                Complete all 9 lessons and receive your <strong>ASI-Verified Foundation Certificate</strong>.
+                                Complete all 9 foundational competencies and receive your <strong>ASI Level 0 Certificate</strong>.
                                 Add it to LinkedIn today. Show employers you understand root-cause medicine.
                             </p>
 
@@ -710,24 +746,27 @@ function HealthcareWorkersMiniDiplomaContent() {
             <section className="py-16 md:py-20 text-white" style={{ backgroundColor: BRAND.burgundyDark }}>
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-12">
-                        <p className="font-bold text-sm uppercase mb-3" style={{ color: BRAND.gold }}>Inside Your Free Mini-Diploma</p>
+                        <p className="font-bold text-xs uppercase mb-3 tracking-wide" style={{ color: BRAND.gold }}>ASI Level 0 – Foundational Competencies</p>
                         <h2 className="text-3xl md:text-4xl font-black">
-                            9 Lessons That Fill The Gaps<br />
+                            9 Core Competencies That Fill The Gaps<br />
                             <span style={{ color: BRAND.gold }}>Medical School Never Covered</span>
                         </h2>
+                        <p className="text-white/60 text-sm mt-4 max-w-xl mx-auto">
+                            These competencies align with ASI Level 0 (Foundations) standards within the AccrediPro professional framework.
+                        </p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-4">
                         {[
-                            { num: 1, title: "Root Cause Medicine", desc: "Beyond symptom suppression" },
-                            { num: 2, title: "The Gut Foundation", desc: "Where 80% of healing begins" },
-                            { num: 3, title: "Inflammation Connection", desc: "The hidden driver of disease" },
-                            { num: 4, title: "The Toxin Burden", desc: "Modern detox protocols" },
-                            { num: 5, title: "Stress & Hormones", desc: "HPA axis dysfunction" },
-                            { num: 6, title: "Nutrient Deficiencies", desc: "Functional testing & correction" },
-                            { num: 7, title: "Lab Interpretation", desc: "Optimal vs normal ranges" },
-                            { num: 8, title: "Building Protocols", desc: "Client healing plans" },
-                            { num: 9, title: "Your Exit Strategy", desc: "Transition roadmap" }
+                            { num: 1, title: "ASI Level 0 – Root-Cause Thinking", desc: "Beyond symptom suppression" },
+                            { num: 2, title: "ASI Level 0 – Gut Health Foundations", desc: "Where 80% of healing begins" },
+                            { num: 3, title: "ASI Level 0 – Systemic Inflammation", desc: "The hidden driver of disease" },
+                            { num: 4, title: "ASI Level 0 – Toxin Burden Assessment", desc: "Modern detox protocols" },
+                            { num: 5, title: "ASI Level 0 – HPA Axis Dysfunction", desc: "Stress & hormonal balance" },
+                            { num: 6, title: "ASI Level 0 – Nutrient Optimization", desc: "Functional testing & correction" },
+                            { num: 7, title: "ASI Level 0 – Functional Lab Interpretation", desc: "Optimal vs normal ranges" },
+                            { num: 8, title: "ASI Level 0 – Protocol Development", desc: "Client healing plans" },
+                            { num: 9, title: "ASI Level 0 – Practice Foundations", desc: "Scope & ethics transition" }
                         ].map((lesson) => (
                             <div key={lesson.num} className="rounded-xl p-4 border" style={{ backgroundColor: `${BRAND.burgundy}80`, borderColor: `${BRAND.gold}30` }}>
                                 <div className="flex items-center gap-3 mb-2">

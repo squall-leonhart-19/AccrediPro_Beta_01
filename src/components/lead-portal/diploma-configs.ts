@@ -1,5 +1,129 @@
 import { DiplomaConfig } from "./LeadPortalDashboard";
 
+// ASI Level 0 Resource Bundle - shared across all mini diplomas
+const ASI_LEVEL_0_RESOURCES = [
+    // Core Documents
+    {
+        id: "scope-boundaries",
+        title: "Professional Scope & Boundaries",
+        description: "Understanding your role as a Level 0 practitioner",
+        url: "/documents/asi/core/scope-and-boundaries-level-0.html",
+        type: "core" as const,
+        icon: "Compass" as const,
+    },
+    {
+        id: "practice-toolkit",
+        title: "Level 0 Practice Toolkit",
+        description: "Essential templates and worksheets for your practice",
+        url: "/documents/asi/core/practice-toolkit-level-0.html",
+        type: "core" as const,
+        icon: "FileText" as const,
+    },
+    {
+        id: "pathways-guide",
+        title: "ASI Certification Pathways Guide",
+        description: "Your roadmap from Level 0 to full certification",
+        url: "/documents/asi/core/pathways-progression-guide.html",
+        type: "core" as const,
+        icon: "Map" as const,
+    },
+    // Client Resources
+    {
+        id: "intake-snapshot",
+        title: "Client Intake Snapshot",
+        description: "First session essential information gathering",
+        url: "/documents/asi/client-resources/client-intake-snapshot.html",
+        type: "client" as const,
+        icon: "Users" as const,
+    },
+    {
+        id: "clarity-map",
+        title: "Client Clarity Map",
+        description: "Visual tool to understand what the client is experiencing",
+        url: "/documents/asi/client-resources/client-clarity-map.html",
+        type: "client" as const,
+        icon: "Target" as const,
+    },
+    {
+        id: "support-circle",
+        title: "Support Circle Builder",
+        description: "Map out the client's existing support network",
+        url: "/documents/asi/client-resources/support-circle-builder.html",
+        type: "client" as const,
+        icon: "Heart" as const,
+    },
+    {
+        id: "goals-translation",
+        title: "Goals Translation Sheet",
+        description: "Convert vague goals into workable focus areas",
+        url: "/documents/asi/client-resources/goals-translation-sheet.html",
+        type: "client" as const,
+        icon: "Lightbulb" as const,
+    },
+    {
+        id: "readiness-check",
+        title: "Readiness for Support Check",
+        description: "Assess if the client is ready to engage with support",
+        url: "/documents/asi/client-resources/readiness-for-support-check.html",
+        type: "client" as const,
+        icon: "CheckCircle" as const,
+    },
+    {
+        id: "reflection-card",
+        title: "Between-Sessions Reflection Card",
+        description: "Simple card for client reflection between sessions",
+        url: "/documents/asi/client-resources/between-sessions-reflection.html",
+        type: "client" as const,
+        icon: "MessageSquare" as const,
+    },
+];
+
+// Export resources for use in other components
+export { ASI_LEVEL_0_RESOURCES };
+
+// Export resource type for type safety
+export type ASIResource = typeof ASI_LEVEL_0_RESOURCES[number];
+
+/**
+ * Get resources unlocked for a specific module
+ * Module 1 (after L3): 2 resources (Scope & Intake)
+ * Module 2 (after L6): 4 resources (Toolkit, Clarity, Support, Goals)
+ * Module 3 (after L9): 3 resources (Pathways, Readiness, Reflection)
+ */
+export function getResourcesForModule(moduleNum: 1 | 2 | 3): ASIResource[] {
+    switch (moduleNum) {
+        case 1:
+            // Scope & Boundaries + Client Intake Snapshot
+            return [ASI_LEVEL_0_RESOURCES[0], ASI_LEVEL_0_RESOURCES[3]];
+        case 2:
+            // Practice Toolkit + Clarity Map + Support Circle + Goals Translation
+            return [
+                ASI_LEVEL_0_RESOURCES[1],
+                ASI_LEVEL_0_RESOURCES[4],
+                ASI_LEVEL_0_RESOURCES[5],
+                ASI_LEVEL_0_RESOURCES[6]
+            ];
+        case 3:
+            // Pathways Guide + Readiness Check + Reflection Card
+            return [
+                ASI_LEVEL_0_RESOURCES[2],
+                ASI_LEVEL_0_RESOURCES[7],
+                ASI_LEVEL_0_RESOURCES[8]
+            ];
+    }
+}
+
+/**
+ * Get total unlocked resources after completing a module
+ */
+export function getTotalUnlockedAfterModule(moduleNum: 1 | 2 | 3): number {
+    switch (moduleNum) {
+        case 1: return 2;
+        case 2: return 6;
+        case 3: return 9;
+    }
+}
+
 // Configuration for all mini diploma portals
 export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
     "functional-medicine-diploma": {
@@ -43,6 +167,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "womens-health-diploma": {
         slug: "womens-health-diploma",
@@ -85,6 +210,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "womens-hormone-health-diploma": {
         slug: "womens-hormone-health-diploma",
@@ -127,6 +253,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "gut-health-diploma": {
         slug: "gut-health-diploma",
@@ -169,6 +296,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "hormone-health-diploma": {
         slug: "hormone-health-diploma",
@@ -211,6 +339,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "holistic-nutrition-diploma": {
         slug: "holistic-nutrition-diploma",
@@ -253,6 +382,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "nurse-coach-diploma": {
         slug: "nurse-coach-diploma",
@@ -295,6 +425,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "health-coach-diploma": {
         slug: "health-coach-diploma",
@@ -337,6 +468,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "spiritual-healing-diploma": {
         slug: "spiritual-healing-diploma",
@@ -379,6 +511,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "energy-healing-diploma": {
         slug: "energy-healing-diploma",
@@ -421,6 +554,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "christian-coaching-diploma": {
         slug: "christian-coaching-diploma",
@@ -463,6 +597,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "reiki-healing-diploma": {
         slug: "reiki-healing-diploma",
@@ -505,6 +640,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "adhd-coaching-diploma": {
         slug: "adhd-coaching-diploma",
@@ -547,6 +683,7 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
     "pet-nutrition-diploma": {
         slug: "pet-nutrition-diploma",
@@ -589,5 +726,6 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
                 ],
             },
         ],
+        resources: ASI_LEVEL_0_RESOURCES,
     },
 };

@@ -327,7 +327,7 @@ So when a cohort fills, it fills. And when you join, you're making a real commit
 I'm telling you this because I want you to have real information and know exactly what you're stepping into. 💕`,
         commitments: [
             { field: "commitCohort", label: "I understand the cohort size is limited and I can only register one time. If I'm accepted and don't join this cohort, I would need to reapply for a future one." },
-            { field: "commitSerious", label: "I'm serious about this. I want to help women heal — and yes, I want to earn real income doing meaningful work." },
+            { field: "commitSerious", label: "I'm serious about this. I want to help women heal — and create professional sustainability (flexibility, autonomy, meaningful work)." },
             { field: "commitHonest", label: "I answered honestly because I want Sarah to actually understand where I'm at." },
         ],
         buttonText: "See If I Qualify To Start Earning as a Coach",

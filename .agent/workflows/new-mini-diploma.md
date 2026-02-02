@@ -189,9 +189,13 @@ tmux kill-session -t ralph 2>/dev/null
 - [ ] Create lesson content JSON (9 lessons)
 - [ ] Add to dynamic-lesson-router.tsx
 
-### Step 4: Sequences (USE EMAIL_SEQUENCES.md TEMPLATE!)
-- [ ] Create 60-day nurture sequence file FROM `docs/mini-diploma/EMAIL_SEQUENCES.md`
-- [ ] Create DM sequence file FROM template
+### Step 3.5: Exam Questions (MANDATORY!)
+- [ ] Create exam JSON file: `src/components/mini-diploma/exams/content/{portal_slug}.json`
+- [ ] Add import + mapping to `src/app/(lead)/portal/[slug]/exam/page.tsx`
+
+### Step 4: Sequences (NICHE-SPECIFIC COPY REQUIRED!)
+- [ ] Create 60-day nurture sequence file with NICHE-SPECIFIC copy (not placeholders)
+- [ ] Create DM sequence file with NICHE-SPECIFIC copy
 - [ ] Register sequences in registry (imports + config)
 
 ### Step 5: Cron & GHL
@@ -566,6 +570,79 @@ import {portalSlugCamelCase}Content from "../content/{portal_slug}.json";
 
 ---
 
+## Step 7.75: Create Exam Questions JSON (MANDATORY!)
+
+**File to create:** `src/components/mini-diploma/exams/content/{portal_slug}.json`
+
+Each mini diploma MUST have its own niche-specific exam questions. Do NOT reuse fallbacks.
+
+### JSON Structure:
+```json
+{
+    "nichePrefix": "{2-letter prefix}",
+    "nicheLabel": "{Topic Name} Mini Diploma",
+    "nicheDisplayName": "Certified {Topic Name} Specialist",
+    "examCategory": "{portal_slug}",
+    "passScore": 80,
+    "scholarshipScore": 95,
+    "hasMasterclass": false,
+    "testimonials": [
+        {
+            "quote": "Exam testimonial 1",
+            "name": "First L.",
+            "location": "State"
+        },
+        {
+            "quote": "Exam testimonial 2",
+            "name": "Second N.",
+            "location": "State"
+        }
+    ],
+    "questions": [
+        {
+            "id": 1,
+            "question": "Question text from Lesson 1?",
+            "lessonRef": 1,
+            "options": [
+                { "id": "a", "text": "Wrong answer" },
+                { "id": "b", "text": "CORRECT answer - always detailed and educational" },
+                { "id": "c", "text": "Wrong answer" },
+                { "id": "d", "text": "Wrong answer" }
+            ],
+            "correctAnswer": "b"
+        }
+        // ... 10 questions total (1-2 per lesson)
+    ]
+}
+```
+
+### Question Guidelines:
+- **10 questions total** - covering all 9 lessons
+- **lessonRef** must match the lesson number the question covers
+- **Correct answer is ALWAYS "b"** - makes grading predictable
+- **Wrong answers should be plausible but clearly wrong**
+- **Questions should test practical knowledge, not trivia**
+
+### After creating JSON, add to exam page:
+
+**File:** `src/app/(lead)/portal/[slug]/exam/page.tsx`
+
+1. Add import at top:
+```typescript
+import {portalSlugCamelCase}Exam from "@/components/mini-diploma/exams/content/{portal_slug}.json";
+```
+
+2. Add to EXAM_CONFIGS:
+```typescript
+"{portal_slug}": {portalSlugCamelCase}Exam as ExamConfig,
+```
+
+**Reference:** See existing exam files like `spiritual-healing.json` for complete examples.
+
+**After completing: Update fix_plan.md - mark "Create exam JSON file" and "Add to exam page" as [x]**
+
+---
+
 ## Step 7.8: Add to DIPLOMA_TAG_PREFIX
 
 **File:** `src/app/(lead)/layout.tsx`
@@ -622,64 +699,51 @@ If build fails, fix errors and run again.
 
 ---
 
-## Step 8.5: Create 60-Day Nurture Sequence
+## Step 8.5: Create 60-Day Nurture Sequence (NICHE-SPECIFIC COPY REQUIRED!)
 
-**IMPORTANT**: Universal email templates exist at `docs/mini-diploma/EMAIL_SEQUENCES.md` (62 templates!)
-
-### EMAIL_SEQUENCES.md Contains:
-| Part | Name | Count | Purpose |
-|------|------|-------|---------|
-| 1 | Pre-Completion | 6 | Get them to FINISH |
-| 1B | **Milestone & Progress** | 8 | Celebrate lessons, prevent stalls |
-| 2 | Post-Completion | 8 | Convert to $397 scholarship |
-| 3 | DM Nurturing | 7 | Personal conversation |
-| 3B | **Milestone DMs** | 7 | DM progress celebration |
-| 4 | SMS Templates | 4 | GHL messaging |
-| 6 | Winback | 4 | Recover scholarship-expired |
-| 7 | Downsell | 3 | $497 core, $297 audit |
-| 8 | Long-Term Nurture | 7 | Days 7-90 value |
-| 9 | Revival | 1 | Re-engage clicks |
-| 10 | **Hormozi Warming** | 7 | Deep CRO (tragic stories, proof stacks) |
-
-### All emails have niche placeholders:
-- `{{nicheName}}` - Topic name (Reiki Healing, ADHD Coaching)
-- `{{nicheDisplayName}}` - Credential title (Certified Reiki Practitioner)
-- `{{boardCertName}}` - Full title (Board Certified {{nicheName}} Specialist)
-- `{{firstName}}` - User's first name
-
-### Accreditation Block (use in emails):
-> **ASI-Verified & Internationally Recognized**
-> Backed by: CMA • IPHM • CPD • IAOTH • ICAHP • IGCT • CTAA • IHTCP • IIOHT
-
-### Current Pricing:
-- Mini Diploma: FREE
-- Board Certification Scholarship: **$397** (was $997)
-- Payment Plan: 2x $199
+> [!CAUTION]
+> **🚨 DO NOT just use placeholder replacements! Every diploma MUST have UNIQUE, niche-specific email copy.**
+> Generic placeholders like `{{nicheName}}` are NOT acceptable as final content.
 
 **File to create:** `src/lib/{portal_slug}-nurture-60-day.ts`
 
-Copy from an existing sequence (e.g., `health-coach-nurture-60-day.ts`) and replace:
-- All niche-specific text (e.g., "functional medicine" → "{Topic Name}")
-- Tag prefixes (e.g., "fm-nurture" → "{portal_slug}-nurture")
+### What "Niche-Specific" Means:
 
-```typescript
-import { NurtureEmail } from "./wh-nurture-60-day";
-
-export const {TOPIC_UPPER}_NURTURE_SEQUENCE: NurtureEmail[] = [
-    // Email templates from EMAIL_SEQUENCES.md with niche name replaced
-    {
-        day: 1,
-        hour: 9,
-        subject: "🎓 {firstName}, your {Topic Name} certificate is ready!",
-        body: `...content from EMAIL_SEQUENCES.md...`,
-        tags: ["{portal_slug}-nurture:day-1"]
-    },
-    // ... copy remaining emails from health-coach-nurture-60-day.ts
-    // Replace all niche references with {Topic Name}
-];
+❌ **BAD (Generic Placeholder):**
+```
+"Congratulations on completing your {{nicheName}} Mini Diploma!"
 ```
 
-**Reference:** `docs/mini-diploma/EMAIL_SEQUENCES.md` - Part 2 (Post-Completion Sequence)
+✅ **GOOD (Niche-Specific):**
+```
+"You did it! 🎉 You've just completed training that many doctors never receive. 
+Understanding chakras, energy meridians, and healing frequencies puts you 
+in the top 1% of spiritual practitioners."
+```
+
+### Requirements for Each Email:
+1. **Niche-relevant stories** - Specific to the topic (e.g., client transformation stories)
+2. **Niche-specific pain points** - What this niche's audience struggles with
+3. **Niche-specific benefits** - What outcomes they'll achieve
+4. **Niche credibility markers** - Relevant certifications, research, statistics
+
+### Email Sequence Structure (21 emails minimum):
+
+| Day | Email Type | Content Focus |
+|-----|------------|---------------|
+| 1 | Certificate Ready | Celebrate completion + download link |
+| 2 | Story Email | Graduate success story specific to niche |
+| 3 | Pain Point | Specific struggle this niche solves |
+| 4 | Credibility | Why certification matters in this field |
+| 5 | Urgency | Scholarship expiring + social proof |
+| 7 | Long-form | Deep dive into niche topic |
+| 14 | Re-engagement | "Still thinking about certification?" |
+| 21 | Winback | Last chance messaging |
+| 30-60 | Value nurture | Weekly helpful content for niche |
+
+### Reference for Email Structure:
+- `docs/mini-diploma/EMAIL_SEQUENCES.md` - Template structures (use as SKELETON only)
+- `src/lib/fm-nurture-60-day.ts` - Example of niche-specific FM emails
 
 ⚠️ **CRITICAL: Update .ralph/fix_plan.md - mark "Create nurture sequence" as [x]**
 

@@ -35,6 +35,8 @@ export interface ExamConfig {
     scholarshipScore?: number; // default 95
     hasMasterclass?: boolean; // FM has masterclass, others go to sales page
     salesPageUrl?: string; // Optional sales page URL
+    postExamFlow?: "scholarship" | "trustpilot"; // default: "scholarship"
+    trustpilotUrl?: string; // default: https://www.trustpilot.com/review/accredipro.academy
 }
 
 interface DynamicExamComponentProps {
@@ -466,7 +468,187 @@ export function DynamicExamComponent({
         );
     }
 
-    // Results Screen - Always scholarship qualified!
+    // Results Screen - Trustpilot Review Request Flow
+    if (examState === "results" && results && config.postExamFlow === "trustpilot") {
+        const elapsedMinutes = startTime ? Math.max(1, Math.floor((new Date().getTime() - startTime.getTime()) / 60000)) : 1;
+        const trustpilotUrl = config.trustpilotUrl || "https://www.trustpilot.com/review/accredipro.academy";
+
+        return (
+            <div className="rounded-2xl overflow-hidden border-2 border-amber-500 shadow-xl">
+                {/* Gold Success Header - PREMIUM METALLIC */}
+                <div
+                    className="text-burgundy-900 px-6 py-4"
+                    style={{ background: metallicGoldGradient }}
+                >
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center shadow-lg border border-amber-200">
+                                <Award className="w-6 h-6 text-amber-700" />
+                            </div>
+                            <div>
+                                <h1 className="font-bold text-lg text-burgundy-900 drop-shadow-sm">EXAMINATION PASSED</h1>
+                                <p className="text-burgundy-800 text-xs font-medium">Almost Certified!</p>
+                            </div>
+                        </div>
+                        <div className="text-right text-xs">
+                            <div className="flex items-center gap-1 text-burgundy-800">
+                                <FileText className="w-3 h-3" />
+                                <span>Exam: <span className="font-mono font-bold text-burgundy-900">{examId}</span></span>
+                            </div>
+                            <div className="flex items-center gap-1 text-burgundy-800 mt-1">
+                                <User className="w-3 h-3" />
+                                <span>Student: <span className="font-mono font-bold text-burgundy-900">{studentId}</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-gold-50 to-white p-6 md:p-8">
+                    {/* Score Display */}
+                    <div className="text-center mb-6">
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: "spring", duration: 0.6 }}
+                            className="inline-flex items-center justify-center w-28 h-28 rounded-full border-4 border-amber-500 mb-4 shadow-lg"
+                            style={{ background: metallicGoldGradient }}
+                        >
+                            <div className="text-center">
+                                <span className="text-3xl font-black text-burgundy-900 drop-shadow-sm">{results.score}</span>
+                                <span className="text-sm text-burgundy-800 font-bold">/100</span>
+                            </div>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            <h2 className="text-2xl md:text-3xl font-bold text-burgundy-700 mb-1">
+                                🎓 Congratulations — You're Almost Officially Certified!
+                            </h2>
+                            <div className="flex items-center justify-center gap-4 text-sm text-gray-600 mt-2">
+                                <span className="flex items-center gap-1">
+                                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                    {results.correct}/{results.total} Correct
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <Clock className="w-4 h-4 text-gray-400" />
+                                    {elapsedMinutes} min
+                                </span>
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* Sarah's Message */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="flex items-start gap-4 mb-6 bg-white rounded-xl p-5 border-2 border-emerald-200 shadow-sm"
+                    >
+                        <Image
+                            src={SARAH_AVATAR}
+                            alt="Sarah"
+                            width={64}
+                            height={64}
+                            className="w-16 h-16 rounded-full object-cover shadow-md flex-shrink-0 ring-4 ring-emerald-300"
+                        />
+                        <div className="flex-1">
+                            <p className="text-emerald-600 font-semibold mb-2">Sarah here 💚</p>
+                            <p className="text-gray-700 leading-relaxed">
+                                I'm SO proud of you — <span className="font-bold text-gold-600">{results.score}/100</span>! Just one final step before your diploma is issued.
+                            </p>
+                        </div>
+                    </motion.div>
+
+                    {/* Steps Box */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="bg-gradient-to-r from-amber-50 via-gold-50 to-amber-50 rounded-xl p-6 mb-6 border-2 border-amber-300"
+                    >
+                        <h3 className="text-lg font-bold text-burgundy-800 mb-4 text-center">
+                            ✨ How to Receive Your Official Mini Diploma
+                        </h3>
+                        <p className="text-gray-600 text-center text-sm mb-5">
+                            Please complete these two quick steps so we can process and email your certificate within 24–48 hours:
+                        </p>
+
+                        {/* Step 1 */}
+                        <div className="bg-white rounded-lg p-4 mb-4 border border-amber-200">
+                            <div className="flex items-center gap-3 mb-3">
+                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 text-white font-bold text-sm">1</span>
+                                <span className="font-semibold text-gray-800">Leave your honest review clicking the button below!</span>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-4 ml-11">
+                                This helps me as a single Mum to improve all I created! 💚
+                            </p>
+                            <a
+                                href={trustpilotUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block w-full text-center py-3 px-6 rounded-lg font-bold text-white bg-[#00b67a] hover:bg-[#009567] transition-colors shadow-md"
+                            >
+                                ⭐ Leave Trustpilot Review
+                            </a>
+                        </div>
+
+                        {/* Step 2 */}
+                        <div className="bg-white rounded-lg p-4 border border-amber-200">
+                            <div className="flex items-center gap-3 mb-2">
+                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-burgundy-600 text-white font-bold text-sm">2</span>
+                                <span className="font-semibold text-gray-800">Send me a quick message on Heartbeat that says:</span>
+                            </div>
+                            <div className="ml-11">
+                                <p className="text-lg font-bold text-burgundy-700 bg-burgundy-50 px-4 py-2 rounded-lg inline-block mb-2">
+                                    "Review left ✅"
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    — and your diploma will arrive by email in 24–48 hours.
+                                </p>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Email Reminder */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.6 }}
+                        className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-center"
+                    >
+                        <p className="text-sm text-blue-700">
+                            📧 Remember to check <strong>Spam</strong> or <strong>Promotions</strong> folders if you don't see it after 48 hours.
+                        </p>
+                    </motion.div>
+
+                    {/* Thank You Message */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.7 }}
+                        className="text-center"
+                    >
+                        <h4 className="font-bold text-burgundy-700 mb-2">Thank You for Being Part of This Journey 💚</h4>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Your words — even just one sentence — help future students decide if this path is right for them and help me keep improving every class.
+                        </p>
+                        <p className="text-gray-700">
+                            You've worked so hard. Take a deep breath, celebrate, and get ready to add <strong>"{config.nicheDisplayName}"</strong> to your name!
+                        </p>
+                        <p className="text-burgundy-600 font-semibold mt-4">
+                            With pride,<br />
+                            Sarah 💚
+                        </p>
+                    </motion.div>
+                </div>
+            </div>
+        );
+    }
+
+    // Results Screen - Scholarship/Masterclass Flow (default)
     if (examState === "results" && results) {
         const elapsedMinutes = startTime ? Math.max(1, Math.floor((new Date().getTime() - startTime.getTime()) / 60000)) : 1;
 

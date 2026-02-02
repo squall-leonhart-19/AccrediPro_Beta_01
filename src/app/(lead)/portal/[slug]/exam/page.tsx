@@ -6,22 +6,36 @@ import { DynamicExamComponent, ExamConfig } from "@/components/mini-diploma/dyna
 import { getConfigByPortalSlug } from "@/lib/mini-diploma-registry";
 import { Loader2, Award, ArrowRight, CheckCircle, Trophy } from "lucide-react";
 
-// Import exam content files
+// Import exam content files for all niches
 import spiritualHealingExam from "@/components/mini-diploma/exams/content/spiritual-healing.json";
 import functionalMedicineExam from "@/components/mini-diploma/exams/content/functional-medicine.json";
 import adhdCoachingExam from "@/components/mini-diploma/exams/content/adhd-coaching.json";
+import gutHealthExam from "@/components/mini-diploma/exams/content/gut-health.json";
+import hormoneHealthExam from "@/components/mini-diploma/exams/content/hormone-health.json";
+import energyHealingExam from "@/components/mini-diploma/exams/content/energy-healing.json";
+import christianCoachingExam from "@/components/mini-diploma/exams/content/christian-coaching.json";
+import reikiHealingExam from "@/components/mini-diploma/exams/content/reiki-healing.json";
+import petNutritionExam from "@/components/mini-diploma/exams/content/pet-nutrition.json";
+import holisticNutritionExam from "@/components/mini-diploma/exams/content/holistic-nutrition.json";
+import nurseCoachExam from "@/components/mini-diploma/exams/content/nurse-coach.json";
+import healthCoachExam from "@/components/mini-diploma/exams/content/health-coach.json";
+import womensHormoneHealthExam from "@/components/mini-diploma/exams/content/womens-hormone-health.json";
 
-// Map portal slugs to exam configs
+// Map portal slugs to exam configs - all niches have custom exams
 const EXAM_CONFIGS: Record<string, ExamConfig> = {
     "spiritual-healing": spiritualHealingExam as ExamConfig,
     "functional-medicine": functionalMedicineExam as ExamConfig,
     "adhd-coaching": adhdCoachingExam as ExamConfig,
-    // Fallback: other niches use the spiritual-healing exam as template
-    "energy-healing": spiritualHealingExam as ExamConfig,
-    "christian-coaching": spiritualHealingExam as ExamConfig,
-    "gut-health": functionalMedicineExam as ExamConfig,
-    "reiki-healing": spiritualHealingExam as ExamConfig,
-    "pet-nutrition": spiritualHealingExam as ExamConfig,
+    "gut-health": gutHealthExam as ExamConfig,
+    "hormone-health": hormoneHealthExam as ExamConfig,
+    "energy-healing": energyHealingExam as ExamConfig,
+    "christian-coaching": christianCoachingExam as ExamConfig,
+    "reiki-healing": reikiHealingExam as ExamConfig,
+    "pet-nutrition": petNutritionExam as ExamConfig,
+    "holistic-nutrition": holisticNutritionExam as ExamConfig,
+    "nurse-coach": nurseCoachExam as ExamConfig,
+    "health-coach": healthCoachExam as ExamConfig,
+    "womens-hormone-health": womensHormoneHealthExam as ExamConfig,
 };
 
 // Premium gold gradient

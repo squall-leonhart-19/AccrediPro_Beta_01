@@ -23,6 +23,14 @@ import {
     MessageCircle,
     X,
     Users,
+    FileText,
+    Compass,
+    Heart,
+    Map,
+    MessageSquare,
+    Lightbulb,
+    Download,
+    ExternalLink,
 } from "lucide-react";
 import { LiveChatPanel } from "@/components/courses/live-chat-panel";
 import { GraduatesChannel } from "@/components/mini-diploma/graduates-channel";
@@ -78,6 +86,16 @@ interface ModuleConfig {
     lessons: { id: number; title: string; duration: string }[];
 }
 
+// Resource configuration type
+interface ResourceConfig {
+    id: string;
+    title: string;
+    description: string;
+    url: string;
+    type: "core" | "client" | "toolkit";
+    icon: "FileText" | "Users" | "Compass" | "Target" | "Heart" | "Map" | "CheckCircle" | "MessageSquare" | "Lightbulb";
+}
+
 // Diploma configuration type
 export interface DiplomaConfig {
     slug: string;
@@ -86,6 +104,7 @@ export interface DiplomaConfig {
     modules: ModuleConfig[];
     coachName: string;
     coachImage: string;
+    resources?: ResourceConfig[];
 }
 
 interface LeadPortalDashboardProps {
@@ -174,6 +193,18 @@ const ICONS = {
     BookOpen,
     Target,
     Award,
+};
+
+const RESOURCE_ICONS = {
+    FileText,
+    Users,
+    Compass,
+    Target,
+    Heart,
+    Map,
+    CheckCircle,
+    MessageSquare,
+    Lightbulb,
 };
 
 export function LeadPortalDashboard({
@@ -649,6 +680,98 @@ export function LeadPortalDashboard({
                         );
                     })}
                 </div>
+
+                {/* ASI Professional Resources */}
+                {config.resources && config.resources.length > 0 && (
+                    <div className="space-y-4">
+                        <h2 className="text-lg font-black flex items-center gap-2" style={{ color: '#4e1f24' }}>
+                            <FileText className="w-5 h-5" style={{ color: '#d4af37' }} />
+                            ASI Level 0 Resource Bundle
+                            <Badge
+                                className="border-0 text-[10px] font-bold ml-2"
+                                style={{
+                                    background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)',
+                                    color: '#4e1f24'
+                                }}
+                            >
+                                INCLUDED
+                            </Badge>
+                        </h2>
+
+                        <Card className="border-0 shadow-xl overflow-hidden">
+                            <div
+                                className="px-5 py-3 border-b"
+                                style={{
+                                    background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%)',
+                                    borderColor: 'rgba(212, 175, 55, 0.3)'
+                                }}
+                            >
+                                <p className="text-sm text-slate-600">
+                                    Professional resources to support your practice journey. Download and print these
+                                    ASI-verified documents.
+                                </p>
+                            </div>
+                            <CardContent className="p-0">
+                                <div className="divide-y divide-slate-100">
+                                    {config.resources.map((resource) => {
+                                        const ResourceIcon = RESOURCE_ICONS[resource.icon] || FileText;
+                                        const typeColors = {
+                                            core: { bg: '#722f37', text: 'white' },
+                                            client: { bg: '#0891b2', text: 'white' },
+                                            toolkit: { bg: '#059669', text: 'white' },
+                                        };
+                                        const typeLabels = {
+                                            core: 'Core Document',
+                                            client: 'Client Resource',
+                                            toolkit: 'Toolkit',
+                                        };
+
+                                        return (
+                                            <a
+                                                key={resource.id}
+                                                href={resource.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors group"
+                                            >
+                                                <div
+                                                    className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                                                    style={{
+                                                        background: `linear-gradient(135deg, ${typeColors[resource.type].bg} 0%, ${typeColors[resource.type].bg}dd 100%)`
+                                                    }}
+                                                >
+                                                    <ResourceIcon className="w-5 h-5 text-white" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2 mb-0.5">
+                                                        <h4 className="font-medium text-slate-900 truncate">
+                                                            {resource.title}
+                                                        </h4>
+                                                        <Badge
+                                                            className="border-0 text-[10px] font-bold flex-shrink-0"
+                                                            style={{
+                                                                backgroundColor: `${typeColors[resource.type].bg}20`,
+                                                                color: typeColors[resource.type].bg
+                                                            }}
+                                                        >
+                                                            {typeLabels[resource.type]}
+                                                        </Badge>
+                                                    </div>
+                                                    <p className="text-xs text-slate-500 truncate">
+                                                        {resource.description}
+                                                    </p>
+                                                </div>
+                                                <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <ExternalLink className="w-4 h-4 text-slate-400" />
+                                                </div>
+                                            </a>
+                                        );
+                                    })}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                )}
 
                 {/* Certificate Preview */}
                 {!isAllComplete && (

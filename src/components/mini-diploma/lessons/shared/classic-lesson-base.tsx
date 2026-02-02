@@ -19,6 +19,7 @@ import { CertificatePreview } from "@/components/mini-diploma/certificate-previe
 import { DarkModeToggle } from "@/components/mini-diploma/dark-mode-toggle";
 import { TextToSpeech } from "@/components/mini-diploma/text-to-speech";
 import { LessonNotes } from "@/components/mini-diploma/lesson-notes";
+import { getResourcesForModule } from "@/components/lead-portal/diploma-configs";
 
 
 const SARAH_AVATAR = "/coaches/sarah-coach.webp";
@@ -469,6 +470,42 @@ export function ClassicLessonBase({
                                 <Progress value={progressPercent} className="flex-1 h-3" />
                                 <span className="text-sm font-medium text-slate-600">{Math.round(progressPercent)}%</span>
                             </div>
+
+                            {/* Inline Resources Unlocked - Shows on module-ending lessons */}
+                            {(lessonNumber === 3 || lessonNumber === 6 || lessonNumber === 9) && (
+                                <div className="mb-4 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-200">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center">
+                                            <Sparkles className="w-4 h-4 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-emerald-800">🎉 Module {lessonNumber / 3} Complete!</p>
+                                            <p className="text-xs text-emerald-600">
+                                                {getResourcesForModule((lessonNumber / 3) as 1 | 2 | 3).length} resources unlocked
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        {getResourcesForModule((lessonNumber / 3) as 1 | 2 | 3).map((resource) => (
+                                            <a
+                                                key={resource.id}
+                                                href={resource.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-3 p-2 bg-white rounded-lg border border-emerald-100 hover:border-emerald-300 hover:shadow-sm transition-all group"
+                                            >
+                                                <div className="w-6 h-6 rounded bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                                                    <Award className="w-3 h-3 text-emerald-600" />
+                                                </div>
+                                                <span className="flex-1 text-sm font-medium text-slate-700 truncate">
+                                                    {resource.title}
+                                                </span>
+                                                <ArrowRight className="w-4 h-4 text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             {lessonNumber < totalLessons ? (
                                 <Button
