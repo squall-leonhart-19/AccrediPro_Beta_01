@@ -791,11 +791,33 @@ export async function POST(request: NextRequest) {
                         data: {
                             senderId: jessica.id,
                             receiverId: user.id,
-                            content: `Hey ${firstName || "there"}! 👋\n\nI'm Jessica, and I'll be personally handling your Done For You website setup! 🎉\n\nTo get started, I just need you to fill out a quick intake form (about 15 minutes). It helps me understand your coaching, your vibe, and exactly how you want your website to look.\n\n👉 **Start your intake form here:**\n${intakeUrl}\n\nI'll have your website ready within 7 days of receiving your form. Can't wait to build something amazing for you!`,
+                            content: `Hey ${firstName || "there"}! 👋\n\nI'm Jessica, and I'll be personally handling your Done For You website setup! 🎉\n\nTo get started, I just need you to fill out a quick intake form (about 15 minutes). It helps me understand your coaching, your vibe, and exactly how you want your website to look.\n\n👉 Start your intake form here:\n${intakeUrl}\n\nI'll have your website ready within 7 days of receiving your form. Can't wait to build something amazing for you!`,
                             messageType: "DIRECT",
                         },
                     });
                     console.log(`[CF Purchase] ✅ Jessica DM sent for DFY`);
+                } else {
+                    console.error(`[CF Purchase] ⚠️ Jessica user NOT FOUND - DM not sent for DFY order ${dfyPurchase.id}`);
+                }
+
+                // Sync to Google Sheets (new DFY purchase row - intake pending)
+                try {
+                    const { appendDFYOrderToSheet, isGoogleSheetsConfigured } = await import("@/lib/google-sheets");
+                    if (isGoogleSheetsConfigured()) {
+                        await appendDFYOrderToSheet({
+                            id: dfyPurchase.id,
+                            createdAt: new Date(),
+                            userEmail: normalizedEmail,
+                            firstName: firstName || "",
+                            lastName: lastName || "",
+                            productTitle: dfyProduct.title,
+                            purchasePrice: purchaseValue,
+                            fulfillmentStatus: "PENDING",
+                        });
+                        console.log(`[CF Purchase] ✅ DFY order synced to Google Sheets`);
+                    }
+                } catch (sheetsError) {
+                    console.error("[CF Purchase] Google Sheets sync failed:", sheetsError);
                 }
 
             } catch (dfyError) {
@@ -936,6 +958,33 @@ export async function POST(request: NextRequest) {
                 processedAt: new Date(),
             },
         });
+
+        // =====================================================
+        // 9. SCHEDULE POSTMARK DELIVERY CONFIRMATION (15 min delay)
+        // =====================================================
+        // Sent via Postmark as independent delivery evidence for disputes
+        try {
+            const scheduledFor = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
+            await prisma.scheduledJob.create({
+                data: {
+                    jobType: "postmark_delivery_confirmation",
+                    referenceId: paymentId || undefined,
+                    userId: user.id,
+                    scheduledFor,
+                    payload: {
+                        to: normalizedEmail,
+                        firstName: firstName || "there",
+                        productName: contentName,
+                        amount: String(purchaseValue),
+                        transactionId: paymentId ? `cf_${data.id || data.order_id || ""}` : undefined,
+                        purchaseDate: new Date().toISOString(),
+                    },
+                },
+            });
+            console.log(`[CF Purchase] ✅ Postmark delivery confirmation scheduled for ${scheduledFor.toISOString()}`);
+        } catch (scheduleError) {
+            console.error("[CF Purchase] Failed to schedule Postmark delivery:", scheduleError);
+        }
 
         console.log(`[CF Purchase] ✅ Complete! User: ${normalizedEmail}, Course: ${courseSlug}, Meta: ${metaResult.success ? "✅" : "❌"}`);
 

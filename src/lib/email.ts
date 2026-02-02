@@ -2644,3 +2644,165 @@ export async function sendDFYIntakeReceivedEmail({
   });
 }
 
+/**
+ * Send purchase delivery confirmation via Postmark (independent provider)
+ *
+ * Sent ~15 minutes after purchase as a secondary delivery record.
+ * Purpose: dispute evidence, backup delivery log on a separate provider,
+ * and second touchpoint in case original email hit spam.
+ *
+ * Always sent via Postmark directly (NOT through Resend).
+ */
+export async function sendPostmarkDeliveryConfirmation({
+  to,
+  firstName,
+  productName,
+  amount,
+  transactionId,
+  loginUrl,
+  purchaseDate,
+}: {
+  to: string;
+  firstName: string;
+  productName: string;
+  amount: string;
+  transactionId?: string;
+  loginUrl?: string;
+  purchaseDate: string;
+}) {
+  if (!postmarkClient) {
+    console.log("[POSTMARK DELIVERY] Postmark not configured, skipping delivery confirmation");
+    return { success: false, error: "Postmark not configured" };
+  }
+
+  const dashboardUrl = loginUrl || `${BASE_URL}/login`;
+  const formattedDate = new Date(purchaseDate).toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /></head>
+    <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5;">
+      <div style="max-width: 600px; margin: 0 auto; background: #ffffff;">
+        <div style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 40px 30px; text-align: center;">
+          <h1 style="color: #D4AF37; margin: 0; font-size: 28px; font-family: Georgia, serif;">AccrediPro Academy</h1>
+          <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0; font-size: 14px;">Purchase Delivery Confirmation</p>
+        </div>
+
+        <div style="padding: 40px 30px;">
+          <h2 style="color: #722F37; margin-top: 0; font-size: 22px;">Your Purchase Has Been Delivered</h2>
+
+          <p style="color: #555; font-size: 16px;">Hi ${firstName},</p>
+
+          <p style="color: #555; font-size: 16px;">This email confirms that your purchase has been successfully delivered to your AccrediPro Academy account. Your content is ready and waiting for you.</p>
+
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 25px; margin: 25px 0;">
+            <p style="margin: 0 0 5px 0; font-size: 13px; color: #15803d; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Order Details</p>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+              <tr>
+                <td style="padding: 8px 0; color: #666; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Product</td>
+                <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 600; text-align: right; border-bottom: 1px solid #e5e7eb;">${productName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #666; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Amount</td>
+                <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 600; text-align: right; border-bottom: 1px solid #e5e7eb;">$${amount} USD</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #666; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Date</td>
+                <td style="padding: 8px 0; color: #333; font-size: 14px; text-align: right; border-bottom: 1px solid #e5e7eb;">${formattedDate}</td>
+              </tr>
+              ${transactionId ? `<tr>
+                <td style="padding: 8px 0; color: #666; font-size: 14px;">Reference</td>
+                <td style="padding: 8px 0; color: #333; font-size: 14px; text-align: right; font-family: monospace;">${transactionId}</td>
+              </tr>` : ""}
+            </table>
+          </div>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${dashboardUrl}" style="background: linear-gradient(135deg, #722F37, #8B3A42); color: white; padding: 14px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">Access Your Account</a>
+          </div>
+
+          <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 15px; margin: 20px 0;">
+            <p style="margin: 0; font-size: 13px; color: #92400e;">
+              <strong>Important:</strong> This is your official delivery confirmation. Please keep this email for your records. If you have any issues accessing your content, reply to this email or contact support@accredipro-certificate.com.
+            </p>
+          </div>
+
+          <p style="color: #555; font-size: 16px; margin-top: 30px;">Welcome aboard,<br/><strong>The AccrediPro Academy Team</strong></p>
+        </div>
+
+        <div style="background: #f8f9fa; padding: 25px; text-align: center; border-top: 1px solid #eee;">
+          <p style="margin: 0; font-size: 12px; color: #999;">AccrediPro Academy | Professional Certification Excellence</p>
+          <p style="margin: 5px 0 0 0; font-size: 11px; color: #bbb;">This delivery confirmation was sent from an independent email system for your records.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const textContent = `Purchase Delivery Confirmation\n\nHi ${firstName},\n\nThis confirms your purchase has been delivered to your AccrediPro Academy account.\n\nProduct: ${productName}\nAmount: $${amount} USD\nDate: ${formattedDate}\n${transactionId ? `Reference: ${transactionId}\n` : ""}\nAccess your account: ${dashboardUrl}\n\nPlease keep this email for your records.\n\nThe AccrediPro Academy Team`;
+
+  try {
+    const result = await postmarkClient.sendEmail({
+      From: POSTMARK_FROM_TRANSACTIONAL,
+      To: to,
+      Subject: `Delivery Confirmation: ${productName} - AccrediPro Academy`,
+      HtmlBody: htmlContent,
+      TextBody: textContent,
+      Tag: "delivery-confirmation",
+      TrackOpens: true,
+      TrackLinks: "HtmlAndText" as any,
+      MessageStream: "outbound",
+    });
+
+    console.log(`[POSTMARK DELIVERY] ✅ Confirmation sent to ${to} - MessageID: ${result.MessageID}`);
+
+    // Log in EmailSend table for tracking
+    try {
+      await prisma.emailSend.create({
+        data: {
+          toEmail: to,
+          subject: `Delivery Confirmation: ${productName} - AccrediPro Academy`,
+          status: "SENT",
+          provider: "postmark",
+          externalId: result.MessageID || null,
+          sentAt: new Date(),
+          emailType: "delivery_confirmation",
+        },
+      });
+    } catch (logError) {
+      console.error("[POSTMARK DELIVERY] Failed to log email send:", logError);
+    }
+
+    return { success: true, messageId: result.MessageID };
+  } catch (error) {
+    console.error(`[POSTMARK DELIVERY] ❌ Failed to send to ${to}:`, error);
+
+    // Log failure
+    try {
+      await prisma.emailSend.create({
+        data: {
+          toEmail: to,
+          subject: `Delivery Confirmation: ${productName} - AccrediPro Academy`,
+          status: "FAILED",
+          provider: "postmark",
+          lastError: String(error),
+          emailType: "delivery_confirmation",
+        },
+      });
+    } catch (logError) {
+      console.error("[POSTMARK DELIVERY] Failed to log email failure:", logError);
+    }
+
+    return { success: false, error: String(error) };
+  }
+}
+

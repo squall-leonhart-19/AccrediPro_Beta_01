@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
                 data: {
                     senderId: jessica.id,
                     receiverId: purchase.userId,
-                    content: `Quick update! 🚀 I've started working on your ${purchase.product.name}. Making great progress and you'll have everything soon!`,
+                    content: `Quick update! 🚀 I've started working on your ${purchase.product.title}. Making great progress and you'll have everything soon!`,
                     messageType: "DIRECT",
                 },
             });
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
                 await sendDFYDeliveryEmail({
                     to: purchase.user.email,
                     firstName: purchase.user.firstName || "there",
-                    productName: purchase.product.name,
+                    productName: purchase.product.title,
                     dashboardUrl,
                 });
             }
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
                     data: {
                         senderId: jessica.id,
                         receiverId: purchase.userId,
-                        content: `Great news, ${purchase.user.firstName}! 🎁\n\nYour ${purchase.product.name} is complete and waiting in your dashboard! Everything has been customized based on your intake form.\n\nLet me know if you need any tweaks or have questions. I'm here to help!`,
+                        content: `Great news, ${purchase.user.firstName}! 🎁\n\nYour ${purchase.product.title} is complete and waiting in your dashboard! Everything has been customized based on your intake form.\n\nLet me know if you need any tweaks or have questions. I'm here to help!`,
                         messageType: "DIRECT",
                     },
                 });

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { sendDFYIntakeReceivedEmail } from "@/lib/email";
+import { appendDFYOrderToSheet, isGoogleSheetsConfigured } from "@/lib/google-sheets";
 
 // Submit DFY intake form
 export async function POST(request: NextRequest) {
@@ -116,6 +117,27 @@ export async function POST(request: NextRequest) {
         } catch (emailError) {
             console.error("[DFY Intake] Email to Jessica failed:", emailError);
             // Don't fail the request if email fails
+        }
+
+        // Sync to Google Sheets (auto-sync on submit)
+        if (isGoogleSheetsConfigured()) {
+            try {
+                await appendDFYOrderToSheet({
+                    id: purchase.id,
+                    createdAt: purchase.createdAt,
+                    userEmail: purchase.user.email || "",
+                    firstName: purchase.user.firstName || "",
+                    lastName: purchase.user.lastName || "",
+                    productTitle: purchase.product.title,
+                    purchasePrice: Number(purchase.purchasePrice),
+                    fulfillmentStatus: "INTAKE_RECEIVED",
+                    notes: purchase.notes,
+                    intakeData,
+                });
+                console.log(`[DFY Intake] ✅ Google Sheets synced for ${purchase.user.email}`);
+            } catch (sheetsError) {
+                console.error("[DFY Intake] Google Sheets sync failed:", sheetsError);
+            }
         }
 
         return NextResponse.json({ success: true });
