@@ -89,8 +89,21 @@ async function getSheet() {
     sheet = await doc.addSheet({
       title: "DFY Orders",
       headerValues: SHEET_HEADERS,
+      gridProperties: {
+        columnCount: Math.max(SHEET_HEADERS.length, 30),
+        rowCount: 1000,
+      },
     });
     console.log("[GOOGLE SHEETS] Created 'DFY Orders' sheet with headers");
+  } else {
+    // Auto-resize if sheet doesn't have enough columns
+    if (sheet.columnCount < SHEET_HEADERS.length) {
+      await sheet.resize({
+        columnCount: Math.max(SHEET_HEADERS.length, 30),
+        rowCount: Math.max(sheet.rowCount, 1000),
+      });
+      console.log(`[GOOGLE SHEETS] Resized sheet to ${SHEET_HEADERS.length} columns`);
+    }
   }
 
   return sheet;
