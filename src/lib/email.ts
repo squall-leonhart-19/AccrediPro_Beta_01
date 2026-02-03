@@ -24,6 +24,9 @@ const FROM_EMAIL_MARKETING = process.env.FROM_EMAIL_MARKETING || "Sarah <info@ac
 // Personal emails for login credentials - plain, personal, lands in Primary
 const FROM_EMAIL_PERSONAL = "Sarah Mitchell <sarah@accredipro-certificate.com>";
 
+// DFY emails - sent as Jessica via concierge address
+const FROM_EMAIL_DFY = "Jessica | AccrediPro Concierge <concierge@accredipro.academy>";
+
 // POSTMARK SENDER ADDRESSES (accredipro.academy domain verified)
 const POSTMARK_FROM_TRANSACTIONAL = "AccrediPro <info@accredipro.academy>";
 const POSTMARK_FROM_MARKETING = "Sarah <sarah@accredipro.academy>";
@@ -252,6 +255,7 @@ interface SendEmailOptions {
   html: string;
   text?: string;
   replyTo?: string;
+  from?: string; // Custom FROM address (overrides default transactional/marketing)
   type?: 'transactional' | 'marketing'; // Default: transactional
 }
 
@@ -346,6 +350,7 @@ export async function sendEmail({
   html,
   text,
   replyTo,
+  from,
   type = 'transactional',
   emailType,
   userId,
@@ -392,7 +397,7 @@ export async function sendEmail({
       }
     }
 
-    const fromEmail = type === 'marketing' ? FROM_EMAIL_MARKETING : FROM_EMAIL_TRANSACTIONAL;
+    const fromEmail = from || (type === 'marketing' ? FROM_EMAIL_MARKETING : FROM_EMAIL_TRANSACTIONAL);
 
     // Create email log record BEFORE sending (status: SENDING)
     try {
@@ -2451,6 +2456,8 @@ export async function sendDFYWelcomeEmail({
     to,
     subject: `Your ${productName} is Confirmed! Next Steps Inside`,
     html: emailWrapper(content, `Hey ${firstName}! Your DFY package is confirmed. Fill out the intake form to get started.`),
+    from: FROM_EMAIL_DFY,
+    replyTo: "concierge@accredipro.academy",
   });
 }
 
@@ -2503,6 +2510,8 @@ export async function sendDFYIntakeReminderEmail({
     to,
     subject: `Reminder: Fill Out Your ${productName} Intake Form 📝`,
     html: emailWrapper(content, `Hey ${firstName}! Quick reminder to complete your intake form so I can start on your DFY package.`),
+    from: FROM_EMAIL_DFY,
+    replyTo: "concierge@accredipro.academy",
   });
 }
 
@@ -2552,6 +2561,8 @@ export async function sendDFYDeliveryEmail({
     to,
     subject: `Your ${productName} is Ready! 🎁`,
     html: emailWrapper(content, `${firstName}, your DFY package is ready and waiting in your dashboard!`),
+    from: FROM_EMAIL_DFY,
+    replyTo: "concierge@accredipro.academy",
   });
 }
 
