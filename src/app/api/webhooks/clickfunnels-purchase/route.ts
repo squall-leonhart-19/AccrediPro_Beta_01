@@ -429,6 +429,7 @@ export async function POST(request: NextRequest) {
                 firstName: true,
                 lastName: true,
                 phone: true,
+                userType: true,
             },
         });
 
@@ -568,6 +569,27 @@ export async function POST(request: NextRequest) {
             }
         } else {
             console.error(`[CF Purchase] Course not found: ${courseSlug}`);
+        }
+
+        // =====================================================
+        // 2b. UPGRADE LEAD TO STUDENT (if applicable)
+        // =====================================================
+        // If user was a LEAD (mini-diploma user) and just bought a paid course, upgrade them
+        if (user.userType === "LEAD") {
+            try {
+                const { upgradeLeadToStudent, isPaidCourseSlug } = await import("@/lib/upgrade-lead-to-student");
+                if (isPaidCourseSlug(courseSlug)) {
+                    const upgradeResult = await upgradeLeadToStudent(user.id, {
+                        source: "webhook",
+                    });
+                    if (upgradeResult.upgraded) {
+                        console.log(`[CF Purchase] ✅ LEAD upgraded to STUDENT: ${normalizedEmail}`);
+                    }
+                }
+            } catch (upgradeError) {
+                console.error(`[CF Purchase] ⚠️ Lead upgrade failed:`, upgradeError);
+                // Don't fail the webhook — enrollment already happened
+            }
         }
 
         // =====================================================

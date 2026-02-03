@@ -29,6 +29,7 @@ export async function GET(
                 avatar: true,
                 createdAt: true,
                 role: true,
+                userType: true,
                 tags: {
                     select: {
                         id: true,

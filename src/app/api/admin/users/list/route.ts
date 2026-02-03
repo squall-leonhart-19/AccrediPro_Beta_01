@@ -131,6 +131,7 @@ export async function GET(request: NextRequest) {
           avatar: true,
           phone: true,
           role: true,
+          userType: true,
           isActive: true,
           createdAt: true,
           lastLoginAt: true,

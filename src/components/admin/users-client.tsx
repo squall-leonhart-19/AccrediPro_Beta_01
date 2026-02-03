@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -83,6 +84,7 @@ interface User {
   avatar: string | null;
   phone: string | null;
   role: string;
+  userType?: "LEAD" | "STUDENT";
   isActive: boolean;
   createdAt: Date;
   lastLoginAt: Date | null;
@@ -1947,6 +1949,45 @@ export function UsersClient({ courses }: UsersClientProps) {
                     <div>
                       <p className="text-gray-500">Role</p>
                       <Badge className={`mt-1 border ${roleColors[selectedUser.role]}`}>{selectedUser.role}</Badge>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Account Type</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge className={`border ${selectedUser.userType === "LEAD" ? "bg-orange-100 text-orange-700 border-orange-200" : "bg-green-100 text-green-700 border-green-200"}`}>
+                          {selectedUser.userType === "LEAD" ? "🔓 LEAD" : "✅ STUDENT"}
+                        </Badge>
+                        {selectedUser.userType === "LEAD" && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-6 text-xs px-2 border-burgundy-300 text-burgundy-600 hover:bg-burgundy-50"
+                            onClick={async () => {
+                              if (!confirm(`Upgrade ${selectedUser.firstName || selectedUser.email} from LEAD to STUDENT?\n\nThis will:\n• Give full platform access\n• Remove access time limit\n• Redirect to /dashboard on next login`)) return;
+                              try {
+                                const res = await fetch(`/api/admin/users/${selectedUser.id}/upgrade`, {
+                                  method: "POST",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({}),
+                                });
+                                const data = await res.json();
+                                if (data.success) {
+                                  toast.success(data.message);
+                                  // Refresh user data
+                                  selectedUser.userType = "STUDENT";
+                                  setDetailDialogOpen(false);
+                                  fetchUsers();
+                                } else {
+                                  toast.error(data.error || "Upgrade failed");
+                                }
+                              } catch (err) {
+                                toast.error("Failed to upgrade user");
+                              }
+                            }}
+                          >
+                            ⬆️ Upgrade to Student
+                          </Button>
+                        )}
+                      </div>
                     </div>
                     <div>
                       <p className="text-gray-500">Status</p>

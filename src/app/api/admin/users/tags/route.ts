@@ -447,6 +447,24 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      // Upgrade LEAD to STUDENT if enrolled in a paid course
+      if (enrolledCourses.length > 0) {
+        try {
+          const { upgradeLeadToStudent, isPaidCourseSlug } = await import("@/lib/upgrade-lead-to-student");
+          const hasPaidCourse = courseSlugs.some((s: string) => isPaidCourseSlug(s));
+          if (hasPaidCourse) {
+            const upgradeResult = await upgradeLeadToStudent(data.userId, {
+              source: "tag",
+            });
+            if (upgradeResult.upgraded) {
+              console.log(`[Tags API] ✅ LEAD upgraded to STUDENT for user ${data.userId}`);
+            }
+          }
+        } catch (upgradeError) {
+          console.error('[Tags API] Lead upgrade failed:', upgradeError);
+        }
+      }
+
       // Send enrollment email(s) if user found and courses enrolled
       if (targetUser && targetUser.email && enrolledCourses.length > 0) {
         try {
