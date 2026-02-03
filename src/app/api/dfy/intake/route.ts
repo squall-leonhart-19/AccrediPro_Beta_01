@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        // Send DM from Jessica
+        // Send DM from Jessica to student (confirmation)
         if (jessica) {
             await prisma.message.create({
                 data: {
@@ -101,6 +101,18 @@ export async function POST(request: NextRequest) {
                     messageType: "DIRECT",
                 },
             });
+
+            // Send auto-DM from student TO Jessica (so Jessica sees it in her inbox)
+            const customerName = `${purchase.user.firstName || ""} ${purchase.user.lastName || ""}`.trim() || "A customer";
+            await prisma.message.create({
+                data: {
+                    senderId: purchase.userId,
+                    receiverId: jessica.id,
+                    content: `Hi Jessica! I just completed my intake form for ${purchase.product.title}. Looking forward to seeing the final result! 😊`,
+                    messageType: "DIRECT",
+                },
+            });
+            console.log(`[DFY Intake] ✅ Auto-DM sent from ${customerName} to Jessica`);
         }
 
         // Send email to Jessica with full intake details
