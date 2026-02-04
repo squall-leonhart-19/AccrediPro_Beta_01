@@ -75,7 +75,7 @@ A graduate told us: "I was terrified no one would take me seriously. Then I real
             type: 'system',
             content: `**Meet Nancy, 49 - Her First Client Story**
 
-"I'll never forget getting my first paying client. I was SO nervous. Who was I to charge $150 for health advice?
+"I'll never forget getting my first paying client. I was SO nervous. Who was I to charge $175 for health advice?
 
 Her name was Debbie. Friend of a friend. Chronic fatigue for 5 years. Multiple doctors, no answers.
 
@@ -87,17 +87,17 @@ We worked together for 4 months. She lost 22 pounds. Her energy came back. Her b
 
 At the end, she hugged me and said: 'You changed my life.'
 
-That one client referred 3 more. Those 3 referred 7 more. That's how it works.
+That one client referred 4 more. Those 4 referred 9 more. That's how it works.
 
 Current stats (18 months later):
-- 14 active clients
-- $175/session
-- Monthly income: $4,900
+- 16 active clients
+- $200/session
+- Monthly income: $5,600
 - 100% from referrals now
 
 It all started with Debbie. And my willingness to just TRY."
 
-- Nancy R., Illinois | ASI Graduate 2023`,
+- Nancy R., Illinois | $5,600/month | 14 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -440,16 +440,16 @@ My approach was simple: I just started talking about what I was learning. At cof
 That's it. No fancy marketing. No website at first. Just conversations.
 
 Month 1: 2 practice clients (friends from church)
-Month 2: 1 paid client ($100/session - I was nervous to charge more)
-Month 3: 3 paid clients (referrals from my first one)
-Month 6: 6 clients at $150/session
-Now (14 months): 9 clients at $175/session
+Month 2: 1 paid client ($125/session - I was nervous to charge more)
+Month 3: 4 paid clients (referrals from my first one)
+Month 6: 8 clients at $175/session
+Now (14 months): 12 clients at $200/session
 
-Monthly income: $3,150 working 12 hours/week.
+Monthly income: $4,800 working 12 hours/week.
 
 I'm 55, not on Instagram, and making more than I did as an office manager. You don't need fancy marketing. You need to help people."
 
-- Gloria T., Tennessee | ASI Graduate 2024`,
+- Gloria T., Tennessee | $4,800/month | 12 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -497,7 +497,7 @@ Do this TODAY while it's fresh.`,
             systemStyle: 'exercise',
         },
 
-        // PREVIEW
+        // GAP BUILDER
         {
             id: 26,
             type: 'coach',
@@ -506,10 +506,22 @@ Do this TODAY while it's fresh.`,
         {
             id: 27,
             type: 'coach',
-            content: `In the final lesson, we're going to map out YOUR personal income potential. You'll see exactly what's possible based on YOUR situation.`,
+            content: `Here's the thing - I've shown you the basics of client acquisition. Full practitioners get advanced marketing training, done-for-you templates, workshop blueprints, and our client attraction system...`,
         },
         {
             id: 28,
+            type: 'coach',
+            content: `Client acquisition is THE skill that separates $0/month practitioners from $5K+ earners. And it's learnable.`,
+        },
+
+        // BRIDGE TO LESSON 9
+        {
+            id: 29,
+            type: 'coach',
+            content: `In the final lesson, we're going to map out YOUR personal income potential. You'll see exactly what's possible based on YOUR situation.`,
+        },
+        {
+            id: 30,
             type: 'system',
             content: `**Coming Up: Your Income Calculator**
 
@@ -519,7 +531,10 @@ Do this TODAY while it's fresh.`,
 - Clear path from here to there
 - Your certificate awaits!
 
-This is where everything comes together. See you in Lesson 9!`,
+**The Final Piece:** YOUR PERSONALIZED PLAN
+**What You'll See:** Exactly what $5K-15K/month looks like for YOU
+
+This is where everything comes together. Ready for your final lesson?`,
             systemStyle: 'info',
         },
     ];

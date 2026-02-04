@@ -48,7 +48,33 @@ export function Lesson2Gut({
         {
             id: 5,
             type: 'coach',
-            content: `The practitioner? She charged $200/session and had a 6-month waitlist. That practitioner could be YOU.`,
+            content: `The practitioner? She charged $225/session and had an 8-week waitlist. That practitioner could be YOU.`,
+        },
+
+        // GUT HEALTH NICHE SPOTLIGHT
+        {
+            id: 6,
+            type: 'system',
+            content: `**🔬 NICHE SPOTLIGHT: Gut Health Practitioners**
+
+**The Market:**
+- 70 million Americans have digestive disorders
+- IBS alone affects 25-45 million Americans
+- Gut issues are the #1 reason people seek functional medicine
+
+**What Practitioners Earn:**
+- Average: $4,200 - $6,400/month
+- Sessions: $175-250 each
+- Client retention: 4-6 months (recurring revenue!)
+
+**Why This Niche Wins:**
+- Long-term client relationships (gut healing takes time)
+- Results are VISIBLE (no more bloating = happy client)
+- Endless referrals ("You have to talk to my coach!")
+- Less competition than general wellness
+
+"I work 18 hours a week and have an 8-week waitlist. All gut health." - Rachel, 44`,
+            systemStyle: 'income-hook',
         },
 
         // THE GUT REVELATION
@@ -97,7 +123,7 @@ A graduate told me: "I felt like an imposter at first. Then I helped my first cl
 
         // REAL TESTIMONIAL - Gut Focus
         {
-            id: 9,
+            id: 10,
             type: 'system',
             content: `**Meet Rachel, 44 - Former HR Manager**
 
@@ -105,16 +131,18 @@ A graduate told me: "I felt like an imposter at first. Then I helped my first cl
 
 Here's what my practice looks like now:
 
-- 12 gut health clients
-- $175/session, 2 sessions/month each
-- Monthly recurring: $4,200
-- Waitlist of 8 people
+- 15 gut health clients
+- $200/session, 2 sessions/month each
+- Monthly recurring: $6,000
+- Waitlist of 12 people
+
+I turned away 4 clients last week. I had to RAISE my rates just to slow demand.
 
 My clients call me their 'gut guru.' I don't have a medical degree. I have lived experience and the right training.
 
 The certification gave me the credibility. My results keep clients coming."
 
-- Rachel B., Arizona | ASI Graduate 2023`,
+- Rachel B., Arizona | $6,000/month | 18 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -377,7 +405,7 @@ One graduate said: "My gut health clients stay an average of 5 months. That's $8
 
         // SECOND TESTIMONIAL - Different Angle
         {
-            id: 24,
+            id: 25,
             type: 'system',
             content: `**Meet Diane, 51 - Career Changer**
 
@@ -388,39 +416,54 @@ I healed myself using functional medicine principles, then got certified to help
 My specialty now? Post-antibiotic gut recovery. It's incredibly specific, and clients FIND me because of it.
 
 Current stats:
-- 10 active clients
-- $200/session (specialized niche = higher rates)
-- Working 15 hours/week
-- Last month: $4,000
+- 14 active clients
+- $225/session (specialized niche = higher rates)
+- Working 16 hours/week
+- Last month: $5,200
 
-I never thought I'd leave dental hygiene. Now I can't imagine going back."
+I never thought I'd leave dental hygiene. Now I can't imagine going back. I'm home when my grandkids visit. I set my own schedule. And I help people who were suffering like I was."
 
-- Diane F., Florida | ASI Graduate 2024`,
+- Diane F., Florida | $5,200/month | 16 hrs/week`,
             systemStyle: 'testimonial',
         },
 
-        // PREVIEW
+        // GAP BUILDER
         {
-            id: 25,
+            id: 26,
             type: 'coach',
             content: `{name}, you now understand gut health better than 90% of people - including many doctors. Seriously.`,
         },
         {
-            id: 26,
+            id: 27,
             type: 'coach',
-            content: `In the next lesson, we're diving into INFLAMMATION - the silent killer that connects to almost every chronic disease. This one's a game-changer.`,
+            content: `But here's the thing - what I just taught you is the FOUNDATION. Full practitioners learn advanced protocols for SIBO, candida, parasites, histamine intolerance, H. pylori...`,
         },
         {
-            id: 27,
+            id: 28,
+            type: 'coach',
+            content: `Each one of those is a specialty within a specialty. And each one has desperate clients willing to pay premium prices for someone who understands their unique situation.`,
+        },
+
+        // BRIDGE TO LESSON 3
+        {
+            id: 29,
+            type: 'coach',
+            content: `Now here's what's fascinating - gut issues don't exist in isolation. There's a silent fire burning underneath almost every chronic condition...`,
+        },
+        {
+            id: 30,
             type: 'system',
             content: `**Coming Up: The Inflammation Blueprint**
 
 - Why inflammation is behind EVERY chronic disease
 - The 6 hidden triggers most people ignore
 - Your first case study challenge
-- How anti-inflammatory coaching is a $2.3B market
+- What anti-inflammation specialists earn
 
-You're crushing it. See you in Lesson 3!`,
+**Inflammation/Autoimmune Market:** 24 million Americans with autoimmune diseases
+**Average Income:** $4,400 - $6,200/month
+
+Ready to understand the ROOT of chronic disease?`,
             systemStyle: 'info',
         },
     ];

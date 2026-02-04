@@ -57,6 +57,34 @@ This isn't paranoia. It's the explanation for why so many people feel terrible d
             systemStyle: 'stats',
         },
 
+        // TOXIN NICHE SPOTLIGHT
+        {
+            id: 5,
+            type: 'system',
+            content: `**☢️ NICHE SPOTLIGHT: Toxin & Mold Specialists**
+
+**The Market:**
+- 50% of US buildings have mold problems
+- 80,000+ synthetic chemicals in our environment
+- Mold illness is a HIDDEN EPIDEMIC
+- Most doctors don't recognize or test for it
+
+**What Practitioners Earn:**
+- Average: $5,500 - $8,200/month
+- Sessions: $225-350 each (PREMIUM)
+- Mold recovery clients stay 6-12 months
+
+**Why This Niche Wins:**
+- PREMIUM pricing (specialized knowledge)
+- Low competition (most coaches avoid this)
+- Desperate clients (mold illness is devastating)
+- Long-term relationships (recovery takes time)
+- Oncologist referrals (cancer prevention)
+
+"Mold clients stay with me for 8-12 months. That's $2,400-4,000 per client." - Christine, 46`,
+            systemStyle: 'income-hook',
+        },
+
         // OBJECTION CRUSHER: "Can I legally advise on this?"
         {
             id: 5,
@@ -91,7 +119,7 @@ This is environmental health education. It's legal in all 50 states.`,
 
         // TESTIMONIAL - Detox Focus
         {
-            id: 7,
+            id: 8,
             type: 'system',
             content: `**Meet Christine, 46 - Former Real Estate Agent**
 
@@ -106,14 +134,14 @@ My clients:
 - Anyone sensitive to chemicals
 
 My numbers (18 months in):
-- 9 clients currently
-- $225/session (specialized = premium)
-- Monthly: $4,050
+- 12 clients currently
+- $275/session (specialized = premium)
+- Monthly: $6,600
 - Working from home, my own hours
 
-I'm not a doctor. I'm a 'toxin detective.' And people are desperate for someone like me."
+I'm not a doctor. I'm a 'toxin detective.' And people are desperate for someone like me. My last 6 clients came from referrals."
 
-- Christine A., Georgia | ASI Graduate 2023`,
+- Christine A., Georgia | $6,600/month | 18 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -345,7 +373,7 @@ Why this niche is exploding:
 
         // SECOND TESTIMONIAL
         {
-            id: 19,
+            id: 20,
             type: 'system',
             content: `**Meet Angela, 50 - Cancer Survivor**
 
@@ -359,16 +387,16 @@ My focus:
 - Supporting detox pathways naturally
 
 The numbers:
-- 7 clients currently
-- $250/session (premium niche)
-- Monthly: $3,500
+- 10 clients currently
+- $300/session (premium niche)
+- Monthly: $5,400
 - Referrals from oncologists (!!)
 
 Yes, oncologists refer to me. They don't have time to talk about plastics and cleaning products. I do.
 
 Cancer gave me purpose. Now I help others not become statistics."
 
-- Angela P., California | ASI Graduate 2024`,
+- Angela P., California | $5,400/month | 15 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -399,28 +427,43 @@ This is exactly what you'll walk clients through. Start with yourself - you'll s
             systemStyle: 'exercise',
         },
 
-        // PREVIEW
+        // GAP BUILDER
         {
-            id: 21,
+            id: 22,
             type: 'coach',
             content: `{name}, you now understand toxins better than most healthcare providers. This knowledge is genuinely valuable.`,
         },
         {
-            id: 22,
+            id: 23,
             type: 'coach',
-            content: `Next up: STRESS & HORMONES. We're diving into the burnout epidemic and why cortisol is secretly destroying your clients' health. This one hits close to home for most women.`,
+            content: `But here's the thing - I've given you the foundation. Full practitioners learn advanced detox protocols, mold illness recovery, heavy metal support, and how to work with the sickest clients safely...`,
         },
         {
-            id: 23,
+            id: 24,
+            type: 'coach',
+            content: `The toxin/mold space is where the REALLY premium clients are. Because they're the ones western medicine has completely failed.`,
+        },
+
+        // BRIDGE TO LESSON 5
+        {
+            id: 25,
+            type: 'coach',
+            content: `Now here's something interesting - toxins destroy your hormones. And hormones destroyed by stress create a cascade of symptoms that millions of burned-out people are experiencing right now...`,
+        },
+        {
+            id: 26,
             type: 'system',
             content: `**Coming Up: Stress & Hormones Decoded**
 
 - Why 77% of workers are burned out
-- The 3 stages of adrenal dysfunction
+- The 3 stages of HPA axis dysfunction
 - Your next case study to solve
 - Why burnout coaching for women 40+ is a goldmine
 
-See you in Lesson 5!`,
+**Burnout/Menopause Market:** 77% of workers + 1.3M women/year
+**Average Income:** $4,400 - $6,800/month
+
+This one hits close to home for most women.`,
             systemStyle: 'info',
         },
     ];

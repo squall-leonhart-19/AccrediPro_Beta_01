@@ -299,7 +299,7 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                             <p className="text-2xl font-bold text-gray-900 mt-1">
                                 {formatCurrency(stats.today.revenue)}
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">{stats.today.frontendOrders} orders</p>
+                            <p className="text-xs text-gray-500 mt-1">{stats.today.frontendOrders} customers{stats.today.totalOrders > stats.today.frontendOrders ? ` (${stats.today.totalOrders} total txns)` : ""}</p>
                         </div>
                     </CardContent>
                 </Card>

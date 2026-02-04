@@ -18,8 +18,21 @@ import {
     Shield,
     DollarSign,
     GraduationCap,
+    Calculator,
+    Map,
+    Lock,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { useSidebar } from "@/contexts/sidebar-context";
+
+interface ResourceItem {
+    id: string;
+    name: string;
+    icon: string;
+    description: string;
+    isUnlocked: boolean;
+    minutesUntilUnlock: number;
+}
 
 interface LeadSidebarProps {
     firstName: string;
@@ -28,6 +41,7 @@ interface LeadSidebarProps {
     avatar?: string | null;
     diplomaCompleted: boolean;
     certificateClaimed: boolean;
+    resources?: ResourceItem[];
 }
 
 // Brand colors
@@ -57,15 +71,52 @@ export function LeadSidebar({
     avatar,
     diplomaCompleted,
     certificateClaimed,
+    resources = [],
 }: LeadSidebarProps) {
     const pathname = usePathname();
+    const { isCollapsed: sidebarCollapsed, setIsCollapsed: setSidebarCollapsed, setIsLessonPage } = useSidebar();
     const [onlineCount, setOnlineCount] = useState(45); // Default static value for SSR
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [currentEvent, setCurrentEvent] = useState(0);
+
+    // Detect if we're in a lesson page (lesson player mode)
+    const isLessonPage = pathname?.includes('/lesson/');
+
+    // Sync lesson page state with context
+    useEffect(() => {
+        setIsLessonPage(isLessonPage || false);
+    }, [isLessonPage, setIsLessonPage]);
+
+    // Generate dynamic success events with random data
+    const [successEvents, setSuccessEvents] = useState(SUCCESS_EVENTS);
 
     // Set random count only on client to avoid hydration mismatch
     useEffect(() => {
         setOnlineCount(Math.floor(Math.random() * 30) + 35);
+
+        // Randomize success events
+        const names = ["Lisa K.", "Maria T.", "Jennifer M.", "Sarah W.", "Amanda P.", "Rachel H.", "Emily B.", "Danielle R.", "Christina M.", "Nicole F."];
+        const amounts = ["$1,200", "$950", "$1,400", "$800", "$1,100", "$1,650", "$980"];
+        const consultAmounts = ["$150", "$180", "$120", "$200", "$175"];
+
+        const randomName = () => names[Math.floor(Math.random() * names.length)];
+        const randomAmount = () => amounts[Math.floor(Math.random() * amounts.length)];
+        const randomConsult = () => consultAmounts[Math.floor(Math.random() * consultAmounts.length)];
+
+        setSuccessEvents([
+            { type: "income", name: randomName(), amount: randomAmount(), time: "this week" },
+            { type: "cert", name: randomName(), action: "Just certified!", time: "2h ago" },
+            { type: "consult", name: randomName(), action: `${randomConsult()} consult booked`, time: "4h ago" },
+        ]);
     }, []);
+
+    // Rotate through success events every 4 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentEvent(prev => (prev + 1) % successEvents.length);
+        }, 4000);
+        return () => clearInterval(interval);
+    }, [successEvents.length]);
 
     // Close sidebar on route change (mobile)
     useEffect(() => {
@@ -83,7 +134,6 @@ export function LeadSidebar({
             document.body.style.overflow = "";
         };
     }, [mobileOpen]);
-
     // Dynamic base path for diploma - supports both old and new patterns
     const getDiplomaBasePath = () => {
         if (!pathname) return "/portal/womens-health";
@@ -111,6 +161,20 @@ export function LeadSidebar({
 
     return (
         <>
+            {/* Floating Expand Button - Only visible when sidebar collapsed on lesson pages */}
+            {isLessonPage && sidebarCollapsed && (
+                <button
+                    onClick={() => setSidebarCollapsed(false)}
+                    className="fixed left-0 top-1/2 -translate-y-1/2 z-50 p-3 rounded-r-xl shadow-xl transition-all hidden lg:flex items-center gap-2 hover:pl-4"
+                    style={{
+                        background: BRAND.goldMetallic,
+                        color: BRAND.burgundyDark
+                    }}
+                >
+                    <ChevronRight className="w-5 h-5" />
+                </button>
+            )}
+
             {/* Mobile Header Bar with Hamburger - PREMIUM GOLD */}
             <div
                 className="lg:hidden fixed top-0 left-0 right-0 z-50 px-4 py-3 flex items-center justify-between shadow-lg"
@@ -147,13 +211,31 @@ export function LeadSidebar({
                 />
             )}
 
-            {/* Sidebar - PREMIUM REDESIGN */}
+            {/* Sidebar - PREMIUM REDESIGN (collapsible on lesson pages) */}
             <aside className={`
                 fixed left-0 top-0 z-40 h-screen w-72 flex flex-col
                 transition-transform duration-300 ease-in-out
-                lg:translate-x-0
+                ${isLessonPage && sidebarCollapsed ? "-translate-x-full lg:-translate-x-full" : "lg:translate-x-0"}
                 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
             `} style={{ backgroundColor: BRAND.burgundyDark }}>
+
+                {/* Collapse Toggle - Only on lesson pages (inside sidebar) */}
+                {isLessonPage && (
+                    <button
+                        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                        className="absolute top-4 right-4 z-50 p-2 rounded-lg transition-all hidden lg:flex items-center gap-2"
+                        style={{
+                            background: sidebarCollapsed ? BRAND.goldMetallic : `${BRAND.burgundy}80`,
+                            color: sidebarCollapsed ? BRAND.burgundyDark : 'white'
+                        }}
+                    >
+                        {sidebarCollapsed ? (
+                            <Menu className="w-4 h-4" />
+                        ) : (
+                            <X className="w-4 h-4" />
+                        )}
+                    </button>
+                )}
 
                 {/* Logo Section - Premium with Gold Accent */}
                 <div className="p-5 border-b hidden lg:block" style={{ borderColor: `${BRAND.burgundy}80` }}>
@@ -291,28 +373,125 @@ export function LeadSidebar({
                     >
                         <Users className="w-5 h-5 flex-shrink-0" />
                         <span className="font-medium">Graduate Stories</span>
-                        <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500 text-white">NEW</span>
                     </Link>
 
-                    {/* Ask Coach Sarah - Premium CTA Style */}
+                    {/* Circle Pod - Premium Gold Metal Style */}
                     <Link
-                        href={`${basePath}/chat`}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-white/70 hover:text-white relative overflow-hidden group"
-                        style={{
-                            border: `1px solid ${BRAND.gold}40`,
-                            background: isActive(`${basePath}/chat`) ? BRAND.goldMetallic : 'transparent'
+                        href={`${basePath}/circle`}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group relative overflow-hidden ${isActive(`${basePath}/circle`)
+                            ? "shadow-lg"
+                            : "hover:shadow-md"
+                            }`}
+                        style={isActive(`${basePath}/circle`) ? {
+                            background: BRAND.goldMetallic,
+                            color: BRAND.burgundyDark
+                        } : {
+                            background: `linear-gradient(135deg, ${BRAND.gold}15 0%, ${BRAND.gold}05 100%)`,
+                            border: `1px solid ${BRAND.gold}30`
                         }}
                     >
+                        {/* Animated background glow */}
+                        {!isActive(`${basePath}/circle`) && (
+                            <div
+                                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                style={{ background: `linear-gradient(135deg, ${BRAND.gold}20 0%, transparent 70%)` }}
+                            />
+                        )}
                         <div
-                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                            style={{ background: `${BRAND.gold}10` }}
-                        />
-                        <svg className="w-5 h-5 flex-shrink-0 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={isActive(`${basePath}/chat`) ? { color: BRAND.burgundyDark } : {}}>
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                        <span className="font-medium relative z-10" style={isActive(`${basePath}/chat`) ? { color: BRAND.burgundyDark } : {}}>💬 Get Help from Sarah</span>
-                        <span className="ml-auto w-2.5 h-2.5 rounded-full animate-pulse relative z-10" style={{ backgroundColor: '#22c55e' }} title="Online now" />
+                            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 relative z-10"
+                            style={{
+                                background: isActive(`${basePath}/circle`) ? `${BRAND.burgundy}30` : BRAND.goldMetallic
+                            }}
+                        >
+                            <Target className="w-4 h-4" style={{ color: isActive(`${basePath}/circle`) ? BRAND.burgundyDark : BRAND.burgundyDark }} />
+                        </div>
+                        <div className="flex-1 relative z-10">
+                            <span className="font-semibold" style={{ color: isActive(`${basePath}/circle`) ? BRAND.burgundyDark : BRAND.gold }}>
+                                ✨ Circle Pod
+                            </span>
+                            <p className="text-[10px]" style={{ color: isActive(`${basePath}/circle`) ? BRAND.burgundy : `${BRAND.goldLight}70` }}>
+                                Your study group
+                            </p>
+                        </div>
+                        <span
+                            className="px-1.5 py-0.5 rounded-full text-[9px] font-bold relative z-10 animate-pulse"
+                            style={{
+                                background: isActive(`${basePath}/circle`) ? BRAND.burgundy : BRAND.goldMetallic,
+                                color: isActive(`${basePath}/circle`) ? 'white' : BRAND.burgundyDark
+                            }}
+                        >
+                            LIVE
+                        </span>
                     </Link>
+
+                    {/* FREE RESOURCES Section */}
+                    {resources.length > 0 && (
+                        <>
+                            <p className="text-[10px] font-bold tracking-widest px-3 mt-4 mb-2" style={{ color: `${BRAND.gold}80` }}>
+                                📦 FREE RESOURCES
+                            </p>
+                            {resources.map((resource) => {
+                                const IconMap: Record<string, typeof DollarSign> = {
+                                    DollarSign, Target, Calculator, Map,
+                                };
+                                const Icon = IconMap[resource.icon] || Target;
+                                const formatTime = (mins: number) => {
+                                    if (mins <= 0) return "";
+                                    if (mins < 60) return `${mins}m`;
+                                    const h = Math.floor(mins / 60);
+                                    const m = mins % 60;
+                                    return m > 0 ? `${h}h ${m}m` : `${h}h`;
+                                };
+
+                                if (resource.isUnlocked) {
+                                    return (
+                                        <Link
+                                            key={resource.id}
+                                            href={`${basePath}/tools/${resource.id}`}
+                                            className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${isActive(`${basePath}/tools/${resource.id}`)
+                                                ? "shadow-lg"
+                                                : "hover:bg-white/5"
+                                                }`}
+                                            style={isActive(`${basePath}/tools/${resource.id}`) ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
+                                        >
+                                            <div
+                                                className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                                                style={{ background: isActive(`${basePath}/tools/${resource.id}`) ? `${BRAND.burgundy}30` : `${BRAND.gold}20` }}
+                                            >
+                                                <Icon className="w-3.5 h-3.5" style={{ color: isActive(`${basePath}/tools/${resource.id}`) ? BRAND.burgundyDark : BRAND.gold }} />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <span className="text-sm font-medium" style={{ color: isActive(`${basePath}/tools/${resource.id}`) ? BRAND.burgundyDark : 'white' }}>
+                                                    {resource.name}
+                                                </span>
+                                            </div>
+                                            <span className="text-[9px] px-1.5 py-0.5 rounded-full" style={{ background: `${BRAND.gold}30`, color: BRAND.gold }}>✓</span>
+                                        </Link>
+                                    );
+                                }
+
+                                return (
+                                    <div
+                                        key={resource.id}
+                                        className="flex items-center gap-3 px-3 py-2 rounded-xl opacity-50 cursor-not-allowed"
+                                    >
+                                        <div
+                                            className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                                            style={{ background: `${BRAND.burgundy}40` }}
+                                        >
+                                            <Lock className="w-3 h-3 text-white/50" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <span className="text-sm text-white/50">{resource.name}</span>
+                                            <p className="text-[9px] text-white/30">Unlocks in {formatTime(resource.minutesUntilUnlock)}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </>
+                    )}
+
+                    {/* Private DMs removed - all messaging now in Circle Pod */}
 
                     {/* Certificate Section - Always visible with locked/unlocked states */}
                     <p className="text-[10px] font-bold tracking-widest px-3 mt-4 mb-2" style={{ color: `${BRAND.gold}80` }}>
@@ -373,64 +552,39 @@ export function LeadSidebar({
                             </div>
                         </div>
                     )}
-
-                    {/* Career Roadmap - Only after completion */}
-                    {diplomaCompleted && (
-                        <Link
-                            href={`${basePath}/career-roadmap`}
-                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all mt-1.5 ${isActive(`${basePath}/career-roadmap`)
-                                ? "shadow-lg"
-                                : "text-white/70 hover:text-white hover:bg-white/5"
-                                }`}
-                            style={isActive(`${basePath}/career-roadmap`) ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
-                        >
-                            <Target className="w-5 h-5 flex-shrink-0" />
-                            <span className="font-medium">Career Roadmap</span>
-                        </Link>
-                    )}
                 </nav>
 
-                {/* Earnings Trigger Card */}
-                <div className="p-4" style={{ borderTop: `1px solid ${BRAND.burgundy}60` }}>
-                    <div
-                        className="rounded-xl p-3 relative overflow-hidden"
-                        style={{ background: `linear-gradient(135deg, ${BRAND.gold}15 0%, ${BRAND.gold}05 100%)`, border: `1px solid ${BRAND.gold}30` }}
-                    >
-                        <div className="flex items-center gap-2 mb-2">
-                            <DollarSign className="w-4 h-4" style={{ color: BRAND.gold }} />
-                            <span className="text-[10px] font-bold tracking-widest" style={{ color: BRAND.gold }}>INCOME POTENTIAL</span>
-                        </div>
-                        <p className="text-2xl font-black text-white">$4K-$8K<span className="text-sm font-medium text-white/60">/mo</span></p>
-                        <p className="text-xs text-white/50 mt-1">Average certified practitioner income</p>
-                    </div>
-                </div>
-
-                {/* Success Feed - Compact */}
+                {/* Compact Social Proof Ticker - Single Line */}
                 <div className="px-4 pb-3">
                     <div
-                        className="rounded-xl p-3"
-                        style={{ background: `${BRAND.burgundy}40` }}
+                        className="rounded-xl p-2.5 flex items-center gap-2"
+                        style={{ background: `linear-gradient(135deg, ${BRAND.gold}12 0%, ${BRAND.gold}05 100%)`, border: `1px solid ${BRAND.gold}25` }}
                     >
-                        <div className="flex items-center gap-2 mb-2">
-                            <TrendingUp className="w-3.5 h-3.5" style={{ color: '#22c55e' }} />
-                            <span className="text-[10px] font-bold tracking-widest" style={{ color: '#22c55e' }}>LIVE SUCCESS</span>
+                        {/* Income badge */}
+                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg" style={{ background: `${BRAND.gold}20` }}>
+                            <DollarSign className="w-3 h-3" style={{ color: BRAND.gold }} />
+                            <span className="text-xs font-bold text-white">$4K-$8K</span>
+                            <span className="text-[10px] text-white/50">/mo</span>
                         </div>
-                        <div className="space-y-1.5 text-xs">
-                            {SUCCESS_EVENTS.map((event, i) => (
-                                <div key={i} className="text-white/70">
-                                    {event.type === "income" ? (
-                                        <span>💰 <strong className="text-white">{event.name}</strong> earned {event.amount}</span>
-                                    ) : event.type === "cert" ? (
-                                        <span>🎓 <strong className="text-white">{event.name}</strong> {event.action}</span>
-                                    ) : (
-                                        <span>📅 <strong className="text-white">{event.name}</strong> {event.action}</span>
-                                    )}
-                                </div>
-                            ))}
+
+                        {/* Divider */}
+                        <div className="w-px h-4" style={{ background: `${BRAND.burgundy}60` }} />
+
+                        {/* Rotating success event */}
+                        <div className="flex-1 min-w-0 text-xs text-white/80 truncate transition-all duration-300">
+                            {successEvents[currentEvent]?.type === "income" ? (
+                                <span>💰 <strong className="text-white">{successEvents[currentEvent]?.name}</strong> earned {successEvents[currentEvent]?.amount}</span>
+                            ) : successEvents[currentEvent]?.type === "cert" ? (
+                                <span>🎓 <strong className="text-white">{successEvents[currentEvent]?.name}</strong> {successEvents[currentEvent]?.action}</span>
+                            ) : (
+                                <span>📅 <strong className="text-white">{successEvents[currentEvent]?.name}</strong> {successEvents[currentEvent]?.action}</span>
+                            )}
                         </div>
-                        <div className="mt-2 pt-2 text-[10px] flex items-center gap-1.5" style={{ borderTop: `1px solid ${BRAND.burgundy}60`, color: `${BRAND.goldLight}60` }}>
+
+                        {/* Online count */}
+                        <div className="flex items-center gap-1 text-[10px] whitespace-nowrap" style={{ color: `${BRAND.goldLight}70` }}>
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            {onlineCount} women learning now
+                            {onlineCount}
                         </div>
                     </div>
                 </div>

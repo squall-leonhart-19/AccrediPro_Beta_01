@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Between-Sessions Reflection Card | ASI Level 0 Resources</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --burgundy-primary: #722f37;
+            --burgundy-dark: #4e1f24;
+            --burgundy-deeper: #3a171b;
+            --gold-primary: #D4AF37;
+            --gold-light: #f7e7a0;
+            --gold-dark: #b8962e;
+            --text-primary: #2d2d2d;
+            --bg-cream: #fdf8f0
+        }
+
+        @page {
+            size: A4;
+            margin: 0
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #e8e8e8;
+            color: var(--text-primary);
+            line-height: 1.4;
+            font-size: 10px
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            padding: 16mm;
+            background: #fffefb;
+            position: relative;
+            overflow: hidden;
+            page-break-after: always
+        }
+
+        .modern-frame {
+            position: absolute;
+            top: 10mm;
+            left: 10mm;
+            right: 10mm;
+            bottom: 10mm;
+            border: 2px solid var(--gold-primary);
+            pointer-events: none
+        }
+
+        .minimal-corner {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            z-index: 10
+        }
+
+        .mc-tl {
+            top: 6mm;
+            left: 6mm
+        }
+
+        .mc-tr {
+            top: 6mm;
+            right: 6mm;
+            transform: rotate(90deg)
+        }
+
+        .mc-bl {
+            bottom: 6mm;
+            left: 6mm;
+            transform: rotate(-90deg)
+        }
+
+        .mc-br {
+            bottom: 6mm;
+            right: 6mm;
+            transform: rotate(180deg)
+        }
+
+        .running-header {
+            position: absolute;
+            top: 14mm;
+            left: 22mm;
+            right: 22mm;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-size: 7px;
+            color: #555
+        }
+
+        .running-footer {
+            position: absolute;
+            bottom: 12mm;
+            left: 22mm;
+            right: 22mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 6px;
+            color: #555
+        }
+
+        .footer-logo {
+            height: 12px;
+            opacity: 0.7
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 12mm;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Playfair Display', serif;
+            font-size: 10px;
+            color: var(--gold-primary)
+        }
+
+        .body-content {
+            position: relative;
+            z-index: 1;
+            padding-top: 8mm
+        }
+
+        .header-bar {
+            background: linear-gradient(135deg, var(--burgundy-deeper), var(--burgundy-primary));
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px
+        }
+
+        .header-bar h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            color: white
+        }
+
+        .header-bar .subtitle {
+            font-size: 8px;
+            color: var(--gold-light);
+            font-style: italic
+        }
+
+        .resource-badge {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            color: var(--burgundy-deeper);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 7px;
+            font-weight: 700
+        }
+
+        .intro-text {
+            background: var(--bg-cream);
+            border-left: 3px solid var(--gold-primary);
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            border-radius: 0 6px 6px 0;
+            font-size: 9px
+        }
+
+        .distinction {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0
+        }
+
+        .distinction-box {
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 9px
+        }
+
+        .this-is {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 1.5px solid #86efac
+        }
+
+        .this-is strong {
+            color: #166534
+        }
+
+        .this-is-not {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 1.5px solid #fecaca
+        }
+
+        .this-is-not strong {
+            color: #991b1b
+        }
+
+        .distinction-box ul {
+            margin-top: 6px;
+            margin-left: 14px;
+            font-size: 8px
+        }
+
+        .distinction-box li {
+            margin-bottom: 4px
+        }
+
+        .card-container {
+            margin: 15px 0
+        }
+
+        .reflection-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 3px solid var(--gold-primary);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .reflection-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--gold-light) 0%, transparent 70%);
+            border-radius: 0 0 0 100%;
+            opacity: 0.6
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative
+        }
+
+        .card-logo {
+            margin-bottom: 8px
+        }
+
+        .card-logo img {
+            width: 40px;
+            height: auto
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: var(--burgundy-dark)
+        }
+
+        .card-date {
+            margin-top: 10px
+        }
+
+        .date-line {
+            display: inline-block;
+            border-bottom: 2px solid var(--burgundy-primary);
+            min-width: 150px;
+            padding: 5px 0;
+            font-size: 10px
+        }
+
+        .question-block {
+            margin: 15px 0;
+            position: relative
+        }
+
+        .question-number {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--burgundy-primary), var(--burgundy-dark));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .question-content {
+            margin-left: 38px
+        }
+
+        .question-text {
+            font-weight: 600;
+            color: var(--burgundy-dark);
+            font-size: 11px;
+            margin-bottom: 8px
+        }
+
+        .answer-area {
+            background: white;
+            border: 1.5px dashed var(--gold-primary);
+            border-radius: 8px;
+            min-height: 50px;
+            padding: 10px
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border: 1.5px solid #fbbf24;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 12px 0
+        }
+
+        .tip-box h4 {
+            color: #92400e;
+            font-family: 'Playfair Display', serif;
+            font-size: 10px;
+            margin-bottom: 8px
+        }
+
+        .tips-list {
+            list-style: none;
+            font-size: 9px
+        }
+
+        .tips-list li {
+            padding: 4px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px
+        }
+
+        .tips-list li::before {
+            content: '→';
+            color: var(--gold-dark);
+            font-weight: bold
+        }
+
+        .print-section {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1.5px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            text-align: center
+        }
+
+        .print-section h4 {
+            color: #0369a1;
+            font-size: 10px;
+            margin-bottom: 6px
+        }
+
+        .print-section p {
+            font-size: 8px;
+            color: #6b7280
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="modern-frame"></div>
+        <div class="minimal-corner mc-tl"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-tr"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-bl"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-br"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="running-header"><span style="font-style:italic">ASI Level 0 Resource</span><span
+                style="color:var(--burgundy-primary);font-weight:500">Between-Sessions Reflection</span></div>
+        <div class="body-content">
+            <div class="header-bar">
+                <div>
+                    <h1>Between-Sessions Reflection Card</h1>
+                    <p class="subtitle">Simple Observation Practice • 3 Questions</p>
+                </div><span class="resource-badge">CLIENT RESOURCE</span>
+            </div>
+            <div class="intro-text"><strong>Purpose:</strong> This card helps you notice what's happening between
+                conversations or sessions. Not journaling, not deep processing — just simple observation. Three
+                questions.</div>
+            <div class="distinction">
+                <div class="distinction-box this-is"><strong>✓ This IS:</strong>
+                    <ul>
+                        <li>Simple observation</li>
+                        <li>Quick notes</li>
+                        <li>Neutral noticing</li>
+                        <li>1-2 minutes max</li>
+                    </ul>
+                </div>
+                <div class="distinction-box this-is-not"><strong>✗ This is NOT:</strong>
+                    <ul>
+                        <li>Deep emotional processing</li>
+                        <li>Long journaling</li>
+                        <li>Analysis or interpretation</li>
+                        <li>Something to do "perfectly"</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-container">
+                <div class="reflection-card">
+                    <div class="card-header">
+                        <div class="card-logo"><img src="/ASI_LOGO-removebg-preview.png" alt="ASI"></div>
+                        <h2 class="card-title">Between-Sessions Reflection</h2>
+                        <div class="card-date"><span class="date-line">Date: _________________</span></div>
+                    </div>
+                    <div class="question-block">
+                        <div class="question-number">1</div>
+                        <div class="question-content">
+                            <p class="question-text">What did I notice since last time?</p>
+                            <div class="answer-area"></div>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div class="question-number">2</div>
+                        <div class="question-content">
+                            <p class="question-text">What felt supportive?</p>
+                            <div class="answer-area"></div>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div class="question-number">3</div>
+                        <div class="question-content">
+                            <p class="question-text">What felt challenging?</p>
+                            <div class="answer-area"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tip-box">
+                <h4>💡 Tips for Using This Card</h4>
+                <ul class="tips-list">
+                    <li>Fill it out 1-2 times between sessions/conversations</li>
+                    <li>Keep it short — a few words or one sentence is enough</li>
+                    <li>There are no "right" answers</li>
+                    <li>Noticing "nothing" is also valid information</li>
+                    <li>Bring it with you to your next session if helpful</li>
+                </ul>
+            </div>
+            <div class="print-section">
+                <h4>🖨️ Print Multiple Copies</h4>
+                <p>We recommend printing several copies of this card to use between sessions.</p>
+            </div>
+        </div>
+        <div class="page-number">1</div>
+        <div class="running-footer"><img src="/ASI_LOGO-removebg-preview.png" alt="ASI" class="footer-logo"><span>© ASI
+                Standards Institute</span></div>
+    </div>
+</body>
+
+</html>

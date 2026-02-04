@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { nanoid } from "nanoid";
 import { Resend } from "resend";
+import { createMasterclassPod } from "@/lib/masterclass-pod";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -86,7 +87,7 @@ async function sendCompletionNotifications(
             console.log(`[EXAM] DM already exists for user ${userId}, skipping`);
         } else {
             console.log(`[EXAM] Creating new DM for user ${userId}`);
-            const roadmapUrl = "https://learn.accredipro.academy/functional-medicine-diploma/career-roadmap";
+            const roadmapUrl = "https://learn.accredipro.academy/portal/functional-medicine/certificate";
             const dmContent = couponCode
                 ? `${firstName}, YOU DID IT! 🎉
 
@@ -344,13 +345,13 @@ export async function POST(request: NextRequest) {
 
         // Add tags for tracking (non-blocking)
         try {
-            const tags = [`exam_attempt:${examType}:${attemptNumber}`, `exam_passed:${examType}`, `scholarship_qualified:${examType}`];
+            const tags = [`exam_attempt:${examType}:${attemptNumber}`, `exam_passed:${examType}`, `scholarship_qualified:${examType}`, `exam-passed-at:${Date.now()}`];
             for (const tag of tags) {
                 await prisma.userTag.upsert({
                     where: { userId_tag: { userId, tag } },
                     update: {},
                     create: { userId, tag },
-                }).catch(() => {}); // Ignore tag errors
+                }).catch(() => { }); // Ignore tag errors
             }
 
             await prisma.userMarketingTag.upsert({
@@ -366,18 +367,28 @@ export async function POST(request: NextRequest) {
                     tag: `scholarship_qualified`,
                     source: "exam_completion",
                 },
-            }).catch(() => {}); // Ignore tag errors
+            }).catch(() => { }); // Ignore tag errors
         } catch (e) {
             console.error("[EXAM] Tag error (non-fatal):", e);
         }
 
         console.log(`[EXAM] ${user.email} completed exam: ${score}% (${correct}/${total}), passed: ${passed}, scholarship: ${scholarshipQualified}`);
 
-        // Send completion email and DM (non-blocking - don't await)
-        // Always try - the function has its own duplicate checks for DM
-        // Email is idempotent (ok to send again if user retakes)
-        sendCompletionNotifications(userId, user.email, user.firstName || "there", score, couponCode).catch(err => {
-            console.error("[EXAM] Failed to send completion notifications:", err);
+        // NOTE: Email and DM are now sent 24h AFTER exam completion via cron job
+        // This is to encourage Trustpilot reviews before certificate delivery
+        // The cron checks for exam-passed-at tags older than 24h
+        console.log(`[EXAM] Certificate email/DM will be sent in 24h via cron`);
+
+        // Create Masterclass Pod for 30-day nurture sequence (non-blocking)
+        // Pod status starts as "waiting", then activates after 24h via cron
+        createMasterclassPod(userId, score, examType).then((result) => {
+            if (result.success) {
+                console.log(`[EXAM] Masterclass pod created: ${result.podId}`);
+            } else {
+                console.log(`[EXAM] Masterclass pod not created: ${result.error}`);
+            }
+        }).catch((err) => {
+            console.error("[EXAM] Masterclass pod creation error:", err);
         });
 
         // ALWAYS return success
@@ -481,9 +492,9 @@ export async function GET(request: NextRequest) {
             hasScholarship: exams.some((e) => e.scholarshipQualified),
             activeCoupon: activeCoupon
                 ? {
-                      code: activeCoupon.scholarshipCouponCode,
-                      expiresAt: activeCoupon.scholarshipExpiresAt,
-                  }
+                    code: activeCoupon.scholarshipCouponCode,
+                    expiresAt: activeCoupon.scholarshipExpiresAt,
+                }
                 : null,
             spotsRemaining,
             exams: exams.map((e) => ({

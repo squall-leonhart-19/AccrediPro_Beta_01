@@ -20,232 +20,295 @@ export function ClassicLessonStressHPA({
     isCompleted,
 }: LessonProps) {
     const sections: LessonSection[] = [
+        // BRIDGE FROM LESSON 4
         {
             type: 'intro',
-            content: `{name}, I want to ask you something personal. Be honest with yourself... Do you ever feel "wired but tired"? Like you can't relax even when you have nothing to do? Like you're running on fumes but your brain won't turn off? If that sounds familiar, you're not alone. That's your HPA axis screaming for help. And it's happening to MILLIONS of women right now.`,
+            content: `{name}, I want to ask you something personal. Be honest with yourself... Do you ever feel "wired but tired"? Like you can't relax even when you have nothing to do? Like you're running on fumes but your brain won't turn off? If that sounds familiar, you're not alone. That's your **HPA axis** screaming for help.`,
         },
+
+        // THE GAP
         {
             type: 'heading',
-            content: 'The Burnout Epidemic',
+            content: 'The Burnout Epidemic Nobody\'s Solving',
         },
         {
-            type: 'key-point',
-            content: `77% of workers experience burnout symptoms. 83% of US workers suffer from work-related stress. Women 40+ are hit hardest (sandwich generation). Post-pandemic burnout is at all-time highs. Doctors' solution? Usually: "Here's an antidepressant." This is a MASSIVE, underserved market. And it's personal for most of us.`,
-        },
-        {
-            type: 'heading',
-            content: '"I\'m Too Old/Tired/Burned Out to Start..."',
+            type: 'list',
+            content: '',
+            items: [
+                '**77%** of workers experience burnout symptoms',
+                '**83%** of US workers suffer from work-related stress',
+                'Women 40+ are hit hardest (the "sandwich generation")',
+                'Post-pandemic burnout is at all-time highs',
+            ],
         },
         {
             type: 'text',
-            content: `Here's the truth: Your exhaustion is your CREDENTIAL. Think about it:`,
+            content: `What's the typical doctor's solution? "Here's an antidepressant." But that doesn't fix the ROOT CAUSE. It masks the symptoms while the underlying dysfunction gets worse.`,
+        },
+
+        // DEFINITION
+        {
+            type: 'definition',
+            term: 'The HPA Axis',
+            content: `The **H**ypothalamic-**P**ituitary-**A**drenal axis is your body's central stress response system. When your brain perceives threat (real OR imagined), it signals through this pathway to release **cortisol**. The problem: Your body can't tell the difference between a tiger chasing you and a stressful email. Modern life keeps this system ON 24/7.`,
+        },
+
+        // HOW IT WORKS
+        {
+            type: 'heading',
+            content: 'How Your Stress System Works',
         },
         {
             type: 'list',
-            content: 'Why Your Experience Matters:',
+            content: '',
             items: [
-                'You\'ve LIVED this. You understand it viscerally.',
-                'Your clients will be women like you. They\'ll trust you.',
-                'Healing yourself teaches you how to heal others.',
-                'Your story becomes your most powerful marketing tool.',
+                '**H**ypothalamus — Your brain\'s control center perceives stress',
+                '**P**ituitary — The "master gland" signals the adrenals',
+                '**A**drenals — Release cortisol (the "stress hormone")',
+                'Body shifts to **survival mode** — digestion stops, immune suppressed, energy diverted',
             ],
         },
         {
             type: 'callout',
-            content: `A graduate told us: "I started this certification at rock bottom. Adrenal fatigue, couldn't get through the day. As I learned and applied the principles, I healed myself. Now I help other burned-out moms do the same. My lowest point became my launching pad." Age isn't a barrier in this work. It's your competitive advantage.`,
-            style: 'tip',
-        },
-        {
-            type: 'heading',
-            content: 'Real Story: Carol, 56 - Started at "Too Old"',
-        },
-        {
-            type: 'quote',
-            content: `"I turned 54 and thought my best years were behind me. Empty nest. Menopause. Burned out from 30 years in corporate HR. Then I got certified. I specifically target women 50+ dealing with burnout and hormone changes. Why? Because I AM one. My clients say: 'You get it. You're not some 28-year-old who doesn't understand.' Being older is my MARKETING. I charge $225/session because my experience IS the value. Current stats (2 years in): 13 active clients, monthly income $5,850, working 18 hours/week. At 56, I'm making more money with less stress than my entire corporate career. Don't tell me you're too old." - Carol M., New Jersey | ASI Graduate 2022`,
-        },
-        {
-            type: 'heading',
-            content: 'The HPA Axis Explained Simply',
-        },
-        {
-            type: 'list',
-            content: 'What the HPA Axis Is:',
-            items: [
-                'H = Hypothalamus (brain\'s control center)',
-                'P = Pituitary (master hormone gland)',
-                'A = Adrenals (stress response glands)',
-            ],
-        },
-        {
-            type: 'list',
-            content: 'How It Works:',
-            items: [
-                '1. Brain perceives stress (real OR imagined)',
-                '2. Hypothalamus signals pituitary',
-                '3. Pituitary signals adrenals',
-                '4. Adrenals release CORTISOL',
-                '5. Body shifts to "survival mode"',
-            ],
-        },
-        {
-            type: 'callout',
-            content: `The problem: Your body can't tell the difference between a tiger chasing you and a stressful email. It responds the SAME way: Cortisol, cortisol, cortisol. Modern life keeps this system ON 24/7. That's why everyone is exhausted.`,
+            content: `The problem: This system was designed for occasional threats (a predator, a famine). But modern life triggers it constantly - emails, traffic, news, social media, work deadlines. We're living in chronic "survival mode."`,
             style: 'warning',
         },
+
+        // THE 3 STAGES - FRAMEWORK
         {
             type: 'heading',
             content: 'The 3 Stages of HPA Dysfunction',
         },
         {
-            type: 'list',
-            content: 'STAGE 1: ALARM (Wired)',
-            items: [
-                'High cortisol all day long',
-                'Can\'t relax or sleep well',
-                'Anxiety, racing thoughts',
-                '"Running on adrenaline"',
-            ],
-        },
-        {
-            type: 'list',
-            content: 'STAGE 2: RESISTANCE (Tired but pushing)',
-            items: [
-                'Cortisol rhythm disrupted',
-                'Morning fatigue, afternoon crash',
-                'NEED coffee to function',
-                'Weight gain around middle',
-                'Most common when clients seek help',
-            ],
-        },
-        {
-            type: 'list',
-            content: 'STAGE 3: EXHAUSTION (Depleted)',
-            items: [
-                'Low cortisol (adrenals can\'t keep up)',
-                'Severe fatigue, can\'t recover',
-                'Depression, brain fog',
-                'Everything feels overwhelming',
-            ],
-        },
-        {
-            type: 'heading',
-            content: 'The Pregnenolone Steal',
-        },
-        {
-            type: 'text',
-            content: `Pregnenolone is the "mother hormone" - it makes ALL other hormones. Under chronic stress, your body prioritizes SURVIVAL (cortisol) over THRIVING (sex hormones). It literally "steals" pregnenolone from making estrogen, progesterone, testosterone, and DHEA.`,
-        },
-        {
-            type: 'list',
-            content: 'Why Stressed Women Experience:',
-            items: [
-                'Low libido (low testosterone)',
-                'Irregular cycles (low progesterone)',
-                'Fertility issues',
-                'Stubborn weight gain',
-                'Mood swings and depression',
-            ],
+            type: 'framework',
+            content: '',
+            framework: {
+                name: 'The Burnout Progression',
+                steps: [
+                    {
+                        letter: '1',
+                        title: 'Alarm (Wired)',
+                        description: 'High cortisol all day. Can\'t relax or sleep well. Anxiety, racing thoughts. "Running on adrenaline." Feels productive but unsustainable.',
+                    },
+                    {
+                        letter: '2',
+                        title: 'Resistance (Tired But Pushing)',
+                        description: 'Cortisol rhythm disrupted. Morning fatigue + afternoon crash. NEED coffee to function. Weight gain around middle. Most common when clients seek help.',
+                    },
+                    {
+                        letter: '3',
+                        title: 'Exhaustion (Depleted)',
+                        description: 'Adrenals can\'t keep up anymore. Low cortisol. Severe fatigue, can\'t recover. Depression, brain fog. Everything feels overwhelming.',
+                    },
+                ],
+            },
         },
         {
             type: 'key-point',
-            content: `The beautiful part: Fix the stress, and hormones often normalize WITHOUT hormone replacement. This is why burnout coaching is so powerful - you're addressing the ROOT CAUSE of hormone issues.`,
+            content: `Most people who come to you will be in **Stage 2** - tired but still pushing. If you don't intervene, they'll progress to Stage 3 within 1-2 years. This is why early intervention matters SO much.`,
         },
+
+        // PREGNENOLONE STEAL
         {
             type: 'heading',
-            content: 'Case Study: Jennifer\'s Exhaustion',
+            content: 'The Pregnenolone Steal: Why Stress Wrecks Hormones',
         },
         {
             type: 'text',
-            content: `Jennifer, 42, marketing executive, single mom of 2 teenagers. Symptoms: Wakes up exhausted no matter how much she sleeps. Needs 3+ cups of coffee to function. Crashes hard around 3pm every day. Gained 20 lbs around her midsection in 2 years. Periods became irregular and heavier. Snaps at her kids, then feels guilty.`,
+            content: `This concept explains SO much about why stressed women have hormone issues:`,
         },
         {
-            type: 'key-point',
-            content: `Diagnosis: Stage 2 HPA dysfunction. The morning exhaustion + caffeine dependence + afternoon crash is classic cortisol rhythm disruption. The midsection weight gain happens because cortisol promotes fat storage there. Without intervention, she'll progress to Stage 3 within 1-2 years. Jennifer would be a 6-month client minimum at $2,000-4,000 for a burnout recovery program.`,
+            type: 'definition',
+            term: 'Pregnenolone Steal',
+            content: `Pregnenolone is the "**mother hormone**" - it makes ALL other hormones. Under chronic stress, your body prioritizes SURVIVAL (cortisol) over THRIVING (sex hormones). It literally "steals" pregnenolone to make more cortisol, leaving little for estrogen, progesterone, and testosterone.`,
         },
         {
-            type: 'heading',
-            content: 'The Burnout Niche: Premium Pricing',
-        },
-        {
-            type: 'list',
-            content: 'Your Target Client:',
-            items: [
-                'High-achieving women 35-55',
-                'Disposable income (they have good jobs)',
-                'Desperate for answers (doctors haven\'t helped)',
-                'Long-term relationships (recovery takes time)',
-            ],
+            type: 'text',
+            content: `This is why stressed women experience:`,
         },
         {
             type: 'list',
-            content: 'Typical Pricing:',
+            content: '',
             items: [
-                'Initial Burnout Assessment (90 min): $250-350',
-                '12-Week Burnout Recovery Program: $2,400-3,600',
-                '6-Month Adrenal Recovery Package: $3,600-5,400',
+                '**Low libido** (low testosterone)',
+                '**Irregular cycles** (low progesterone)',
+                '**Fertility struggles** (hormone imbalance)',
+                '**Stubborn belly fat** (cortisol storage pattern)',
+                '**Mood swings and depression** (neurotransmitter disruption)',
             ],
         },
         {
             type: 'callout',
-            content: `Graduate Reality: "My burnout clients have MONEY. They're executives, business owners, successful women. They'll pay $300/session without blinking if you can help them feel human again." - Teresa K., ASI Graduate`,
+            content: `The beautiful part: Fix the stress response, and hormones often normalize WITHOUT hormone replacement. You're addressing the ROOT CAUSE of hormone issues, not just adding more hormones.`,
             style: 'success',
         },
+
+        // CASE STUDY
         {
             type: 'heading',
-            content: 'Real Story: Donna, 48 - Former Nurse',
+            content: 'Real Client: Jennifer\'s "Just Stress"',
         },
         {
-            type: 'quote',
-            content: `"I was a burned-out ER nurse for 20 years. The pandemic broke me. I couldn't go back. Getting certified in functional medicine felt like learning why I was so destroyed. It was therapy AND career training. My niche now: Healthcare workers with burnout. Nurses, doctors, first responders. They trust me because I've BEEN there. The numbers (14 months in): 11 clients (all healthcare workers), $200/session, monthly income $4,400. I make less than nursing but I'm ALIVE again. You don't have to stay burned out forever." - Donna R., Minnesota | ASI Graduate 2024`,
+            type: 'text',
+            content: `Jennifer, 42, marketing executive, single mom of 2 teenagers. Her doctor said she was "just stressed" and offered antidepressants. Here's what was actually happening:`,
         },
+        {
+            type: 'list',
+            content: '',
+            items: [
+                'Wakes up exhausted no matter how much she sleeps',
+                'Needs 3+ cups of coffee just to function',
+                'Crashes hard around 3pm every day',
+                'Gained 20 lbs around her midsection in 2 years',
+                'Periods became irregular and heavier',
+                'Snaps at her kids, then feels guilty',
+            ],
+        },
+        {
+            type: 'key-point',
+            content: `This is textbook **Stage 2 HPA dysfunction**. The morning exhaustion + caffeine dependence + afternoon crash = cortisol rhythm disruption. The midsection weight gain = cortisol storage pattern. Using the R.O.O.T Method: RECOGNIZE the pattern, trace ORIGINS to HPA dysfunction, OPTIMIZE with the 4 pillars (next section), and TRACK her progress.`,
+        },
+
+        // THE 4 PILLARS - FRAMEWORK
         {
             type: 'heading',
             content: 'The 4 Pillars of HPA Recovery',
         },
         {
-            type: 'list',
-            content: 'Use These With Every Burnout Client:',
-            items: [
-                '1. SLEEP - Non-negotiable 7-8 hours, consistent times, dark cool room',
-                '2. MORNING LIGHT - Sunlight within 30 min of waking, resets cortisol',
-                '3. BLOOD SUGAR - Protein with every meal, no skipping meals',
-                '4. NERVOUS SYSTEM - Daily breathwork, meditation, or gentle yoga',
-            ],
+            type: 'text',
+            content: `These are non-negotiables for every burnout client:`,
         },
         {
+            type: 'framework',
+            content: '',
+            framework: {
+                name: 'The 4 Recovery Pillars',
+                steps: [
+                    {
+                        letter: '1',
+                        title: 'Sleep',
+                        description: 'Non-negotiable 7-8 hours. Consistent times. Dark, cool room. No screens 1 hour before bed. This is when the HPA axis resets.',
+                    },
+                    {
+                        letter: '2',
+                        title: 'Morning Light',
+                        description: 'Sunlight within 30 minutes of waking. This resets the cortisol rhythm. 10 minutes outside or by a bright window.',
+                    },
+                    {
+                        letter: '3',
+                        title: 'Blood Sugar',
+                        description: 'Protein with every meal. No skipping meals. Blood sugar crashes trigger cortisol spikes. Stable fuel = stable hormones.',
+                    },
+                    {
+                        letter: '4',
+                        title: 'Nervous System',
+                        description: 'Daily parasympathetic activation. Breathwork, meditation, gentle yoga, or even just 5 minutes of slow breathing. This tells the HPA axis "you\'re safe."',
+                    },
+                ],
+            },
+        },
+
+        // INCOME CALCULATOR TEASER - MIDPOINT BONUS
+        {
+            type: 'callout',
+            content: `🎉 **HALFWAY BONUS: See Your Earning Potential!**
+
+You're halfway through your certification! Before we continue, take 30 seconds to calculate what you could earn as a certified Functional Medicine Practitioner.
+
+👉 **[Try the Income Calculator](/portal/functional-medicine/tools/income-calculator)**
+
+*The full version unlocks after Lesson 9!*`,
+            style: 'tip',
+        },
+
+        // SCOPE OF PRACTICE
+        {
             type: 'heading',
-            content: 'Coming Up: Lab Interpretation Secrets',
+            content: 'Your Role: Lifestyle & Education',
+        },
+        {
+            type: 'before-after',
+            content: '',
+            before: {
+                title: 'What Doctors Do',
+                items: [
+                    'Order cortisol testing (blood/saliva)',
+                    'Diagnose adrenal conditions',
+                    'Prescribe medications if needed',
+                    'Rule out serious conditions',
+                ],
+            },
+            after: {
+                title: 'What You Do',
+                items: [
+                    'Educate on HPA axis function',
+                    'Identify lifestyle stress triggers',
+                    'Implement the 4 Recovery Pillars',
+                    'Track symptoms and progress over time',
+                ],
+            },
+        },
+
+        // CHECK YOUR KNOWLEDGE
+        {
+            type: 'quiz',
+            content: '',
+            questions: [
+                {
+                    question: 'What is the HPA axis and why is it important?',
+                    options: [
+                        'A digestive system pathway that processes nutrients',
+                        'The Hypothalamic-Pituitary-Adrenal axis that regulates stress response',
+                        'A measurement tool for blood pressure',
+                        'A type of exercise technique for stress relief',
+                    ],
+                    correctIndex: 1,
+                    explanation: 'The HPA (Hypothalamic-Pituitary-Adrenal) axis is your body\'s central stress response system. Chronic HPA dysfunction leads to hormone imbalances, fatigue, weight gain, and weakened immunity.',
+                },
+                {
+                    question: 'What is "Pregnenolone Steal"?',
+                    options: [
+                        'A type of medication for stress',
+                        'When the body prioritizes cortisol over sex hormones under chronic stress',
+                        'A medical test for hormone levels',
+                        'A diet that reduces cortisol',
+                    ],
+                    correctIndex: 1,
+                    explanation: 'Under chronic stress, the body "steals" pregnenolone (the mother hormone) to make more cortisol instead of sex hormones. This explains why stressed women have low libido, irregular cycles, and hormone issues.',
+                },
+            ],
+        },
+
+        // BRIDGE TO NEXT LESSON
+        {
+            type: 'heading',
+            content: 'Coming Up: Nutrient Deficiencies',
         },
         {
             type: 'text',
-            content: `You just diagnosed a case that most doctors would miss entirely. They'd prescribe antidepressants. You found the root cause. Next up: LAB INTERPRETATION - where you learn to see what doctors miss.`,
+            content: `You now understand why chronic stress destroys health at the hormonal level. But here's what most people don't realize: even people who "eat healthy" are often **nutritionally depleted**.`,
         },
         {
-            type: 'list',
-            content: 'What you\'ll learn:',
-            items: [
-                'Why "normal" labs don\'t mean healthy',
-                'The 5 functional markers you MUST know',
-                'How to position yourself as premium with lab knowledge',
-                'Why clients LOVE getting labs reviewed',
-            ],
+            type: 'callout',
+            content: `Next lesson: Why modern food is nutritionally bankrupt. The key nutrients that affect EVERYTHING. And why "normal" lab values don't mean optimal health.`,
+            style: 'tip',
         },
     ];
 
     const keyTakeaways = [
-        'Your burnout experience is your CREDENTIAL, not a weakness',
-        'The HPA axis controls stress response - modern life keeps it stuck ON',
-        '3 stages: Alarm (wired), Resistance (tired but pushing), Exhaustion (depleted)',
-        'Pregnenolone steal explains why stress causes hormone problems',
-        'Burnout coaching commands premium prices ($200-300/session)',
-        'The 4 pillars: Sleep, Morning Light, Blood Sugar, Nervous System',
+        'The **HPA axis** is your stress response system - modern life keeps it ON 24/7',
+        '3 Stages: **Alarm** (wired) → **Resistance** (tired but pushing) → **Exhaustion** (depleted)',
+        '**Pregnenolone Steal**: Stress hormones get priority over sex hormones',
+        'This explains low libido, irregular cycles, weight gain, mood issues',
+        'The **4 Recovery Pillars**: Sleep, Morning Light, Blood Sugar, Nervous System',
+        'Your role: lifestyle education and implementation support',
     ];
 
     return (
         <ClassicLessonBase
             lessonNumber={lessonNumber}
-            lessonTitle="Stress & Hormones Decoded"
-            lessonSubtitle="Why women 40+ need YOU (not antidepressants)"
+            lessonTitle="Stress & The HPA Axis"
+            lessonSubtitle="Why burnout is a hormone problem, not a willpower problem"
             totalLessons={totalLessons}
             sections={sections}
             keyTakeaways={keyTakeaways}
@@ -255,7 +318,7 @@ export function ClassicLessonStressHPA({
             firstName={firstName}
             niche="functional-medicine"
             nicheLabel="Functional Medicine Diploma"
-            baseUrl="/functional-medicine-diploma"
+            baseUrl="/portal/functional-medicine"
             courseSlug="functional-medicine-complete-certification"
         />
     );

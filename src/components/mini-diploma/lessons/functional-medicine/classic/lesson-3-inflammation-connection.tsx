@@ -20,228 +20,263 @@ export function ClassicLessonInflammationConnection({
     isCompleted,
 }: LessonProps) {
     const sections: LessonSection[] = [
+        // BRIDGE FROM LESSON 2
         {
             type: 'intro',
-            content: `{name}, I'm about to tell you something that will change how you see disease forever. There's ONE thing that connects heart disease, diabetes, Alzheimer's, cancer, depression, and autoimmune conditions. It's not genetics. It's not bad luck. It's INFLAMMATION. Research now links chronic inflammation to the #1 killer in America (heart disease), Type 2 diabetes, obesity, dementia, cancer, and every autoimmune condition. If you understand inflammation, you understand 80% of chronic disease. This is why anti-inflammatory coaching is a $2.3 BILLION market - and growing.`,
+            content: `{name}, in the last lesson you learned that the gut is the foundation of health. But what happens when the gut breaks down? Or when stress becomes chronic? Or when we're overloaded with toxins? ONE thing: **Inflammation**. And not the obvious kind you can see...`,
         },
+
+        // THE GAP
         {
             type: 'heading',
-            content: '"But I Don\'t Have a Science Background..."',
+            content: 'The "Silent Killer" Nobody Talks About',
         },
         {
             type: 'text',
-            content: `When people hear "inflammation" they think they need to understand complex biochemistry. They don't. Here's what you actually need to know:`,
+            content: `Heart disease. Diabetes. Alzheimer's. Cancer. Depression. Autoimmune conditions. What do they ALL have in common? Research now confirms they share ONE underlying driver: **chronic inflammation**.`,
         },
         {
-            type: 'key-point',
-            content: `Inflammation is your body's fire alarm. Acute inflammation: The alarm goes off, fire gets put out, alarm stops. (Good!) Chronic inflammation: The alarm is STUCK ON, 24/7, damaging everything. (Bad!) That's the foundation. You don't need to explain cytokines or NF-kB pathways. You need to help clients understand their alarm is stuck on and show them how to turn it off.`,
+            type: 'text',
+            content: `The scary part? You can have chronic inflammation for a DECADE before it shows up as a "disease." This is why functional medicine catches problems 5-10 years before conventional medicine. We look for the smoke before the fire burns down the house.`,
+        },
+
+        // DEFINITION
+        {
+            type: 'definition',
+            term: 'Chronic Inflammation',
+            content: `Unlike acute inflammation (a cut healing, a fever fighting infection), chronic inflammation is a **low-grade, constant fire** that never fully turns off. It silently damages tissues for years before manifesting as disease. Think of it as a fire alarm stuck in the "ON" position 24/7.`,
+        },
+
+        // BEFORE-AFTER: Two Types
+        {
+            type: 'heading',
+            content: 'Good Fire vs. Bad Fire',
+        },
+        {
+            type: 'before-after',
+            content: '',
+            before: {
+                title: 'Acute Inflammation (Good)',
+                items: [
+                    'Cut your finger → swells → heals',
+                    'Catch a cold → fever → recovery',
+                    'Sprain ankle → swelling → repair',
+                    'Clear start, middle, and END',
+                ],
+            },
+            after: {
+                title: 'Chronic Inflammation (Bad)',
+                items: [
+                    'Low-grade, constant fire',
+                    'No obvious trigger',
+                    'Never fully "turns off"',
+                    'Silently damages tissues for YEARS',
+                ],
+            },
+        },
+
+        // SIGNS
+        {
+            type: 'heading',
+            content: 'Signs You\'ll Recognize in Every Client',
+        },
+        {
+            type: 'text',
+            content: `These symptoms are so common that most people think they're "normal aging." They're not. They're **fixable**:`,
+        },
+        {
+            type: 'list',
+            content: '',
+            items: [
+                '**Fatigue** that doesn\'t improve with sleep',
+                '**Joint stiffness**, especially in the mornings',
+                '**Brain fog** or memory issues',
+                '**Unexplained weight gain** (especially belly fat)',
+                '**Skin issues**, puffiness, bloating',
+                '**Mood changes** - irritability, anxiety, depression',
+            ],
         },
         {
             type: 'callout',
-            content: `A graduate told us: "I was terrified of the 'science stuff.' Now I explain inflammation to clients using simple analogies. They get it. I get results. Nobody cares that I don't have a PhD."`,
+            content: `When a client comes to you with 3+ of these symptoms and their doctor says "labs are normal," chronic inflammation is almost always the culprit. You'll see this pattern constantly.`,
             style: 'tip',
         },
-        {
-            type: 'heading',
-            content: 'Real Story: Jennifer, 49 - Former Stay-at-Home Mom',
-        },
-        {
-            type: 'quote',
-            content: `"I raised 4 kids. No career. No degree. At 47, I felt lost. My own inflammation journey started with mysterious joint pain, brain fog, and weight gain. Doctors said 'you're just getting older.' I refused to accept that. I found functional medicine, fixed my own inflammation, and thought: 'Other women need to know this.' Now I specialize in inflammation for women 40+. My numbers: 14 active clients, $175/session average, monthly income $4,900, working around my family's schedule. My husband was skeptical at first. Now he brags about his 'doctor wife.' (I'm not a doctor - I'm a health coach. But I'll take it!)" - Jennifer R., Wisconsin | ASI Graduate 2023`,
-        },
-        {
-            type: 'heading',
-            content: 'Two Types of Inflammation',
-        },
-        {
-            type: 'list',
-            content: 'ACUTE INFLAMMATION (Good):',
-            items: [
-                'Cut your finger → swells, reddens → heals',
-                'Catch a cold → fever, fatigue → recovery',
-                'Sprain your ankle → swelling → repair',
-                'Has a clear start, middle, and end',
-            ],
-        },
-        {
-            type: 'list',
-            content: 'CHRONIC INFLAMMATION (Bad):',
-            items: [
-                'Low-grade, constant fire',
-                'No obvious trigger',
-                'Never fully "turns off"',
-                'Silently damages tissues for YEARS',
-            ],
-        },
-        {
-            type: 'callout',
-            content: `The scary part: You can have chronic inflammation for a DECADE before it shows up as a "disease." This is why functional medicine catches problems 5-10 years before conventional medicine. We look for the smoke before the fire burns down the house.`,
-            style: 'warning',
-        },
-        {
-            type: 'heading',
-            content: 'Signs You\'ll Recognize in Clients',
-        },
-        {
-            type: 'list',
-            content: 'Common Signs of Chronic Inflammation:',
-            items: [
-                'Fatigue that doesn\'t improve with sleep',
-                'Joint stiffness, especially in mornings',
-                'Brain fog or memory issues',
-                'Unexplained weight gain',
-                'Skin issues, puffiness, bloating',
-            ],
-        },
-        {
-            type: 'text',
-            content: `Most people just accept these as "normal aging." They're NOT normal. They're fixable. And you'll be the person who finally helps them understand why.`,
-        },
+
+        // THE FRAMEWORK - 6 Triggers
         {
             type: 'heading',
             content: 'The 6 Inflammation Triggers',
         },
         {
-            type: 'list',
-            content: 'Know These - You\'ll Use Them Daily:',
-            items: [
-                '1. SUGAR & REFINED CARBS - Spikes blood sugar → inflammatory cascade',
-                '2. SEED OILS (Vegetable Oils) - Canola, soybean, corn → Omega-6 overload',
-                '3. CHRONIC STRESS - Cortisol dysregulation → immune suppression',
-                '4. POOR SLEEP - Under 7 hours → inflammatory markers rise 40%',
-                '5. GUT DYSFUNCTION - Leaky gut → systemic inflammation',
-                '6. TOXIN EXPOSURE - Heavy metals, mold, chemicals → body treats as threats',
-            ],
+            type: 'text',
+            content: `Master these 6 triggers and you can help almost anyone reduce inflammation:`,
+        },
+        {
+            type: 'framework',
+            content: '',
+            framework: {
+                name: 'The 6 Fire Starters',
+                steps: [
+                    {
+                        letter: '1',
+                        title: 'Sugar & Refined Carbs',
+                        description: 'Blood sugar spikes trigger inflammatory cascades. The average American eats 17 teaspoons of added sugar daily.',
+                    },
+                    {
+                        letter: '2',
+                        title: 'Seed Oils (Vegetable Oils)',
+                        description: 'Canola, soybean, corn oil → Omega-6 overload. These are in almost every processed food.',
+                    },
+                    {
+                        letter: '3',
+                        title: 'Chronic Stress',
+                        description: 'Cortisol dysregulation → immune suppression → inflammation. The body can\'t tell work stress from lion attack.',
+                    },
+                    {
+                        letter: '4',
+                        title: 'Poor Sleep',
+                        description: 'Under 7 hours → inflammatory markers rise 40%. Sleep is when the body repairs and clears inflammation.',
+                    },
+                    {
+                        letter: '5',
+                        title: 'Gut Dysfunction',
+                        description: 'Leaky gut → particles escape → immune system attacks → systemic inflammation. (You learned this!)',
+                    },
+                    {
+                        letter: '6',
+                        title: 'Toxin Exposure',
+                        description: 'Heavy metals, mold, chemicals → body treats as threats → chronic inflammatory response.',
+                    },
+                ],
+            },
         },
         {
             type: 'key-point',
-            content: `Most people have 3-4 of these going at once. That's why they feel terrible. Your job is to help them identify and address their personal triggers.`,
+            content: `Most people have **3-4 of these going at once**. That's why they feel terrible. Your job is to help them identify their personal triggers and address them systematically.`,
         },
+
+        // CASE STUDY
         {
             type: 'heading',
-            content: 'Your Role: Education, Not Diagnosis',
-        },
-        {
-            type: 'list',
-            content: 'What YOU Do:',
-            items: [
-                'Educate on inflammation triggers',
-                'Help identify their personal triggers',
-                'Create anti-inflammatory meal plans',
-                'Suggest lifestyle modifications',
-                'Recommend supplements (as education)',
-                'Track progress and symptoms',
-            ],
-        },
-        {
-            type: 'list',
-            content: 'What DOCTORS Do:',
-            items: [
-                'Run inflammatory marker tests (CRP, ESR)',
-                'Diagnose autoimmune conditions',
-                'Prescribe medications when needed',
-                'Rule out serious conditions',
-            ],
-        },
-        {
-            type: 'callout',
-            content: `The partnership: You're the day-to-day coach. The doctor is the diagnostic partner. Together, you help clients far better than either could alone. Doctors often REFER to coaches like us because they don't have time for lifestyle education.`,
-            style: 'success',
-        },
-        {
-            type: 'heading',
-            content: 'Case Study: Think Like a Practitioner',
+            content: 'Real Client: Diane\'s "Normal Aging"',
         },
         {
             type: 'text',
-            content: `Maria, 48, works in marketing. She has: fatigue for 3+ years (doctors say labs are "normal"), joint pain in hands and knees (worse every morning), brain fog (can't focus on work), gained 15 lbs in the last year without changing diet, skin breakouts at 48, and feels "puffy" most days.`,
-        },
-        {
-            type: 'key-point',
-            content: `What's the most likely underlying issue? CHRONIC SYSTEMIC INFLAMMATION. All her symptoms point to it: joint pain, brain fog, weight resistance, skin issues, puffiness. These are classic inflammatory markers that conventional medicine often misses. As her coach, you'd help her identify triggers, create an anti-inflammatory protocol, and track progress. Within 3 months, most symptoms would likely improve significantly.`,
-        },
-        {
-            type: 'callout',
-            content: `Maria would be a 4-6 month client. At $175/session twice monthly, that's $1,400-2,100 from ONE client who finally gets answers.`,
-            style: 'success',
-        },
-        {
-            type: 'heading',
-            content: 'The Anti-Inflammatory Niche: Income Breakdown',
+            content: `Diane, 52, came to me after being told by 3 doctors that her symptoms were "just aging":`,
         },
         {
             type: 'list',
-            content: 'The Market Opportunity:',
+            content: '',
             items: [
-                '77% of Americans have chronic inflammatory symptoms',
-                '$2.3 billion anti-inflammatory coaching market',
-                'Growing 12% annually',
+                'Fatigue for 3+ years (labs "normal")',
+                'Joint pain in hands and knees (worse every morning)',
+                'Brain fog so bad she forgot appointments',
+                'Gained 20 lbs in 2 years without changing diet',
+                'Felt "puffy" and inflamed constantly',
             ],
-        },
-        {
-            type: 'list',
-            content: 'Typical Client Package (12-Week Reset):',
-            items: [
-                'Initial assessment (90 min): $250',
-                '10 weekly sessions (60 min): $1,750',
-                'Email support included',
-                'TOTAL: $2,000 per client',
-            ],
-        },
-        {
-            type: 'key-point',
-            content: `5 clients x $2,000 = $10,000 over 12 weeks. That's $3,333/month from 5 people. Graduate quote: "I charge $2,400 for my 12-week inflammation program. I currently have 6 clients. Do the math."`,
-        },
-        {
-            type: 'heading',
-            content: 'Real Story: Barbara, 54 - Former Office Manager',
-        },
-        {
-            type: 'quote',
-            content: `"I managed an office for 15 years. When I got laid off at 52, I thought my life was over. My own health issues - fibromyalgia, chronic fatigue, constant pain - had plagued me for years. When functional medicine helped me feel 20 years younger, I knew I had to share it. The certification was scary at 52. 'Am I too old? Will anyone take me seriously?' Turns out, being 54 is an ADVANTAGE. My clients are mostly women 45-60. They trust me because I've walked their path. Current status: 11 clients, $200/session, monthly income $4,400. Age isn't a barrier. It's credibility." - Barbara L., Colorado | ASI Graduate 2024`,
-        },
-        {
-            type: 'heading',
-            content: 'Your Personal Inflammation Audit',
         },
         {
             type: 'text',
-            content: `Rate yourself 1-10 on each trigger: Sugar/refined carb intake, Seed oil consumption, Stress level, Sleep quality, Gut symptoms, Toxin exposure. High scores (7+) = Priority areas. This is EXACTLY what you'll do with clients. Simple. Actionable. Eye-opening. Most clients have never thought about their health this way.`,
+            content: `I helped her identify her triggers: high sugar intake (she was eating "healthy" granola bars loaded with sugar), poor sleep (5-6 hours), and chronic work stress. We addressed all three systematically.`,
         },
+        {
+            type: 'key-point',
+            content: `Results after 90 days: Joint pain reduced by 80%. Energy back to "like my 40s." Lost 12 lbs without dieting. Brain fog GONE. She told me: "My doctor asked what I was doing because my inflammatory markers dropped. I said, 'I'm working with a health coach.'"`,
+        },
+
+        // SCOPE OF PRACTICE
+        {
+            type: 'heading',
+            content: 'Your Role: Educate, Don\'t Diagnose',
+        },
+        {
+            type: 'before-after',
+            content: '',
+            before: {
+                title: 'What Doctors Do',
+                items: [
+                    'Run inflammatory marker tests (CRP, ESR)',
+                    'Diagnose autoimmune conditions',
+                    'Prescribe anti-inflammatory medications',
+                    'Rule out serious conditions',
+                ],
+            },
+            after: {
+                title: 'What You Do',
+                items: [
+                    'Educate on the 6 inflammation triggers',
+                    'Help identify personal trigger patterns',
+                    'Create anti-inflammatory meal plans',
+                    'Guide lifestyle modifications',
+                ],
+            },
+        },
+        {
+            type: 'callout',
+            content: `The partnership model: Doctors diagnose and test. You educate and implement. Together, you help clients far better than either could alone. Many doctors actively REFER to coaches like us because they don't have time for lifestyle education.`,
+            style: 'info',
+        },
+
+        // CHECK YOUR KNOWLEDGE
+        {
+            type: 'quiz',
+            content: '',
+            questions: [
+                {
+                    question: 'Which of the following is TRUE about chronic inflammation?',
+                    options: [
+                        'Chronic inflammation always shows visible symptoms like redness',
+                        'Chronic inflammation is often "silent" and can persist for years',
+                        'Chronic inflammation only affects one organ at a time',
+                        'Chronic inflammation always causes fever',
+                    ],
+                    correctIndex: 1,
+                    explanation: 'Chronic inflammation is called the "silent killer" because it can persist for years without obvious symptoms, slowly contributing to conditions like heart disease, diabetes, and autoimmune disorders.',
+                },
+                {
+                    question: 'How many of the 6 inflammation triggers do most people have active at once?',
+                    options: [
+                        '1 trigger maximum',
+                        '2 triggers',
+                        '3-4 triggers',
+                        'All 6 triggers',
+                    ],
+                    correctIndex: 2,
+                    explanation: 'Most people have 3-4 inflammation triggers going at once (like poor diet + stress + bad sleep). This is why they feel terrible - multiple fires burning simultaneously.',
+                },
+            ],
+        },
+
+        // BRIDGE TO NEXT LESSON
         {
             type: 'heading',
             content: 'Coming Up: The Toxin Reality',
         },
         {
             type: 'text',
-            content: `You're officially thinking like a practitioner now! Next up: TOXINS. We're diving into the uncomfortable truth about how poisoned our modern world is - and how to safely help clients detox without dangerous fads.`,
+            content: `You just learned that toxin exposure is one of the 6 inflammation triggers. But here's the uncomfortable truth - we're ALL being exposed to toxins daily, whether we know it or not.`,
         },
         {
-            type: 'list',
-            content: 'What you\'ll learn:',
-            items: [
-                '80,000+ synthetic chemicals in our environment',
-                'Why most "detox" programs are dangerous',
-                'The right way to support detoxification',
-                'Why mold illness is a hidden epidemic',
-            ],
+            type: 'callout',
+            content: `Next up: **80,000+ synthetic chemicals** in our environment. Why most "detox" programs are useless (or dangerous). And how to safely support the body's natural detoxification pathways.`,
+            style: 'tip',
         },
     ];
 
     const keyTakeaways = [
-        'Chronic inflammation is the common thread in 80% of chronic diseases',
-        'You don\'t need a science background - just understand patterns and triggers',
-        'The 6 triggers: Sugar, seed oils, stress, poor sleep, gut dysfunction, toxins',
-        'You educate and coach; doctors diagnose and test - you partner together',
-        'The anti-inflammatory market is $2.3B and growing 12% annually',
-        'A 12-week inflammation program can generate $2,000+ per client',
+        '**Chronic inflammation** is the common thread in 80% of chronic diseases',
+        'It can be "silent" for years before showing up as disease',
+        'The **6 Triggers**: Sugar, Seed Oils, Stress, Poor Sleep, Gut Dysfunction, Toxins',
+        'Most people have **3-4 triggers active** at once',
+        'Signs: fatigue, joint stiffness, brain fog, weight gain, puffiness',
+        'You educate on triggers and lifestyle; doctors diagnose and test',
     ];
 
     return (
         <ClassicLessonBase
             lessonNumber={lessonNumber}
-            lessonTitle="The Inflammation Blueprint"
-            lessonSubtitle="The $2.3B market hiding in plain sight"
+            lessonTitle="The Inflammation Connection"
+            lessonSubtitle="The silent fire behind 80% of chronic disease"
             totalLessons={totalLessons}
             sections={sections}
             keyTakeaways={keyTakeaways}
@@ -251,7 +286,7 @@ export function ClassicLessonInflammationConnection({
             firstName={firstName}
             niche="functional-medicine"
             nicheLabel="Functional Medicine Diploma"
-            baseUrl="/functional-medicine-diploma"
+            baseUrl="/portal/functional-medicine"
             courseSlug="functional-medicine-complete-certification"
         />
     );

@@ -88,21 +88,23 @@ export async function POST(request: NextRequest) {
             where: { id: emailSend.sequenceEmailId },
             data: { openCount: { increment: 1 } },
           });
-          // Also update enrollment stats
-          const enrollment = await prisma.sequenceEnrollment.findFirst({
-            where: {
-              userId: emailSend.userId,
-              sequence: {
-                emails: { some: { id: emailSend.sequenceEmailId } }
+          // Also update enrollment stats (skip if no userId)
+          if (emailSend.userId) {
+            const enrollment = await prisma.sequenceEnrollment.findFirst({
+              where: {
+                userId: emailSend.userId,
+                sequence: {
+                  emails: { some: { id: emailSend.sequenceEmailId } }
+                }
               }
-            }
-          });
-          if (enrollment) {
-            await prisma.sequenceEnrollment.update({
-              where: { id: enrollment.id },
-              data: { emailsOpened: { increment: 1 } },
             });
-            console.log(`✅ [RESEND WEBHOOK] Updated enrollment ${enrollment.id} opened count`);
+            if (enrollment) {
+              await prisma.sequenceEnrollment.update({
+                where: { id: enrollment.id },
+                data: { emailsOpened: { increment: 1 } },
+              });
+              console.log(`✅ [RESEND WEBHOOK] Updated enrollment ${enrollment.id} opened count`);
+            }
           }
         }
         await updateDailyAnalytics("opened");
@@ -136,21 +138,23 @@ export async function POST(request: NextRequest) {
             where: { id: emailSend.sequenceEmailId },
             data: { clickCount: { increment: 1 } },
           });
-          // Also update enrollment stats
-          const enrollment = await prisma.sequenceEnrollment.findFirst({
-            where: {
-              userId: emailSend.userId,
-              sequence: {
-                emails: { some: { id: emailSend.sequenceEmailId } }
+          // Also update enrollment stats (skip if no userId)
+          if (emailSend.userId) {
+            const enrollment = await prisma.sequenceEnrollment.findFirst({
+              where: {
+                userId: emailSend.userId,
+                sequence: {
+                  emails: { some: { id: emailSend.sequenceEmailId } }
+                }
               }
-            }
-          });
-          if (enrollment) {
-            await prisma.sequenceEnrollment.update({
-              where: { id: enrollment.id },
-              data: { emailsClicked: { increment: 1 } },
             });
-            console.log(`✅ [RESEND WEBHOOK] Updated enrollment ${enrollment.id} clicked count`);
+            if (enrollment) {
+              await prisma.sequenceEnrollment.update({
+                where: { id: enrollment.id },
+                data: { emailsClicked: { increment: 1 } },
+              });
+              console.log(`✅ [RESEND WEBHOOK] Updated enrollment ${enrollment.id} clicked count`);
+            }
           }
         }
         await updateDailyAnalytics("clicked");
@@ -167,16 +171,18 @@ export async function POST(request: NextRequest) {
           },
         });
         await updateDailyAnalytics("bounced");
-        // Try auto-fix before suppressing
-        const wasFixed = await handleBounceWithAutoFix(
-          emailSend.userId,
-          emailSend.toEmail,
-          data?.bounce?.message || "Email bounced",
-          emailSend.id
-        );
-        // Only suppress if we couldn't fix it
-        if (!wasFixed) {
-          await addSuppressionTag(emailSend.userId, "suppress_bounced");
+        // Try auto-fix before suppressing (only if we have a userId)
+        if (emailSend.userId) {
+          const wasFixed = await handleBounceWithAutoFix(
+            emailSend.userId,
+            emailSend.toEmail,
+            data?.bounce?.message || "Email bounced",
+            emailSend.id
+          );
+          // Only suppress if we couldn't fix it
+          if (!wasFixed) {
+            await addSuppressionTag(emailSend.userId, "suppress_bounced");
+          }
         }
         break;
 
@@ -188,13 +194,15 @@ export async function POST(request: NextRequest) {
             errorMessage: data?.error?.message || "Email failed to send",
           },
         });
-        console.error(`[WEBHOOK] Email failed for user ${emailSend.userId}:`, data?.error);
+        console.error(`[WEBHOOK] Email failed for user ${emailSend.userId || "unknown"}:`, data?.error);
         break;
 
       case "email.delivery_delayed":
-        console.warn(`[WEBHOOK] Email delivery delayed for ${emailSend.userId}:`, data);
+        console.warn(`[WEBHOOK] Email delivery delayed for ${emailSend.userId || "unknown"}:`, data);
         // Track delays and suppress after 2 delays for this user
-        await handleDeliveryDelayed(emailSend.userId);
+        if (emailSend.userId) {
+          await handleDeliveryDelayed(emailSend.userId);
+        }
         break;
 
       case "email.complained":

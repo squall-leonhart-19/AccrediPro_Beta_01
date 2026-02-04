@@ -584,43 +584,63 @@ export async function sendMarketingEmail({ to, subject, html, text, replyTo }: O
 // ============================================
 
 // 1. Welcome Email (Account Created) - includes login credentials
+// PLAIN TEXT style — no images, no gradients, no marketing HTML.
+// This lands in Gmail Primary tab instead of Promotions.
 export async function sendWelcomeEmail(to: string, firstName: string) {
-  const content = `
-    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Welcome, ${firstName}!</h2>
+  const plainText = `Hi ${firstName},
 
-    <p style="color: #555; font-size: 16px;">We're so glad you're here.</p>
+Welcome to AccrediPro! Your account is ready.
 
-    <p style="color: #555; font-size: 16px;">You've just taken an important step toward building a meaningful new career — and we're honored to be part of your journey.</p>
+Here are your login details:
 
-    ${highlightBox(`
-      <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">Your Login Credentials:</p>
-      <p style="margin: 0; font-size: 14px; color: #333;"><strong>Email:</strong> ${to}</p>
-      <p style="margin: 8px 0 0 0; font-size: 14px; color: #333;"><strong>Password:</strong> Futurecoach2025</p>
-      <p style="margin: 12px 0 0 0; font-size: 12px; color: #666; font-style: italic;">You can change your password anytime from your account settings.</p>
-    `, 'cream')}
+Email: ${to}
+Password: Futurecoach2025
 
-    <p style="color: #555; font-size: 16px;">Inside your dashboard, you'll find:</p>
-    <ul style="color: #555; font-size: 15px; padding-left: 20px;">
-      <li style="margin: 10px 0;">Your enrolled courses</li>
-      <li style="margin: 10px 0;">Direct access to your dedicated coach</li>
-      <li style="margin: 10px 0;">Resources to support your certification journey</li>
-    </ul>
+Login here: ${BASE_URL}/login
 
-    <p style="color: #555; font-size: 16px;">Take your time, explore at your own pace, and know that we're here whenever you need us.</p>
+You can change your password anytime from your account settings.
 
-    ${primaryButton('Login to My Dashboard', `${BASE_URL}/login`)}
+Once you're inside, you'll find your enrolled courses, your dedicated coach, and all your resources.
 
-    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
-      <p style="margin: 0; font-size: 14px; color: #666;">Questions? Just reply to this email or message your coach directly from your dashboard.</p>
-    </div>
+Take your time, explore at your own pace — and if you need anything, just reply to this email.
 
-    <p style="color: #555; font-size: 16px; margin-top: 30px;">Warmly,<br/><strong>The AccrediPro Team</strong></p>
-  `;
+Sarah
+AccrediPro Academy`;
+
+  // Minimal HTML — looks like a personal email, no branding, no images, no tracking
+  const minimalHtml = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: Arial, sans-serif; font-size: 15px; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px;">
+<p>Hi ${firstName},</p>
+
+<p>Welcome to AccrediPro! Your account is ready.</p>
+
+<p>Here are your login details:</p>
+
+<p style="background: #f5f5f5; padding: 15px; border-radius: 6px; font-family: monospace;">
+<strong>Email:</strong> ${to}<br>
+<strong>Password:</strong> Futurecoach2025
+</p>
+
+<p><a href="${BASE_URL}/login" style="color: #722F37; font-weight: bold;">Click here to login</a></p>
+
+<p style="font-size: 13px; color: #888;">You can change your password anytime from your account settings.</p>
+
+<p>Once you're inside, you'll find your enrolled courses, your dedicated coach, and all your resources.</p>
+
+<p>Take your time, explore at your own pace — and if you need anything, just reply to this email.</p>
+
+<p>Sarah<br>AccrediPro Academy</p>
+</body>
+</html>`;
 
   return sendEmail({
     to,
-    subject: `Welcome to AccrediPro, ${firstName}!`,
-    html: emailWrapper(content, `Welcome ${firstName}! Your login credentials are inside.`),
+    subject: `${firstName}, here are your login details`,
+    html: minimalHtml,
+    text: plainText,
+    from: FROM_EMAIL_PERSONAL,
   });
 }
 
@@ -1039,47 +1059,79 @@ export async function sendPaymentReceiptEmail(
 }
 
 // 16. Course Enrollment Confirmation
+// PLAIN TEXT style — lands in Primary inbox, not Promotions
 export async function sendCourseEnrollmentEmail(to: string, firstName: string, courseName: string, courseSlug: string) {
   const courseUrl = `${BASE_URL}/courses/${courseSlug}`;
 
-  const content = `
-    <div style="text-align: center; margin-bottom: 30px;">
-      <h2 style="color: #722F37; margin: 0; font-size: 28px;">You're Enrolled!</h2>
-    </div>
+  const plainText = `Hi ${firstName},
 
-    <p style="color: #555; font-size: 16px; text-align: center;">Hi ${firstName},</p>
-    <p style="color: #555; font-size: 16px; text-align: center;">You now have full access to:</p>
+You're enrolled! You now have full access to:
 
-    ${highlightBox(`
-      <div style="text-align: center;">
-        <p style="margin: 0; font-size: 20px; font-weight: bold; color: #722F37;">${courseName}</p>
-      </div>
-    `, 'cream')}
+${courseName}
 
-    <p style="color: #555; font-size: 16px;">Your certification includes:</p>
-    <ul style="color: #555; font-size: 15px; padding-left: 20px;">
-      <li style="margin: 8px 0;">Comprehensive lesson modules</li>
-      <li style="margin: 8px 0;">Quizzes and assessments</li>
-      <li style="margin: 8px 0;">1:1 coaching support</li>
-      <li style="margin: 8px 0;">Professional certification upon completion</li>
-    </ul>
+Your certification includes:
+- Comprehensive lesson modules
+- Quizzes and assessments
+- 1:1 coaching support
+- Professional certification upon completion
 
-    ${primaryButton('Access My Course', courseUrl)}
+Access your course here: ${courseUrl}
 
-    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
-      <p style="margin: 0; font-size: 14px; color: #666;"><strong style="color: #722F37;">Pro Tip:</strong> Set aside dedicated time each day for learning. Even 30 minutes of focused study will help you progress quickly!</p>
-    </div>
-  `;
+Login details:
+Email: ${to}
+Password: Futurecoach2025
+
+Pro tip: Set aside 20-30 minutes each day. Consistency is the fastest path to certification.
+
+If you need anything, just reply to this email.
+
+Sarah
+AccrediPro Academy`;
+
+  const minimalHtml = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: Arial, sans-serif; font-size: 15px; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px;">
+<p>Hi ${firstName},</p>
+
+<p>You're enrolled! You now have full access to:</p>
+
+<p style="font-size: 18px; font-weight: bold;">${courseName}</p>
+
+<p>Your certification includes:</p>
+<ul>
+  <li>Comprehensive lesson modules</li>
+  <li>Quizzes and assessments</li>
+  <li>1:1 coaching support</li>
+  <li>Professional certification upon completion</li>
+</ul>
+
+<p><a href="${courseUrl}" style="color: #722F37; font-weight: bold;">Access your course here</a></p>
+
+<p style="background: #f5f5f5; padding: 15px; border-radius: 6px; font-family: monospace;">
+<strong>Email:</strong> ${to}<br>
+<strong>Password:</strong> Futurecoach2025
+</p>
+
+<p style="font-size: 13px; color: #888;">Pro tip: Set aside 20-30 minutes each day. Consistency is the fastest path to certification.</p>
+
+<p>If you need anything, just reply to this email.</p>
+
+<p>Sarah<br>AccrediPro Academy</p>
+</body>
+</html>`;
 
   return sendEmail({
     to,
-    subject: `You're Enrolled: ${courseName} - AccrediPro Academy`,
-    html: emailWrapper(content, `Welcome to ${courseName}! Your learning journey begins.`),
+    subject: `${firstName}, you're enrolled in ${courseName}`,
+    html: minimalHtml,
+    text: plainText,
+    from: FROM_EMAIL_PERSONAL,
   });
 }
 
-// 16b. Pro Accelerator VIP Enrollment - Premium/Exclusive Email
-// niche: "FM" (Functional Medicine), "HN" (Holistic Nutrition), etc.
+// 16b. Pro Accelerator VIP Enrollment
+// PLAIN TEXT style — lands in Primary inbox, not Promotions
 export async function sendProAcceleratorEnrollmentEmail(to: string, firstName: string, niche: string = "FM") {
   const nicheNames: Record<string, string> = {
     "FM": "Functional Medicine",
@@ -1091,53 +1143,67 @@ export async function sendProAcceleratorEnrollmentEmail(to: string, firstName: s
 
   const dashboardUrl = `${BASE_URL}/my-courses`;
 
-  const content = `
-    <div style="text-align: center; margin-bottom: 30px;">
-      <div style="background: linear-gradient(135deg, #D4AF37 0%, #F5D76E 100%); color: #722F37; padding: 8px 20px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">
-        VIP ACCESS UNLOCKED
-      </div>
-      <h2 style="color: #722F37; margin: 0; font-size: 32px;">Welcome to the Inner Circle, ${firstName}!</h2>
-    </div>
+  const plainText = `Hi ${firstName},
 
-    <p style="color: #555; font-size: 16px; text-align: center;">You've just upgraded to our <strong style="color: #722F37;">Pro Accelerator™</strong> — and you now have access to <em>everything</em> we offer.</p>
+Your ${nicheName} Pro Accelerator access is ready — you now have everything unlocked.
 
-    <div style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); border-radius: 16px; padding: 30px; margin: 25px 0; text-align: center;">
-      <p style="margin: 0; font-size: 12px; color: #D4AF37; text-transform: uppercase; letter-spacing: 2px;">YOU'VE UNLOCKED</p>
-      <p style="margin: 15px 0 5px 0; font-size: 24px; font-weight: bold; color: white;">${nicheName} Pro Accelerator™</p>
-      <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.8);">Advanced + Master + Practice Path</p>
-    </div>
+Here's what's inside:
 
-    ${highlightBox(`
-      <p style="margin: 0 0 15px 0; font-size: 15px; color: #722F37; font-weight: bold;">Your Login Credentials:</p>
-      <p style="margin: 0; font-size: 14px; color: #333;"><strong>Email:</strong> ${to}</p>
-      <p style="margin: 8px 0 0 0; font-size: 14px; color: #333;"><strong>Password:</strong> Futurecoach2025</p>
-      <p style="margin: 12px 0 0 0; font-size: 12px; color: #666; font-style: italic;">You can change your password anytime from your account settings.</p>
-    `, 'gold')}
+- Advanced Clinical Training — deep-dive specializations
+- Master-Level Protocols — complex case mastery
+- Practice & Income Path — build your business
+- 1:1 Coach Access — direct support whenever you need it
 
-    <p style="color: #555; font-size: 16px; margin-top: 25px;"><strong>What's waiting for you inside:</strong></p>
-    <ul style="color: #555; font-size: 15px; padding-left: 20px;">
-      <li style="margin: 10px 0;"><strong>Advanced Clinical Training</strong> — Deep-dive specializations</li>
-      <li style="margin: 10px 0;"><strong>Master-Level Protocols</strong> — Complex case mastery</li>
-      <li style="margin: 10px 0;"><strong>Practice & Income Path</strong> — Build your $10K/month business</li>
-      <li style="margin: 10px 0;"><strong>1:1 Coach Access</strong> — Direct support whenever you need it</li>
-    </ul>
+Login details:
+Email: ${to}
+Password: Futurecoach2025
 
-    ${primaryButton('Access My Pro Dashboard', dashboardUrl)}
+Access your dashboard: ${dashboardUrl}
 
-    <div style="background: linear-gradient(135deg, #FDF5E6 0%, #FFF8DC 100%); border: 2px solid #D4AF37; border-radius: 12px; padding: 20px; margin-top: 25px; text-align: center;">
-      <p style="margin: 0 0 10px 0; font-size: 14px; color: #722F37; font-weight: bold;">Pro Tip from Sarah</p>
-      <p style="margin: 0; font-size: 14px; color: #555;">Start with the Advanced tracks that excite you most. Passion + expertise = premium clients.</p>
-    </div>
+Start with the tracks that excite you most. Passion + expertise = premium clients.
 
-    <p style="color: #555; font-size: 16px; margin-top: 30px;">You've made an incredible investment in yourself. I'm here to make sure it pays off.</p>
+You've made an incredible investment in yourself. I'm here to make sure it pays off.
 
-    <p style="color: #555; font-size: 16px; margin-top: 20px;">To your success,<br/><strong style="color: #722F37;">Sarah M.</strong><br/><span style="color: #888; font-size: 13px;">Lead Coach, AccrediPro Academy</span></p>
-  `;
+Sarah
+AccrediPro Academy`;
+
+  const minimalHtml = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: Arial, sans-serif; font-size: 15px; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px;">
+<p>Hi ${firstName},</p>
+
+<p>Your <strong>${nicheName} Pro Accelerator</strong> access is ready — you now have everything unlocked.</p>
+
+<p>Here's what's inside:</p>
+<ul>
+  <li><strong>Advanced Clinical Training</strong> — deep-dive specializations</li>
+  <li><strong>Master-Level Protocols</strong> — complex case mastery</li>
+  <li><strong>Practice & Income Path</strong> — build your business</li>
+  <li><strong>1:1 Coach Access</strong> — direct support whenever you need it</li>
+</ul>
+
+<p style="background: #f5f5f5; padding: 15px; border-radius: 6px; font-family: monospace;">
+<strong>Email:</strong> ${to}<br>
+<strong>Password:</strong> Futurecoach2025
+</p>
+
+<p><a href="${dashboardUrl}" style="color: #722F37; font-weight: bold;">Access your dashboard</a></p>
+
+<p style="font-size: 13px; color: #888;">Start with the tracks that excite you most. Passion + expertise = premium clients.</p>
+
+<p>You've made an incredible investment in yourself. I'm here to make sure it pays off.</p>
+
+<p>Sarah<br>AccrediPro Academy</p>
+</body>
+</html>`;
 
   return sendEmail({
     to,
-    subject: `VIP Access Unlocked: Welcome to the ${nicheName} Pro Accelerator, ${firstName}!`,
-    html: emailWrapper(content, `${firstName}, you're in! Your ${nicheName} Pro Accelerator access is ready.`),
+    subject: `${firstName}, your Pro Accelerator access is ready`,
+    html: minimalHtml,
+    text: plainText,
+    from: FROM_EMAIL_PERSONAL,
   });
 }
 

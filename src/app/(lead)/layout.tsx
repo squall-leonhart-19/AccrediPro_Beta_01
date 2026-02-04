@@ -4,7 +4,10 @@ import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { LeadSidebar } from "@/components/lead-portal/LeadSidebar";
+import { MainContentWrapper } from "@/components/lead-portal/MainContentWrapper";
 import { FloatingMentorChatWrapper } from "@/components/ai/floating-mentor-chat-wrapper";
+import { SidebarProvider } from "@/contexts/sidebar-context";
+import { CIRCLE_RESOURCES } from "@/data/circle-resources";
 
 interface LeadLayoutProps {
     children: React.ReactNode;
@@ -29,7 +32,7 @@ const DIPLOMA_TAG_PREFIX: Record<string, string> = {
 };
 
 async function getLeadData(userId: string, diplomaSlug: string) {
-    const [user, leadOnboarding, examData] = await Promise.all([
+    const [user, leadOnboarding, examData, masterclassPod] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -38,6 +41,7 @@ async function getLeadData(userId: string, diplomaSlug: string) {
                 email: true,
                 avatar: true,
                 userType: true,
+                createdAt: true,
             },
         }),
         prisma.leadOnboarding.findUnique({
@@ -56,6 +60,14 @@ async function getLeadData(userId: string, diplomaSlug: string) {
             },
             select: { passed: true },
         }).catch(() => null),
+        // Get masterclass pod for resources
+        prisma.masterclassPod.findUnique({
+            where: { userId },
+            select: {
+                createdAt: true,
+                unlockedResources: true,
+            },
+        }).catch(() => null),
     ]);
 
     // Get tag prefix for this diploma (default to womens-health)
@@ -72,10 +84,47 @@ async function getLeadData(userId: string, diplomaSlug: string) {
     // Diploma is completed if either: 9 lessons done OR exam passed
     const diplomaCompleted = completedLessons >= 9 || !!examData?.passed;
 
+    // Calculate resources unlock status - always show resources (locked if no pod)
+    let resources: {
+        id: string;
+        name: string;
+        icon: string;
+        description: string;
+        isUnlocked: boolean;
+        minutesUntilUnlock: number;
+    }[] = [];
+
+    if (masterclassPod) {
+        const minutesSinceCreated = Math.floor(
+            (Date.now() - new Date(masterclassPod.createdAt).getTime()) / (1000 * 60)
+        );
+        const unlockedIds = (masterclassPod.unlockedResources as string[]) || [];
+
+        resources = CIRCLE_RESOURCES.map(r => ({
+            id: r.id,
+            name: r.name,
+            icon: r.icon,
+            description: r.description,
+            isUnlocked: unlockedIds.includes(r.id),
+            minutesUntilUnlock: Math.max(0, r.unlockAfterMinutes - minutesSinceCreated),
+        }));
+    } else {
+        // No pod yet - show all resources as locked
+        resources = CIRCLE_RESOURCES.map(r => ({
+            id: r.id,
+            name: r.name,
+            icon: r.icon,
+            description: r.description,
+            isUnlocked: false,
+            minutesUntilUnlock: r.unlockAfterMinutes,
+        }));
+    }
+
     return {
         user,
         leadOnboarding,
         diplomaCompleted,
+        resources,
     };
 }
 
@@ -103,33 +152,31 @@ export default async function LeadLayout({ children }: LeadLayoutProps) {
         diplomaSlug = pathParts[0];
     }
 
-    const { user, leadOnboarding, diplomaCompleted } = await getLeadData(session.user.id, diplomaSlug);
+    const { user, leadOnboarding, diplomaCompleted, resources } = await getLeadData(session.user.id, diplomaSlug);
 
     if (!user) {
         redirect("/login");
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Lead Sidebar */}
-            <LeadSidebar
-                firstName={user.firstName || "Student"}
-                lastName={user.lastName || ""}
-                email={user.email || ""}
-                avatar={user.avatar}
-                diplomaCompleted={diplomaCompleted}
-                certificateClaimed={leadOnboarding?.claimedCertificate || false}
-            />
+        <SidebarProvider>
+            <div className="min-h-screen bg-gray-50">
+                {/* Lead Sidebar */}
+                <LeadSidebar
+                    firstName={user.firstName || "Student"}
+                    lastName={user.lastName || ""}
+                    email={user.email || ""}
+                    avatar={user.avatar}
+                    diplomaCompleted={diplomaCompleted}
+                    certificateClaimed={leadOnboarding?.claimedCertificate || false}
+                    resources={resources}
+                />
 
-            {/* Main Content - responsive padding */}
-            <main className="pt-14 lg:pt-0 lg:pl-64">
-                <div className="min-h-screen">
+                {/* Main Content - responsive padding (dynamic based on sidebar state) */}
+                <MainContentWrapper>
                     {children}
-                </div>
-            </main>
-
-            {/* Floating Mentor Chat Widget */}
-            <FloatingMentorChatWrapper />
-        </div>
+                </MainContentWrapper>
+            </div>
+        </SidebarProvider>
     );
 }

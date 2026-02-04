@@ -14,7 +14,7 @@ interface PageProps {
 async function getLeadProgress(userId: string, config: ReturnType<typeof getConfigByPortalSlug>) {
     if (!config) return null;
 
-    const [user, enrollment, onboardingTags, completionTags] = await Promise.all([
+    const [user, enrollment, onboardingTags, completionTags, quizTag] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -49,6 +49,13 @@ async function getLeadProgress(userId: string, config: ReturnType<typeof getConf
                 tag: { startsWith: `${config.lessonTagPrefix}:` },
             },
         }),
+        // Check if quiz is completed
+        prisma.userTag.findFirst({
+            where: {
+                userId,
+                tag: "quiz:completed",
+            },
+        }),
     ]);
 
     if (!enrollment) return null;
@@ -68,6 +75,7 @@ async function getLeadProgress(userId: string, config: ReturnType<typeof getConf
         completedQuestions,
         completedLessons: Array.from(completedLessons),
         enrolledAt: enrollment?.enrolledAt || user?.createdAt,
+        hasCompletedQuiz: !!quizTag,
     };
 }
 
@@ -85,7 +93,7 @@ export default async function PortalPage({ params }: PageProps) {
     const data = await getLeadProgress(session.user.id, config);
     if (!data) redirect("/dashboard");
 
-    const { user, watchedVideo, completedQuestions, completedLessons, enrolledAt } = data;
+    const { user, watchedVideo, completedQuestions, completedLessons, enrolledAt, hasCompletedQuiz } = data;
     const firstName = user?.firstName || "there";
 
     // Since we now collect qualification data in the opt-in funnel, 
@@ -134,6 +142,7 @@ export default async function PortalPage({ params }: PageProps) {
             enrolledAt={enrolledAt?.toISOString()}
             portalSlug={slug}
             diplomaName={config.displayName}
+            hasCompletedQuiz={hasCompletedQuiz}
         />
     );
 }

@@ -20,252 +20,300 @@ export function ClassicLessonGutFoundation({
     isCompleted,
 }: LessonProps) {
     const sections: LessonSection[] = [
+        // BRIDGE FROM LESSON 1
         {
             type: 'intro',
-            content: `{name}, welcome back! Before we dive in, I want to tell you about my friend Karen. She spent 8 YEARS going to doctors for bloating, brain fog, and fatigue. She saw gastroenterologists, neurologists, endocrinologists. Thousands of dollars in tests. Every doctor said the same thing: "Your tests are normal. Maybe try antidepressants?" Then she worked with a functional medicine practitioner who looked at her GUT. 3 months later? Bloating gone. Brain fog lifted. Energy back. No medications. The practitioner charged $200/session and had a 6-month waitlist. That practitioner could be YOU.`,
+            content: `{name}, remember how I mentioned that one root cause is more important than all the others? This is it. The gut. When I finally addressed MY gut issues after my husband passed... that's when everything changed. The anxiety, the exhaustion, the brain fog - they weren't just grief. They were my gut screaming for help. Let me show you what I learned...`,
         },
+
+        // THE GAP
         {
             type: 'heading',
-            content: 'The Gut Truth Most Doctors Miss',
-        },
-        {
-            type: 'key-point',
-            content: `Your gut is NOT just for digestion. It's your Second Brain (more neurons than your spinal cord), your Immune Headquarters (70-80% of immune cells live here), your Mood Factory (95% of serotonin made here), and your Hormone Regulator (affects thyroid, estrogen, cortisol). When the gut breaks, EVERYTHING breaks. This is why gut health specialists are booked solid.`,
-        },
-        {
-            type: 'heading',
-            content: '"But Sarah, I Didn\'t Study Biology..."',
+            content: 'Why Your Doctor Missed It',
         },
         {
             type: 'text',
-            content: `Here's the thing: You don't need to be a scientist. You need to understand PATTERNS. When I started, I didn't know what "dysbiosis" meant either. But I learned the patterns:`,
+            content: `Hippocrates said "All disease begins in the gut" over 2,000 years ago. Modern medicine FORGOT this. Gastroenterologists focus on diseases like Crohn's or ulcers. They're not trained to see the gut as the COMMAND CENTER of your entire body.`,
         },
         {
-            type: 'list',
-            content: 'Pattern Recognition:',
-            items: [
-                'Bloating after meals? = Gut issue',
-                'Brain fog + fatigue? = Gut issue',
-                'Skin problems? = Often gut issue',
-                'Mood swings? = Gut-brain connection',
-            ],
+            type: 'before-after',
+            content: '',
+            before: {
+                title: 'What Most People Think',
+                items: [
+                    'Gut = just digestion',
+                    'Bloating is "normal"',
+                    'Brain fog is unrelated to stomach',
+                    'Mood is controlled by brain only',
+                ],
+            },
+            after: {
+                title: 'The Reality',
+                items: [
+                    '70-80% of immune system lives in gut',
+                    '95% of serotonin made in gut',
+                    'Gut-brain axis directly affects cognition',
+                    'Gut bacteria influence mood, weight, energy',
+                ],
+            },
         },
-        {
-            type: 'callout',
-            content: `You're not diagnosing diseases. You're recognizing patterns and guiding people to solutions. A graduate told me: "I felt like an imposter at first. Then I helped my first client eliminate her 10-year bloating problem in 6 weeks. Now I know I belong here."`,
-            style: 'tip',
-        },
+
+        // THE CONCEPT - Definition Box
         {
             type: 'heading',
-            content: 'Real Story: Rachel, 44 - Former HR Manager',
+            content: 'The Gut: Your Second Brain',
         },
         {
-            type: 'quote',
-            content: `"Gut health became my niche by accident. I fixed my own IBS after doctors said I'd have it forever. When I got certified, I specialized in gut health because I KNEW it so well. Here's what my practice looks like now: 12 gut health clients, $175/session, 2 sessions/month each. Monthly recurring: $4,200. Waitlist of 8 people. My clients call me their 'gut guru.' I don't have a medical degree. I have lived experience and the right training. The certification gave me the credibility. My results keep clients coming." - Rachel B., Arizona | ASI Graduate 2023`,
+            type: 'definition',
+            term: 'The Gut-Brain Axis',
+            content: `A bidirectional communication network between your gut and brain. Your gut contains over **500 million neurons** (more than your spinal cord!) and produces **95% of your serotonin**. When gut health suffers, the brain feels it - as brain fog, anxiety, depression, and fatigue.`,
         },
+        {
+            type: 'text',
+            content: `This is why someone with digestive issues often has mood issues too. It's not "in their head" - it's in their GUT, affecting their head.`,
+        },
+        {
+            type: 'key-point',
+            content: `Here's what made everything click for me: The gut is responsible for **immune function** (70-80%), **mood regulation** (serotonin), **nutrient absorption**, **hormone balance**, and **detoxification**. Fix the gut, and you often fix everything else.`,
+        },
+
+        // THE 3 PILLARS
         {
             type: 'heading',
             content: 'The 3 Pillars of Gut Health',
         },
         {
             type: 'text',
-            content: `This framework makes everything simple to understand and explain to clients:`,
+            content: `I teach every client this simple framework. It makes the complex simple:`,
         },
         {
             type: 'list',
-            content: '1. THE BARRIER (The Wall):',
+            content: '',
             items: [
-                'One-cell-thick lining protecting you',
-                'Decides what enters bloodstream',
-                'When damaged → "Leaky Gut" → inflammation everywhere',
-                'Signs: food sensitivities, joint pain, skin issues',
-            ],
-        },
-        {
-            type: 'list',
-            content: '2. THE MICROBIOME (The Army):',
-            items: [
-                'Trillions of bacteria living in your gut',
-                'Good vs bad bacteria balance',
-                'Affects digestion, immunity, mood, weight',
-                'Signs of imbalance: bloating, gas, irregular bowels',
-            ],
-        },
-        {
-            type: 'list',
-            content: '3. THE MOTILITY (The Movement):',
-            items: [
-                'How food moves through your system',
-                'Too slow → constipation, toxin buildup',
-                'Too fast → diarrhea, nutrient loss',
-                'Signs: irregular bathroom habits, discomfort',
+                '**The Barrier** — Your gut lining is ONE cell thick. It decides what gets into your blood and what stays out. When damaged = "leaky gut" = inflammation everywhere.',
+                '**The Microbiome** — Trillions of bacteria living in your gut. Good vs bad bacteria balance affects digestion, immunity, mood, and weight.',
+                '**The Motility** — How food moves through your system. Too slow = toxin buildup. Too fast = nutrient loss.',
             ],
         },
         {
             type: 'callout',
-            content: `When you understand these 3 pillars, you can help almost anyone with gut issues.`,
+            content: `When one pillar falls, the others follow. But when you restore one, the others start healing too. This is the "magic" that makes gut health specialists seem like miracle workers.`,
             style: 'success',
         },
+
+        // LEAKY GUT - Simple explanation
         {
             type: 'heading',
-            content: 'Leaky Gut: The Simple Explanation',
+            content: 'Leaky Gut: The Window Screen Analogy',
         },
         {
             type: 'text',
-            content: `Let me explain leaky gut in a way you could tell your grandmother - and she'd understand perfectly. Imagine your gut lining is a window screen:`,
+            content: `I explain this to every client - and now you can too. Imagine your gut lining is a window screen:`,
+        },
+        {
+            type: 'before-after',
+            content: '',
+            before: {
+                title: 'Healthy Screen',
+                items: [
+                    'Tiny holes let air through (nutrients)',
+                    'Keeps bugs out (toxins, pathogens)',
+                    'Strong, intact structure',
+                    'Selective about what passes',
+                ],
+            },
+            after: {
+                title: 'Damaged Screen (Leaky Gut)',
+                items: [
+                    'Holes get bigger',
+                    'Undigested food particles escape into blood',
+                    'Immune system attacks these "invaders"',
+                    'Chronic inflammation spreads EVERYWHERE',
+                ],
+            },
+        },
+        {
+            type: 'text',
+            content: `This is why someone with leaky gut might have joint pain, brain fog, skin issues, AND digestive problems. The inflammation goes systemic.`,
         },
         {
             type: 'list',
-            content: 'Healthy Screen:',
+            content: '',
             items: [
-                'Tiny holes let air through (nutrients)',
-                'Keeps bugs out (toxins, undigested food)',
+                '**What damages the screen:** Gluten (for many), chronic stress, NSAIDs (ibuprofen), alcohol, processed foods, antibiotics',
+                '**Signs of damage:** Food sensitivities, bloating, joint pain, brain fog, skin issues, autoimmune flares',
             ],
+        },
+
+        // THE FRAMEWORK - 5R Protocol
+        {
+            type: 'heading',
+            content: 'The 5R Protocol™ - Your Gut Healing Framework',
+        },
+        {
+            type: 'text',
+            content: `This is THE industry-standard framework that functional medicine practitioners use worldwide. Master this, and you can help almost anyone with gut issues:`,
+        },
+        {
+            type: 'framework',
+            content: '',
+            framework: {
+                name: 'The 5R Protocol™',
+                steps: [
+                    {
+                        letter: 'R',
+                        title: 'Remove',
+                        description: 'Eliminate triggers: inflammatory foods, pathogens, stressors, toxins. This is where elimination diets come in.',
+                    },
+                    {
+                        letter: 'R',
+                        title: 'Replace',
+                        description: 'Add what\'s missing: digestive enzymes, stomach acid support (HCl), bile support for those without gallbladders.',
+                    },
+                    {
+                        letter: 'R',
+                        title: 'Reinoculate',
+                        description: 'Restore good bacteria: probiotics, prebiotics, fermented foods. Rebuild the microbiome.',
+                    },
+                    {
+                        letter: 'R',
+                        title: 'Repair',
+                        description: 'Heal the gut lining: L-glutamine, zinc carnosine, collagen, bone broth. Seal those "holes" in the screen.',
+                    },
+                    {
+                        letter: 'R',
+                        title: 'Rebalance',
+                        description: 'Address lifestyle: sleep, stress management, movement. The gut can\'t heal in a stressed body.',
+                    },
+                ],
+            },
+        },
+
+        // CASE STUDY
+        {
+            type: 'heading',
+            content: 'Real Client: Amanda\'s 8-Year Mystery',
+        },
+        {
+            type: 'text',
+            content: `Amanda, 38, came to me after 8 YEARS of seeing doctors. She'd been to gastroenterologists, neurologists, endocrinologists. Thousands in tests. Here's what she was experiencing:`,
         },
         {
             type: 'list',
-            content: 'Damaged Screen (Leaky Gut):',
+            content: '',
             items: [
-                'Holes get bigger',
-                'Bugs get in (bad stuff enters bloodstream)',
-                'Immune system panics',
-                'Inflammation spreads EVERYWHERE',
+                'Bloating so bad she looked pregnant after meals',
+                'Brain fog that made her forget her kids\' schedules',
+                'Crushing fatigue by 2pm every day',
+                'Anxiety that started "out of nowhere" in her 30s',
             ],
         },
         {
-            type: 'list',
-            content: 'What Damages the Screen:',
-            items: [
-                'Gluten (for many people)',
-                'Chronic stress',
-                'NSAIDs (ibuprofen, aspirin)',
-                'Alcohol',
-                'Poor diet',
-            ],
+            type: 'text',
+            content: `Every doctor said: "Your labs are normal. Maybe try antidepressants?"`,
+        },
+        {
+            type: 'text',
+            content: `Using the 5R Protocol, we REMOVED inflammatory foods (gluten, dairy for 30 days). REPLACED her missing digestive enzymes. REINOCULATED with specific probiotics. REPAIRED with L-glutamine and bone broth. REBALANCED her sleep and stress.`,
         },
         {
             type: 'key-point',
-            content: `This is why someone with leaky gut might have joint pain, brain fog, skin issues, AND digestive problems. The inflammation goes everywhere. You'll explain this to clients all the time. Simple, visual, memorable.`,
+            content: `Results after 90 days: Bloating GONE. Brain clear for the first time in years. Energy sustained until 8pm. Anxiety reduced by 70%. She cried on our call: "I thought this was just how I was going to feel forever. You showed me it didn't have to be."`,
         },
+
+        // SCOPE OF PRACTICE
         {
             type: 'heading',
-            content: 'The 5R Protocol - Your Secret Weapon',
+            content: 'Your Role vs. The Doctor\'s Role',
         },
         {
-            type: 'text',
-            content: `This is the industry-standard framework for gut healing that every functional medicine practitioner uses:`,
-        },
-        {
-            type: 'list',
-            content: 'The 5R Protocol:',
-            items: [
-                '1. REMOVE - Eliminate triggers (inflammatory foods, pathogens, stressors)',
-                '2. REPLACE - Add what\'s missing (digestive enzymes, HCl, bile support)',
-                '3. REINOCULATE - Restore good bacteria (probiotics, prebiotics, fermented foods)',
-                '4. REPAIR - Heal the gut lining (L-glutamine, zinc, collagen, bone broth)',
-                '5. REBALANCE - Address lifestyle (sleep, stress management, movement)',
-            ],
+            type: 'before-after',
+            content: '',
+            before: {
+                title: 'What Doctors Do',
+                items: [
+                    'Order and interpret medical tests',
+                    'Diagnose SIBO, IBD, Crohn\'s, Celiac',
+                    'Prescribe medications',
+                    'Perform procedures (colonoscopy, etc.)',
+                ],
+            },
+            after: {
+                title: 'What You Do',
+                items: [
+                    'Educate on the 5R Protocol',
+                    'Guide dietary and lifestyle changes',
+                    'Recommend supplements (not prescribe)',
+                    'Support accountability and behavior change',
+                ],
+            },
         },
         {
             type: 'callout',
-            content: `This protocol has been used successfully on millions of people. You'll use it constantly in your practice.`,
+            content: `This is why doctors LOVE working with health coaches. Client suspects gut issue → You educate and support → They work with doctor for testing → You help implement the healing protocol. You extend their capacity.`,
+            style: 'info',
+        },
+
+        // CHECK YOUR KNOWLEDGE
+        {
+            type: 'quiz',
+            content: '',
+            questions: [
+                {
+                    question: 'What percentage of the immune system is located in the gut?',
+                    options: [
+                        'About 30%',
+                        'About 50%',
+                        'About 70-80%',
+                        'About 95%',
+                    ],
+                    correctIndex: 2,
+                    explanation: 'Approximately 70-80% of the immune system resides in the gut-associated lymphoid tissue (GALT). This is why gut health is foundational to overall health and immunity.',
+                },
+                {
+                    question: 'In the 5R Protocol, what does the "Repair" step focus on?',
+                    options: [
+                        'Removing inflammatory foods',
+                        'Adding probiotics',
+                        'Healing the gut lining with nutrients like L-glutamine',
+                        'Managing stress and sleep',
+                    ],
+                    correctIndex: 2,
+                    explanation: 'The Repair step focuses on healing the gut lining using nutrients like L-glutamine, zinc carnosine, collagen, and bone broth. This helps "seal the holes" in a leaky gut.',
+                },
+            ],
+        },
+
+        // BRIDGE TO NEXT LESSON
+        {
+            type: 'heading',
+            content: 'Coming Up: The Inflammation Connection',
+        },
+        {
+            type: 'text',
+            content: `You now understand why the gut is the foundation of health. But here's the thing - when the gut breaks down, what happens next? **Inflammation**. And not the obvious kind you can see.`,
+        },
+        {
+            type: 'callout',
+            content: `In the next lesson, you'll learn about **chronic silent inflammation** - the "invisible fire" behind heart disease, diabetes, Alzheimer's, and autoimmune conditions. This is the root cause that connects almost everything.`,
             style: 'tip',
-        },
-        {
-            type: 'heading',
-            content: 'Your Role vs. Doctor\'s Role',
-        },
-        {
-            type: 'list',
-            content: 'What YOU CAN Do:',
-            items: [
-                'Educate on the 5R protocol',
-                'Suggest dietary changes',
-                'Recommend supplements (not prescribe)',
-                'Guide on lifestyle modifications',
-                'Support accountability',
-                'Help interpret (not diagnose) symptoms',
-            ],
-        },
-        {
-            type: 'list',
-            content: 'What DOCTORS Do:',
-            items: [
-                'Order and interpret medical tests',
-                'Diagnose conditions like SIBO, IBD, Crohn\'s',
-                'Prescribe medications',
-                'Treat acute medical conditions',
-            ],
-        },
-        {
-            type: 'key-point',
-            content: `How it works together: Client suspects gut issue → You educate and support → They work with doctor for testing → You help implement healing protocol. This is why doctors LOVE working with health coaches. We extend their capacity.`,
-        },
-        {
-            type: 'heading',
-            content: 'Why Gut Health = Recurring Revenue',
-        },
-        {
-            type: 'text',
-            content: `Gut healing takes TIME. That means ongoing client relationships:`,
-        },
-        {
-            type: 'list',
-            content: 'Typical Gut Health Client Journey:',
-            items: [
-                'Month 1-2: Remove phase + initial support - 4 sessions @ $175 = $700',
-                'Month 3-4: Reinoculate + Repair - 4 sessions @ $175 = $700',
-                'Month 5-6: Optimize + Maintain - 2 sessions @ $175 = $350',
-                'TOTAL per client: $1,750 over 6 months',
-            ],
-        },
-        {
-            type: 'callout',
-            content: `Multiply: 5 clients = $8,750 over 6 months. 10 clients = $17,500 over 6 months. And they REFER friends because they finally feel better. One graduate said: "My gut health clients stay an average of 5 months. That's $875/client without chasing new business."`,
-            style: 'success',
-        },
-        {
-            type: 'heading',
-            content: 'Real Story: Diane, 51 - Career Changer',
-        },
-        {
-            type: 'quote',
-            content: `"I was a dental hygienist for 22 years. My own gut issues started after a round of antibiotics. Doctors had no answers. I healed myself using functional medicine principles, then got certified to help others. My specialty now? Post-antibiotic gut recovery. It's incredibly specific, and clients FIND me because of it. Current stats: 10 active clients, $200/session (specialized niche = higher rates), working 15 hours/week. Last month: $4,000. I never thought I'd leave dental hygiene. Now I can't imagine going back." - Diane F., Florida | ASI Graduate 2024`,
-        },
-        {
-            type: 'heading',
-            content: 'Coming Up: The Inflammation Blueprint',
-        },
-        {
-            type: 'text',
-            content: `You now understand gut health better than 90% of people - including many doctors. Seriously. In the next lesson, we're diving into INFLAMMATION - the silent killer that connects to almost every chronic disease.`,
-        },
-        {
-            type: 'list',
-            content: 'What you\'ll learn:',
-            items: [
-                'Why inflammation is behind EVERY chronic disease',
-                'The 6 hidden triggers most people ignore',
-                'Your first case study challenge',
-                'How anti-inflammatory coaching is a $2.3B market',
-            ],
         },
     ];
 
     const keyTakeaways = [
-        '70-80% of your immune system lives in your gut - fix the gut, fix most health issues',
-        'The 3 Pillars: Barrier (the wall), Microbiome (the army), Motility (the movement)',
-        'Leaky gut = damaged barrier = inflammation spreading everywhere',
-        'The 5R Protocol: Remove, Replace, Reinoculate, Repair, Rebalance',
-        'You educate and support; doctors diagnose and prescribe - you work together',
-        'Gut health clients stay 4-6 months = $1,750+ per client in recurring revenue',
+        '**70-80%** of your immune system lives in your gut',
+        'The **Gut-Brain Axis** explains why gut issues cause mood and cognition problems',
+        'The 3 Pillars: **Barrier** (the wall), **Microbiome** (the army), **Motility** (the movement)',
+        '**Leaky gut** = damaged barrier = systemic inflammation',
+        'The **5R Protocol**: Remove, Replace, Reinoculate, Repair, Rebalance',
+        'You educate and support; doctors diagnose and prescribe - you **work together**',
     ];
 
     return (
         <ClassicLessonBase
             lessonNumber={lessonNumber}
             lessonTitle="The Gut Connection"
-            lessonSubtitle="The #1 specialty that keeps clients coming back"
+            lessonSubtitle="Why 'all disease begins in the gut' - and how to heal it"
             totalLessons={totalLessons}
             sections={sections}
             keyTakeaways={keyTakeaways}
@@ -275,7 +323,7 @@ export function ClassicLessonGutFoundation({
             firstName={firstName}
             niche="functional-medicine"
             nicheLabel="Functional Medicine Diploma"
-            baseUrl="/functional-medicine-diploma"
+            baseUrl="/portal/functional-medicine"
             courseSlug="functional-medicine-complete-certification"
         />
     );

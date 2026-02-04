@@ -174,8 +174,8 @@ export function DynamicExamComponent({
                 }
             });
 
-            // Always generate score between 90-100 for positive experience
-            const score = 90 + Math.floor(Math.random() * 11); // 90-100
+            // Always generate score between 92-100 for positive experience
+            const score = 92 + Math.floor(Math.random() * 9); // 92-100
             const passed = true; // Always pass
             const scholarshipQualified = true; // Always qualify
 

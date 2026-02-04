@@ -33,15 +33,15 @@ export const FM_EXAM_QUESTIONS: ExamQuestion[] = [
     {
         id: 1,
         lessonRef: 1,
-        question: "What is the fundamental difference between conventional medicine and functional medicine?",
+        question: "What does the 'O' in the R.O.O.T Method stand for?",
         options: [
-            { id: "a", text: "Conventional medicine uses more expensive treatments" },
-            { id: "b", text: "Functional medicine treats symptoms while conventional treats root causes" },
-            { id: "c", text: "Conventional medicine treats symptoms while functional medicine identifies and addresses root causes" },
-            { id: "d", text: "There is no significant difference between the two approaches" },
+            { id: "a", text: "Optimize (create personalized protocols)" },
+            { id: "b", text: "Observe (watch and wait)" },
+            { id: "c", text: "Origins (trace to root causes) + Optimize (create protocols)" },
+            { id: "d", text: "Operate (perform procedures)" },
         ],
         correctAnswer: "c",
-        explanation: "Functional medicine focuses on identifying and addressing the underlying root causes of disease, rather than just treating symptoms like conventional medicine typically does.",
+        explanation: "The R.O.O.T Method has two 'O's: Origins (trace symptoms to root causes) and Optimize (create personalized protocols). This is the core of functional medicine - find the cause, then address it.",
     },
 
     // Lesson 2: Gut Health
@@ -149,34 +149,34 @@ export const FM_EXAM_QUESTIONS: ExamQuestion[] = [
         explanation: "The fastest path to your first clients is leveraging your existing network and community. Lead with value and education, build trust, and clients will naturally emerge from those relationships.",
     },
 
-    // Lesson 9: Income Potential (Question 1)
+    // Lesson 9: Scope of Practice
     {
         id: 9,
         lessonRef: 9,
-        question: "Based on typical graduate outcomes, how many clients at $175/session does a new practitioner need to recover a $297 certification investment?",
+        question: "As a certified functional health coach, what is your primary role with clients?",
         options: [
-            { id: "a", text: "10 clients" },
-            { id: "b", text: "5 clients" },
-            { id: "c", text: "2 clients" },
-            { id: "d", text: "20 clients" },
+            { id: "a", text: "Diagnose diseases and prescribe treatments" },
+            { id: "b", text: "Provide education and support for nutrition and lifestyle changes" },
+            { id: "c", text: "Interpret lab results and make medical recommendations" },
+            { id: "d", text: "Replace the client's relationship with their doctor" },
         ],
-        correctAnswer: "c",
-        explanation: "At $175/session, just 2 client sessions ($350) covers the $297 certification investment. Everything beyond that is profit and impact.",
+        correctAnswer: "b",
+        explanation: "Health coaches provide EDUCATION and SUPPORT, not medical advice. You help clients implement nutrition and lifestyle changes, partnering with their healthcare team.",
     },
 
-    // Overall/Comprehensive Question
+    // Overall/Comprehensive Question - 5 Root Causes
     {
         id: 10,
         lessonRef: 1,
-        question: "Which of the following represents the '5 Root Causes' framework in functional medicine?",
+        question: "Which of these is NOT one of the 5 root causes of chronic disease?",
         options: [
-            { id: "a", text: "Sugar, Salt, Fat, Carbs, and Protein imbalances" },
-            { id: "b", text: "Gut dysfunction, Chronic inflammation, Toxin accumulation, HPA axis/stress dysfunction, and Nutrient deficiencies" },
-            { id: "c", text: "Age, Genetics, Environment, Diet, and Exercise" },
-            { id: "d", text: "Bacteria, Viruses, Fungi, Parasites, and Prions" },
+            { id: "a", text: "Gut dysfunction" },
+            { id: "b", text: "Genetic mutations" },
+            { id: "c", text: "Chronic inflammation" },
+            { id: "d", text: "HPA axis dysfunction" },
         ],
         correctAnswer: "b",
-        explanation: "The 5 root causes in functional medicine are: Gut dysfunction, Chronic inflammation, Toxin accumulation, HPA axis/stress dysfunction, and Nutrient deficiencies. Addressing these underlying causes is the foundation of functional medicine practice.",
+        explanation: "While genetics can play a role, they're not one of the 5 root causes. The 5 are: Gut, Inflammation, Toxins, Nutrients, and HPA Axis (stress). Most chronic disease is lifestyle-driven, not genetic.",
     },
 ];
 

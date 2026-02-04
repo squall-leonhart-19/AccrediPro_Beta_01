@@ -18,8 +18,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Only allow for test user
-    if (session.user.email !== "at.seed019@gmail.com") {
+    // Only allow for test users
+    const allowedEmails = [
+      "at.seed019@gmail.com",
+      "tortolialessio1997@gmail.com"
+    ];
+    if (!allowedEmails.includes(session.user.email || "")) {
       return NextResponse.json({ error: "Not authorized for this action" }, { status: 403 });
     }
 
@@ -34,6 +38,27 @@ export async function POST(request: NextRequest) {
         where: {
           userId,
           tag: { startsWith: "wh-lesson-complete:" },
+        },
+      });
+
+      // Delete quiz completion tag
+      await prisma.userTag.deleteMany({
+        where: {
+          userId,
+          tag: "quiz:completed",
+        },
+      });
+
+      // Delete all quiz answer tags
+      await prisma.userTag.deleteMany({
+        where: {
+          userId,
+          OR: [
+            { tag: { startsWith: "interest:" } },
+            { tag: { startsWith: "goal:" } },
+            { tag: { startsWith: "motivation:" } },
+            { tag: { startsWith: "experience:" } },
+          ],
         },
       });
 
@@ -54,54 +79,23 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Handle FM Mini Diploma reset
-    const enrollment = await prisma.enrollment.findFirst({
+    // Handle FM Mini Diploma reset (tag-based system)
+    // Delete all FM lesson completion tags
+    await prisma.userTag.deleteMany({
       where: {
         userId,
-        course: { slug: "fm-mini-diploma" },
-      },
-      include: {
-        course: {
-          include: {
-            modules: {
-              include: {
-                lessons: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!enrollment) {
-      return NextResponse.json({ error: "No mini diploma enrollment found" }, { status: 404 });
-    }
-
-    // Delete all lesson progress
-    const lessonIds = enrollment.course.modules.flatMap((m) => m.lessons.map((l) => l.id));
-    await prisma.lessonProgress.deleteMany({
-      where: {
-        userId,
-        lessonId: { in: lessonIds },
-      },
-    });
-
-    // Delete all module progress
-    const moduleIds = enrollment.course.modules.map((m) => m.id);
-    await prisma.moduleProgress.deleteMany({
-      where: {
-        userId,
-        moduleId: { in: moduleIds },
-      },
-    });
-
-    // Reset enrollment
-    await prisma.enrollment.update({
-      where: { id: enrollment.id },
-      data: {
-        progress: 0,
-        status: "ACTIVE",
-        completedAt: null,
+        OR: [
+          { tag: { startsWith: "fm-lesson-complete:" } },
+          { tag: { startsWith: "functional-medicine-lesson:" } },
+          { tag: "functional-medicine-exam-passed" },
+          { tag: "fm-exam-passed" },
+          { tag: "fm_mini_diploma_completed" },
+          { tag: "quiz:completed" },
+          { tag: { startsWith: "interest:" } },
+          { tag: { startsWith: "goal:" } },
+          { tag: { startsWith: "motivation:" } },
+          { tag: { startsWith: "experience:" } },
+        ],
       },
     });
 
@@ -110,22 +104,15 @@ export async function POST(request: NextRequest) {
       where: { id: userId },
       data: {
         miniDiplomaCompletedAt: null,
+        miniDiplomaCategory: null,
       },
     });
 
-    // Remove FM completion tag
-    await prisma.userTag.deleteMany({
-      where: {
-        userId,
-        tag: "fm_mini_diploma_completed",
-      },
-    });
-
-    console.log(`[TEST] FM Mini Diploma progress reset for test user`);
+    console.log(`[TEST] FM Mini Diploma progress reset for user ${session.user.email}`);
 
     return NextResponse.json({
       success: true,
-      message: "FM Mini Diploma progress reset",
+      message: "All FM Mini Diploma progress reset (lessons, quiz, exam)",
     });
 
   } catch (error) {

@@ -15,6 +15,7 @@ interface LeadOnboardingClientProps {
     enrolledAt?: string | null;
     portalSlug: string;
     diplomaName: string;
+    hasCompletedQuiz?: boolean;
 }
 
 export function LeadOnboardingClient({
@@ -22,6 +23,7 @@ export function LeadOnboardingClient({
     completedLessons,
     enrolledAt,
     portalSlug,
+    hasCompletedQuiz,
 }: LeadOnboardingClientProps) {
     // Map portal slug to diploma config key format
     const configKey = `${portalSlug}-diploma`;
@@ -44,6 +46,7 @@ export function LeadOnboardingClient({
             completedLessons={completedLessons}
             config={config}
             enrolledAt={enrolledAt}
+            hasCompletedQuiz={hasCompletedQuiz}
         />
     );
 }

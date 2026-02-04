@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Trophy, TrendingUp, Zap } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { Trophy, TrendingUp, Zap, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import confetti from "canvas-confetti";
 
 interface CompetitiveProgressBarProps {
     /** Current progress percentage (0-100) */
@@ -50,6 +51,8 @@ export function CompetitiveProgressBar({
 }: CompetitiveProgressBarProps) {
     const [animatedProgress, setAnimatedProgress] = useState(0);
     const [showCelebration, setShowCelebration] = useState(false);
+    const [celebrationMessage, setCelebrationMessage] = useState("");
+    const previousProgress = useRef(progress);
     const { message, percentile, emoji } = getProgressMessage(progress);
 
     // Animate progress on mount and when it changes
@@ -60,14 +63,68 @@ export function CompetitiveProgressBar({
         return () => clearTimeout(timeout);
     }, [progress]);
 
+    // Fire confetti and show celebration when crossing milestones
+    useEffect(() => {
+        const crossedMilestone = (threshold: number) =>
+            previousProgress.current < threshold && progress >= threshold;
+
+        // Check which milestone was crossed
+        if (crossedMilestone(33)) {
+            setCelebrationMessage("🔥 1/3 Complete! You're building momentum!");
+            triggerConfetti();
+        } else if (crossedMilestone(66)) {
+            setCelebrationMessage("⭐ 2/3 Complete! Almost there!");
+            triggerConfetti();
+        } else if (crossedMilestone(100)) {
+            setCelebrationMessage("🎉 100% Complete! Certificate unlocked!");
+            triggerConfetti({ isComplete: true });
+        }
+
+        // Update previous progress
+        previousProgress.current = progress;
+    }, [progress]);
+
     // Show celebration animation when reaching milestones
     useEffect(() => {
         if (progress === 33 || progress === 66 || progress === 100) {
             setShowCelebration(true);
-            const timeout = setTimeout(() => setShowCelebration(false), 2000);
+            const timeout = setTimeout(() => setShowCelebration(false), 3000);
             return () => clearTimeout(timeout);
         }
     }, [progress]);
+
+    // Trigger confetti celebration
+    const triggerConfetti = ({ isComplete = false } = {}) => {
+        const colors = ['#D4AF37', '#722f37', '#F7E7A0', '#9a4a54']; // Gold & Burgundy
+
+        // Burst from center
+        confetti({
+            particleCount: isComplete ? 150 : 80,
+            spread: isComplete ? 100 : 70,
+            origin: { y: 0.6 },
+            colors,
+        });
+
+        // Side bursts for completion
+        if (isComplete) {
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors,
+                });
+                confetti({
+                    particleCount: 50,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors,
+                });
+            }, 200);
+        }
+    };
 
     if (variant === "compact") {
         return (
@@ -99,10 +156,18 @@ export function CompetitiveProgressBar({
         >
             {/* Celebration overlay */}
             {showCelebration && (
-                <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute inset-0 pointer-events-none z-10">
                     <div className="absolute top-2 left-4 text-2xl animate-bounce">🎉</div>
                     <div className="absolute top-2 right-4 text-2xl animate-bounce delay-100">⭐</div>
                     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-2xl animate-bounce delay-200">🔥</div>
+                    {celebrationMessage && (
+                        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2">
+                            <div className="bg-gradient-to-r from-amber-500 to-yellow-400 text-white font-bold text-center py-2 px-4 rounded-full text-sm shadow-lg animate-pulse">
+                                <Sparkles className="w-4 h-4 inline mr-2" />
+                                {celebrationMessage}
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 

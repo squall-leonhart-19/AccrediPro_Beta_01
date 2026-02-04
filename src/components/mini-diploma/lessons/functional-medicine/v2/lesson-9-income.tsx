@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { LessonBaseV2, Message } from "../../shared/lesson-base-v2";
-import { IncomeCalculator, DownloadResource, PractitionerScore } from "../../shared/interactive-elements";
+import { PractitionerScore } from "../../shared/interactive-elements";
 
 interface LessonProps {
     lessonNumber: number;
@@ -24,48 +24,57 @@ export function Lesson9Income({
     totalScore = 0,
 }: LessonProps) {
     const [score, setScore] = useState(totalScore);
-    const [calculatedIncome, setCalculatedIncome] = useState<{ monthly: number; yearly: number } | null>(null);
 
     const messages: Message[] = [
-        // CELEBRATION
+        // OPENING - CELEBRATION
         {
             id: 1,
             type: 'coach',
-            content: `{name}!!! You made it to the FINAL lesson! I'm literally cheering for you right now!`,
+            content: `{name}!!! You made it to the FINAL lesson! I'm literally so proud of you right now!`,
         },
         {
             id: 2,
             type: 'coach',
-            content: `Over the past 8 lessons, you've learned more about functional medicine than most healthcare providers know. That's not an exaggeration.`,
+            content: `Before we talk about your exam, I want to show you something. Not more science. You've learned plenty of that. I want to show you the LIFE that's waiting for you on the other side of this decision.`,
         },
+
+        // A DAY IN YOUR NEW LIFE
         {
             id: 3,
             type: 'system',
-            content: `**What You've Mastered**
+            content: `**A Day In Your New Life**
 
-✓ Root cause thinking (vs symptom chasing)
-✓ The gut connection (70% of immunity)
-✓ The inflammation blueprint
-✓ Environmental toxins and safe detox
-✓ Stress, hormones & the HPA axis
-✓ Functional lab interpretation
-✓ Building client protocols
-✓ Finding your first clients
+Close your eyes. Picture this:
 
-You now understand health better than 95% of people - including many doctors who focus on disease, not wellness.
+**7:30 AM** — Making breakfast for your kids. No rushing. No dread about the commute. Today, like most days, you work from home.
 
-You're ready for the next step.`,
-            systemStyle: 'takeaway',
+**8:15 AM** — Drop the kids at school. Come home to a quiet house.
+
+**10:00 AM** — First client call. A woman named Sarah who's finally getting her energy back. She cried on your last call: "You're the first person who actually listened to me." She books 3 more sessions. That's $600 in 45 minutes.
+
+**11:00 AM** — You take a walk. Because you CAN.
+
+**12:30 PM** — Another client. A busy executive who now refers all his colleagues to you.
+
+**2:45 PM** — You close your laptop. School pickup is at 3:00. You're there. Every single day. No asking permission. No PTO requests. No guilt.
+
+This isn't fantasy. This is Diana's real Tuesday. And Jennifer's. And Michelle's.`,
+            systemStyle: 'info',
+        },
+        {
+            id: 4,
+            type: 'coach',
+            content: `The kids see you present. Your clients see results. Your bank account sees growth. And YOU? You finally feel like you're doing what you were meant to do.`,
         },
 
         // YOUR SCORE
         {
-            id: 4,
+            id: 5,
             type: 'coach',
             content: `Let's see how you did on your practitioner assessments throughout this course...`,
         },
         {
-            id: 5,
+            id: 6,
             type: 'custom-component',
             content: '',
             renderComponent: ({ onComplete }) => (
@@ -78,332 +87,208 @@ You're ready for the next step.`,
             ),
         },
 
-        // THE REALITY CHECK
-        {
-            id: 6,
-            type: 'coach',
-            content: `Now, let's talk about what's ACTUALLY possible. Not hype. Not "6-figure promises." Real numbers from real graduates.`,
-        },
+        // THE 3 PILLARS - NEW TEACHING
         {
             id: 7,
-            type: 'system',
-            content: `**The Reality of Graduate Income**
-
-Let me be honest with you about what to expect:
-
-**The first 3 months:**
-- Building your foundation
-- Finding your first clients
-- Learning what works
-- Income: $0-1,500/month
-
-**Months 4-6:**
-- Gaining momentum
-- Word of mouth starting
-- Confidence building
-- Income: $1,500-3,000/month
-
-**Months 7-12:**
-- Established practice
-- Referrals flowing
-- Raising rates
-- Income: $2,500-5,000/month
-
-**Year 2+:**
-- Full practice
-- Premium pricing
-- Waitlist possible
-- Income: $4,000-8,000+/month
-
-This isn't overnight success. It's building something real. The graduates who succeed are the ones who START.`,
-            systemStyle: 'stats',
+            type: 'coach',
+            content: `Now let me teach you something important. Having helped thousands of practitioners, I've seen what separates those who thrive from those who struggle:`,
         },
-
-        // INCOME CALCULATOR
         {
             id: 8,
-            type: 'coach',
-            content: `Now for the exciting part. Let's calculate what YOUR income could look like based on YOUR situation...`,
+            type: 'system',
+            content: `**The 3 Pillars of a Thriving Practice**
+
+**Pillar 1: Deep Expertise**
+You need to know more than Google. Clients come to you BECAUSE you understand things their doctor doesn't. Root causes. Functional labs. The gut-hormone-inflammation connection.
+
+*You just spent 9 lessons building this foundation. It's real. It matters.*
+
+**Pillar 2: Simple Systems**
+Practitioners who burn out wing it. Those who thrive have systems. Intake forms. Session templates. Follow-up protocols. They don't reinvent the wheel — they follow proven frameworks.
+
+**Pillar 3: Unshakeable Confidence**
+This is the hardest one. Confidence doesn't come from knowing everything. It comes from knowing ENOUGH — and trusting yourself. It comes from credentials that back you up. From a community that supports you. From seeing your first client get results.
+
+You already have the foundation for Pillar 1. The full certification gives you Pillar 2 (systems) and accelerates Pillar 3 (credentials + community).`,
+            systemStyle: 'takeaway',
         },
+
+        // WHO YOU'LL HELP
         {
             id: 9,
             type: 'coach',
-            content: `Play with the sliders below. Be realistic about your available time. See what's possible.`,
+            content: `Let me tell you about the people waiting for someone like you...`,
         },
         {
             id: 10,
-            type: 'custom-component',
-            content: '',
-            componentProps: { points: 0 },
-            renderComponent: ({ onComplete }) => (
-                <IncomeCalculator
-                    onComplete={(monthly, yearly) => {
-                        setCalculatedIncome({ monthly, yearly });
-                        onComplete();
-                    }}
-                />
-            ),
-        },
-
-        // REAL GRADUATE STORIES - VARIED
-        {
-            id: 11,
             type: 'system',
-            content: `**Real Graduate Results: The Range**
+            content: `**The People Who Need You**
 
-Not everyone makes the same. Here's the honest range:
+**The Exhausted Mom**
+She's been to 5 doctors. They ran labs, said "everything looks normal," and prescribed antidepressants. She knows something is wrong. She's not crazy. She needs someone who will actually LOOK at her case with functional medicine eyes.
 
-**Lower End - Part-Time Practice**
-*Kathy, 51 - 8 hours/week*
-- 4 clients, $150/session
-- Monthly: $1,200
-- "It's my 'fun money' while the kids are at school"
+**The Burned-Out Executive**
+High performer. Used to crush it. Now he can barely get through the day. Doctors say "stress" and send him home. He needs someone who understands the HPA axis, cortisol patterns, and real recovery.
 
-**Middle Range - Serious Side Income**
-*Michelle, 46 - 15 hours/week*
-- 8 clients, $175/session
-- Monthly: $2,800
-- "More than my old part-time retail job"
+**The Chronic Sufferer**
+Fibromyalgia. IBS. Autoimmune. She's given up on doctors. She needs hope — and a practitioner who sees the connection between her gut, inflammation, and symptoms.
 
-**Higher End - Full Practice**
-*Jennifer, 49 - 20 hours/week*
-- 12 clients, $200/session
-- Monthly: $4,800
-- "Quit my corporate job at month 8"
-
-**Top Performers**
-*Susan, 44 - 25 hours/week*
-- 15 clients, $225/session + programs
-- Monthly: $6,700
-- "Never imagined this was possible"
-
-Your results depend on: time invested, commitment, and willingness to put yourself out there.`,
-            systemStyle: 'testimonial',
-        },
-
-        // THE OBJECTION: "What if I fail?"
-        {
-            id: 12,
-            type: 'coach',
-            content: `Now, I know what you might be thinking. "What if I invest in this and it doesn't work?"`,
-        },
-        {
-            id: 13,
-            type: 'system',
-            content: `**"What If I Fail?"**
-
-Let's address this head-on:
-
-**What "failure" actually looks like:**
-- You help a few people, even if you don't build a business
-- You understand your OWN health better than ever
-- You have knowledge that serves you for life
-- You tried something meaningful
-
-**What NOT trying looks like:**
-- You're in the same place a year from now
-- Still wondering "what if?"
-- Still watching others do what you dreamed of
-- Still feeling stuck
-
-The only real failure is never starting.
-
-**The truth:**
-Graduates who "fail" usually didn't fail at the knowledge. They failed to take action. They learned everything but never reached out to their first client.
-
-The ones who succeed? They start before they feel ready.`,
-            systemStyle: 'comparison',
-        },
-
-        // CELEBRATING THE JOURNEY
-        {
-            id: 14,
-            type: 'coach',
-            content: `{name}, I want to pause here and really acknowledge what you've done. You didn't just "complete a course." You invested in yourself when it would have been easier to scroll social media or binge Netflix.`,
-        },
-        {
-            id: 15,
-            type: 'coach',
-            content: `Most people TALK about wanting to change their life. You actually DID something about it. That takes courage. Don't underestimate that.`,
-        },
-        {
-            id: 16,
-            type: 'system',
-            content: `**What This Says About You**
-
-- You're someone who follows through
-- You care enough about helping others to learn
-- You're willing to invest time in yourself
-- You don't give up when things get complex
-
-These qualities are EXACTLY what make successful health coaches. The knowledge is important, but the character you've shown? That's what clients feel when they work with you.
-
-You have something special, {name}. Don't let anyone (including yourself) tell you otherwise.`,
+These people exist. In your neighborhood. In your church. In your kids' school. They NEED you.`,
             systemStyle: 'info',
         },
 
-        // REFLECTION - What's Changed
+        // THE INCOME REALITY
         {
-            id: 17,
+            id: 11,
             type: 'coach',
-            content: `Think about who you were when you started Lesson 1. You might have been skeptical. Maybe you wondered if this was "another course that wouldn't work." Maybe you questioned if you were "smart enough" or "qualified enough."`,
+            content: `Now let's talk income. I'm going to be real with you — not everyone makes the same money. It depends on YOUR commitment, YOUR hours, and YOUR willingness to put yourself out there.`,
         },
         {
-            id: 18,
+            id: 12,
             type: 'system',
-            content: `**Then vs. Now**
+            content: `**The Income Reality**
 
-**When You Started:**
-- "I don't know if I can do this"
-- "I'm not a doctor"
-- "Who would pay me?"
-- "What if I'm not good enough?"
+**Part-Time Passion (10-15 hours/week)**
+- 5-10 clients • $150-200/session
+- $2,000-4,000/month
+- Perfect for: Moms with kids in school, keeping a day job
 
-**After 9 Lessons:**
-- You understand root cause medicine
-- You can analyze case studies
-- You know the 5R gut protocol
-- You recognize inflammation patterns
-- You understand labs
-- You can build protocols
+**Serious Side Income (15-20 hours/week)**
+- 10-15 clients • $175-225/session
+- $4,000-7,000/month
+- Perfect for: Those transitioning out of their 9-5
 
-The doubts didn't disappear because someone told you "you can do this." They faded because you PROVED it to yourself, lesson by lesson, quiz by quiz.
+**Full Career (20-25 hours/week)**
+- 15-20 clients • $200-275/session
+- $6,000-10,000+/month
+- Perfect for: Those going all-in
 
-That's real confidence. The kind that lasts.`,
-            systemStyle: 'comparison',
+Notice the hours. Most practitioners work 15-25 hours per week. Not 40. Not 50. Real flexibility. Real income. And you're HOME for school pickup.`,
+            systemStyle: 'stats',
         },
 
-        // THE TESTIMONIAL THAT HITS DIFFERENT
+        // REAL TRANSFORMATION STORIES
         {
-            id: 17,
+            id: 13,
+            type: 'coach',
+            content: `Let me share some real stories from graduates. Not income first — life change first.`,
+        },
+        {
+            id: 14,
             type: 'system',
-            content: `**Meet Diana, 53 - "I Almost Didn't Start"**
+            content: `**Diana, 53 — "I'm Finally Present"**
 
-"I need to tell you something. I almost didn't enroll.
+"I was stuck in a cubicle, watching my grandkids grow up through Facebook photos. My daughter kept saying, 'Mom, just DO it.' So I enrolled. Scared. Uncertain.
 
-I had every excuse:
-- 'I'm too old' (53)
-- 'I have no background' (25 years in banking)
-- 'Who will take me seriously?' (impostor syndrome)
-- 'What if it doesn't work?' (fear of failure)
+Now? I work 22 hours from my sun room. I pick up my grandkids from school THREE days a week. I see their faces light up when I walk through those doors.
 
-I sat on the enrollment page for 3 weeks. Then my friend (also 50+) enrolled. I thought, 'If she can do it...'
+Yes, I earn more than my old corporate salary now. But that's not why I cry sometimes. I cry because I'm THERE. I'm present. I'm helping people. I'm alive.
 
-So I did it. Terrified. Uncertain. But I did it.
+At 55, I finally have the life I always wanted."`,
+            systemStyle: 'testimonial',
+        },
+        {
+            id: 15,
+            type: 'system',
+            content: `**Michelle, Single Mom — "Every Soccer Game"**
 
-Here's what happened:
-- Month 1: Started learning, feeling overwhelmed
-- Month 2: Took on 2 practice clients (family friends)
-- Month 3: First paying client ($125/session)
-- Month 6: 6 clients at $175/session = $2,100/month
-- Month 12: 10 clients at $200/session = $4,000/month
-- Now (18 months): 12 clients, $225/session, $5,400/month
+"Single mom. Two kids. I needed flexibility more than anything.
 
-I work 18 hours a week. From home. Helping women like me who doctors dismissed.
+Now I schedule clients around school hours and activities. I was at every soccer game this season. EVERY one.
 
-My banking career paid more. But I've never felt this ALIVE.
+My kids see me helping people from home. My daughter told her class 'my mom is a health coach and she makes sick people better.'
 
-If I had listened to my excuses, I'd still be miserable at a job I hated. Instead, I have PURPOSE.
-
-The only thing standing between you and this is the decision to start."
-
-- Diana M., Colorado | ASI Graduate 2023`,
+I ugly-cried in the car after that parent-teacher conference. This career changed everything."`,
             systemStyle: 'testimonial',
         },
 
-        // DOWNLOADABLE RESOURCE
+        // WHAT YOU'VE BUILT
         {
-            id: 18,
+            id: 16,
             type: 'coach',
-            content: `Here's a roadmap showing exactly where you are and where you could be in 6 months...`,
+            content: `{name}, let's pause and acknowledge what you've accomplished in these 9 lessons:`,
         },
         {
-            id: 19,
-            type: 'custom-component',
-            content: '',
-            renderComponent: ({ onComplete }) => (
-                <DownloadResource
-                    title="Your 6-Month Career Roadmap"
-                    description="Step-by-step plan from today to your first $3K-5K month as a certified practitioner"
-                    fileName="Career-Roadmap.pdf"
-                    downloadUrl="/resources/mini-diploma/career-roadmap.pdf"
-                    icon="guide"
-                    onDownload={onComplete}
-                />
-            ),
+            id: 17,
+            type: 'system',
+            content: `**What You've Built**
+
+✓ Root cause thinking — what doctors spend 7+ years NOT learning
+✓ Gut health — the foundation 90% of practitioners miss
+✓ Inflammation — the silent driver of chronic disease
+✓ Environmental toxins — a growing crisis creating massive demand
+✓ Stress & hormones — the burnout epidemic that needs YOUR help
+✓ Functional labs — seeing what conventional ranges miss
+
+You now understand health differently than most healthcare providers. They learned disease treatment. You learned disease PREVENTION and ROOT CAUSE resolution.
+
+That perspective is rare. And it's valuable.`,
+            systemStyle: 'takeaway',
         },
 
-        // THE DECISION POINT
+        // LEVEL 0 CELEBRATION
+        {
+            id: 18,
+            type: 'system',
+            content: `**🎓 CONGRATULATIONS, {name}!**
+
+You have just completed **Level 0 — Foundations** of the ASI Functional Medicine pathway.
+
+This is your first step toward a life-changing career transformation. You now have the foundational knowledge that separates you from 95% of people who talk about health but never take action.
+
+**What You've Achieved:**
+✓ Understanding of root cause medicine principles
+✓ Knowledge of the 5 core functional medicine systems
+✓ Ability to recognize patterns doctors miss
+✓ Foundation for helping friends, family, and future clients
+✓ Framework for building a wellness practice`,
+            systemStyle: 'takeaway',
+        },
+
+        // EXAM CTA
+        {
+            id: 19,
+            type: 'coach',
+            content: `Now there's just ONE thing left to make it official...`,
+        },
         {
             id: 20,
             type: 'system',
-            content: `**Where You Stand Right Now**
+            content: `**Complete Your Foundation Exam**
 
-You have 3 options:
+To claim your Level 0 — Foundations certificate:
 
-**Option 1: Do Nothing**
-- This mini diploma was interesting
-- You go back to your life
-- Nothing changes
-- A year from now, you're in the same place
+📝 Complete a short exam (10 questions)
+📜 Receive your personalized certificate
+🚀 Unlock your next steps
 
-**Option 2: Try to Figure It Out Alone**
-- Use what you learned here
-- Piece together information from YouTube
-- No structure, no credentials, no support
-- Maybe help a few people, maybe not
-
-**Option 3: Get Certified and Go All In**
-- Complete the full training
-- Get the credentials that matter
-- Build a real practice
-- Change your life AND others' lives
-
-The choice is yours. But you didn't complete 9 lessons by accident. Something brought you here.
-
-What will you do with it?`,
-            systemStyle: 'comparison',
+This exam confirms your understanding and makes your achievement official. You've already learned everything you need. This is just the final step to celebrate YOUR accomplishment.`,
+            systemStyle: 'info',
         },
 
-        // REFLECTION - What's Possible
+        // SARAH'S CLOSING
         {
             id: 21,
             type: 'coach',
-            content: `{name}, what happens next is completely up to you. There's no pressure. No countdown timer. No artificial urgency.`,
+            content: `{name}, I want you to know something. I see you. I see the commitment it took to get through 9 lessons. I see the hope in wanting something more. I see the courage it takes to imagine a different life.`,
         },
         {
             id: 22,
             type: 'coach',
-            content: `Your certificate is waiting. You earned it. And if you ever want to take this further - turn this foundation into a full practice - that path exists whenever you're ready.`,
+            content: `The life waiting for you — the flexible schedule, the meaningful work, the income, the impact — it's not reserved for "special" people. It's available to anyone willing to take the next step.`,
         },
         {
             id: 23,
-            type: 'system',
-            content: `**Your Certificate is Ready!**
-
-You've completed all 9 lessons of the ASI Functional Medicine Foundation.
-
-🎓 Your completion certificate is waiting for you.
-
-This is YOUR achievement, {name}. You showed up. You learned. You completed.
-
-Whatever you do next - whether it's helping a friend, exploring this as a career, or simply keeping this knowledge for yourself - you've already done something most people never do.
-
-You invested in yourself. And that matters.`,
-            systemStyle: 'takeaway',
-        },
-        {
-            id: 25,
             type: 'coach',
-            content: `Congratulations! You did it! Now go claim your certificate and let's talk about what's next for you. I'm SO proud of you, {name}!`,
+            content: `You showed up. You learned. You finished. Now let's make it official — click below to start your exam and claim your certificate! I'm SO proud of you!`,
         },
     ];
 
     return (
         <LessonBaseV2
             lessonNumber={lessonNumber}
-            lessonTitle="Your Income Potential"
-            lessonSubtitle="The math, the path, and your next step"
+            lessonTitle="The Life That's Waiting For You"
+            lessonSubtitle="Your new path forward"
             totalLessons={totalLessons}
             messages={messages}
             onComplete={onComplete}

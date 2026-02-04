@@ -129,11 +129,11 @@ export default function ExamPage() {
         );
     }
 
-    // Show existing result if exam already passed (unless user wants to retake)
+    // Show existing result if exam already passed - redirect to certificate
     if (existingResult?.hasPassed && !showExam) {
         return (
             <div className="min-h-screen bg-gradient-to-b from-rose-50 to-amber-50 py-12 px-4">
-                <div className="max-w-2xl mx-auto">
+                <div className="max-w-4xl mx-auto">
                     {/* Success Card */}
                     <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
                         {/* Gold Header */}
@@ -150,41 +150,26 @@ export default function ExamPage() {
                         <div className="p-8 text-center">
                             <div className="mb-8">
                                 <p className="text-4xl font-black text-burgundy-700">{existingResult.bestScore}%</p>
-                                <p className="text-gray-600 mt-2">Your best score</p>
+                                <p className="text-gray-600 mt-2">Your score</p>
                             </div>
 
-                            {/* Status badges */}
-                            <div className="flex justify-center gap-3 mb-8 flex-wrap">
+                            {/* Status badge */}
+                            <div className="flex justify-center gap-3 mb-8">
                                 <span className="flex items-center gap-2 px-4 py-2 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium">
                                     <CheckCircle className="w-4 h-4" />
                                     Exam Passed
                                 </span>
-                                {existingResult.hasScholarship && (
-                                    <span className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
-                                        <Award className="w-4 h-4" />
-                                        Scholarship Qualified
-                                    </span>
-                                )}
                             </div>
 
-                            {/* Action buttons */}
-                            <div className="space-y-4">
-                                <button
-                                    onClick={() => router.push(`/portal/${slug}/scholarship`)}
-                                    className="w-full py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
-                                    style={{ background: goldGradient, color: '#4E1F24' }}
-                                >
-                                    View Your Results & Certificate
-                                    <ArrowRight className="w-5 h-5" />
-                                </button>
-
-                                <button
-                                    onClick={() => setShowExam(true)}
-                                    className="w-full py-3 rounded-xl border-2 border-gray-300 text-gray-600 font-medium hover:bg-gray-50 transition-colors"
-                                >
-                                    Retake Exam (Try for a Higher Score)
-                                </button>
-                            </div>
+                            {/* Single action button */}
+                            <button
+                                onClick={() => router.push(`/portal/${slug}/certificate`)}
+                                className="w-full py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                                style={{ background: goldGradient, color: '#4E1F24' }}
+                            >
+                                View Your Certificate
+                                <ArrowRight className="w-5 h-5" />
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -208,19 +193,13 @@ export default function ExamPage() {
             console.error("Failed to record exam completion");
         }
 
-        // Navigate based on niche type
-        if (examConfig.hasMasterclass) {
-            // FM goes to masterclass/VSL
-            router.push(`/portal/${slug}/masterclass`);
-        } else {
-            // All other niches go to scholarship sales page
-            router.push(`/portal/${slug}/scholarship`);
-        }
+        // Navigate to certificate page
+        router.push(`/portal/${slug}/certificate`);
     };
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 px-4">
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-4xl mx-auto">
                 {/* Pre-exam badge */}
                 <div className="text-center mb-6">
                     <span className="inline-flex items-center gap-2 bg-burgundy-100 text-burgundy-700 px-4 py-2 rounded-full text-sm font-medium">

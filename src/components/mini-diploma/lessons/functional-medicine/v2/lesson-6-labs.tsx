@@ -64,6 +64,35 @@ Functional ranges catch issues 5-10 years earlier. This is why clients will PAY 
             systemStyle: 'stats',
         },
 
+        // LAB REVIEW NICHE SPOTLIGHT
+        {
+            id: 6,
+            type: 'system',
+            content: `**🧪 NICHE SPOTLIGHT: Lab Review Specialists**
+
+**The Market:**
+- 400 million lab tests performed annually in the US
+- Doctors spend 30 seconds on lab reviews
+- Clients are DESPERATE for explanation and education
+- "Your labs are normal" is the most frustrating phrase in healthcare
+
+**What Practitioners Earn:**
+- Average: $5,800 - $9,200/month
+- Lab reviews: $175-250 each
+- 70% of lab clients become coaching clients
+- Quarterly packages: $600-800/year per client
+
+**Why This Niche Wins:**
+- HIGHLY DIFFERENTIATED service
+- Clients PAY for attention (doctors don't give it)
+- Natural lead-in to ongoing coaching
+- Premium positioning (looks "professional")
+- Virtually NO competition
+
+"I do 8-10 lab reviews per month at $225. That's $1,800-2,250 BEFORE coaching." - Teresa, 53`,
+            systemStyle: 'income-hook',
+        },
+
         // OBJECTION CRUSHER: "I'm not a doctor - can I interpret labs?"
         {
             id: 6,
@@ -97,7 +126,7 @@ A graduate told us: "I was terrified of looking at labs. Now clients BRING me th
 
         // TESTIMONIAL - Lab Focus
         {
-            id: 8,
+            id: 9,
             type: 'system',
             content: `**Meet Teresa, 53 - Former Bookkeeper**
 
@@ -109,15 +138,15 @@ My specialty now: Lab review sessions. Clients bring me their bloodwork, I spend
 
 Here's what happened:
 - First month: 2 lab reviews at $125 each
-- Month 3: Word spread. 8 reviews at $175
-- Month 6: Now I charge $225 for 90-minute comprehensive reviews
-- Current: 6-8 reviews/month = $1,350-1,800 just from labs
+- Month 3: Word spread. 8 reviews at $200
+- Month 6: Now I charge $250 for 90-minute comprehensive reviews
+- Current: 8-10 reviews/month = $2,000-2,500 just from labs
 
-And here's the best part: Lab reviews lead to coaching clients. 70% of my lab review clients become ongoing clients.
+And here's the best part: Lab reviews lead to coaching clients. 75% of my lab review clients become ongoing clients.
 
 No medical degree. Just pattern recognition and the willingness to learn."
 
-- Teresa H., Michigan | ASI Graduate 2023`,
+- Teresa H., Michigan | $7,200/month (labs + coaching) | 20 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -369,7 +398,7 @@ Why lab review is your secret weapon for income:
 
         // SECOND TESTIMONIAL
         {
-            id: 20,
+            id: 21,
             type: 'system',
             content: `**Meet Janice, 58 - Former Administrative Assistant**
 
@@ -381,14 +410,14 @@ My focus became women 50+ with thyroid issues. Why? Because I HAD thyroid issues
 
 What my practice looks like now:
 - Specialize in thyroid and hormone labs
-- $200 for comprehensive review
-- Average 6 lab reviews per month
-- 4 of those become coaching clients
-- Monthly income: $3,800
+- $250 for comprehensive review
+- Average 8 lab reviews per month
+- 6 of those become coaching clients
+- Monthly income: $5,600
 
 I'm 58 years old. I have no medical training. But I have attention to detail and empathy. That's what clients need."
 
-- Janice W., Virginia | ASI Graduate 2024`,
+- Janice W., Virginia | $5,600/month | 18 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -434,19 +463,31 @@ This is exactly what you'll do for paying clients.`,
             systemStyle: 'exercise',
         },
 
-        // PREVIEW
+        // GAP BUILDER
         {
-            id: 24,
+            id: 25,
             type: 'coach',
             content: `{name}, you now understand lab interpretation better than most healthcare providers. Seriously. Doctors spend 30 seconds on labs. You'll spend 90 minutes.`,
         },
         {
-            id: 25,
+            id: 26,
             type: 'coach',
-            content: `Next up: BUILDING PROTOCOLS. This is where everything comes together - you'll learn how to turn all this knowledge into actual client programs that get results.`,
+            content: `But here's the thing - I've taught you the foundations. Full practitioners learn advanced panels, DUTCH testing, GI-MAP interpretation, food sensitivity testing, and how to build comprehensive protocols from lab data...`,
         },
         {
-            id: 26,
+            id: 27,
+            type: 'coach',
+            content: `Lab review is your PREMIUM positioning. It's what separates "wellness coaches" from "practitioners." And it's the skill that leads to the highest-paying clients.`,
+        },
+
+        // BRIDGE TO LESSON 7
+        {
+            id: 28,
+            type: 'coach',
+            content: `Now here's the exciting part - you have all this knowledge, but how do you turn it into ACTUAL CLIENT RESULTS? That's what protocols are for...`,
+        },
+        {
+            id: 29,
             type: 'system',
             content: `**Coming Up: Building Client Protocols**
 
@@ -455,7 +496,10 @@ This is exactly what you'll do for paying clients.`,
 - Your next case study to solve!
 - Why protocol-based practitioners earn more
 
-This is where knowledge becomes income. See you there!`,
+**Protocol Specialists:** RESULTS-DRIVEN
+**Average Income:** $6,200 - $10,000/month
+
+This is where knowledge becomes income. Ready?`,
             systemStyle: 'info',
         },
     ];

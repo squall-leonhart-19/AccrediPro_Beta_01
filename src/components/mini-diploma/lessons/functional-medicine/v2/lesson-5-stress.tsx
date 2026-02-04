@@ -55,6 +55,34 @@ This is a MASSIVE, underserved market. And it's personal for most of us.`,
             systemStyle: 'stats',
         },
 
+        // BURNOUT NICHE SPOTLIGHT
+        {
+            id: 5,
+            type: 'system',
+            content: `**🔥 NICHE SPOTLIGHT: Burnout & Hormone Specialists**
+
+**The Market:**
+- 77% of workers experience burnout
+- 1.3 million women enter menopause EVERY YEAR
+- Women 40-55 are the most underserved demographic
+- Spending on hormone/burnout coaching tripled post-pandemic
+
+**What Practitioners Earn:**
+- Average: $4,400 - $6,800/month
+- Sessions: $200-350 each
+- 12-week programs: $2,400-3,600
+
+**Why This Niche Wins:**
+- HIGH-INCOME clients (executives, business owners)
+- Willing to pay premium for results
+- Long relationships (burnout recovery takes 3-6 months)
+- TREMENDOUS gratitude (you give them their life back)
+- Endless referrals (burned-out moms know other burned-out moms)
+
+"My burnout clients have MONEY. They're executives. They'll pay $300/session if you can help them feel human again." - Carol, 56`,
+            systemStyle: 'income-hook',
+        },
+
         // OBJECTION CRUSHER: "I'm too old to start something new"
         {
             id: 5,
@@ -82,7 +110,7 @@ Age isn't a barrier in this work. It's your competitive advantage.`,
 
         // TESTIMONIAL - Age Focus
         {
-            id: 7,
+            id: 8,
             type: 'system',
             content: `**Meet Carol, 56 - Started at "Too Old"**
 
@@ -92,17 +120,17 @@ Then I got certified. I specifically target women 50+ dealing with burnout and h
 
 My clients say: 'You get it. You're not some 28-year-old who doesn't understand what I'm going through.'
 
-Being older is my MARKETING. I charge $225/session because my experience IS the value.
+Being older is my MARKETING. I charge $275/session because my experience IS the value.
 
 Current stats (2 years in):
-- 13 active clients
-- Monthly income: $5,850
+- 15 active clients
+- Monthly income: $6,600
 - Working 18 hours/week
 - More energy than I had at 40
 
 At 56, I'm making more money with less stress than my entire corporate career. Don't tell me you're too old."
 
-- Carol M., New Jersey | ASI Graduate 2022`,
+- Carol M., New Jersey | $6,600/month | 18 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -328,7 +356,7 @@ Why burnout coaching commands HIGH prices:
 
         // SECOND TESTIMONIAL
         {
-            id: 19,
+            id: 20,
             type: 'system',
             content: `**Meet Donna, 48 - Former Nurse**
 
@@ -339,16 +367,16 @@ Getting certified in functional medicine felt like learning why I was so destroy
 My niche now: Healthcare workers with burnout. Nurses, doctors, first responders. They trust me because I've BEEN there.
 
 The numbers (14 months in):
-- 11 clients (all healthcare workers)
-- $200/session
-- Monthly income: $4,400
+- 14 clients (all healthcare workers)
+- $225/session
+- Monthly income: $5,600
 - Work from home, no night shifts, no codes
 
-I make less than nursing but I'm ALIVE again. My clients are finding the same path out. Best career change I ever made.
+I make more than nursing AND I'm ALIVE again. My clients are finding the same path out. Best career change I ever made.
 
 You don't have to stay burned out forever. And you can help others escape too."
 
-- Donna R., Minnesota | ASI Graduate 2024`,
+- Donna R., Minnesota | $5,600/month | 16 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -385,28 +413,43 @@ Start with these 4 things. They work for almost everyone.`,
             systemStyle: 'exercise',
         },
 
-        // PREVIEW
+        // GAP BUILDER
         {
-            id: 21,
+            id: 22,
             type: 'coach',
             content: `{name}, you just diagnosed a case that most doctors would miss entirely. They'd prescribe antidepressants. You found the root cause.`,
         },
         {
-            id: 22,
+            id: 23,
             type: 'coach',
-            content: `Next up: LAB INTERPRETATION. This is where you learn to see what doctors miss - the functional ranges that catch problems 5-10 years before a diagnosis.`,
+            content: `But here's the thing - I've given you the foundation of HPA dysfunction. Full practitioners learn advanced protocols for Stage 3 recovery, DUTCH testing interpretation, menopause support, and bio-identical hormone education...`,
         },
         {
-            id: 23,
+            id: 24,
+            type: 'coach',
+            content: `The burnout/menopause specialty is where the HIGHEST-PAYING clients are. Because they have money, they're desperate, and they'll refer every friend they have.`,
+        },
+
+        // BRIDGE TO LESSON 6
+        {
+            id: 25,
+            type: 'coach',
+            content: `Now here's what separates amateur coaches from professionals - the ability to interpret lab work. When you can look at bloodwork and spot patterns doctors miss...`,
+        },
+        {
+            id: 26,
             type: 'system',
             content: `**Coming Up: Lab Interpretation Secrets**
 
 - Why "normal" labs don't mean healthy
 - The 5 functional markers you MUST know
-- How to position yourself as premium with lab knowledge
+- How to position yourself as PREMIUM with lab knowledge
 - Why clients LOVE getting labs reviewed
 
-This is professional-level knowledge. See you there!`,
+**Lab Review Specialists:** PREMIUM POSITIONING
+**Average Income:** $5,800 - $9,200/month
+
+This is professional-level knowledge. Ready to think like a practitioner?`,
             systemStyle: 'info',
         },
     ];

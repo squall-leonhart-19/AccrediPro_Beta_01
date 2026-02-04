@@ -22,7 +22,9 @@ import {
     GraduationCap,
     Shield,
     Calendar,
+    Sparkles,
     Loader2,
+    RotateCcw,
 } from "lucide-react";
 
 // Premium gold gradient
@@ -59,8 +61,10 @@ export default function LeadProfilePage() {
     const [loading, setLoading] = useState(true);
     const [completedLessons, setCompletedLessons] = useState(0);
     const [examPassed, setExamPassed] = useState(false);
+    const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [resetting, setResetting] = useState(false);
     const [formData, setFormData] = useState({ firstName: "", lastName: "", phone: "" });
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,10 +88,18 @@ export default function LeadProfilePage() {
                             email: sessionData.user.email || "",
                             avatar: sessionData.user.image || null,
                         });
+                    }
+                }
+
+                // Fetch user profile with phone
+                const profileRes = await fetch("/api/user/profile");
+                if (profileRes.ok) {
+                    const profileData = await profileRes.json();
+                    if (profileData?.user) {
                         setFormData({
-                            firstName: nameParts[0] || "",
-                            lastName: nameParts.slice(1).join(" ") || "",
-                            phone: "",
+                            firstName: profileData.user.firstName || "",
+                            lastName: profileData.user.lastName || "",
+                            phone: profileData.user.phone || "",
                         });
                     }
                 }
@@ -100,6 +112,13 @@ export default function LeadProfilePage() {
                         setFormData(prev => ({ ...prev, firstName: data.firstName }));
                     }
                     setExamPassed(data.examPassed || false);
+                }
+
+                // Check quiz completion status
+                const quizRes = await fetch(`/api/mini-diploma/quiz-status?niche=${slug}`);
+                if (quizRes.ok) {
+                    const quizData = await quizRes.json();
+                    setHasCompletedQuiz(quizData.hasCompletedQuiz || false);
                 }
 
                 // Get completed lessons count
@@ -168,6 +187,33 @@ export default function LeadProfilePage() {
             console.error("Save error:", e);
         } finally {
             setSaving(false);
+        }
+    };
+
+    // Handle reset all progress (test users only)
+    const handleReset = async () => {
+        if (!confirm("⚠️ This will reset ALL your progress:\n\n• All completed lessons\n• Quiz answers\n• Exam results\n\nAre you sure?")) {
+            return;
+        }
+        setResetting(true);
+        try {
+            const res = await fetch("/api/mini-diploma/reset-progress", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ course: "fm" }),
+            });
+            if (res.ok) {
+                alert("✅ All progress has been reset! Refreshing page...");
+                window.location.reload();
+            } else {
+                const data = await res.json();
+                alert(`Error: ${data.error || "Failed to reset"}`);
+            }
+        } catch (e) {
+            console.error("Reset error:", e);
+            alert("Reset failed. Please try again.");
+        } finally {
+            setResetting(false);
         }
     };
 
@@ -301,7 +347,7 @@ export default function LeadProfilePage() {
                                     <div className="flex items-center justify-center lg:justify-start gap-2 flex-wrap">
                                         <Badge className="bg-gold-500/20 text-gold-300 border-gold-400/30 px-3 py-1">
                                             <GraduationCap className="w-3 h-3 mr-1" />
-                                            {config?.name} Student
+                                            {config?.name} — Level 0 (Foundations)
                                         </Badge>
                                         {examPassed && (
                                             <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-400/30 px-3 py-1">
@@ -398,7 +444,43 @@ export default function LeadProfilePage() {
                         </Card>
                     </div>
 
-                    {/* Career Potential Card */}
+                    {/* Personalization Quiz Card - Only show if not completed */}
+                    {!hasCompletedQuiz && (
+                        <Card className="border-0 shadow-lg overflow-hidden mb-8">
+                            <div
+                                className="p-6"
+                                style={{ background: 'linear-gradient(to right, #FDF6E3, #FFFBEB)' }}
+                            >
+                                <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                                    <div
+                                        className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg"
+                                        style={{ background: goldGradient }}
+                                    >
+                                        <Sparkles className="w-8 h-8 text-burgundy-900" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-xl font-bold text-gray-900 mb-1">
+                                            Personalize Your Journey
+                                        </h3>
+                                        <p className="text-gray-600">
+                                            Answer a few quick questions to help us tailor your learning experience based on your goals and interests.
+                                        </p>
+                                    </div>
+                                    <Link href={`/portal/${slug}/quiz`}>
+                                        <button
+                                            className="px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                                            style={{ background: goldGradient, color: '#4E1F24' }}
+                                        >
+                                            <Sparkles className="w-4 h-4" />
+                                            Start Quiz
+                                        </button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </Card>
+                    )}
+
+                    {/* Professional Pathway Overview Card */}
                     <Card className="border-0 shadow-lg overflow-hidden mb-8">
                         <div
                             className="p-6"
@@ -409,25 +491,37 @@ export default function LeadProfilePage() {
                                     className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg"
                                     style={{ background: goldGradient }}
                                 >
-                                    <TrendingUp className="w-8 h-8 text-burgundy-900" />
+                                    <Shield className="w-8 h-8 text-burgundy-900" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-xl font-bold text-gray-900 mb-1">
-                                        Your Path to $5-15K/month
+                                        Professional Pathway Overview
                                     </h3>
                                     <p className="text-gray-600">
-                                        Complete your mini diploma and unlock your career roadmap to start earning as a {config?.name} practitioner.
+                                        Completion of Level 0 unlocks orientation into recognized professional pathways within the AccrediPro framework.
                                     </p>
                                 </div>
-                                <Link href={`/portal/${slug}/career-roadmap`}>
-                                    <button
-                                        className="px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
-                                        style={{ background: goldGradient, color: '#4E1F24' }}
-                                    >
-                                        <Target className="w-4 h-4" />
-                                        View Roadmap
-                                    </button>
-                                </Link>
+                                {examPassed ? (
+                                    <Link href={`/portal/${slug}/certificate`}>
+                                        <button
+                                            className="px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                                            style={{ background: goldGradient, color: '#4E1F24' }}
+                                        >
+                                            <Award className="w-4 h-4" />
+                                            View Certificate
+                                        </button>
+                                    </Link>
+                                ) : (
+                                    <Link href={`/portal/${slug}`}>
+                                        <button
+                                            className="px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                                            style={{ background: goldGradient, color: '#4E1F24' }}
+                                        >
+                                            <Target className="w-4 h-4" />
+                                            Continue Lessons
+                                        </button>
+                                    </Link>
+                                )}
                             </div>
                         </div>
                     </Card>
@@ -441,65 +535,89 @@ export default function LeadProfilePage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">First Name</label>
                                     <input
                                         type="text"
                                         value={formData.firstName}
                                         onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500 transition-all"
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Last Name</label>
                                     <input
                                         type="text"
                                         value={formData.lastName}
                                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500 transition-all"
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Phone</label>
+                                    <input
+                                        type="tel"
+                                        value={formData.phone}
+                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                        placeholder="+1 (555) 000-0000"
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Email</label>
+                                    <input
+                                        type="email"
+                                        value={user.email}
+                                        disabled
+                                        className="w-full px-3 py-2 border border-gray-100 rounded-lg text-sm bg-gray-50 text-gray-400 cursor-not-allowed"
                                     />
                                 </div>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                                <input
-                                    type="tel"
-                                    value={formData.phone}
-                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                    placeholder="+1 (555) 000-0000"
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500 transition-all"
-                                />
-                                <p className="text-xs text-gray-400 mt-1">Optional - We'll only use this for important updates</p>
+                            <div className="flex items-center gap-3 mt-4">
+                                <button
+                                    onClick={handleSave}
+                                    disabled={saving}
+                                    className="px-5 py-2 rounded-lg font-semibold text-sm shadow-md hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50"
+                                    style={{ background: goldGradient, color: '#4E1F24' }}
+                                >
+                                    {saving ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            Saving...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Star className="w-4 h-4" />
+                                            Save
+                                        </>
+                                    )}
+                                </button>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                <input
-                                    type="email"
-                                    value={user.email}
-                                    disabled
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-500 cursor-not-allowed"
-                                />
-                                <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
-                            </div>
-                            <button
-                                onClick={handleSave}
-                                disabled={saving}
-                                className="px-8 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2 disabled:opacity-50"
-                                style={{ background: goldGradient, color: '#4E1F24' }}
-                            >
-                                {saving ? (
-                                    <>
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                        Saving...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Star className="w-4 h-4" />
-                                        Save Changes
-                                    </>
-                                )}
-                            </button>
+
+                            {/* Reset Progress Button - Test Users Only */}
+                            {(user.email === "tortolialessio1997@gmail.com" || user.email === "at.seed019@gmail.com") && (
+                                <div className="mt-6 pt-4 border-t border-red-100">
+                                    <p className="text-xs text-red-500 mb-2 font-medium">🧪 Developer Tools</p>
+                                    <button
+                                        onClick={handleReset}
+                                        disabled={resetting}
+                                        className="px-4 py-2 rounded-lg font-medium text-xs border border-red-300 text-red-500 hover:bg-red-50 transition-all flex items-center gap-2 disabled:opacity-50"
+                                    >
+                                        {resetting ? (
+                                            <>
+                                                <Loader2 className="w-3 h-3 animate-spin" />
+                                                Resetting...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <RotateCcw className="w-3 h-3" />
+                                                Reset Progress
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

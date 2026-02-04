@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Circle Builder | ASI Level 0 Resources</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --burgundy-primary: #722f37;
+            --burgundy-dark: #4e1f24;
+            --burgundy-deeper: #3a171b;
+            --gold-primary: #D4AF37;
+            --gold-light: #f7e7a0;
+            --gold-dark: #b8962e;
+            --text-primary: #2d2d2d;
+            --bg-cream: #fdf8f0
+        }
+
+        @page {
+            size: A4;
+            margin: 0
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important
+            }
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: #e8e8e8;
+            color: var(--text-primary);
+            line-height: 1.4;
+            font-size: 10px
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            padding: 16mm;
+            background: #fffefb;
+            position: relative;
+            overflow: hidden;
+            page-break-after: always
+        }
+
+        .modern-frame {
+            position: absolute;
+            top: 10mm;
+            left: 10mm;
+            right: 10mm;
+            bottom: 10mm;
+            border: 2px solid var(--gold-primary);
+            border-radius: 2px;
+            pointer-events: none
+        }
+
+        .minimal-corner {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            z-index: 10
+        }
+
+        .mc-tl {
+            top: 6mm;
+            left: 6mm
+        }
+
+        .mc-tr {
+            top: 6mm;
+            right: 6mm;
+            transform: rotate(90deg)
+        }
+
+        .mc-bl {
+            bottom: 6mm;
+            left: 6mm;
+            transform: rotate(-90deg)
+        }
+
+        .mc-br {
+            bottom: 6mm;
+            right: 6mm;
+            transform: rotate(180deg)
+        }
+
+        .running-header {
+            position: absolute;
+            top: 14mm;
+            left: 22mm;
+            right: 22mm;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-size: 7px;
+            color: #555
+        }
+
+        .running-footer {
+            position: absolute;
+            bottom: 12mm;
+            left: 22mm;
+            right: 22mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 6px;
+            color: #555
+        }
+
+        .footer-logo {
+            height: 12px;
+            opacity: 0.7
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 12mm;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Playfair Display', serif;
+            font-size: 10px;
+            color: var(--gold-primary)
+        }
+
+        .body-content {
+            position: relative;
+            z-index: 1;
+            padding-top: 8mm
+        }
+
+        .header-bar {
+            background: linear-gradient(135deg, var(--burgundy-deeper), var(--burgundy-primary));
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px
+        }
+
+        .header-bar h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            color: white
+        }
+
+        .header-bar .subtitle {
+            font-size: 8px;
+            color: var(--gold-light);
+            font-style: italic
+        }
+
+        .resource-badge {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            color: var(--burgundy-deeper);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 7px;
+            font-weight: 700
+        }
+
+        .intro-text {
+            background: var(--bg-cream);
+            border-left: 3px solid var(--gold-primary);
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            border-radius: 0 6px 6px 0;
+            font-size: 9px
+        }
+
+        .circle-visual {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            margin: 10px auto
+        }
+
+        .circle-ring {
+            position: absolute;
+            border: 2px dashed;
+            border-radius: 50%;
+            left: 50%;
+            transform: translateX(-50%)
+        }
+
+        .ring-1 {
+            width: 140px;
+            height: 140px;
+            top: 0;
+            border-color: #f59e0b;
+            background: rgba(251, 191, 36, 0.05)
+        }
+
+        .ring-2 {
+            width: 100px;
+            height: 100px;
+            top: 20px;
+            border-color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.08)
+        }
+
+        .ring-3 {
+            width: 60px;
+            height: 60px;
+            top: 40px;
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.12)
+        }
+
+        .center-me {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--burgundy-primary), var(--burgundy-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 10px
+        }
+
+        .ring-labels {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 5px;
+            font-size: 8px
+        }
+
+        .ring-label {
+            display: flex;
+            align-items: center;
+            gap: 5px
+        }
+
+        .ring-label-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%
+        }
+
+        .green-dot {
+            background: #22c55e
+        }
+
+        .blue-dot {
+            background: #0ea5e9
+        }
+
+        .orange-dot {
+            background: #f59e0b
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 12px;
+            color: var(--burgundy-primary);
+            margin: 10px 0 8px;
+            padding-bottom: 4px;
+            border-bottom: 1.5px solid var(--gold-primary)
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 8px 0
+        }
+
+        .support-category {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .support-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px
+        }
+
+        .cat-family::before {
+            background: linear-gradient(90deg, #22c55e, #4ade80)
+        }
+
+        .cat-professional::before {
+            background: linear-gradient(90deg, #0ea5e9, #38bdf8)
+        }
+
+        .cat-community::before {
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa)
+        }
+
+        .cat-gaps::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24)
+        }
+
+        .cat-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px
+        }
+
+        .cat-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px
+        }
+
+        .cat-family .cat-icon {
+            background: #dcfce7
+        }
+
+        .cat-professional .cat-icon {
+            background: #e0f2fe
+        }
+
+        .cat-community .cat-icon {
+            background: #ede9fe
+        }
+
+        .cat-gaps .cat-icon {
+            background: #fef3c7
+        }
+
+        .cat-title {
+            font-weight: 700;
+            color: var(--burgundy-dark);
+            font-size: 10px
+        }
+
+        .cat-list {
+            list-style: none
+        }
+
+        .cat-list li {
+            padding: 5px 0;
+            border-bottom: 1px dotted #ddd;
+            font-size: 9px;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px
+        }
+
+        .cat-list li::before {
+            content: '○';
+            color: var(--gold-primary);
+            font-size: 8px
+        }
+
+        .insight-box {
+            background: linear-gradient(135deg, var(--burgundy-deeper), var(--burgundy-primary));
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            text-align: center
+        }
+
+        .insight-box h3 {
+            color: var(--gold-primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 11px;
+            margin-bottom: 6px
+        }
+
+        .insight-box p {
+            font-size: 9px;
+            opacity: 0.95
+        }
+
+        .reflection-section {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1.5px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0
+        }
+
+        .reflection-section h3 {
+            color: #0369a1;
+            font-family: 'Playfair Display', serif;
+            font-size: 10px;
+            margin-bottom: 8px
+        }
+
+        .reflection-questions {
+            display: grid;
+            gap: 6px
+        }
+
+        .reflection-q {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #bae6fd;
+            font-size: 9px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="modern-frame"></div>
+        <div class="minimal-corner mc-tl"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-tr"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-bl"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-br"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="running-header"><span style="font-style:italic">ASI Level 0 Resource</span><span
+                style="color:var(--burgundy-primary);font-weight:500">Support Circle Builder</span></div>
+        <div class="body-content">
+            <div class="header-bar">
+                <div>
+                    <h1>Support Circle Builder</h1>
+                    <p class="subtitle">Mapping Your Personal Ecosystem of Care</p>
+                </div><span class="resource-badge">CLIENT RESOURCE</span>
+            </div>
+            <div class="intro-text"><strong>Purpose:</strong> No one person can meet all your needs. This exercise helps
+                you map out your full support ecosystem and identify where there may be gaps.</div>
+            <div class="circle-visual">
+                <div class="circle-ring ring-1"></div>
+                <div class="circle-ring ring-2"></div>
+                <div class="circle-ring ring-3"></div>
+                <div class="center-me">ME</div>
+            </div>
+            <div class="ring-labels">
+                <div class="ring-label"><span class="ring-label-dot green-dot"></span> Inner Circle</div>
+                <div class="ring-label"><span class="ring-label-dot blue-dot"></span> Professional</div>
+                <div class="ring-label"><span class="ring-label-dot orange-dot"></span> Community</div>
+            </div>
+            <h2>Map Your Support</h2>
+            <div class="support-grid">
+                <div class="support-category cat-family">
+                    <div class="cat-header">
+                        <div class="cat-icon">👨‍👩‍👧</div><span class="cat-title">Family & Close Friends</span>
+                    </div>
+                    <ul class="cat-list">
+                        <li>Person: ______________________</li>
+                        <li>How they support me: ___________</li>
+                        <li>Person: ______________________</li>
+                        <li>How they support me: ___________</li>
+                    </ul>
+                </div>
+                <div class="support-category cat-professional">
+                    <div class="cat-header">
+                        <div class="cat-icon">👩‍⚕️</div><span class="cat-title">Professionals</span>
+                    </div>
+                    <ul class="cat-list">
+                        <li>Doctor/Specialist: _____________</li>
+                        <li>Therapist/Counselor: ___________</li>
+                        <li>Coach/Practitioner: ____________</li>
+                        <li>Other: ________________________</li>
+                    </ul>
+                </div>
+                <div class="support-category cat-community">
+                    <div class="cat-header">
+                        <div class="cat-icon">🌐</div><span class="cat-title">Community & Groups</span>
+                    </div>
+                    <ul class="cat-list">
+                        <li>Support group: ________________</li>
+                        <li>Online community: _____________</li>
+                        <li>Spiritual/religious: ____________</li>
+                        <li>Other groups: _________________</li>
+                    </ul>
+                </div>
+                <div class="support-category cat-gaps">
+                    <div class="cat-header">
+                        <div class="cat-icon">⚠️</div><span class="cat-title">Gaps & Missing Support</span>
+                    </div>
+                    <ul class="cat-list">
+                        <li>What's missing: ________________</li>
+                        <li>___________________________</li>
+                        <li>___________________________</li>
+                        <li>___________________________</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="insight-box">
+                <h3>🔑 The Key Insight</h3>
+                <p>One practitioner cannot meet all your needs. A healthy support system is a <strong>network</strong>,
+                    not a single point of contact. Referral is not rejection — it's completing your circle.</p>
+            </div>
+            <div class="reflection-section">
+                <h3>📝 Reflection Questions</h3>
+                <div class="reflection-questions">
+                    <div class="reflection-q"><strong>1.</strong> Who is missing from my support circle that I wish was
+                        there?</div>
+                    <div class="reflection-q"><strong>2.</strong> Am I relying too heavily on one person or type of
+                        support?</div>
+                    <div class="reflection-q"><strong>3.</strong> What's one step I could take to strengthen my support
+                        network?</div>
+                </div>
+            </div>
+        </div>
+        <div class="page-number">1</div>
+        <div class="running-footer"><img src="/ASI_LOGO-removebg-preview.png" alt="ASI" class="footer-logo"><span>© ASI
+                Standards Institute</span></div>
+    </div>
+</body>
+
+</html>

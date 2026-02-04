@@ -27,7 +27,7 @@ const SARAH_MENTOR = {
     id: "coach-sarah-id", // This should match the actual Sarah coach ID
     name: "Coach Sarah M.",
     avatar: "/coaches/sarah-coach.webp",
-    title: "Your Private Mentor"
+    title: "Circle Pod Chat"
 };
 
 export function FloatingMentorChat({ className, lessonContext }: FloatingMentorChatProps) {
@@ -51,7 +51,7 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
                 abortControllerRef.current.abort();
             }
             if (streamReaderRef.current) {
-                streamReaderRef.current.cancel().catch(() => {});
+                streamReaderRef.current.cancel().catch(() => { });
             }
         };
     }, []);
@@ -301,10 +301,10 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
             <button
                 onClick={() => setIsOpen(true)}
                 className={cn(
-                    "fixed bottom-6 right-6 z-50",
+                    "fixed bottom-6 right-6 z-50 hidden md:flex",
                     "w-16 h-16 rounded-full shadow-2xl",
                     "bg-[#722f37] hover:bg-[#5a252c]",
-                    "text-white flex items-center justify-center",
+                    "text-white items-center justify-center",
                     "transition-all duration-200 hover:scale-110",
                     "border-2 border-white/30",
                     className
@@ -327,7 +327,7 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
     // Chat window when open
     return (
         <div className={cn(
-            "fixed bottom-6 right-6 z-50",
+            "fixed bottom-6 right-6 z-50 hidden md:flex",
             "w-[380px] max-w-[calc(100vw-48px)]",
             "bg-white rounded-2xl shadow-2xl overflow-hidden",
             "border border-gray-200",

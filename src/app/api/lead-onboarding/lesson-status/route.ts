@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
         const [user, lessonTag, examData] = await Promise.all([
             prisma.user.findUnique({
                 where: { id: session.user.id },
-                select: { firstName: true },
+                select: { firstName: true, email: true },
             }),
             // Check if lesson is completed
             prisma.userTag.findFirst({
@@ -54,16 +54,18 @@ export async function GET(request: NextRequest) {
                     userId: session.user.id,
                     passed: true,
                 },
-                select: { passed: true },
+                select: { passed: true, score: true },
             }),
         ]);
 
         return NextResponse.json({
             success: true,
             firstName: user?.firstName || "friend",
+            email: user?.email || "",
             userId: session.user.id,
             completed: !!lessonTag,
             examPassed: !!examData?.passed,
+            examScore: examData?.score || 0,
             lessonId,
         });
     } catch (error) {

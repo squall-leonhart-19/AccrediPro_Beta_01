@@ -415,7 +415,6 @@ interface ParsedPayload {
   productName?: string;
   transactionId?: string;
   amount?: number;
-  amount?: number;
   eventType: string;
   ip?: string;
   userAgent?: string;
@@ -1056,26 +1055,70 @@ export async function POST(request: NextRequest) {
     try {
       const purchaseValue = amount || (productId ? PRODUCT_PRICES[productId] : undefined) || 27;
       const course = courseSlugs.length > 0 ? await prisma.course.findFirst({ where: { slug: courseSlugs[0] } }) : null;
+      const txId = transactionId || `cf_${Date.now()}`;
 
-      const payment = await prisma.payment.create({
-        data: {
-          userId: user.id,
-          amount: purchaseValue,
-          currency: "USD",
-          transactionId: transactionId || `cf_${Date.now()}`,
-          paymentMethod: "clickfunnels",
-          productName: productName || productId || "ClickFunnels Purchase",
-          productSku: productId || undefined,
-          courseId: course?.id,
-          ipAddress: purchaseIp,
-          userAgent: purchaseUserAgent,
-          billingEmail: normalizedEmail,
-          billingName: `${firstName || ""} ${lastName || ""}`.trim() || undefined,
-          status: "COMPLETED",
-        },
+      // Detect payment type from product name/context
+      const pNameLower = (productName || productId || "").toLowerCase();
+      let paymentType: "FRONTEND" | "OTO" | "BUMP" = "FRONTEND";
+
+      // OTO detection: upsell keywords or high-value add-ons ($297+)
+      if (
+        pNameLower.includes("accelerator") ||
+        pNameLower.includes("advanced") ||
+        pNameLower.includes("master") ||
+        pNameLower.includes("practice path") ||
+        pNameLower.includes("pro ") ||
+        pNameLower.includes("upgrade") ||
+        pNameLower.includes("upsell") ||
+        pNameLower.includes("oto") ||
+        pNameLower.includes("guarantee") ||
+        pNameLower.includes("dfy") ||
+        pNameLower.includes("done for you") ||
+        pNameLower.includes("done-for-you") ||
+        purchaseValue >= 297 // Base certs are $97-164, OTOs are $297+
+      ) {
+        paymentType = "OTO";
+      }
+
+      // Bump detection: small add-ons
+      if (
+        pNameLower.includes("bump") ||
+        pNameLower.includes("order bump") ||
+        (purchaseValue <= 47 && pNameLower.includes("bonus"))
+      ) {
+        paymentType = "BUMP";
+      }
+
+      // Dedup: Check if payment already exists with this transaction ID
+      const existingPayment = await prisma.payment.findFirst({
+        where: { transactionId: txId },
       });
-      paymentId = payment.id;
-      console.log(`[CF] ✅ Created Payment record: $${purchaseValue} - ${payment.id}`);
+
+      if (existingPayment) {
+        paymentId = existingPayment.id;
+        console.log(`[CF] ⏭️ Payment already exists: ${paymentId} (TxID: ${txId})`);
+      } else {
+        const payment = await prisma.payment.create({
+          data: {
+            userId: user.id,
+            amount: purchaseValue,
+            currency: "USD",
+            transactionId: txId,
+            paymentMethod: "clickfunnels",
+            paymentType,
+            productName: productName || productId || "ClickFunnels Purchase",
+            productSku: productId || undefined,
+            courseId: course?.id,
+            ipAddress: purchaseIp,
+            userAgent: purchaseUserAgent,
+            billingEmail: normalizedEmail,
+            billingName: `${firstName || ""} ${lastName || ""}`.trim() || undefined,
+            status: "COMPLETED",
+          },
+        });
+        paymentId = payment.id;
+        console.log(`[CF] ✅ Created Payment: $${purchaseValue} (${paymentType}) - ${payment.id} (TxID: ${txId})`);
+      }
     } catch (paymentError) {
       console.error("[CF] Failed to create Payment record:", paymentError);
     }

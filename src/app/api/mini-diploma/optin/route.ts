@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { sendWomensHealthWelcomeEmail, sendFreebieWelcomeEmail } from "@/lib/email";
 import { leadRateLimiter } from "@/lib/redis";
+import { createMasterclassPod } from "@/lib/masterclass-pod";
 
 // Universal password for all mini diploma leads
 const LEAD_PASSWORD = "coach2026";
@@ -706,6 +707,20 @@ export async function POST(request: NextRequest) {
                 console.error("[OPTIN] ❌ GHL webhook failed:", ghlError);
                 // Don't fail registration if GHL fails
             }
+        }
+
+        // Create Masterclass Pod for 30-day nurture sequence
+        // Pod starts immediately with Day 1 messages
+        try {
+            const podResult = await createMasterclassPod(user.id, course);
+            if (podResult.success) {
+                console.log(`[OPTIN] ✅ Created masterclass pod ${podResult.podId} for ${email}`);
+            } else {
+                console.log(`[OPTIN] ⚠️ Masterclass pod not created: ${podResult.error}`);
+            }
+        } catch (podError) {
+            console.error("[OPTIN] ❌ Masterclass pod creation failed:", podError);
+            // Don't fail registration if pod fails
         }
 
         // TODO: Track in analytics/Facebook CAPI

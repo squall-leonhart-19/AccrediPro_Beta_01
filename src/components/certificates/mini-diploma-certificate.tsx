@@ -228,15 +228,16 @@ export function MiniDiplomaCertificate({
                             </div>
 
                             {/* Mini Diploma Badge */}
-                            <div className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#E5C158] text-[#4a2c2c] px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest mb-6 shadow-md">
-                                ASI Certified Mini Diploma
+                            <div className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#E5C158] text-[#4a2c2c] px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest mb-2 shadow-md">
+                                MINI DIPLOMA
                             </div>
+                            <p className="text-xs text-gray-500 mb-6 italic">Level 0 – Foundations</p>
 
                             {/* Title */}
                             <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#722F37] mb-2">
                                 Certificate of Completion
                             </h1>
-                            <p className="text-gray-500 mb-6 text-lg">This is to certify that</p>
+                            <p className="text-gray-500 mb-6 text-lg">This certifies that</p>
 
                             {/* Recipient Name */}
                             <p className="text-3xl md:text-5xl font-serif text-gray-800 border-b-3 border-[#D4AF37] inline-block px-8 pb-2 mb-6" style={{ borderBottomWidth: '3px' }}>
@@ -244,27 +245,35 @@ export function MiniDiplomaCertificate({
                             </p>
 
                             {/* Description */}
-                            <p className="text-gray-600 max-w-md mx-auto mb-4 text-lg">
-                                has successfully completed the foundational training and demonstrated
-                                proficiency in the core principles and practices of
+                            <p className="text-gray-600 max-w-md mx-auto mb-2 text-lg">
+                                has successfully completed the
+                            </p>
+                            <p className="text-gray-700 max-w-md mx-auto mb-4 text-lg font-medium">
+                                Mini Diploma – Level 0 Foundations in
                             </p>
 
                             {/* Diploma Name */}
-                            <h3 className="text-2xl md:text-3xl font-bold text-[#722F37] mb-8">
+                            <h3 className="text-2xl md:text-3xl font-bold text-[#722F37] mb-6">
                                 {diplomaTitle}
                             </h3>
+
+                            {/* Authority Line */}
+                            <p className="text-sm text-gray-500 mb-8 max-w-sm mx-auto leading-relaxed">
+                                Aligned with the competency framework of<br />
+                                <span className="font-semibold text-gray-700">AccrediPro International Standards Institute</span>
+                            </p>
 
                             {/* Footer Info */}
                             <div className="flex items-end justify-between max-w-lg mx-auto">
                                 <div className="text-center">
-                                    <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Date</p>
+                                    <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Date of Completion</p>
                                     <p className="text-sm text-gray-700 font-medium">{formattedDate}</p>
                                 </div>
 
                                 {/* Seal */}
                                 <div className="w-20 h-20 border-2 border-[#D4AF37] rounded-full flex flex-col items-center justify-center bg-gradient-to-br from-white to-[#fffbf0]">
                                     <Award className="w-8 h-8 text-[#D4AF37]" />
-                                    <span className="text-[9px] text-[#D4AF37] uppercase tracking-wider mt-0.5 font-bold">Certified</span>
+                                    <span className="text-[9px] text-[#D4AF37] uppercase tracking-wider mt-0.5 font-bold">Verified</span>
                                 </div>
 
                                 <div className="text-center">
@@ -273,9 +282,10 @@ export function MiniDiplomaCertificate({
                                 </div>
                             </div>
 
-                            {/* Motto */}
-                            <p className="text-sm text-gray-400 italic mt-8 tracking-wide">
-                                Veritas Et Excellentia — Truth and Excellence
+                            {/* Legal Disclaimer */}
+                            <p className="text-[10px] text-gray-400 mt-8 max-w-lg mx-auto leading-relaxed">
+                                This certificate confirms completion of foundational training.
+                                It does not confer professional certification, licensure, or authorization to practice.
                             </p>
                         </div>
                     </div>
@@ -322,24 +332,11 @@ export function MiniDiplomaCertificate({
                     <div className="px-6 pb-6 bg-gray-50">
                         <div className="flex items-center justify-center gap-2 text-green-600 text-sm">
                             <CheckCircle className="w-4 h-4" />
-                            <span>Verified by AccrediPro Standards Institute</span>
+                            <span>Verified Completion</span>
                         </div>
                     </div>
                 </Card>
 
-                {/* Next Steps */}
-                <div className="mt-8 text-center">
-                    <p className="text-gray-600 mb-4">
-                        Ready to continue your journey? Your exclusive upgrade offer expires soon!
-                    </p>
-                    <Button
-                        asChild
-                        size="lg"
-                        className="bg-gradient-to-r from-[#D4AF37] to-[#E5C158] text-[#4a2c2c] hover:from-[#E5C158] hover:to-[#D4AF37] shadow-lg font-semibold"
-                    >
-                        <a href={`/portal/${portalSlug}/career-roadmap`}>View Your Career Roadmap →</a>
-                    </Button>
-                </div>
             </div>
         </div>
     );

@@ -29,8 +29,8 @@ export function CertificatePreview({
             {/* Certificate mockup */}
             <div
                 className={`relative border-2 rounded-xl p-8 text-center transition-all duration-500 ${isComplete
-                        ? "border-amber-400 bg-gradient-to-br from-amber-50 to-yellow-50"
-                        : "border-gray-200 bg-gray-50 grayscale opacity-70"
+                    ? "border-amber-400 bg-gradient-to-br from-amber-50 to-yellow-50"
+                    : "border-gray-200 bg-gray-50 grayscale opacity-70"
                     }`}
             >
                 {/* Lock overlay */}
@@ -64,31 +64,37 @@ export function CertificatePreview({
                     </div>
 
                     {/* Certificate text */}
-                    <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">
-                        AccrediPro International Standards Institute
+                    <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">
+                        MINI DIPLOMA
+                    </p>
+                    <p className="text-[10px] text-gray-400 mb-2 italic">
+                        Level 0 – Foundations
                     </p>
                     <h3 className="text-xl font-serif text-gray-800 mb-1">
                         Certificate of Completion
                     </h3>
                     <p className="text-sm text-gray-600 mb-4">
-                        This is to certify that
+                        This certifies that
                     </p>
                     <p className="text-2xl font-bold text-gray-900 mb-2 font-serif">
                         {firstName} {lastName}
                     </p>
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-gray-600 mb-2">
                         has successfully completed the
                     </p>
+                    <p className="text-xs text-gray-700 font-medium mb-2">
+                        Mini Diploma – Level 0 Foundations in
+                    </p>
                     <p className="text-lg font-semibold" style={{ color: '#722F37' }}>
-                        {nicheLabel} Mini Diploma
+                        {nicheLabel} – Foundations
                     </p>
 
-                    {/* Decorative elements */}
+                    {/* Authority line */}
                     <div className="mt-6 pt-4 border-t border-gray-200">
-                        <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-                            <GraduationCap className="w-4 h-4" />
-                            <span>Verified Credential</span>
-                        </div>
+                        <p className="text-xs text-gray-500 leading-relaxed">
+                            Aligned with the competency framework of<br />
+                            <span className="font-semibold">AccrediPro International Standards Institute</span>
+                        </p>
                     </div>
                 </div>
             </div>

@@ -4,8 +4,15 @@ import prisma from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import { getConfigByPortalSlug } from "@/lib/mini-diploma-registry";
 import { MiniDiplomaCertificate } from "@/components/certificates/mini-diploma-certificate";
+import { CertificatePendingPage } from "@/components/certificates/certificate-pending";
 
 export const dynamic = "force-dynamic";
+
+// 24 hours in milliseconds
+const CERTIFICATE_DELAY_MS = 24 * 60 * 60 * 1000;
+
+// Test accounts bypass the 24h delay
+const TEST_EMAILS = ["tortolialessio1997@gmail.com", "alessio@accredipro.academy"];
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -28,6 +35,7 @@ export default async function CertificatePage({ params }: PageProps) {
             select: {
                 firstName: true,
                 lastName: true,
+                email: true,
             },
         }),
         prisma.miniDiplomaExam.findFirst({
@@ -50,6 +58,25 @@ export default async function CertificatePage({ params }: PageProps) {
         redirect(`/portal/${slug}`);
     }
 
+    // Check if 24 hours have passed since exam completion
+    const examPassedAt = examData.createdAt.getTime();
+    const now = Date.now();
+    const timeRemaining = CERTIFICATE_DELAY_MS - (now - examPassedAt);
+    const isTestAccount = user?.email && TEST_EMAILS.includes(user.email.toLowerCase());
+
+    // If less than 24h and not a test account, show pending page
+    if (timeRemaining > 0 && !isTestAccount) {
+        return (
+            <CertificatePendingPage
+                examScore={examData.score}
+                timeRemainingMs={timeRemaining}
+                nicheLabel={config.displayName}
+                portalSlug={slug}
+            />
+        );
+    }
+
+    // Certificate is ready!
     const studentName = `${user?.firstName || ""} ${user?.lastName || ""}`.trim() || "Student";
     const completionDate = examData.createdAt.toISOString();
 

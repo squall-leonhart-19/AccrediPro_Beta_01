@@ -919,8 +919,8 @@ export async function POST(request: NextRequest) {
                 paymentType = 'BUMP';
             }
 
-            // Check for existing payment with this transaction ID
-            const existingPayment = await prisma.payment.findUnique({
+            // Check for existing payment with this transaction ID (use findFirst since transactionId is not @unique)
+            const existingPayment = await prisma.payment.findFirst({
                 where: { transactionId },
             });
 

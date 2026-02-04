@@ -164,6 +164,7 @@ model User {
   referralsReceived Referral[]        @relation("UserReferralsReceived")
   podEngagements    PodEngagement[] // My Circle analytics
   podUserMessages   PodUserMessage[] // User messages for admin view
+  masterclassPod    MasterclassPod?   @relation("UserMasterclassPod") // 30-day nurture pod
 
   // Lead Onboarding
   leadOnboarding LeadOnboarding?
@@ -2599,11 +2600,12 @@ model ZombieProfile {
   isGraduate   Boolean @default(false) // For graduates channel
 
   // Relations
-  podMemberships PodMember[]
-  podMessages    PodMessage[]
-  successEvents  SuccessEvent[]
-  chatMessages   ZombieChatMessage[]
-  graduatePosts  GraduatePost[]
+  podMemberships  PodMember[]
+  podMessages     PodMessage[]
+  successEvents   SuccessEvent[]
+  chatMessages    ZombieChatMessage[]
+  graduatePosts   GraduatePost[]
+  masterclassPods MasterclassPod[] @relation("ZombieMasterclassPods") // 30-day nurture pods
 
   @@index([personalityType])
   @@index([isActive])
@@ -2807,7 +2809,7 @@ model Payment {
   // Transaction Details
   amount        Decimal @db.Decimal(10, 2)
   currency      String  @default("USD")
-  transactionId String? // External payment processor ID
+  transactionId String? @unique // External payment processor ID — unique to prevent duplicate webhook payments
   processorRef  String? // Payment processor reference (PaymentsAI ID)
   paymentMethod String? // card, paypal, etc.
 
@@ -2849,7 +2851,6 @@ model Payment {
   course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
 
   @@index([userId])
-  @@index([transactionId])
   @@index([createdAt])
   @@index([status])
   // Performance indexes added 2026-01-15
@@ -3133,6 +3134,9 @@ model MiniDiplomaExam {
   scholarshipExpiresAt  DateTime? // 24h from qualification
   scholarshipClaimedAt  DateTime? // When they used the coupon
 
+  // 24h certificate email tracking
+  certificateEmailSent  Boolean   @default(false) // True after 24h email sent
+
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -3141,6 +3145,7 @@ model MiniDiplomaExam {
   @@index([category])
   @@index([scholarshipQualified])
   @@index([scholarshipCouponCode])
+  @@index([certificateEmailSent, passed, createdAt]) // For cron query
 }
 
 // Track monthly scholarship spots (real scarcity)
@@ -3428,4 +3433,146 @@ model DailyReport {
 
   @@index([reportDate])
   @@index([createdAt])
+}
+
+// ==================== MASTERCLASS POD SYSTEM ====================
+// Private 30-day nurture pods for Mini Diploma graduates
+
+model MasterclassPod {
+  id              String   @id @default(cuid())
+  userId          String   @unique // One pod per user
+  zombieProfileId String // Assigned zombie companion
+  
+  // Trigger info
+  nicheCategory   String // functional-medicine, holistic-nutrition, etc.
+  examScore       Int // Their exam score (90%+ qualifies for scholarship)
+  examPassedAt    DateTime // When they passed the exam
+  
+  // Pod lifecycle
+  status          String   @default("waiting") // waiting, active, completed, converted
+  masterclassDay  Int      @default(0) // Current day (0 = pre-start, 1-30 = active)
+  startedAt       DateTime? // When masterclass started (24h after exam)
+  
+  // Scholarship tracking
+  scholarshipOfferedAt  DateTime? // When scholarship was offered (Day 8)
+  scholarshipExpiresAt  DateTime? // When scholarship expires (Day 14)
+  scholarshipUsed       Boolean   @default(false)
+  
+  // Conversion tracking
+  convertedAt     DateTime? // When they upgraded
+  conversionValue Decimal?  @db.Decimal(10, 2) // Payment amount
+  
+  // Resources drip system - which interactive tools are unlocked
+  unlockedResources Json @default("[]") // ["income-calculator", "niche-quiz", etc.]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user          User           @relation("UserMasterclassPod", fields: [userId], references: [id], onDelete: Cascade)
+  zombieProfile ZombieProfile  @relation("ZombieMasterclassPods", fields: [zombieProfileId], references: [id])
+  messages      MasterclassMessage[]
+  dayProgress   MasterclassDayProgress[]
+
+  @@index([status])
+  @@index([masterclassDay])
+  @@index([nicheCategory])
+  @@index([scholarshipExpiresAt])
+  @@index([createdAt])
+}
+
+// Track progress through daily masterclass content
+model MasterclassDayProgress {
+  id              String   @id @default(cuid())
+  podId           String
+  dayNumber       Int // 1-30
+  
+  // Content delivery
+  lessonDeliveredAt  DateTime? // When daily lesson was sent
+  audioUrl           String? // Sarah's audio for this day
+  
+  // User engagement
+  lessonViewedAt     DateTime? // When user viewed the lesson
+  messagesRead       Int      @default(0) // Messages read this day
+  userReplied        Boolean  @default(false) // Did user reply?
+  
+  // Gap tracking
+  gapTopic           String? // What gap was highlighted: "website", "legal", etc.
+  gapEngaged         Boolean @default(false) // Did user engage with gap content?
+  
+  createdAt          DateTime @default(now())
+  
+  pod MasterclassPod @relation(fields: [podId], references: [id], onDelete: Cascade)
+  
+  @@unique([podId, dayNumber])
+  @@index([podId])
+  @@index([dayNumber])
+}
+
+// Messages in the masterclass pod (Sarah, Zombie, or User)
+model MasterclassMessage {
+  id             String   @id @default(cuid())
+  podId          String
+  dayNumber      Int // Which masterclass day
+  
+  // Sender type
+  senderType     String // "sarah", "zombie", "user"
+  senderName     String? // Display name
+  senderAvatar   String? // Avatar URL
+  
+  // Content
+  content        String   @db.Text
+  audioUrl       String? // For Sarah audio messages
+  isSystem       Boolean  @default(false) // System notification
+  
+  // Offer tagging
+  offerMention   String? // "scholarship", "upgrade", "testimonial"
+  
+  // Engagement tracking
+  readAt         DateTime? // When user read this message
+  
+  // Scheduling
+  scheduledFor   DateTime? // When to send (for scheduled messages)
+  sentAt         DateTime? // When actually sent
+  
+  createdAt      DateTime @default(now())
+  
+  pod MasterclassPod @relation(fields: [podId], references: [id], onDelete: Cascade)
+  
+  @@index([podId, dayNumber])
+  @@index([senderType])
+  @@index([scheduledFor])
+  @@index([createdAt])
+}
+
+// Masterclass content templates (what to send each day)
+model MasterclassTemplate {
+  id              String   @id @default(cuid())
+  nicheCategory   String // functional-medicine, etc. or "all"
+  dayNumber       Int // 1-30
+  
+  // Sarah's content
+  sarahAudioUrl   String? // Pre-recorded audio
+  sarahMessage    String   @db.Text // Text version/summary
+  lessonTitle     String // "How Practitioners Get Clients"
+  lessonSummary   String? @db.Text
+  
+  // Zombie scripts (templates with placeholders)
+  zombieMessages  Json // [{ hour: 2, content: "..." }, ...]
+  
+  // Gap this day creates
+  gapTopic        String? // "website", "legal", "pricing", etc.
+  gapDescription  String? // "You need a professional website to..."
+  
+  // Offer info (Days 8-14)
+  includesOffer   Boolean @default(false)
+  offerType       String? // "scholarship_reveal", "scholarship_reminder", "scholarship_expiring"
+  
+  isActive        Boolean @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([nicheCategory, dayNumber])
+  @@index([nicheCategory])
+  @@index([dayNumber])
 }

@@ -60,6 +60,32 @@ This is why anti-inflammatory coaching is a $2.3 BILLION market - and growing.`,
             systemStyle: 'stats',
         },
 
+        // INFLAMMATION NICHE SPOTLIGHT
+        {
+            id: 5,
+            type: 'system',
+            content: `**🔥 NICHE SPOTLIGHT: Inflammation & Autoimmune Specialists**
+
+**The Market:**
+- 24 million Americans have autoimmune diseases
+- 77% of Americans have chronic inflammatory symptoms
+- Inflammation is linked to 8 of the 10 leading causes of death
+
+**What Practitioners Earn:**
+- Average: $4,400 - $6,200/month
+- Sessions: $175-250 each
+- Premium programs: $2,000-3,000 for 12-week resets
+
+**Why This Niche Wins:**
+- DESPERATE clients (autoimmune patients are often dismissed by doctors)
+- Long-term relationships (inflammation management is ongoing)
+- High-ticket packages (12-week programs common)
+- Results people can FEEL (more energy, less pain)
+
+"I specialize in autoimmune. My 12-week program is $2,400. I have 7 clients right now." - Jennifer, 49`,
+            systemStyle: 'income-hook',
+        },
+
         // OBJECTION CRUSHER: "I don't have science background"
         {
             id: 5,
@@ -90,7 +116,7 @@ A graduate told us: "I was terrified of the 'science stuff.' Now I explain infla
 
         // REAL TESTIMONIAL
         {
-            id: 7,
+            id: 8,
             type: 'system',
             content: `**Meet Jennifer, 49 - Former Stay-at-Home Mom**
 
@@ -103,14 +129,14 @@ I found functional medicine, fixed my own inflammation, and thought: 'Other wome
 The certification was my confidence builder. Now I specialize in inflammation for women 40+.
 
 My numbers:
-- 14 active clients
-- $175/session average
-- Monthly income: $4,900
+- 16 active clients
+- $200/session average
+- Monthly income: $5,600
 - Working around my family's schedule
 
 My husband was skeptical at first. Now he brags to everyone about his 'doctor wife.' (I'm not a doctor - I'm a health coach. But I'll take it!)
 
-- Jennifer R., Wisconsin | ASI Graduate 2023`,
+- Jennifer R., Wisconsin | $5,600/month | 20 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -310,7 +336,7 @@ Why this niche is so profitable:
 
         // SECOND TESTIMONIAL
         {
-            id: 19,
+            id: 20,
             type: 'system',
             content: `**Meet Barbara, 54 - Former Office Manager**
 
@@ -323,14 +349,14 @@ The certification was scary at 52. 'Am I too old? Will anyone take me seriously?
 Turns out, being 54 is an ADVANTAGE. My clients are mostly women 45-60. They trust me because I've walked their path.
 
 Current status:
-- 11 clients
-- $200/session
-- Monthly income: $4,400
+- 13 clients
+- $225/session
+- Monthly income: $5,800
 - More fulfillment than 15 years of office work
 
 Age isn't a barrier. It's credibility."
 
-- Barbara L., Colorado | ASI Graduate 2024`,
+- Barbara L., Colorado | $5,800/month | 18 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -362,19 +388,31 @@ Most clients have never thought about their health this way. You'll be the first
             systemStyle: 'exercise',
         },
 
-        // PREVIEW
+        // GAP BUILDER
         {
-            id: 22,
+            id: 23,
             type: 'coach',
             content: `{name}, you're officially thinking like a practitioner now. You just diagnosed a case that stumped real doctors!`,
         },
         {
-            id: 23,
+            id: 24,
             type: 'coach',
-            content: `Next up: TOXINS. We're diving into the uncomfortable truth about how poisoned our modern world is - and how to safely help clients detox without dangerous fads.`,
+            content: `But here's the thing - I've taught you the foundation of inflammation. Full practitioners learn advanced anti-inflammatory protocols, autoimmune specialization, and how to work with conditions like Hashimoto's, rheumatoid arthritis, and lupus...`,
         },
         {
-            id: 24,
+            id: 25,
+            type: 'coach',
+            content: `Each of those is a specialty that clients will PAY PREMIUM for. Because these are the people doctors have given up on.`,
+        },
+
+        // BRIDGE TO LESSON 4
+        {
+            id: 26,
+            type: 'coach',
+            content: `Now here's what's scary - one of those 6 inflammation triggers I mentioned deserves its own lesson. Because it's literally EVERYWHERE and most people have no idea...`,
+        },
+        {
+            id: 27,
             type: 'system',
             content: `**Coming Up: The Toxin Reality**
 
@@ -383,7 +421,10 @@ Most clients have never thought about their health this way. You'll be the first
 - The right way to support detoxification
 - Why mold illness is a hidden epidemic
 
-This lesson will shock you. See you there!`,
+**Toxin/Mold Specialist Market:** PREMIUM NICHE
+**Average Income:** $5,500 - $8,200/month
+
+Warning: This lesson will make you look at your home differently.`,
             systemStyle: 'info',
         },
     ];

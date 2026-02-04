@@ -1,38 +1,62 @@
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 
+// Check if Redis credentials are available
+const hasRedisCredentials = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+
 // Initialize Redis client using Vercel KV environment variables
 // These are auto-populated when you connect Upstash via Vercel Storage
-export const redis = new Redis({
-    url: process.env.KV_REST_API_URL!,
-    token: process.env.KV_REST_API_TOKEN!,
-});
+// For local development without Redis, we create a mock client
+export const redis = hasRedisCredentials
+    ? new Redis({
+        url: process.env.KV_REST_API_URL!,
+        token: process.env.KV_REST_API_TOKEN!,
+    })
+    : null as unknown as Redis; // Type cast for local dev (will be null)
+
+// Mock rate limiter response for local development
+const mockRateLimitResult = { success: true, limit: 100, remaining: 99, reset: Date.now() + 60000, pending: Promise.resolve() };
+
+// Create rate limiter or mock for local development
+function createRateLimiter(config: {
+    limiter: ReturnType<typeof Ratelimit.slidingWindow>;
+    prefix: string;
+}) {
+    if (!hasRedisCredentials || !redis) {
+        // Return mock rate limiter for local development
+        console.log(`[DEV] Rate limiter (${config.prefix}) disabled - no Redis credentials`);
+        return {
+            limit: async () => mockRateLimitResult,
+        } as unknown as Ratelimit;
+    }
+
+    return new Ratelimit({
+        redis,
+        limiter: config.limiter,
+        analytics: true,
+        prefix: config.prefix,
+    });
+}
 
 // =============================================================================
 // RATE LIMITERS
 // =============================================================================
 
 // API Rate Limiter - 100 requests per 10 seconds per IP
-export const apiRateLimiter = new Ratelimit({
-    redis,
+export const apiRateLimiter = createRateLimiter({
     limiter: Ratelimit.slidingWindow(100, "10 s"),
-    analytics: true,
     prefix: "ratelimit:api",
 });
 
 // Auth Rate Limiter - 5 login attempts per minute per IP (prevent brute force)
-export const authRateLimiter = new Ratelimit({
-    redis,
+export const authRateLimiter = createRateLimiter({
     limiter: Ratelimit.slidingWindow(5, "1 m"),
-    analytics: true,
     prefix: "ratelimit:auth",
 });
 
 // Lead Capture Rate Limiter - 3 submissions per hour per IP
-export const leadRateLimiter = new Ratelimit({
-    redis,
+export const leadRateLimiter = createRateLimiter({
     limiter: Ratelimit.slidingWindow(3, "1 h"),
-    analytics: true,
     prefix: "ratelimit:lead",
 });
 
@@ -50,6 +74,11 @@ export async function getOrSetCache<T>(
     fetchFn: () => Promise<T>,
     ttlSeconds: number = DEFAULT_CACHE_TTL
 ): Promise<T> {
+    // Skip cache if Redis is not available (local development)
+    if (!hasRedisCredentials || !redis) {
+        return fetchFn();
+    }
+
     try {
         // Try to get from cache
         const cached = await redis.get<T>(key);

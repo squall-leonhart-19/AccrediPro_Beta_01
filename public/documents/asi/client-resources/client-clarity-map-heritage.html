@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Clarity Map | ASI Level 0 Resources</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --burgundy-primary: #722f37;
+            --burgundy-dark: #4e1f24;
+            --burgundy-deeper: #3a171b;
+            --gold-primary: #D4AF37;
+            --gold-light: #f7e7a0;
+            --gold-dark: #b8962e;
+            --text-primary: #2d2d2d;
+            --text-secondary: #555;
+            --bg-white: #fffefb;
+            --bg-cream: #fdf8f0;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background: #e8e8e8;
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-size: 11px;
+        }
+
+        .page {
+            display: block;
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            padding: 18mm;
+            background: var(--bg-white);
+            position: relative;
+            overflow: hidden;
+            page-break-after: always;
+        }
+
+        .modern-frame {
+            position: absolute;
+            top: 10mm;
+            left: 10mm;
+            right: 10mm;
+            bottom: 10mm;
+            border: 2px solid var(--gold-primary);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        .minimal-corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            z-index: 10;
+        }
+
+        .mc-tl {
+            top: 6mm;
+            left: 6mm;
+        }
+
+        .mc-tr {
+            top: 6mm;
+            right: 6mm;
+            transform: rotate(90deg);
+        }
+
+        .mc-bl {
+            bottom: 6mm;
+            left: 6mm;
+            transform: rotate(-90deg);
+        }
+
+        .mc-br {
+            bottom: 6mm;
+            right: 6mm;
+            transform: rotate(180deg);
+        }
+
+        .running-header {
+            position: absolute;
+            top: 14mm;
+            left: 24mm;
+            right: 24mm;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-size: 8px;
+            color: var(--text-secondary);
+        }
+
+        .running-footer {
+            position: absolute;
+            bottom: 13mm;
+            left: 24mm;
+            right: 24mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 7px;
+            color: var(--text-secondary);
+        }
+
+        .footer-logo {
+            height: 14px;
+            margin-right: 6px;
+            opacity: 0.7;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 13mm;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Playfair Display', serif;
+            font-size: 11px;
+            color: var(--gold-primary);
+        }
+
+        .body-content {
+            position: relative;
+            z-index: 1;
+            padding-top: 10mm;
+        }
+
+        .header-bar {
+            background: linear-gradient(135deg, var(--burgundy-deeper), var(--burgundy-primary));
+            padding: 12px 18px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .header-bar h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: white;
+        }
+
+        .header-bar .subtitle {
+            font-size: 9px;
+            color: var(--gold-light);
+            font-style: italic;
+        }
+
+        .resource-badge {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            color: var(--burgundy-deeper);
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .intro-text {
+            background: linear-gradient(135deg, var(--bg-cream), rgba(212, 175, 55, 0.08));
+            border-left: 3px solid var(--gold-primary);
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            border-radius: 0 6px 6px 0;
+            font-size: 10px;
+        }
+
+        .clarity-box {
+            border-radius: 10px;
+            padding: 14px;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clarity-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .box-experiencing {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 1px solid #fecaca;
+        }
+
+        .box-experiencing::before {
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+        }
+
+        .box-understand {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border: 1px solid #fde68a;
+        }
+
+        .box-understand::before {
+            background: linear-gradient(90deg, #d97706, #f59e0b);
+        }
+
+        .box-support {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 1px solid #bbf7d0;
+        }
+
+        .box-support::before {
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+        }
+
+        .clarity-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .clarity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .box-experiencing .clarity-icon {
+            background: #fecaca;
+        }
+
+        .box-understand .clarity-icon {
+            background: #fde68a;
+        }
+
+        .box-support .clarity-icon {
+            background: #bbf7d0;
+        }
+
+        .clarity-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            color: var(--burgundy-dark);
+        }
+
+        .clarity-prompt {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .writing-area {
+            background: white;
+            border: 1.5px dashed var(--gold-primary);
+            border-radius: 6px;
+            padding: 10px;
+            min-height: 50px;
+        }
+
+        .bullet-lines {
+            list-style: none;
+        }
+
+        .bullet-lines li {
+            padding: 6px 0;
+            border-bottom: 1px dotted #ccc;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            min-height: 22px;
+        }
+
+        .bullet-lines li::before {
+            content: '•';
+            color: var(--gold-primary);
+            font-size: 14px;
+        }
+
+        .insight-section {
+            background: linear-gradient(135deg, var(--burgundy-deeper), var(--burgundy-primary));
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 12px 0;
+            text-align: center;
+        }
+
+        .insight-section h3 {
+            color: var(--gold-primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .insight-section p {
+            font-size: 11px;
+            font-style: italic;
+            opacity: 0.95;
+        }
+
+        .next-steps {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1.5px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+
+        .next-steps h3 {
+            color: #0369a1;
+            font-family: 'Playfair Display', serif;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .next-steps-area {
+            background: white;
+            border-radius: 6px;
+            padding: 10px;
+            min-height: 40px;
+            border: 1.5px dashed #bae6fd;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="modern-frame"></div>
+        <div class="minimal-corner mc-tl"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-tr"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-bl"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-br"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="running-header"><span style="font-style:italic">ASI Level 0 Resource</span><span
+                style="color:var(--burgundy-primary);font-weight:500">Client Clarity Map</span></div>
+
+        <div class="body-content">
+            <div class="header-bar">
+                <div>
+                    <h1>Client Clarity Map</h1>
+                    <p class="subtitle">Visual Reflection Tool • Creating Order from Overwhelm</p>
+                </div>
+                <span class="resource-badge">CLIENT RESOURCE</span>
+            </div>
+
+            <div class="intro-text">
+                <strong>Purpose:</strong> This map helps you distinguish between what you're experiencing, what you
+                understand, and where you need support. Sometimes the feeling of overwhelm comes from everything being
+                mixed together.
+            </div>
+
+            <div class="clarity-box box-experiencing">
+                <div class="clarity-header">
+                    <div class="clarity-icon">🌊</div>
+                    <h2 class="clarity-title">What I'm Experiencing</h2>
+                </div>
+                <p class="clarity-prompt">What's happening in your body, mind, or life right now? (No need to explain
+                    why — just notice.)</p>
+                <div class="writing-area">
+                    <ul class="bullet-lines">
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="clarity-box box-understand">
+                <div class="clarity-header">
+                    <div class="clarity-icon">💡</div>
+                    <h2 class="clarity-title">What I Already Understand</h2>
+                </div>
+                <p class="clarity-prompt">What do you already know about yourself or your situation? What makes sense to
+                    you?</p>
+                <div class="writing-area">
+                    <ul class="bullet-lines">
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="clarity-box box-support">
+                <div class="clarity-header">
+                    <div class="clarity-icon">🤝</div>
+                    <h2 class="clarity-title">What I Need Support With</h2>
+                </div>
+                <p class="clarity-prompt">Where do you feel stuck, confused, or like you need help? What feels hard to
+                    do alone?</p>
+                <div class="writing-area">
+                    <ul class="bullet-lines">
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="insight-section">
+                <h3>✨ The Insight</h3>
+                <p>"It's not that I'm broken. It's that everything is mixed together, and I need someone to help me put
+                    it in order."</p>
+            </div>
+
+            <div class="next-steps">
+                <h3>🎯 What Feels Most Important Right Now?</h3>
+                <p style="font-size:9px;color:#6b7280;margin-bottom:8px">Looking at your three areas, what stands out as
+                    the starting point?</p>
+                <div class="next-steps-area"></div>
+            </div>
+        </div>
+        <div class="page-number">1</div>
+        <div class="running-footer"><img src="/ASI_LOGO-removebg-preview.png" alt="ASI" class="footer-logo"><span>© ASI
+                Standards Institute</span></div>
+    </div>
+</body>
+
+</html>

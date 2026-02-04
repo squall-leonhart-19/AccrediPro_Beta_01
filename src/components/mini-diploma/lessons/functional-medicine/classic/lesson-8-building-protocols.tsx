@@ -20,194 +20,230 @@ export function ClassicLessonBuildingProtocols({
     isCompleted,
 }: LessonProps) {
     const sections: LessonSection[] = [
+        // BRIDGE FROM LESSON 7
         {
             type: 'intro',
-            content: `{name}, let's talk about something that terrifies most new coaches: "Who would actually PAY me?" This is the #1 fear. And I get it. I had it too. But here's what I've learned after helping hundreds of graduates build practices: Your ideal clients are EVERYWHERE. You just don't know how to see them yet.`,
+            content: `{name}, let's talk about something that holds people back: "Who would actually pay me?" This is the #1 fear. And I get it. I had it too. But here's what I've learned: Your ideal clients are **everywhere**. You just don't know how to see them yet.`,
         },
+
+        // THE GAP
         {
             type: 'heading',
-            content: '"Who Would Pay ME?"',
+            content: 'Who Is Looking For You Right Now',
         },
         {
             type: 'text',
-            content: `Let me tell you who's looking for you RIGHT NOW:`,
+            content: `These people are on YOUR Facebook. In your neighborhood. At your gym. They're waiting for someone who will LISTEN:`,
         },
         {
             type: 'list',
-            content: 'Your Ideal Clients:',
+            content: '',
             items: [
                 'Women 40-60 who\'ve tried everything and still feel terrible',
-                'People told "your labs are normal" but know something is wrong',
-                'Busy professionals who can\'t figure out why they\'re exhausted',
-                'Health-conscious people who want to PREVENT disease, not just treat it',
+                'People told **"your labs are normal"** but know something is wrong',
+                'Busy professionals exhausted despite "doing everything right"',
+                'Health-conscious people who want to **PREVENT** disease',
                 'People tired of 7-minute doctor visits that solve nothing',
             ],
         },
         {
             type: 'callout',
-            content: `These people are on YOUR Facebook. In YOUR neighborhood. At YOUR gym. They're your sister-in-law, your coworker, your friend from church. They're waiting for someone who will LISTEN.`,
+            content: `These are real people with real problems. They don't need another generic health tip. They need someone who understands **root causes** - and that's now YOU.`,
             style: 'tip',
         },
+
+        // THE MINDSET SHIFT
         {
             type: 'heading',
-            content: '"But I\'m Not Certified Yet..."',
+            content: 'What Clients Actually Pay For',
         },
         {
-            type: 'text',
-            content: `Here's a secret: People don't pay for certifications. They pay for SOLUTIONS.`,
+            type: 'definition',
+            term: 'Value vs. Credentials',
+            content: `People don't pay for certifications or titles. They pay for **solutions** to their problems. Your certification gives you confidence and credibility. But your VALUE comes from your knowledge, your ability to help, and your willingness to listen.`,
         },
         {
-            type: 'list',
-            content: 'What Clients Actually Care About:',
-            items: [
-                'Can you help them feel better? (YES - you know root causes now)',
-                'Do you understand their problem? (YES - you may have lived it)',
-                'Will you listen to them? (YES - that\'s your competitive advantage)',
-                'Are you trustworthy? (YES - your story builds trust)',
-            ],
+            type: 'before-after',
+            content: '',
+            before: {
+                title: 'What You Think Matters',
+                items: [
+                    'Years of experience',
+                    'Advanced degrees',
+                    'Extensive credentials',
+                    'Fancy office',
+                ],
+            },
+            after: {
+                title: 'What Actually Matters',
+                items: [
+                    'Can you help them feel better?',
+                    'Do you understand their problem?',
+                    'Will you actually listen?',
+                    'Are you trustworthy?',
+                ],
+            },
         },
-        {
-            type: 'key-point',
-            content: `The certification gives you confidence and credibility. But your VALUE comes from your knowledge and your ability to help. You already have more knowledge than most people - including many doctors - about root-cause health.`,
-        },
-        {
-            type: 'heading',
-            content: 'Real Story: Nancy, 49 - Started Before She Felt "Ready"',
-        },
-        {
-            type: 'quote',
-            content: `"I kept waiting until I felt 'ready.' My mentor finally said: 'Nancy, you know more now than 99% of people. Start helping.' My first client was my neighbor who'd complained about fatigue for years. I was terrified. But I helped her identify her root causes (gut issues + nutrient deficiencies), and within 2 months she felt like a new person. She paid me $150/session. Then she referred her sister. Then her coworker. 14 months later: 11 clients, $3,850/month. I was never going to feel 'ready.' I just had to start." - Nancy R., Pennsylvania | ASI Graduate 2023`,
-        },
+
+        // THE FRAMEWORK - 90 Day Timeline
         {
             type: 'heading',
             content: 'The 90-Day Client Acquisition Timeline',
         },
         {
             type: 'text',
-            content: `Here's a realistic timeline for building your first client base:`,
+            content: `Here's a realistic timeline for finding your first clients:`,
+        },
+        {
+            type: 'framework',
+            content: '',
+            framework: {
+                name: 'The 90-Day Path',
+                steps: [
+                    {
+                        letter: '1',
+                        title: 'Days 1-30: Foundation',
+                        description: 'Finish certification. Choose your niche (gut? burnout? inflammation?). Create a simple offer. Tell 20 people what you\'re doing. Offer 3 FREE discovery calls to practice.',
+                    },
+                    {
+                        letter: '2',
+                        title: 'Days 31-60: First Clients',
+                        description: 'Convert 2-3 discovery calls into clients. Start at reduced rate to build confidence. Document their results for testimonials. Ask for referrals after session 3.',
+                    },
+                    {
+                        letter: '3',
+                        title: 'Days 61-90: Momentum',
+                        description: 'Raise to full pricing. Ask happy clients for referrals. Get listed in directories. Consider a workshop or webinar. Aim: 5-8 paying clients by Day 90.',
+                    },
+                ],
+            },
+        },
+
+        // WHERE TO FIND CLIENTS
+        {
+            type: 'heading',
+            content: 'Where to Find Your First Clients (Free)',
         },
         {
             type: 'list',
-            content: 'DAYS 1-30: Foundation',
+            content: '',
             items: [
-                'Finish certification and claim your credentials',
-                'Choose your niche (gut health? burnout? inflammation?)',
-                'Create a simple offer (90-day program)',
-                'Tell 20 people what you\'re doing (social media, in person)',
-                'Offer 3 FREE discovery calls to practice',
+                '**Your existing network** — Friends, family, coworkers who know you care about health',
+                '**Social media** — Post about your journey, share what you\'re learning',
+                '**Local groups** — Networking groups, women\'s groups, community organizations',
+                '**Referrals** — THE #1 source once you have happy clients',
             ],
         },
         {
-            type: 'list',
-            content: 'DAYS 31-60: First Clients',
-            items: [
-                'Convert 2-3 discovery calls into paying clients',
-                'Start your first clients at reduced rate ($100-125/session)',
-                'Document their results obsessively (for testimonials)',
-                'Ask for referrals after session 3 (when they feel better)',
-                'Post about your work on social media weekly',
-            ],
+            type: 'text',
+            content: `Over time, build these additional channels:`,
         },
         {
             type: 'list',
-            content: 'DAYS 61-90: Momentum',
+            content: '',
             items: [
-                'Raise rates to full price ($150-200/session)',
-                'Ask happy clients for testimonials and referrals',
-                'Get listed in directories (ASI, Health Coach Institute, etc.)',
-                'Consider a workshop or free webinar to attract leads',
-                'Aim: 5-8 paying clients by Day 90',
+                '**Practitioner directories** — Health Coach Alliance, Psychology Today',
+                '**Google Business Profile** — Free and powerful for local searches',
+                '**Partnerships** — MDs, chiropractors, acupuncturists who need referral partners',
+                '**Workshops** — Yoga studios, gyms, wellness centers',
+            ],
+        },
+
+        // THE POWER OF YOUR STORY
+        {
+            type: 'heading',
+            content: 'Your Story Is Your Best Marketing',
+        },
+        {
+            type: 'text',
+            content: `Remember Sarah's story from Lesson 1? Her personal transformation is what makes people trust her. YOUR story works the same way:`,
+        },
+        {
+            type: 'list',
+            content: '',
+            items: [
+                '**If you struggled with fatigue** → You understand exhausted women',
+                '**If you dealt with gut issues** → You can help others heal their gut',
+                '**If you experienced burnout** → Burned-out professionals trust you',
+                '**If you felt dismissed by doctors** → You connect with the "not heard" crowd',
             ],
         },
         {
             type: 'callout',
-            content: `By Day 90, if you follow this timeline, you should have 5-8 clients paying $150-200/session. That's $1,500-3,200/month while still building. Not quit-your-job money yet - but PROOF OF CONCEPT. Proof that people will pay you.`,
+            content: `Your struggle isn't a weakness. It's your **credential**. Clients trust practitioners who've walked their path. Share your journey authentically - it builds trust faster than any certification.`,
             style: 'success',
         },
+
+        // DON'T WAIT
         {
             type: 'heading',
-            content: 'Pricing Without Apologizing',
-        },
-        {
-            type: 'list',
-            content: 'What Other Practitioners Charge:',
-            items: [
-                'Basic health coach: $50-100/session',
-                'Certified Functional Medicine Coach: $150-200/session',
-                'Specialized practitioner (burnout, gut, labs): $200-300/session',
-                'Premium programs (3-6 months): $2,000-5,000 total',
-            ],
+            content: 'The "I\'m Not Ready" Trap',
         },
         {
             type: 'key-point',
-            content: `You have specialized knowledge. You're not a $50 coach. You understand root causes, labs, protocols. You should charge $150-200/session minimum. After 6 months of results, raise to $200-250.`,
+            content: `You will **never feel "ready."** That feeling doesn't come from more learning - it comes from **doing**. You already know more about root-cause health than 99% of people. Start with someone who trusts you. Help them. Get results. Build from there.`,
         },
+
+        // CHECK YOUR KNOWLEDGE
         {
-            type: 'heading',
-            content: 'Real Story: Gloria, 55 - Doubled Her Rates in 6 Months',
-        },
-        {
-            type: 'quote',
-            content: `"I started at $100/session because I was scared. After 3 months, I had 8 clients and was overwhelmed. My mentor said: 'Raise your rates or you'll burn out.' I went to $175. Lost 2 clients but gained 3 new ones at the higher rate - making MORE money with LESS work. 6 months later I raised to $225. Now I have a waitlist. The clients who pay more are MORE committed and get BETTER results. Don't undercharge. It attracts the wrong people." - Gloria T., North Carolina | ASI Graduate 2023`,
-        },
-        {
-            type: 'heading',
-            content: 'Where to Find Your First Clients',
-        },
-        {
-            type: 'list',
-            content: 'Start Here (Free):',
-            items: [
-                'Your existing network - friends, family, coworkers who know you\'re passionate about health',
-                'Facebook - Post about your journey, share what you\'re learning',
-                'Local networking - BNI groups, women\'s groups, church groups',
-                'Referrals from happy clients - THE #1 source once you start',
+            type: 'quiz',
+            content: '',
+            questions: [
+                {
+                    question: 'What do clients actually pay for?',
+                    options: [
+                        'Years of experience and advanced degrees',
+                        'A fancy office and impressive credentials',
+                        'Solutions to their problems and someone who listens',
+                        'The lowest price possible',
+                    ],
+                    correctIndex: 2,
+                    explanation: 'Clients pay for SOLUTIONS and someone who actually understands and listens to them. Your ability to help matters more than credentials.',
+                },
+                {
+                    question: 'What becomes your #1 client source once you start?',
+                    options: [
+                        'Paid advertising',
+                        'Social media followers',
+                        'Referrals from happy clients',
+                        'Directory listings',
+                    ],
+                    correctIndex: 2,
+                    explanation: 'Referrals from happy clients become your best source of new clients. When someone gets results working with you, they tell their friends, family, and coworkers.',
+                },
             ],
         },
-        {
-            type: 'list',
-            content: 'Build These (Over Time):',
-            items: [
-                'Practitioner directories - ASI, Health Coach Alliance, Psychology Today',
-                'Google Business Profile - Free and powerful for local searches',
-                'Partnerships with MDs, chiropractors, acupuncturists',
-                'Workshops at yoga studios, gyms, wellness centers',
-            ],
-        },
+
+        // BRIDGE TO FINAL LESSON
         {
             type: 'heading',
-            content: 'Coming Up: Your Income Potential',
+            content: 'Coming Up: Your Path Forward',
         },
         {
             type: 'text',
-            content: `You've got the clinical knowledge. You've got the business basics. In our final lesson, I'm going to show you EXACTLY what income looks like at different stages - and share the inspiring stories of graduates who built thriving practices.`,
+            content: `You've now completed the core education. You understand the **5 Root Causes**, the **R.O.O.T Method**, lab interpretation, and how to find clients. In our final lesson, we'll cover **scope of practice** and your next steps.`,
         },
         {
-            type: 'list',
-            content: 'What you\'ll learn:',
-            items: [
-                'Real income numbers from graduates at all stages',
-                'Part-time vs. full-time practice models',
-                'The path from $0 to $5,000+/month',
-                'Your next step to make this real',
-            ],
+            type: 'callout',
+            content: `Next lesson: What you CAN and CAN'T do legally. How to partner with doctors. And your specific action plan after completing this diploma.`,
+            style: 'tip',
         },
     ];
 
     const keyTakeaways = [
         'Your ideal clients are already in your life - you just haven\'t offered yet',
-        'People pay for SOLUTIONS, not certifications - you have solutions',
-        'The 90-Day Timeline: Foundation → First Clients → Momentum',
-        'Start at $100-125/session, raise to $150-200 after 3 months',
-        'Don\'t wait until you feel "ready" - start with people who trust you',
-        'Referrals from happy clients will become your #1 client source',
+        'Clients pay for **SOLUTIONS**, not credentials',
+        'The **90-Day Path**: Foundation → First Clients → Momentum',
+        'Your **story** is your best marketing - struggles become credentials',
+        '**Referrals** from happy clients become your #1 source',
+        'Don\'t wait until you feel "ready" - that feeling comes from **doing**',
     ];
 
     return (
         <ClassicLessonBase
             lessonNumber={lessonNumber}
             lessonTitle="Finding Your First Clients"
-            lessonSubtitle="The 90-day path from 0 to paying clients"
+            lessonSubtitle="How to get started without paid ads"
             totalLessons={totalLessons}
             sections={sections}
             keyTakeaways={keyTakeaways}
@@ -217,7 +253,7 @@ export function ClassicLessonBuildingProtocols({
             firstName={firstName}
             niche="functional-medicine"
             nicheLabel="Functional Medicine Diploma"
-            baseUrl="/functional-medicine-diploma"
+            baseUrl="/portal/functional-medicine"
             courseSlug="functional-medicine-complete-certification"
         />
     );

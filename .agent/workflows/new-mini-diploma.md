@@ -193,6 +193,14 @@ tmux kill-session -t ralph 2>/dev/null
 - [ ] Create exam JSON file: `src/components/mini-diploma/exams/content/{portal_slug}.json`
 - [ ] Add import + mapping to `src/app/(lead)/portal/[slug]/exam/page.tsx`
 
+### Step 3.7: Circle Pod (NICHE-SPECIFIC!)
+- [ ] Create Zombie persona JSON: `src/data/zombies/{niche}-{name}.json` (full backstory, income story, writing style)
+- [ ] Create Sarah knowledge JSON: `src/data/sarah-knowledge/{portal_slug}.json` (lesson topics, pain points, terminology)
+- [ ] Create 45-day curriculum: `src/data/masterclass-{portal_slug}-days-9-23.ts`
+- [ ] Create 45-day curriculum: `src/data/masterclass-{portal_slug}-days-24-45.ts`
+- [ ] Update masterclass seed route to load niche curriculum
+- [ ] Seed templates to database: `curl -X POST localhost:3000/api/admin/seed-templates?niche={portal_slug}`
+
 ### Step 4: Sequences (NICHE-SPECIFIC COPY REQUIRED!)
 - [ ] Create 60-day nurture sequence file with NICHE-SPECIFIC copy (not placeholders)
 - [ ] Create DM sequence file with NICHE-SPECIFIC copy
@@ -643,6 +651,175 @@ import {portalSlugCamelCase}Exam from "@/components/mini-diploma/exams/content/{
 
 ---
 
+## Step 7.76: Create Zombie Persona JSON
+
+**File to create:** `src/data/zombies/{portal_slug}-{name}.json`
+
+Each mini diploma needs a unique zombie persona with a detailed backstory:
+
+```json
+{
+    "nicheId": "{portal_slug}",
+    "zombie": {
+        "id": "{portal_slug}-{firstname}",
+        "name": "{FirstName}",
+        "age": 48,
+        "avatar": "/zombies/{firstname}.webp",
+        "niche": "{portal_slug}",
+        "backstory": "Dramatic personal story that makes them relatable... Struggles, pain, what they overcame...",
+        "dramaticMoment": "The breaking point when everything changed - emotional, use 😭 emoji...",
+        "transformation": "From [before state] → To [after state with income]",
+        "incomeStory": "$X,XXX/month working XX hours/week. Started with $0. Now have a waitlist.",
+        "writingStyle": {
+            "capitalization": "mostly lowercase",
+            "emojis": ["😭", "💕", "🙌", "🥹", "😅", "💪", "🔥"],
+            "punctuation": "multiple exclamation marks, ellipses...",
+            "typos": "occasional (dont, youre, wont)",
+            "tone": "warm, supportive, emotional"
+        },
+        "exampleMessages": [
+            "omg this hit so hard 😭 my {niche} journey is literally why clients trust me now",
+            "when I was struggling I would have PAID anything for someone who understood",
+            "just closed my 6th client this month... still cant believe this is my life 💕"
+        ],
+        "videoTestimonialScript": "Hi, I'm {Name}. [Describe struggle]... [Describe transformation]... If I can do this, you absolutely can too."
+    }
+}
+```
+
+### Zombie Name Guidelines:
+- Use common, relatable names (Jennifer, Lisa, Michelle, Karen, Diane)
+- Match demographics to niche (e.g., younger for ADHD, older for menopause)
+- Keep avatar path consistent: `/zombies/{firstname}.webp`
+
+**After completing: Update fix_plan.md - mark "Create Zombie persona JSON" as [x]**
+
+---
+
+## Step 7.77: Create Sarah Knowledge JSON
+
+**File to create:** `src/data/sarah-knowledge/{portal_slug}.json`
+
+Sarah stays the SAME person but adapts her KNOWLEDGE per niche:
+
+```json
+{
+    "nicheId": "{portal_slug}",
+    "nicheLabel": "{Topic Name}",
+    "lessonTopics": [
+        "Lesson 1: {Title} - Core concepts covered",
+        "Lesson 2: {Title} - Core concepts covered",
+        "..."
+    ],
+    "painPoints": [
+        "Common struggle 1 for this niche",
+        "Common struggle 2 for this niche",
+        "What makes people frustrated/stuck"
+    ],
+    "terminology": [
+        "Key term 1 - definition",
+        "Key term 2 - definition",
+        "Jargon unique to this niche"
+    ],
+    "clientExamples": [
+        "Type of client they'll help",
+        "Common client transformation story"
+    ],
+    "credentialTitle": "Certified {Topic} Specialist",
+    "practiceType": "What practitioners do in this field"
+}
+```
+
+**Used by:** `circle-pod-knowledge.ts` to build Sarah's AI prompts with niche context.
+
+**After completing: Update fix_plan.md - mark "Create Sarah knowledge JSON" as [x]**
+
+---
+
+## Step 7.78: Create 45-Day Circle Pod Curriculum
+
+**Files to create:**
+- `src/data/masterclass-{portal_slug}-days-9-23.ts`
+- `src/data/masterclass-{portal_slug}-days-24-45.ts`
+
+### Copy and Adapt Template:
+1. Copy `masterclass-days-9-23.ts` and `masterclass-days-24-45.ts`
+2. Replace all FM-specific content with niche content
+3. Update zombie messages to match the zombie persona
+
+### Structure per day:
+```typescript
+{
+    day: 9,
+    gap: "topic-keyword",
+    sarah: `Morning {firstName}! ☀️
+
+TODAY'S LESSON: {Niche-specific lesson title}
+
+{Niche-specific content explaining a concept or giving advice}
+
+🎯 TODAY'S ACTION:
+{Specific action step for this niche}
+
+Sarah 💛`,
+    zombies: [
+        {
+            minHour: 1, maxHour: 3, options: [
+                "zombie reaction message 1 matching their persona",
+                "zombie reaction message 2 with their emojis",
+                "zombie reaction message 3 casual style",
+            ]
+        },
+        {
+            minHour: 4, maxHour: 8, options: [
+                "later zombie message sharing their own experience",
+                "another option for variety",
+            ]
+        }
+    ]
+}
+```
+
+### Key Days with Audio:
+Add `sarahAudioUrl` to: Day 1, 8, 14, 21, 30, 35, 42, 44
+
+### Key Days with Video:
+Add `videoTestimonialUrl` to: Day 10, 13, 21, 30, 33, 40
+
+**After completing: Update fix_plan.md - mark both curriculum files as [x]**
+
+---
+
+## Step 7.79: Seed Circle Pod Templates
+
+**Update:** `src/app/api/admin/seed-templates/route.ts`
+
+1. Import the new curriculum files:
+```typescript
+import { days9to23 as {nicheSlug}Days9to23 } from "@/data/masterclass-{portal_slug}-days-9-23";
+import { days24to45 as {nicheSlug}Days24to45 } from "@/data/masterclass-{portal_slug}-days-24-45";
+```
+
+2. Add niche condition in the seed handler:
+```typescript
+if (niche === "{portal_slug}") {
+    allDays = [...{nicheSlug}Days9to23, ...{nicheSlug}Days24to45];
+    zombieProfile = require("@/data/zombies/{portal_slug}-{name}.json").zombie;
+}
+```
+
+3. Seed to database:
+// turbo
+```bash
+curl -X POST http://localhost:3000/api/admin/seed-templates?niche={portal_slug}
+```
+
+4. Verify at `/admin/circle-templates` - filter by niche, check all 45 days exist.
+
+**After completing: Update fix_plan.md - mark "Seed templates" as [x]**
+
+---
+
 ## Step 7.8: Add to DIPLOMA_TAG_PREFIX
 
 **File:** `src/app/(lead)/layout.tsx`
@@ -951,15 +1128,27 @@ When complete, verify all files were created/modified:
 9. ✅ diploma-configs.ts (portal dashboard)
 10. ✅ Lesson content JSON (9 lessons)
 11. ✅ dynamic-lesson-router.tsx updated
-12. ✅ **60-day nurture sequence file**
-13. ✅ **DM sequence file**
-14. ✅ **Sequences registered in registry**
-15. ✅ **Nudge cron updated**
-16. ✅ SMS template generated
-17. ✅ Build passes
-18. ✅ **Planning CSV status updated to "done"**
+12. ✅ Exam questions JSON
+13. ✅ **Zombie persona JSON** (backstory, income story, writing style)
+14. ✅ **Sarah knowledge JSON** (lesson topics, terminology)
+15. ✅ **45-day Circle Pod curriculum** (days 9-23 + 24-45)
+16. ✅ **Seeded templates** to database
+17. ✅ **60-day nurture sequence file**
+18. ✅ **DM sequence file**
+19. ✅ **Sequences registered in registry**
+20. ✅ **Nudge cron updated**
+21. ✅ SMS template generated
+22. ✅ Build passes
+23. ✅ **Planning CSV status updated to "done"**
 
-**Fully Automated After Creation (62 message templates!):**
+**Circle Pod System (Auto-runs after creation):**
+- ✅ Sarah AI replies (15-60 min delay, Claude Haiku)
+- ✅ Zombie AI replies (60-180 min delay, with SKIP option)
+- ✅ **10 Resource tools unlock progressively** (30min → 72h)
+- ✅ Sarah gifts each tool with personalized message
+- ✅ 45-day daily messages (Sarah + Zombie)
+
+**Fully Automated After Creation (62+ message templates!):**
 - ✅ Pre-completion emails (6) + Milestone emails (8)
 - ✅ Post-completion nurture (8) + Hormozi warming (7)
 - ✅ Winback (4) + Downsell (3) + Long-term (7) + Revival (1)
@@ -975,5 +1164,7 @@ When complete, verify all files were created/modified:
 - Test opt-in flow at `/{course_slug}`
 - Test portal at `/portal/{portal_slug}`
 - Test lessons at `/portal/{portal_slug}/lesson/1`
+- Test Circle Pod at `/portal/{portal_slug}` (sidebar)
 - (Optional) Create custom Stripe checkout link
+
 

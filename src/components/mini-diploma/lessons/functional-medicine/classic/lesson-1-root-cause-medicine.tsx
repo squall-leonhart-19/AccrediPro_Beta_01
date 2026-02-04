@@ -20,312 +20,288 @@ export function ClassicLessonRootCauseMedicine({
     isCompleted,
 }: LessonProps) {
     const sections: LessonSection[] = [
+        // SARAH'S INTRO - Proper backstory first
         {
             type: 'intro',
-            content: `Hey {name}! I'm Sarah, and I'm genuinely SO excited you're here. Before we dive in, I want to share something personal with you...`,
+            content: `Hey {name}, I'm Sarah. Before we dive in, I want you to know who's teaching you - because my story might be a lot like yours.`,
         },
         {
             type: 'text',
-            content: `Four years ago, I was a 43-year-old single mom of two, barely holding it together. My husband had passed away 18 months earlier - a heart attack at 46. No warning. Just... gone.`,
+            content: `I was a nurse for 12 years. Long shifts, missing my kids' school plays, barely seeing my husband. I loved helping people, but the hospital system was crushing me. $52,000 a year. Two kids. Daycare ate half my paycheck.`,
         },
         {
             type: 'text',
-            content: `I fell apart. Grief, stress, anxiety. I gained 35 pounds. Couldn't sleep. Had panic attacks dropping my kids at school. My doctor put me on antidepressants and sleeping pills. "Give it time," she said.`,
+            content: `Then my husband passed away suddenly. A heart attack at 46. No warning. Just... gone.`,
         },
         {
             type: 'text',
-            content: `But I wasn't getting better. I was getting WORSE. And I couldn't afford to fall apart - my kids needed me. I was all they had.`,
+            content: `I fell apart. Single mom. Two kids. Grief, exhaustion, anxiety. My own doctor put me on antidepressants. "Give it time," she said. But I was getting WORSE, not better. And I couldn't afford to fall apart - my children needed me.`,
         },
         {
             type: 'text',
-            content: `That's when a friend mentioned functional medicine. I was skeptical - it sounded like "woo-woo" stuff. But I was desperate. So I tried it.`,
-        },
-        {
-            type: 'text',
-            content: `Within 2 months, I discovered my cortisol was through the roof. My gut was a mess. I had nutrient deficiencies. Things my doctor never checked. Things that EXPLAINED why I felt so broken.`,
-        },
-        {
-            type: 'text',
-            content: `6 months later? I was off the pills. Lost the weight. Sleeping again. I had my LIFE back. And more importantly - I could finally be the mom my kids deserved.`,
-        },
-        {
-            type: 'text',
-            content: `That's when I thought: "How many other women are suffering like I was? How many are being given pills instead of answers?"`,
+            content: `A friend mentioned functional medicine. I was skeptical - it sounded like "woo-woo" stuff. But I was desperate. Within 2 months, I discovered WHY I felt so broken: cortisol through the roof, gut issues, nutrient deficiencies. Things my doctor never checked.`,
         },
         {
             type: 'key-point',
-            content: `I got certified. I started helping other women. And now? I work 15 hours a week from home, earn $6,200/month, and I've helped 200+ women transform their health - just like I did mine. I'm not some perfect wellness guru. I'm a regular woman who hit rock bottom and found a way out. And I'm going to show you exactly how to help others do the same.`,
+            content: `6 months later? Off the pills. Energy back. Sleeping again. I got my LIFE back. And I thought: "How many other women are suffering like I was? How many are being handed pills instead of answers?"`,
         },
         {
+            type: 'text',
+            content: `So I got certified. I started helping other women. Now? I work part-time from home, earn $5-10k+ monthly, and I'm FINALLY there for my kids. School pickups, dinner together, weekends free. The life I dreamed of as a burnt-out nurse.`,
+        },
+        {
+            type: 'text',
+            content: `Over 200 women have now used the same method I'm about to teach you. Many of them also came from healthcare - nurses, medical assistants, caregivers - people who wanted to help others BUT couldn't sacrifice their families anymore.`,
+        },
+
+        // THE GAP
+        {
             type: 'heading',
-            content: 'The Healthcare Crisis Nobody Talks About',
+            content: 'The $200 Billion Healthcare Gap',
+        },
+        {
+            type: 'text',
+            content: `Right now, 60% of Americans have a chronic disease. 42% have TWO or more. Diabetes, autoimmune conditions, chronic fatigue, anxiety, gut issues... they're EVERYWHERE.`,
+        },
+        {
+            type: 'text',
+            content: `Here's what's broken: Doctors are trained for ACUTE care - heart attacks, broken bones, emergencies. They're heroes at that. But chronic disease? It requires TIME, investigation, lifestyle changes. Things a 7-minute appointment can't provide.`,
+        },
+        {
+            type: 'before-after',
+            content: '',
+            before: {
+                title: 'The Conventional Approach',
+                items: [
+                    'Patient: "I\'m exhausted all the time"',
+                    'Doctor: "Your labs look fine"',
+                    'Prescription: Anti-depressants',
+                    'Result: Symptoms managed, cause ignored',
+                ],
+            },
+            after: {
+                title: 'The Root Cause Approach',
+                items: [
+                    'Client: "I\'m exhausted all the time"',
+                    'You: "Let\'s investigate WHY"',
+                    'Discovery: Thyroid, gut, or adrenal dysfunction',
+                    'Result: Root cause addressed, energy returns',
+                ],
+            },
+        },
+
+        // THE CONCEPT - Real Teaching
+        {
+            type: 'heading',
+            content: 'What IS Functional Medicine?',
+        },
+        {
+            type: 'definition',
+            term: 'Functional Medicine',
+            content: `A personalized, systems-oriented approach that empowers clients to achieve their highest expression of health by addressing the **root causes** of disease rather than just treating symptoms. It asks "WHY is this happening?" instead of "WHAT pill can mask this?"`,
+        },
+        {
+            type: 'text',
+            content: `Think of it like this: If your car's check engine light comes on, you don't just cover it with tape and keep driving. You figure out WHY it's on. That's functional medicine for the human body.`,
         },
         {
             type: 'key-point',
-            content: `60% of Americans have a chronic disease. 42% have TWO or more. The average doctor visit? 7 minutes. Doctors are trained to treat SYMPTOMS, not causes. They're overwhelmed, overworked, and have no time. People are DESPERATE for someone who will actually LISTEN. This isn't about replacing doctors. It's about filling a massive gap they can't fill.`,
+            content: `Here's the insight that changed everything for me: Almost EVERY chronic health issue traces back to dysfunction in one of **five areas**. Master these five, and you can help 90% of the clients who walk through your door.`,
         },
-        {
-            type: 'text',
-            content: `Here's what I want you to understand: The world doesn't need more doctors. It needs more HEALTH GUIDES - people who can help others navigate their health journey.`,
-        },
+
+        // THE FRAMEWORK - R.O.O.T Method
         {
             type: 'heading',
-            content: '"But Sarah, I\'m Not a Doctor..."',
+            content: 'The R.O.O.T Method™',
         },
         {
             type: 'text',
-            content: `Neither am I. And here's why that's actually an ADVANTAGE:`,
+            content: `This is the exact 4-step framework I use with every client. It's what transformed me from overwhelmed beginner to a practitioner with a waiting list. Now thousands of ASI graduates use this same method to finally have time with their families while helping others heal.`,
         },
         {
-            type: 'list',
-            content: 'What Doctors Do (Medical Practice):',
-            items: [
-                'Diagnose diseases',
-                'Prescribe medications',
-                'Perform procedures',
-                'Require MD/DO degree + license',
-            ],
+            type: 'framework',
+            content: '',
+            framework: {
+                name: 'The R.O.O.T Method™',
+                steps: [
+                    {
+                        letter: 'R',
+                        title: 'Recognize',
+                        description: 'Identify the symptom patterns your client is experiencing. Connect the dots between seemingly unrelated issues (fatigue + brain fog + weight gain often point to the same root cause).',
+                    },
+                    {
+                        letter: 'O',
+                        title: 'Origins',
+                        description: 'Trace symptoms back to one of the 5 root causes: Gut dysfunction, Chronic inflammation, Toxin overload, Nutrient deficiencies, or HPA axis dysfunction (stress).',
+                    },
+                    {
+                        letter: 'O',
+                        title: 'Optimize',
+                        description: 'Create a personalized protocol using nutrition, lifestyle changes, and targeted support. No medications needed - just education and guidance.',
+                    },
+                    {
+                        letter: 'T',
+                        title: 'Track',
+                        description: 'Monitor progress and adjust. What gets measured gets managed. This is why clients stay 4-6 months instead of 1-2 sessions.',
+                    },
+                ],
+            },
         },
-        {
-            type: 'list',
-            content: 'What Health Coaches Do (Health Education):',
-            items: [
-                'Educate on nutrition & lifestyle',
-                'Support behavior change',
-                'Help implement healthy habits',
-                'Guide, don\'t diagnose or prescribe',
-            ],
-        },
-        {
-            type: 'callout',
-            content: `You're not replacing doctors. You're partnering with them. As a certified health coach, you legally provide EDUCATION and SUPPORT - not medical advice. This is 100% legal in all 50 states.`,
-            style: 'info',
-        },
-        {
-            type: 'text',
-            content: `Think about it - your friends already ask YOU for health advice, right? They trust you MORE than their doctor because you actually LISTEN.`,
-        },
-        {
-            type: 'heading',
-            content: 'Real Story: Linda, 52 - Former Accountant',
-        },
-        {
-            type: 'quote',
-            content: `"I need to be honest - I was TERRIFIED to start.
 
-I'd already wasted $2,000 on a life coaching certification that led nowhere. My husband gave me 'the look' when I mentioned this program. My sister literally said 'Another course? Really?'
-
-I spent 25 years in corporate accounting. I had no health background. I wasn't thin or fit. I struggled with my OWN weight and energy. Who was I to help anyone?
-
-But something felt different this time. I actually understood what Sarah was teaching. The root cause stuff - it clicked.
-
-My first client was my sister-in-law who'd struggled with fatigue for years. After 3 months, she was off her afternoon energy drinks and lost 18 pounds. She cried when she told me: 'You helped me more in 3 months than my doctor did in 3 years.'
-
-I cried too. Because for the first time, I felt like I was doing something that MATTERED.
-
-Today: I work 20 hours/week from home. Last month I earned $4,800. My husband now brags about me to his friends. And my sister? She's my client now.
-
-To anyone feeling like an imposter: You don't need to be perfect. You just need to START." - Linda M., Ohio | ASI Graduate 2024`,
-        },
-        {
-            type: 'heading',
-            content: 'The Root Cause Revolution',
-        },
-        {
-            type: 'text',
-            content: `Now let me teach you the most important concept in functional medicine - the thing that separates average health coaches from practitioners who get REAL results. It's called ROOT CAUSE thinking. And once you understand it, you'll never look at health the same way.`,
-        },
-        {
-            type: 'list',
-            content: 'Conventional Approach (Symptom Treatment):',
-            items: [
-                'Headache? Take Advil',
-                'Can\'t sleep? Sleeping pills',
-                'Fatigue? More coffee',
-                'Anxious? Anxiety meds',
-            ],
-        },
-        {
-            type: 'callout',
-            content: `The symptom goes away... until it comes back. Or shows up somewhere else.`,
-            style: 'warning',
-        },
-        {
-            type: 'list',
-            content: 'Root Cause Approach (Ask WHY):',
-            items: [
-                'Headache? Why? Dehydration? Gut issues? Stress?',
-                'Can\'t sleep? Why? Cortisol dysregulation? Blood sugar?',
-                'Fatigue? Why? Nutrient deficiency? Inflammation?',
-                'Anxious? Why? Hormone imbalance? Gut-brain axis?',
-            ],
-        },
-        {
-            type: 'key-point',
-            content: `When you fix the ROOT CAUSE, the symptoms disappear - permanently. This is what separates practitioners who get paid $50/hour from those who charge $200+ and have waitlists.`,
-        },
+        // THE 5 ROOT CAUSES
         {
             type: 'heading',
             content: 'The 5 Root Causes of Chronic Disease',
         },
         {
             type: 'text',
-            content: `Almost EVERY chronic health issue traces back to one of these five root causes:`,
+            content: `Every chronic condition your clients experience can be traced to dysfunction in one or more of these five areas:`,
         },
         {
             type: 'list',
-            content: 'The 5 Root Causes:',
+            content: '',
             items: [
-                'Gut Dysfunction - 70% of immune system lives here',
-                'Chronic Inflammation - The silent killer behind all disease',
-                'Toxin Overload - 80,000+ chemicals in our environment',
-                'Nutrient Deficiencies - Even in the "well-fed"',
-                'HPA Axis Dysfunction - Chronic stress destroying health',
+                '**Gut Dysfunction** — 70% of the immune system lives here. When the gut breaks, everything breaks.',
+                '**Chronic Inflammation** — The silent killer behind heart disease, diabetes, Alzheimer\'s, and autoimmune conditions.',
+                '**Toxin Overload** — 80,000+ synthetic chemicals in our environment. Our bodies weren\'t designed for this.',
+                '**Nutrient Deficiencies** — Even the "well-fed" are malnourished. Modern food is nutritionally depleted.',
+                '**HPA Axis Dysfunction** — Chronic stress destroys health. Cortisol dysregulation affects everything.',
             ],
         },
         {
             type: 'callout',
-            content: `The magic? These are all CONNECTED. Fix one, others start improving. This is what you'll learn to identify and address. Not with prescriptions - with education, nutrition, and lifestyle changes.`,
+            content: `The magic? These 5 causes are all CONNECTED. Fix one, and others start improving. This is why root cause practitioners get results that seem almost miraculous - they're not treating symptoms, they're restoring balance.`,
             style: 'success',
         },
+
+        // EXAMPLE - Emotional Case Study
         {
             type: 'heading',
-            content: 'Why People Trust Health Coaches',
+            content: 'Real Client: Maria\'s Transformation',
         },
         {
             type: 'text',
-            content: `Research shows clients prefer health coaches because:`,
+            content: `Maria, 44, came to me after 3 years of seeing doctors. She was a teacher, exhausted by 2pm, missing her daughter's dance recitals because she "just couldn't." Her symptoms:`,
         },
         {
             type: 'list',
-            content: 'The Trust Factor:',
+            content: '',
             items: [
-                'TIME: Coaches spend 60+ minutes. Doctors spend 7.',
-                'EMPATHY: You\'ve LIVED it. Doctors studied it.',
-                'ACCESSIBILITY: You\'re not intimidating in a white coat',
-                'ACCOUNTABILITY: You walk alongside them',
-                'RESULTS: You focus on root causes, not quick fixes',
+                'Crushing fatigue (couldn\'t make it past 2pm)',
+                'Brain fog so bad she forgot lesson plans mid-class',
+                'Gained 40 lbs on "healthy" eating',
+                'Depression, anxiety, crying in her car before work',
             ],
+        },
+        {
+            type: 'text',
+            content: `Her doctors said: "Labs are normal. Have you tried therapy and a gym membership?" She felt dismissed. Invisible. Broken.`,
+        },
+        {
+            type: 'text',
+            content: `Using the R.O.O.T Method, I RECOGNIZED her pattern: fatigue + brain fog + weight gain + mood issues all pointed to the same origin. I traced the ORIGINS to gut dysfunction and HPA axis burnout. We OPTIMIZED with targeted nutrition and stress protocols. We TRACKED her progress weekly.`,
         },
         {
             type: 'key-point',
-            content: `"My health coach changed my life. She actually LISTENED." - We hear this daily. Your personal health journey? It's not a weakness. It's your SUPERPOWER.`,
+            content: `Results after 90 days: Energy 8/10 (was 2/10). Brain fog GONE. Lost 18 lbs. She called me crying: "I made it to my daughter's dance recital. I was THERE. You gave me my life back."`,
         },
+
+        // "But I'm Not a Doctor" Section
         {
             type: 'heading',
-            content: 'Real Story: Patricia, 47 - Former Teacher',
-        },
-        {
-            type: 'quote',
-            content: `"I was exhausted. Not 'tired' - EXHAUSTED. For years.
-
-My doctor tested my thyroid and said 'Everything looks fine.' But I knew something was wrong. I was gaining weight, losing hair, couldn't get out of bed. I felt like I was watching my life from behind a fog.
-
-I spent 3 years and thousands of dollars on doctors who dismissed me. 'Have you tried exercise?' they'd say. I wanted to scream.
-
-Then I found functional medicine. I learned that 'normal' thyroid labs don't mean optimal. I learned about T3, reverse T3, antibodies. Things my doctors NEVER mentioned.
-
-For the first time in a decade, I felt better.
-
-And I thought: 'How many other women are being dismissed right now? How many are hearing 'you're fine' when they're SUFFERING?'
-
-I had to do something.
-
-Today I specialize in helping women with thyroid and hormone issues. Last month: 8 clients, $3,400 income, working from home while my kids are at school.
-
-My students ask me: 'What made you qualified to do this?'
-
-I tell them: 'My suffering. My frustration. My refusal to give up. That's my qualification.'" - Patricia K., Texas | ASI Graduate 2023`,
-        },
-        {
-            type: 'heading',
-            content: 'A Day in My Life',
+            content: '"But Sarah, I\'m Not a Doctor..."',
         },
         {
             type: 'text',
-            content: `Let me paint a picture of what your life could look like as a certified practitioner:`,
+            content: `Neither am I. I'm a former nurse who was tired of watching the system fail people. And here's why NOT being a doctor is actually an ADVANTAGE:`,
         },
         {
-            type: 'list',
-            content: 'My Typical Day:',
-            items: [
-                '7:30 AM - Kids off to school. Coffee. Check client messages (15 min)',
-                '9:00 AM - Client session with Jennifer (Zoom). Reviewing her food journal, adjusting her gut protocol. 60 min = $175',
-                '10:30 AM - Quick workout, shower, lunch',
-                '12:00 PM - Client session with Maria. Her inflammation markers improved! She\'s crying happy tears. 60 min = $175',
-                '1:30 PM - Admin: update client notes, prep for tomorrow (45 min)',
-                '3:00 PM - Kids home. I\'m DONE for the day.',
-            ],
-        },
-        {
-            type: 'key-point',
-            content: `Today's income: $350 for 3 hours of actual work. This is what "part-time practitioner" looks like.`,
-        },
-        {
-            type: 'heading',
-            content: 'The Root Cause Premium',
-        },
-        {
-            type: 'text',
-            content: `Why do root cause practitioners earn MORE than average health coaches?`,
-        },
-        {
-            type: 'list',
-            content: 'Average Health Coach ($50-75/session):',
-            items: [
-                'Clients see you 2-3 times then leave',
-                'Always chasing new clients',
-                '"I don\'t see results"',
-            ],
-        },
-        {
-            type: 'list',
-            content: 'Root Cause Practitioner ($150-300/session):',
-            items: [
-                'Clients stay 4-6 months (ongoing revenue)',
-                'Referrals from happy clients',
-                'Waitlists form organically',
-            ],
+            type: 'before-after',
+            content: '',
+            before: {
+                title: 'What Doctors Do (Medical Practice)',
+                items: [
+                    'Diagnose diseases',
+                    'Prescribe medications',
+                    'Perform procedures',
+                    'Limited to 7-minute visits',
+                ],
+            },
+            after: {
+                title: 'What Health Coaches Do (Education)',
+                items: [
+                    'Educate on nutrition & lifestyle',
+                    'Support behavior change',
+                    'Help implement healthy habits',
+                    'Spend 60+ minutes with clients',
+                ],
+            },
         },
         {
             type: 'callout',
-            content: `The difference? RESULTS. When you fix root causes, people get better. And they tell everyone. One graduate told us: "I raised my rates to $225 and STILL have a waitlist."`,
-            style: 'success',
+            content: `You're not replacing doctors - you're PARTNERING with them. As a certified health coach, you legally provide EDUCATION and SUPPORT, not medical advice. This is 100% legal in all 50 states. Your job is to help clients implement what doctors don't have time to teach.`,
+            style: 'info',
         },
+
+        // CHECK YOUR KNOWLEDGE
+        {
+            type: 'quiz',
+            content: '',
+            questions: [
+                {
+                    question: 'What does the "O" in the R.O.O.T Method stand for?',
+                    options: [
+                        'Optimize (create personalized protocols)',
+                        'Observe (watch and wait)',
+                        'Origins (trace to root causes) + Optimize (create protocols)',
+                        'Operate (perform procedures)',
+                    ],
+                    correctIndex: 2,
+                    explanation: 'The R.O.O.T Method has two "O"s: Origins (trace symptoms to root causes) and Optimize (create personalized protocols). This is the core of functional medicine - find the cause, then address it.',
+                },
+                {
+                    question: 'Which of these is NOT one of the 5 root causes of chronic disease?',
+                    options: [
+                        'Gut dysfunction',
+                        'Genetic mutations',
+                        'Chronic inflammation',
+                        'HPA axis dysfunction',
+                    ],
+                    correctIndex: 1,
+                    explanation: 'While genetics can play a role, they\'re not one of the 5 root causes. The 5 are: Gut, Inflammation, Toxins, Nutrients, and HPA Axis (stress). Most chronic disease is lifestyle-driven, not genetic.',
+                },
+            ],
+        },
+
+        // BRIDGE TO NEXT LESSON
         {
             type: 'heading',
             content: 'Coming Up: The Gut Connection',
         },
         {
             type: 'text',
-            content: `In the next lesson, we're diving into the GUT - because Hippocrates said "All disease begins in the gut" 2,000 years ago. And science is proving he was RIGHT.`,
+            content: `You now understand the R.O.O.T Method and the 5 root causes. But here's the thing - one of these root causes is more important than all the others combined.`,
         },
         {
-            type: 'list',
-            content: 'What you\'ll learn:',
-            items: [
-                'Why 70% of your immune system lives in your gut',
-                'The 5R Protocol every practitioner needs to know',
-                'A real case study for you to solve',
-                'Why gut health specialists are in MASSIVE demand',
-            ],
+            type: 'callout',
+            content: `Hippocrates said "All disease begins in the gut" over 2,000 years ago. Modern science is proving he was RIGHT. In the next lesson, you'll learn the **5R Protocol** that gut health specialists use to transform clients - and why practitioners who master this have waiting lists.`,
+            style: 'tip',
         },
     ];
 
     const keyTakeaways = [
-        'You don\'t need a medical degree - health coaches provide EDUCATION and SUPPORT, not diagnoses',
-        'Root cause thinking separates $50/hour coaches from $200+/hour practitioners',
-        'The 5 root causes: Gut, Inflammation, Toxins, Nutrients, Stress (HPA axis)',
-        'Your personal health struggles are your SUPERPOWER, not a weakness',
-        'Clients trust coaches because you LISTEN and spend TIME with them',
-        'Part-time work (15-20 hrs/week) can generate $3,000-6,000/month',
+        'Functional medicine addresses **root causes**, not just symptoms',
+        'The R.O.O.T Method: **Recognize → Origins → Optimize → Track**',
+        '5 Root Causes: **Gut, Inflammation, Toxins, Nutrients, HPA Axis** (Stress)',
+        'Health coaches provide EDUCATION, not medical diagnosis',
+        'Your personal health journey is your SUPERPOWER, not a limitation',
     ];
 
     return (
         <ClassicLessonBase
             lessonNumber={lessonNumber}
             lessonTitle="Why Root Cause Medicine Wins"
-            lessonSubtitle="And why YOU can do this (even without a medical degree)"
+            lessonSubtitle="And how the R.O.O.T Method™ can transform your clients' lives"
             totalLessons={totalLessons}
             sections={sections}
             keyTakeaways={keyTakeaways}
@@ -335,7 +311,7 @@ I tell them: 'My suffering. My frustration. My refusal to give up. That's my qua
             firstName={firstName}
             niche="functional-medicine"
             nicheLabel="Functional Medicine Diploma"
-            baseUrl="/functional-medicine-diploma"
+            baseUrl="/portal/functional-medicine"
             courseSlug="functional-medicine-complete-certification"
         />
     );

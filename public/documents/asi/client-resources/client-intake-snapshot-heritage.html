@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Intake Snapshot | ASI Level 0 Resources</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --burgundy-primary: #722f37;
+            --burgundy-dark: #4e1f24;
+            --burgundy-deeper: #3a171b;
+            --gold-primary: #D4AF37;
+            --gold-light: #f7e7a0;
+            --gold-dark: #b8962e;
+            --text-primary: #2d2d2d;
+            --text-secondary: #555;
+            --bg-white: #fffefb;
+            --bg-cream: #fdf8f0;
+            --page-width: 210mm;
+            --page-height: 297mm;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background: #e8e8e8;
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-size: 11px;
+        }
+
+        .page {
+            display: block;
+            width: var(--page-width);
+            height: var(--page-height);
+            margin: 0 auto;
+            padding: 18mm;
+            background: var(--bg-white);
+            position: relative;
+            overflow: hidden;
+            page-break-after: always;
+        }
+
+        .modern-frame {
+            position: absolute;
+            top: 10mm;
+            left: 10mm;
+            right: 10mm;
+            bottom: 10mm;
+            border: 2px solid var(--gold-primary);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        .minimal-corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            z-index: 10;
+        }
+
+        .mc-tl {
+            top: 6mm;
+            left: 6mm;
+        }
+
+        .mc-tr {
+            top: 6mm;
+            right: 6mm;
+            transform: rotate(90deg);
+        }
+
+        .mc-bl {
+            bottom: 6mm;
+            left: 6mm;
+            transform: rotate(-90deg);
+        }
+
+        .mc-br {
+            bottom: 6mm;
+            right: 6mm;
+            transform: rotate(180deg);
+        }
+
+        .running-header {
+            position: absolute;
+            top: 14mm;
+            left: 24mm;
+            right: 24mm;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-size: 8px;
+            color: var(--text-secondary);
+        }
+
+        .running-footer {
+            position: absolute;
+            bottom: 13mm;
+            left: 24mm;
+            right: 24mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 7px;
+            color: var(--text-secondary);
+        }
+
+        .footer-logo {
+            height: 14px;
+            margin-right: 6px;
+            opacity: 0.7;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 13mm;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Playfair Display', serif;
+            font-size: 11px;
+            color: var(--gold-primary);
+        }
+
+        .body-content {
+            position: relative;
+            z-index: 1;
+            padding-top: 10mm;
+        }
+
+        /* Header Bar */
+        .header-bar {
+            background: linear-gradient(135deg, var(--burgundy-deeper), var(--burgundy-primary));
+            padding: 12px 18px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .header-bar h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: white;
+        }
+
+        .header-bar .subtitle {
+            font-size: 9px;
+            color: var(--gold-light);
+            font-style: italic;
+        }
+
+        .resource-badge {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            color: var(--burgundy-deeper);
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Content Styles */
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            color: var(--burgundy-primary);
+            margin: 12px 0 8px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--gold-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, var(--burgundy-primary), var(--burgundy-dark));
+            color: var(--gold-primary);
+            border-radius: 50%;
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .client-info {
+            background: var(--bg-cream);
+            border: 1px solid var(--gold-light);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .info-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 8px;
+            color: var(--burgundy-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .info-line {
+            border-bottom: 1px solid var(--burgundy-primary);
+            height: 18px;
+        }
+
+        .question {
+            font-weight: 600;
+            color: var(--burgundy-dark);
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .checkbox-list {
+            list-style: none;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            margin: 4px 0;
+            font-size: 10px;
+        }
+
+        .checkbox {
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid var(--gold-primary);
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .scale-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 6px;
+            margin: 8px 0;
+        }
+
+        .scale-label {
+            font-size: 9px;
+            color: #666;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .scale-circles {
+            display: flex;
+            gap: 6px;
+        }
+
+        .scale-circle {
+            width: 26px;
+            height: 26px;
+            border: 1.5px solid var(--gold-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--burgundy-primary);
+            background: white;
+        }
+
+        .notes-box {
+            border: 1.5px dashed var(--gold-primary);
+            border-radius: 6px;
+            padding: 12px;
+            min-height: 50px;
+            background: #fdfbf7;
+        }
+
+        .notes-box p {
+            font-size: 9px;
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .important-note {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 3px solid #0ea5e9;
+            padding: 10px 14px;
+            margin: 12px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 9px;
+        }
+
+        .important-note strong {
+            color: #0369a1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- PAGE 1 -->
+    <div class="page">
+        <div class="modern-frame"></div>
+        <div class="minimal-corner mc-tl"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-tr"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-bl"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="minimal-corner mc-br"><svg viewBox="0 0 60 60" fill="none">
+                <path d="M5,45 L5,5 L45,5" stroke="#D4AF37" stroke-width="3" />
+                <circle cx="5" cy="5" r="3" fill="#D4AF37" />
+            </svg></div>
+        <div class="running-header"><span style="font-style:italic">ASI Level 0 Resource</span><span
+                style="color:var(--burgundy-primary);font-weight:500">Client Intake Snapshot</span></div>
+
+        <div class="body-content">
+            <div class="header-bar">
+                <div>
+                    <h1>Client Intake Snapshot</h1>
+                    <p class="subtitle">Foundations-Level Understanding • Not a Clinical Assessment</p>
+                </div>
+                <span class="resource-badge">CLIENT RESOURCE</span>
+            </div>
+
+            <div class="client-info">
+                <div class="info-field"><span class="info-label">Name (optional)</span>
+                    <div class="info-line"></div>
+                </div>
+                <div class="info-field"><span class="info-label">Date</span>
+                    <div class="info-line"></div>
+                </div>
+            </div>
+
+            <h2><span class="num">1</span> Where You Are Right Now</h2>
+
+            <p class="question">What feels hardest right now?</p>
+            <ul class="checkbox-list">
+                <li class="checkbox-item"><span class="checkbox"></span> Managing daily energy / fatigue</li>
+                <li class="checkbox-item"><span class="checkbox"></span> Emotional overwhelm or stress</li>
+                <li class="checkbox-item"><span class="checkbox"></span> Body symptoms I don't understand</li>
+                <li class="checkbox-item"><span class="checkbox"></span> Feeling stuck or unclear about next steps</li>
+                <li class="checkbox-item"><span class="checkbox"></span> Relationship or family challenges</li>
+                <li class="checkbox-item"><span class="checkbox"></span> Something else:
+                    ________________________________</li>
+            </ul>
+
+            <p class="question" style="margin-top:12px">What feels stable or supportive right now?</p>
+            <ul class="checkbox-list">
+                <li class="checkbox-item"><span class="checkbox"></span> I have a supportive person in my life</li>
+                <li class="checkbox-item"><span class="checkbox"></span> I have some routines that help me</li>
+                <li class="checkbox-item"><span class="checkbox"></span> I'm working with other professionals (doctor,
+                    therapist, etc.)</li>
+                <li class="checkbox-item"><span class="checkbox"></span> I have time/space for self-care</li>
+                <li class="checkbox-item"><span class="checkbox"></span> Nothing feels stable right now</li>
+            </ul>
+
+            <h2><span class="num">2</span> Support & Understanding</h2>
+
+            <p class="question">Current level of support you have:</p>
+            <div class="scale-container">
+                <span class="scale-label">Very little</span>
+                <div class="scale-circles">
+                    <span class="scale-circle">1</span>
+                    <span class="scale-circle">2</span>
+                    <span class="scale-circle">3</span>
+                    <span class="scale-circle">4</span>
+                    <span class="scale-circle">5</span>
+                </div>
+                <span class="scale-label">Well supported</span>
+            </div>
+
+            <p class="question">What feels confusing or overwhelming?</p>
+            <div class="notes-box">
+                <p>Write or share what comes up...</p>
+            </div>
+
+            <p class="question" style="margin-top:10px">What kind of support are you looking for?</p>
+            <ul class="checkbox-list">
+                <li class="checkbox-item"><span class="checkbox"></span> Information and education</li>
+                <li class="checkbox-item"><span class="checkbox"></span> Someone to listen and understand</li>
+                <li class="checkbox-item"><span class="checkbox"></span> Help organizing my thoughts</li>
+                <li class="checkbox-item"><span class="checkbox"></span> Guidance on next steps</li>
+                <li class="checkbox-item"><span class="checkbox"></span> I'm not sure yet</li>
+            </ul>
+
+            <h2><span class="num">3</span> Anything Else?</h2>
+            <p class="question">Is there anything else you'd like to share?</p>
+            <div class="notes-box" style="min-height:60px">
+                <p>This is a space for anything that feels important...</p>
+            </div>
+
+            <div class="important-note">
+                <strong>📋 Note:</strong> This snapshot is for educational support purposes only. It is not a clinical
+                assessment, diagnosis, or intake form for therapy or medical treatment. If you are experiencing a
+                crisis, please reach out to an appropriate licensed provider.
+            </div>
+        </div>
+        <div class="page-number">1</div>
+        <div class="running-footer"><img src="/ASI_LOGO-removebg-preview.png" alt="ASI" class="footer-logo"><span>© ASI
+                Standards Institute</span></div>
+    </div>
+
+</body>
+
+</html>

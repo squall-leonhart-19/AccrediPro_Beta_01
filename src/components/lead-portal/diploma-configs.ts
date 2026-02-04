@@ -8,6 +8,8 @@ const ASI_LEVEL_0_RESOURCES = [
         title: "Professional Scope & Boundaries",
         description: "Understanding your role as a Level 0 practitioner",
         url: "/documents/asi/core/scope-and-boundaries-level-0.html",
+        pdfDownloadId: "scope-and-boundaries",
+        pdfFilename: "Professional-Scope-Boundaries.pdf",
         type: "core" as const,
         icon: "Compass" as const,
     },
@@ -16,6 +18,8 @@ const ASI_LEVEL_0_RESOURCES = [
         title: "Level 0 Practice Toolkit",
         description: "Essential templates and worksheets for your practice",
         url: "/documents/asi/core/practice-toolkit-level-0.html",
+        pdfDownloadId: "practice-toolkit",
+        pdfFilename: "Level-0-Practice-Toolkit.pdf",
         type: "core" as const,
         icon: "FileText" as const,
     },
@@ -24,6 +28,8 @@ const ASI_LEVEL_0_RESOURCES = [
         title: "ASI Certification Pathways Guide",
         description: "Your roadmap from Level 0 to full certification",
         url: "/documents/asi/core/pathways-progression-guide.html",
+        pdfDownloadId: "pathways-guide",
+        pdfFilename: "ASI-Certification-Pathways-Guide.pdf",
         type: "core" as const,
         icon: "Map" as const,
     },
@@ -33,6 +39,8 @@ const ASI_LEVEL_0_RESOURCES = [
         title: "Client Intake Snapshot",
         description: "First session essential information gathering",
         url: "/documents/asi/client-resources/client-intake-snapshot.html",
+        pdfDownloadId: "client-intake",
+        pdfFilename: "Client-Intake-Snapshot.pdf",
         type: "client" as const,
         icon: "Users" as const,
     },
@@ -41,6 +49,8 @@ const ASI_LEVEL_0_RESOURCES = [
         title: "Client Clarity Map",
         description: "Visual tool to understand what the client is experiencing",
         url: "/documents/asi/client-resources/client-clarity-map.html",
+        pdfDownloadId: "clarity-map",
+        pdfFilename: "Client-Clarity-Map.pdf",
         type: "client" as const,
         icon: "Target" as const,
     },
@@ -49,6 +59,8 @@ const ASI_LEVEL_0_RESOURCES = [
         title: "Support Circle Builder",
         description: "Map out the client's existing support network",
         url: "/documents/asi/client-resources/support-circle-builder.html",
+        pdfDownloadId: "support-circle",
+        pdfFilename: "Support-Circle-Builder.pdf",
         type: "client" as const,
         icon: "Heart" as const,
     },
@@ -57,6 +69,8 @@ const ASI_LEVEL_0_RESOURCES = [
         title: "Goals Translation Sheet",
         description: "Convert vague goals into workable focus areas",
         url: "/documents/asi/client-resources/goals-translation-sheet.html",
+        pdfDownloadId: "goals-translation",
+        pdfFilename: "Goals-Translation-Sheet.pdf",
         type: "client" as const,
         icon: "Lightbulb" as const,
     },
@@ -65,6 +79,8 @@ const ASI_LEVEL_0_RESOURCES = [
         title: "Readiness for Support Check",
         description: "Assess if the client is ready to engage with support",
         url: "/documents/asi/client-resources/readiness-for-support-check.html",
+        pdfDownloadId: "readiness-check",
+        pdfFilename: "Readiness-for-Support-Check.pdf",
         type: "client" as const,
         icon: "CheckCircle" as const,
     },
@@ -73,6 +89,8 @@ const ASI_LEVEL_0_RESOURCES = [
         title: "Between-Sessions Reflection Card",
         description: "Simple card for client reflection between sessions",
         url: "/documents/asi/client-resources/between-sessions-reflection.html",
+        pdfDownloadId: "reflection-card",
+        pdfFilename: "Between-Sessions-Reflection-Card.pdf",
         type: "client" as const,
         icon: "MessageSquare" as const,
     },
@@ -83,6 +101,45 @@ export { ASI_LEVEL_0_RESOURCES };
 
 // Export resource type for type safety
 export type ASIResource = typeof ASI_LEVEL_0_RESOURCES[number];
+
+// Interactive Tools - unlock at specific modules
+const INTERACTIVE_TOOLS = [
+    {
+        id: "income-calculator",
+        title: "Income Calculator",
+        description: "See your earning potential as a certified practitioner",
+        url: "income-calculator", // relative to /portal/[slug]/tools/
+        type: "tool" as const,
+        icon: "Calculator" as const,
+    },
+    {
+        id: "niche-scorecard",
+        title: "Niche Scorecard",
+        description: "Discover your perfect specialty with this quick quiz",
+        url: "niche-scorecard",
+        type: "tool" as const,
+        icon: "Target" as const,
+    },
+];
+
+export { INTERACTIVE_TOOLS };
+export type InteractiveTool = typeof INTERACTIVE_TOOLS[number];
+
+/**
+ * Get interactive tools unlocked for a specific module
+ * Module 1 (after L3): Income Calculator + Niche Scorecard
+ */
+export function getToolsForModule(moduleNum: 1 | 2 | 3): InteractiveTool[] {
+    switch (moduleNum) {
+        case 1:
+            // Both tools unlock after Module 1
+            return [INTERACTIVE_TOOLS[0], INTERACTIVE_TOOLS[1]];
+        case 2:
+        case 3:
+            // No new tools for modules 2 and 3
+            return [];
+    }
+}
 
 /**
  * Get resources unlocked for a specific module
@@ -113,6 +170,7 @@ export function getResourcesForModule(moduleNum: 1 | 2 | 3): ASIResource[] {
     }
 }
 
+
 /**
  * Get total unlocked resources after completing a module
  */
@@ -128,6 +186,7 @@ export function getTotalUnlockedAfterModule(moduleNum: 1 | 2 | 3): number {
 export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
     "functional-medicine-diploma": {
         slug: "functional-medicine-diploma",
+        portalSlug: "functional-medicine",
         name: "Functional Medicine Certification",
         shortName: "Functional Medicine",
         coachName: "Sarah",

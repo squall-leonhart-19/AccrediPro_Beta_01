@@ -41,6 +41,33 @@ export function Lesson7Protocols({
             content: `This is where "I learned some stuff" becomes "I get people RESULTS." This is where your $200+/session income begins.`,
         },
 
+        // PROTOCOL NICHE SPOTLIGHT
+        {
+            id: 4,
+            type: 'system',
+            content: `**📊 NICHE SPOTLIGHT: Protocol-Based Practitioners**
+
+**The Shift:**
+- Wellness coaches: $50-75/session (commodity)
+- Protocol practitioners: $1,500-2,500 per program (specialist)
+
+**What Practitioners Earn:**
+- Average: $6,200 - $10,000/month
+- 90-day protocols: $1,500-2,500 each
+- 5-6 active clients = full practice
+- Plus maintenance clients: $150-200/month each
+
+**Why Protocol-Based Wins:**
+- Client COMMITS upfront (paid in full or payment plan)
+- Predictable monthly income
+- BETTER results (they're invested)
+- Natural upsell to maintenance
+- Higher perceived value
+
+"When I switched from per-session to protocols, my income doubled and my results improved." - Sandra, 45`,
+            systemStyle: 'income-hook',
+        },
+
         // OBJECTION CRUSHER: "Am I qualified to create protocols?"
         {
             id: 4,
@@ -75,7 +102,7 @@ A graduate told us: "I felt like a fraud creating my first protocol. Then my cli
 
         // TESTIMONIAL - Protocol Focus
         {
-            id: 6,
+            id: 7,
             type: 'system',
             content: `**Meet Sandra, 45 - Former Project Manager**
 
@@ -92,14 +119,14 @@ Here's what it looks like:
 - Week 9-12: Optimize phase (fine-tune)
 
 My numbers:
-- Protocol package: $1,800 for 90 days
-- Currently running 4 clients at a time
-- Monthly income: $2,400 (from protocols alone)
-- Plus ongoing maintenance clients: $1,200/month
+- Protocol package: $2,200 for 90 days
+- Currently running 5 clients at a time
+- Monthly income: $3,600 (from protocols alone)
+- Plus ongoing maintenance clients: $1,800/month
 
-The framework made everything click. Now I can help anyone."
+Total: $5,400/month. The framework made everything click. Now I can help anyone."
 
-- Sandra B., Oregon | ASI Graduate 2023`,
+- Sandra B., Oregon | $5,400/month | 16 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -333,7 +360,7 @@ Why protocols are your key to sustainable income:
 
         // SECOND TESTIMONIAL
         {
-            id: 18,
+            id: 19,
             type: 'system',
             content: `**Meet Valerie, 52 - Former Social Worker**
 
@@ -347,16 +374,16 @@ My specialty: Women in high-stress caregiving roles (nurses, teachers, moms cari
 
 My signature program:
 - 'Caregiver Recovery Protocol' - 12 weeks
-- $1,800 per client
-- Currently have 5 active clients
-- Monthly income: $3,000 from protocols
-- Plus 3 maintenance clients: $450/month
+- $2,200 per client
+- Currently have 6 active clients
+- Monthly income: $4,400 from protocols
+- Plus 5 maintenance clients: $750/month
 
-Total: $3,450/month working about 15 hours/week.
+Total: $5,150/month working about 16 hours/week.
 
 At 52, I started a new career. My social work skills were MORE valuable than I knew."
 
-- Valerie D., Pennsylvania | ASI Graduate 2024`,
+- Valerie D., Pennsylvania | $5,150/month | 16 hrs/week`,
             systemStyle: 'testimonial',
         },
 
@@ -406,19 +433,31 @@ Less is more. Focus on what moves the needle. Save the advanced stuff for Phase 
             ),
         },
 
-        // PREVIEW
+        // GAP BUILDER
         {
-            id: 22,
+            id: 23,
             type: 'coach',
             content: `Phenomenal work, {name}! You just built a real protocol for a real client scenario. This is EXACTLY what you'll do as a certified practitioner.`,
         },
         {
-            id: 23,
+            id: 24,
             type: 'coach',
-            content: `Only 2 lessons left! Next up: FINDING YOUR FIRST CLIENTS. I'm going to give you concrete strategies to get paying clients - even before you're certified.`,
+            content: `But here's the thing - I've shown you the template. Full practitioners learn advanced protocol customization, supplement sequencing, re-testing strategies, and how to handle complex multi-system cases...`,
         },
         {
-            id: 24,
+            id: 25,
+            type: 'coach',
+            content: `Protocol-based practitioners are the ones earning $6K-10K/month. Because they deliver TRANSFORMATION, not just information.`,
+        },
+
+        // BRIDGE TO LESSON 8
+        {
+            id: 26,
+            type: 'coach',
+            content: `Now here's the exciting part - you have the knowledge and the protocol framework. But how do you actually GET clients? That's what's next...`,
+        },
+        {
+            id: 27,
             type: 'system',
             content: `**Coming Up: Finding Your First Clients**
 
@@ -427,7 +466,10 @@ Less is more. Focus on what moves the needle. Save the advanced stuff for Phase 
 - How to overcome "but I'm just starting out"
 - The conversation that converts
 
-This is where theory becomes practice. See you there!`,
+**Client Acquisition:** THE KEY SKILL
+**What Separates:** $0/month from $5K+/month practitioners
+
+This is where theory becomes practice. Ready to find your first clients?`,
             systemStyle: 'info',
         },
     ];

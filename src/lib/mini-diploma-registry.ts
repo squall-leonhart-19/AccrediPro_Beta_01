@@ -44,6 +44,9 @@ export interface MiniDiplomaConfig {
     nudgePrefix: string; // e.g. "wh-nudge" or "lead-nudge"
     nurturePrefix: string; // e.g. "wh-nurture" or "nurture"
     completionTag: string; // e.g. "wh-mini-diploma:completed"
+    // Post-exam flow options
+    postExamFlow?: "scholarship" | "trustpilot"; // default: "scholarship"
+    trustpilotUrl?: string; // default: https://www.trustpilot.com/review/accredipro.academy
 }
 
 // Standard 9-lesson curriculum template - most diplomas follow this pattern
@@ -325,7 +328,7 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         name: "Spiritual Healing",
         slug: "spiritual-healing-mini-diploma",
         portalSlug: "spiritual-healing",
-        displayName: "Certified Spiritual Healing Specialist",
+        displayName: "Spiritual Healing",
         lessons: SPIRITUAL_HEALING_LESSONS,
         checkoutUrl: DEFAULT_CHECKOUT_URL,
         examCategory: "spiritual-healing",
@@ -334,7 +337,9 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         dmSequence: HEALTH_COACH_DMS, // DMs still use health coach fallback
         nudgePrefix: "spiritual-healing-nudge",
         nurturePrefix: "spiritual-healing-nurture",
-        completionTag: "spiritual-healing-mini-diploma:completed"
+        completionTag: "spiritual-healing-mini-diploma:completed",
+        postExamFlow: "trustpilot",
+        trustpilotUrl: "https://www.trustpilot.com/review/accredipro.academy"
     },
 
     "energy-healing-mini-diploma": {
@@ -425,6 +430,10 @@ export function getConfigByPortalSlug(portalSlug: string): MiniDiplomaConfig | u
     return Object.values(MINI_DIPLOMA_REGISTRY).find(c => c.portalSlug === portalSlug);
 }
 
+// Helper to get config by exam category
+export function getConfigByExamCategory(examCategory: string): MiniDiplomaConfig | undefined {
+    return Object.values(MINI_DIPLOMA_REGISTRY).find(c => c.examCategory === examCategory);
+}
+
 // Helper to get all portal slugs
 export const ALL_PORTAL_SLUGS = Object.values(MINI_DIPLOMA_REGISTRY).map(c => c.portalSlug);
-

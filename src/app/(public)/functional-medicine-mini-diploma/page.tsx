@@ -17,7 +17,7 @@ import { PIXEL_CONFIG } from "@/components/tracking/meta-pixel";
 import { useMetaTracking } from "@/hooks/useMetaTracking";
 import MetaPixel from "@/components/tracking/meta-pixel";
 import { FloatingChatWidget } from "@/components/lead-portal/floating-chat-widget";
-import { TypeformQualificationForm, TypeformQualificationData } from "@/components/lead-portal/typeform-qualification-form";
+import { SarahApplicationForm, SarahApplicationData } from "@/components/lead-portal/sarah-application-form";
 import { CertificatePreview } from "@/components/certificates/certificate-preview";
 
 // Same default password as backend
@@ -42,6 +42,7 @@ function HealthcareWorkersMiniDiplomaContent() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+    const [acceptedFirstName, setAcceptedFirstName] = useState<string>("");
     const { trackViewContent, trackLead } = useMetaTracking();
 
     // Countdown timer - 48 hours from now
@@ -66,7 +67,7 @@ function HealthcareWorkersMiniDiplomaContent() {
         );
     }, [trackViewContent]);
 
-    const handleSubmit = async (formData: TypeformQualificationData) => {
+    const handleSubmit = async (formData: SarahApplicationData) => {
         setIsVerifying(true);
 
         try {
@@ -88,13 +89,14 @@ function HealthcareWorkersMiniDiplomaContent() {
 
             // Calculate lead quality score based on answers
             let leadScore = 0;
-            if (formData.background.includes("nurse")) leadScore += 30;
-            else if (formData.background.includes("healthcare")) leadScore += 25;
-            else if (formData.background.includes("wellness")) leadScore += 20;
-            if (formData.timing === "ready-now") leadScore += 25;
-            else if (formData.timing === "soon") leadScore += 15;
-            if (formData.timeAvailability === "more-time" || formData.timeAvailability === "5-10-hours") leadScore += 15;
-            if (formData.dreamOutcome.length > 100) leadScore += 10;
+            if (formData.background === "healthcare") leadScore += 30;
+            else if (formData.background === "wellness") leadScore += 25;
+            else if (formData.background === "educator") leadScore += 20;
+            if (formData.readiness === "ready") leadScore += 25;
+            else if (formData.readiness === "need-time") leadScore += 15;
+            if (formData.timeAvailable === "priority" || formData.timeAvailable === "part-time") leadScore += 15;
+            if (formData.investmentRange === "5k-plus") leadScore += 20;
+            else if (formData.investmentRange === "3k-5k") leadScore += 15;
 
             const response = await fetch("/api/mini-diploma/optin", {
                 method: "POST",
@@ -104,21 +106,19 @@ function HealthcareWorkersMiniDiplomaContent() {
                     lastName: formData.lastName,
                     email: formData.email,
                     phone: formData.phone,
-                    // Qualification data
-                    background: formData.background.join(", "),
+                    // Qualification data (8-question form)
+                    background: formData.background,
                     motivation: formData.motivation,
-                    healthJourney: formData.healthJourney,
-                    previousAttempts: formData.previousAttempts.join(", "),
-                    holdingBack: formData.holdingBack.join(", "),
-                    timeCommitment: formData.timeAvailability,
-                    dreamOutcome: formData.dreamOutcome,
-                    programNeeds: formData.programNeeds.join(", "),
-                    decisionStyle: formData.decisionStyle,
-                    readiness: formData.timing,
+                    workCost: formData.workCost,
+                    holdingBack: formData.holdingBack,
+                    successGoal: formData.successGoal,
+                    timeCommitment: formData.timeAvailable,
+                    investmentRange: formData.investmentRange,
+                    readiness: formData.readiness,
                     leadScore: leadScore,
                     course: "fm-healthcare",
                     segment: "healthcare-workers",
-                    formVariant: searchParams.get("v") || "A", // A/B testing variant
+                    formVariant: searchParams.get("v") || "B", // A=16q, B=8q
                 }),
             });
 
@@ -144,15 +144,16 @@ function HealthcareWorkersMiniDiplomaContent() {
                     properties: {
                         background: formData.background,
                         motivation: formData.motivation,
-                        health_journey: formData.healthJourney,
-                        time_availability: formData.timeAvailability,
-                        timing: formData.timing,
+                        work_cost: formData.workCost,
+                        time_available: formData.timeAvailable,
+                        investment_range: formData.investmentRange,
+                        readiness: formData.readiness,
                         lead_score: leadScore,
-                        dream_length: formData.dreamOutcome.length,
                         utm_source: searchParams.get("utm_source"),
                         utm_medium: searchParams.get("utm_medium"),
                         utm_campaign: searchParams.get("utm_campaign"),
                         segment: "healthcare-workers",
+                        form_variant: "B", // 8-question form
                         device: typeof window !== "undefined" && window.innerWidth < 768 ? "mobile" : "desktop"
                     }
                 })
@@ -164,6 +165,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                 email: formData.email.toLowerCase().trim(),
             }));
 
+            // Sign in the user
             await signIn("credentials", {
                 email: formData.email.toLowerCase(),
                 password: LEAD_PASSWORD,
@@ -171,7 +173,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                 callbackUrl: "/portal/functional-medicine",
             });
 
-            // Redirect to qualification interstitial with name for personalization
+            // Redirect to portal (which shows reviewing/accepted animation)
             window.location.href = `/portal/functional-medicine?name=${encodeURIComponent(formData.firstName.trim())}`;
 
         } catch (err: any) {
@@ -811,8 +813,11 @@ function HealthcareWorkersMiniDiplomaContent() {
                         </p>
                     </div>
 
-                    <TypeformQualificationForm
+                    <SarahApplicationForm
                         onSubmit={handleSubmit}
+                        onAccepted={() => {
+                            window.location.href = `/portal/functional-medicine?name=${encodeURIComponent(acceptedFirstName)}`;
+                        }}
                         isSubmitting={isSubmitting}
                         isVerifying={isVerifying}
                     />
@@ -858,7 +863,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                             className="h-14 px-10 text-lg font-bold text-white"
                             style={{ background: BRAND.burgundyMetallic }}
                         >
-                            Claim Your Free Diploma
+                            See If You Qualify
                             <ArrowRight className="ml-2 w-5 h-5" />
                         </Button>
                     </div>
@@ -896,12 +901,11 @@ function HealthcareWorkersMiniDiplomaContent() {
                                 <p className="text-sm font-bold text-gray-900 text-center">AccrediPro<br />Standards Institute</p>
                             </div>
                             <div>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                <div className="grid grid-cols-3 gap-4 mb-6">
                                     {[
                                         { num: "4,247+", label: "Certified Practitioners" },
                                         { num: "42", label: "Countries" },
-                                        { num: "4.9/5", label: "Student Rating" },
-                                        { num: "2019", label: "Established" }
+                                        { num: "4.9/5", label: "Student Rating" }
                                     ].map((stat, i) => (
                                         <div key={i} className="text-center">
                                             <p className="text-2xl font-black" style={{ color: BRAND.burgundy }}>{stat.num}</p>

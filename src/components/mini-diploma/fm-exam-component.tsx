@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Loader2, Award, ArrowRight, ArrowLeft, Heart, Volume2, VolumeX, AlertTriangle, RefreshCw, GraduationCap, FileText, User, Clock, Hash } from "lucide-react";
+import { CheckCircle2, Loader2, Award, ArrowRight, ArrowLeft, Heart, Volume2, VolumeX, AlertTriangle, RefreshCw, GraduationCap, FileText, User, Clock, Hash, BookOpen } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -207,43 +207,84 @@ export function FMExamComponent({
         }
     };
 
-    // Premium Gold Gradient for exam styling
+    // Premium color palette matching ASI ebook design
     const goldGradient = "linear-gradient(135deg, #D4AF37 0%, #F7E7A0 25%, #D4AF37 50%, #B8860B 75%, #D4AF37 100%)";
+    const burgundyGradient = "linear-gradient(180deg, #722F37 0%, #5C1F2A 100%)";
 
-    // Professional Exam Header Component - PREMIUM GOLD DESIGN
-    const ExamHeader = ({ showLogo = true }: { showLogo?: boolean }) => (
+    // Professional Exam Header Component - PREMIUM ASI INSTITUTIONAL DESIGN
+    const ExamHeader = ({ showLogo = true, variant = "default" }: { showLogo?: boolean; variant?: "default" | "success" }) => (
         <div className="relative overflow-hidden">
-            {/* Gold metallic gradient header */}
+            {/* Decorative corner flourishes */}
+            <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-amber-400/40 rounded-tl-lg pointer-events-none" />
+            <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-amber-400/40 rounded-tr-lg pointer-events-none" />
+
+            {/* Main header with gold gradient */}
             <div
-                className="px-6 py-4"
-                style={{ background: goldGradient }}
+                className="px-6 py-5 relative"
+                style={{ background: variant === "success" ? goldGradient : burgundyGradient }}
             >
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                {/* Subtle radial glow overlay */}
+                <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse at top, rgba(212, 175, 55, 0.15) 0%, transparent 60%)' }}
+                />
+
+                <div className="flex items-center justify-between relative z-10">
+                    <div className="flex items-center gap-4">
                         {showLogo && (
-                            <div className="w-12 h-12 bg-burgundy-900 rounded-xl flex items-center justify-center shadow-lg border-2 border-amber-300">
-                                <GraduationCap className="w-7 h-7 text-amber-300" />
+                            <div className="relative">
+                                {/* Official seal design */}
+                                <div
+                                    className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
+                                    style={{
+                                        background: variant === "success" ? burgundyGradient : goldGradient,
+                                        border: '3px solid rgba(212, 175, 55, 0.6)'
+                                    }}
+                                >
+                                    <GraduationCap className={`w-7 h-7 ${variant === "success" ? "text-amber-300" : "text-burgundy-900"}`} />
+                                </div>
+                                {/* Seal ring */}
+                                <div className="absolute -inset-1 rounded-full border border-amber-400/30 pointer-events-none" />
                             </div>
                         )}
                         <div>
-                            <h1 className="font-bold text-xl text-burgundy-900 drop-shadow-sm">ASI Board Examination</h1>
-                            <p className="text-burgundy-800 text-sm font-medium">Functional Medicine Mini Diploma</p>
+                            <p className={`text-xs font-semibold tracking-widest uppercase mb-1 ${variant === "success" ? "text-burgundy-700" : "text-amber-300/90"}`}>
+                                ASI Standards Institute
+                            </p>
+                            <h1 className={`font-bold text-xl tracking-tight ${variant === "success" ? "text-burgundy-900" : "text-white"}`}>
+                                {variant === "success" ? "Examination Complete" : "Board Examination"}
+                            </h1>
+                            <p className={`text-sm font-medium ${variant === "success" ? "text-burgundy-700" : "text-amber-100/80"}`}>
+                                Level 0 — Foundations Assessment
+                            </p>
                         </div>
                     </div>
-                    <div className="text-right">
-                        <div className="bg-burgundy-900/90 rounded-lg px-3 py-2 text-xs space-y-1">
-                            <div className="flex items-center gap-1.5 text-amber-100">
-                                <FileText className="w-3 h-3" />
-                                <span>Exam: <span className="text-white font-mono font-bold">{examId}</span></span>
-                            </div>
-                            <div className="flex items-center gap-1.5 text-amber-100">
-                                <User className="w-3 h-3" />
-                                <span>Student: <span className="text-white font-mono font-bold">{studentId}</span></span>
-                            </div>
+
+                    {/* Exam credentials box */}
+                    <div
+                        className="rounded-lg px-4 py-2.5 text-xs space-y-1.5 shadow-inner"
+                        style={{
+                            background: variant === "success" ? 'rgba(92, 31, 42, 0.9)' : 'rgba(0,0,0,0.25)',
+                            border: '1px solid rgba(212, 175, 55, 0.3)'
+                        }}
+                    >
+                        <div className="flex items-center gap-2 text-amber-200">
+                            <FileText className="w-3.5 h-3.5" />
+                            <span>Exam: <span className="text-white font-mono font-bold tracking-wide">{examId}</span></span>
+                        </div>
+                        <div className="flex items-center gap-2 text-amber-200">
+                            <User className="w-3.5 h-3.5" />
+                            <span>Student: <span className="text-white font-mono font-bold tracking-wide">{studentId}</span></span>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Bottom gold accent line */}
+            <div
+                className="h-1"
+                style={{ background: goldGradient }}
+            />
         </div>
     );
 
@@ -281,13 +322,24 @@ export function FMExamComponent({
         );
     }
 
-    // Intro Screen with Sarah's personal touch
+    // Intro Screen with Sarah's personal touch - PREMIUM DESIGN
     if (examState === "intro") {
         return (
-            <div className="rounded-2xl overflow-hidden border-2 border-burgundy-200 shadow-xl">
+            <div
+                className="rounded-2xl overflow-hidden shadow-2xl relative"
+                style={{
+                    border: '3px solid #D4AF37',
+                    boxShadow: '0 25px 50px -12px rgba(114, 47, 55, 0.25), 0 0 0 1px rgba(212, 175, 55, 0.3)'
+                }}
+            >
                 <ExamHeader />
 
-                <div className="bg-gradient-to-br from-burgundy-50 to-gold-50 p-6 md:p-8">
+                <div className="bg-gradient-to-br from-burgundy-50 via-white to-amber-50 p-6 md:p-8 relative">
+                    {/* Subtle pattern overlay */}
+                    <div
+                        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                        style={{ backgroundImage: 'radial-gradient(circle at 25px 25px, #722F37 2px, transparent 0)', backgroundSize: '50px 50px' }}
+                    />
                     {/* Sarah's Personal Message */}
                     <div className="flex items-start gap-4 mb-6 bg-white rounded-xl p-5 border border-burgundy-100 shadow-sm">
                         <Image
@@ -429,34 +481,43 @@ export function FMExamComponent({
         );
     }
 
-    // Results Screen - Always scholarship qualified!
+    // Results Screen - Always scholarship qualified - PREMIUM ASI DESIGN
     if (examState === "results" && results) {
         const elapsedMinutes = Math.floor((new Date().getTime() - startTime.getTime()) / 60000);
 
         return (
-            <div className="rounded-2xl overflow-hidden border-2 border-gold-400 shadow-xl">
-                {/* Success Header */}
-                <div className="bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 text-burgundy-900 px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-                                <Award className="w-6 h-6 text-gold-600" />
-                            </div>
-                            <div>
-                                <h1 className="font-bold text-lg">EXAMINATION PASSED</h1>
-                                <p className="text-burgundy-700 text-xs">Masterclass Unlocked!</p>
-                            </div>
+            <div
+                className="rounded-2xl overflow-hidden shadow-2xl relative"
+                style={{
+                    border: '3px solid #D4AF37',
+                    boxShadow: '0 25px 50px -12px rgba(212, 175, 55, 0.35), 0 0 0 1px rgba(212, 175, 55, 0.3)'
+                }}
+            >
+                {/* Decorative corner flourishes */}
+                <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-amber-300/60 rounded-tl-lg pointer-events-none z-20" />
+                <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-amber-300/60 rounded-tr-lg pointer-events-none z-20" />
+
+                {/* Success Header - Premium Gold */}
+                <ExamHeader variant="success" />
+
+                {/* Celebration Banner */}
+                <div
+                    className="px-6 py-4 text-center relative overflow-hidden"
+                    style={{ background: burgundyGradient }}
+                >
+                    {/* Confetti effect */}
+                    <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
+                        backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'25\' cy=\'15\' r=\'3\' fill=\'%23D4AF37\'/%3E%3Ccircle cx=\'75\' cy=\'35\' r=\'2\' fill=\'%23F7E7A0\'/%3E%3Ccircle cx=\'50\' cy=\'80\' r=\'2.5\' fill=\'%23D4AF37\'/%3E%3Ccircle cx=\'15\' cy=\'60\' r=\'2\' fill=\'%23F7E7A0\'/%3E%3Ccircle cx=\'85\' cy=\'70\' r=\'3\' fill=\'%23D4AF37\'/%3E%3C/svg%3E")',
+                        backgroundSize: '100px 100px'
+                    }} />
+
+                    <div className="relative z-10">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-2" style={{ background: goldGradient, color: '#4E1F24' }}>
+                            <Award className="w-4 h-4" />
+                            LEVEL 0 — FOUNDATIONS COMPLETE
                         </div>
-                        <div className="text-right text-xs">
-                            <div className="flex items-center gap-1 text-burgundy-700">
-                                <FileText className="w-3 h-3" />
-                                <span>Exam: <span className="font-mono">{examId}</span></span>
-                            </div>
-                            <div className="flex items-center gap-1 text-burgundy-700 mt-1">
-                                <User className="w-3 h-3" />
-                                <span>Student: <span className="font-mono">{studentId}</span></span>
-                            </div>
-                        </div>
+                        <h2 className="text-2xl font-bold text-white tracking-tight">Congratulations, {firstName}!</h2>
+                        <p className="text-amber-200 text-sm mt-1">You've successfully completed your foundation assessment</p>
                     </div>
                 </div>
 
@@ -576,34 +637,81 @@ export function FMExamComponent({
         );
     }
 
-    // Taking Exam Screen - PREMIUM GOLD DESIGN
+    // Taking Exam Screen - PREMIUM ASI INSTITUTIONAL DESIGN
     return (
-        <div className="rounded-2xl overflow-hidden border-4 shadow-2xl" style={{ borderColor: '#D4AF37' }}>
+        <div
+            className="rounded-2xl overflow-hidden shadow-2xl relative"
+            style={{
+                border: '3px solid #D4AF37',
+                boxShadow: '0 25px 50px -12px rgba(114, 47, 55, 0.25), 0 0 0 1px rgba(212, 175, 55, 0.3)'
+            }}
+        >
+            {/* Decorative corner flourishes */}
+            <div className="absolute top-0 left-0 w-16 h-16 pointer-events-none z-20">
+                <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-amber-400/50 rounded-tl-lg" />
+            </div>
+            <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none z-20">
+                <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-amber-400/50 rounded-tr-lg" />
+            </div>
+
             <ExamHeader />
 
-            {/* Progress Section - Gold themed */}
-            <div className="px-5 py-4" style={{ background: 'linear-gradient(to right, #FDF6E3, #FFFBEB)' }}>
-                <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-bold text-burgundy-800">
-                        Question {currentQuestion + 1} of {totalQuestions}
-                    </span>
-                    <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: goldGradient, color: '#4E1F24' }}>
-                        {answeredCount}/{totalQuestions} answered
-                    </span>
-                </div>
-                <div className="w-full bg-amber-100 rounded-full h-3 overflow-hidden shadow-inner">
+            {/* Progress Section - Premium Gold themed */}
+            <div
+                className="px-6 py-5 relative"
+                style={{ background: 'linear-gradient(135deg, #FFFBEB 0%, #FDF6E3 50%, #FEF3C7 100%)' }}
+            >
+                {/* Subtle pattern overlay */}
+                <div
+                    className="absolute inset-0 opacity-5 pointer-events-none"
+                    style={{ backgroundImage: 'radial-gradient(circle at 25px 25px, #D4AF37 2px, transparent 0)', backgroundSize: '50px 50px' }}
+                />
+
+                <div className="flex items-center justify-between mb-4 relative z-10">
+                    <div className="flex items-center gap-3">
+                        <div
+                            className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm"
+                            style={{ background: burgundyGradient }}
+                        >
+                            <span className="text-amber-200 font-bold text-sm">{currentQuestion + 1}</span>
+                        </div>
+                        <span className="text-base font-semibold text-burgundy-800">
+                            Question {currentQuestion + 1} of {totalQuestions}
+                        </span>
+                    </div>
                     <div
-                        className="h-3 rounded-full transition-all duration-500"
-                        style={{
-                            width: `${((currentQuestion + 1) / totalQuestions) * 100}%`,
-                            background: goldGradient
-                        }}
-                    />
+                        className="px-4 py-1.5 rounded-full text-xs font-bold shadow-sm"
+                        style={{ background: goldGradient, color: '#4E1F24' }}
+                    >
+                        {answeredCount}/{totalQuestions} answered
+                    </div>
+                </div>
+
+                {/* Progress bar with enhanced styling */}
+                <div className="relative z-10">
+                    <div className="w-full bg-amber-100 rounded-full h-3 overflow-hidden shadow-inner border border-amber-200/50">
+                        <div
+                            className="h-3 rounded-full transition-all duration-500 relative"
+                            style={{
+                                width: `${((currentQuestion + 1) / totalQuestions) * 100}%`,
+                                background: goldGradient
+                            }}
+                        >
+                            {/* Shine effect */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent" />
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Question */}
-            <div className="bg-white p-6">
+            {/* Question Card - Enhanced Premium Styling */}
+            <div className="bg-white p-6 md:p-8 relative">
+                {/* Subtle background pattern */}
+                <div
+                    className="absolute inset-0 opacity-[0.02] pointer-events-none"
+                    style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23722F37\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}
+                />
+
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={question.id}
@@ -611,21 +719,28 @@ export function FMExamComponent({
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.2 }}
+                        className="relative z-10"
                     >
-                        {/* Question Number Badge */}
-                        <div className="flex items-center gap-2 mb-4">
-                            <span className="bg-burgundy-100 text-burgundy-700 text-xs font-semibold px-2 py-1 rounded">
-                                Q{currentQuestion + 1}
+                        {/* Question Number Badge - Enhanced */}
+                        <div className="flex items-center gap-3 mb-5">
+                            <span
+                                className="text-xs font-bold px-3 py-1.5 rounded-full shadow-sm"
+                                style={{ background: burgundyGradient, color: '#F7E7A0' }}
+                            >
+                                Question {currentQuestion + 1}
                             </span>
-                            <span className="text-xs text-gray-500">
-                                Lesson {question.lessonRef} Reference
+                            <span className="text-xs text-burgundy-500 font-medium flex items-center gap-1">
+                                <BookOpen className="w-3.5 h-3.5" />
+                                Based on Lesson {question.lessonRef}
                             </span>
                         </div>
 
-                        <h3 className="text-xl font-semibold text-gray-900 mb-6 leading-relaxed">
+                        {/* Question text with premium typography */}
+                        <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-8 leading-relaxed tracking-tight">
                             {question.question}
                         </h3>
 
+                        {/* Answer Options - Premium Cards */}
                         <div className="space-y-3">
                             {question.options.map((option) => {
                                 const isSelected = answers[question.id] === option.id;
@@ -634,26 +749,28 @@ export function FMExamComponent({
                                         key={option.id}
                                         onClick={() => handleAnswer(question.id, option.id)}
                                         className={cn(
-                                            "w-full text-left p-4 rounded-xl border-2 transition-all duration-200",
+                                            "w-full text-left p-4 md:p-5 rounded-xl border-2 transition-all duration-200 group",
                                             isSelected
-                                                ? "border-burgundy-500 bg-burgundy-50 text-burgundy-900 shadow-sm"
-                                                : "border-gray-200 hover:border-burgundy-200 hover:bg-gray-50"
+                                                ? "border-burgundy-500 bg-gradient-to-r from-burgundy-50 to-rose-50 text-burgundy-900 shadow-md"
+                                                : "border-gray-200 hover:border-burgundy-300 hover:bg-gray-50 hover:shadow-sm"
                                         )}
+                                        style={isSelected ? { boxShadow: '0 4px 14px -3px rgba(114, 47, 55, 0.25)' } : undefined}
                                     >
-                                        <span className="flex items-center gap-3">
+                                        <span className="flex items-center gap-4">
                                             <span
                                                 className={cn(
-                                                    "flex items-center justify-center w-9 h-9 rounded-full text-sm font-bold transition-all",
+                                                    "flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold transition-all flex-shrink-0",
                                                     isSelected
-                                                        ? "bg-burgundy-600 text-white shadow-sm"
-                                                        : "bg-gray-100 text-gray-600"
+                                                        ? "shadow-md"
+                                                        : "bg-gray-100 text-gray-600 group-hover:bg-burgundy-100 group-hover:text-burgundy-700"
                                                 )}
+                                                style={isSelected ? { background: burgundyGradient, color: '#F7E7A0' } : undefined}
                                             >
                                                 {option.id.toUpperCase()}
                                             </span>
-                                            <span className="flex-1">{option.text}</span>
+                                            <span className="flex-1 text-base">{option.text}</span>
                                             {isSelected && (
-                                                <CheckCircle2 className="w-5 h-5 text-burgundy-600 flex-shrink-0" />
+                                                <CheckCircle2 className="w-6 h-6 text-burgundy-600 flex-shrink-0" />
                                             )}
                                         </span>
                                     </button>
@@ -664,14 +781,21 @@ export function FMExamComponent({
                 </AnimatePresence>
             </div>
 
-            {/* Navigation - Premium Styling */}
-            <div className="px-6 py-5" style={{ background: 'linear-gradient(to right, #FDF6E3, #FFFBEB)' }}>
-                <div className="flex items-center justify-between">
+            {/* Navigation Footer - Premium ASI Styling */}
+            <div
+                className="px-6 py-6 relative"
+                style={{ background: 'linear-gradient(135deg, #FFFBEB 0%, #FDF6E3 50%, #FEF3C7 100%)' }}
+            >
+                {/* Decorative bottom flourishes */}
+                <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-amber-400/40 rounded-bl-lg pointer-events-none" />
+                <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-amber-400/40 rounded-br-lg pointer-events-none" />
+
+                <div className="flex items-center justify-between relative z-10">
                     <Button
                         variant="outline"
                         onClick={handlePrevious}
                         disabled={currentQuestion === 0}
-                        className="flex items-center gap-2 border-2 border-burgundy-300 hover:bg-burgundy-50"
+                        className="flex items-center gap-2 border-2 border-burgundy-300 hover:bg-burgundy-50 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         Previous
@@ -687,7 +811,10 @@ export function FMExamComponent({
                                     ? "text-burgundy-900 shadow-lg hover:shadow-xl hover:scale-105"
                                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                             )}
-                            style={allAnswered ? { background: goldGradient } : undefined}
+                            style={allAnswered ? {
+                                background: goldGradient,
+                                boxShadow: '0 6px 20px -5px rgba(212, 175, 55, 0.5)'
+                            } : undefined}
                         >
                             Submit Exam
                             <CheckCircle2 className="w-5 h-5" />
@@ -695,43 +822,66 @@ export function FMExamComponent({
                     ) : (
                         <button
                             onClick={handleNext}
-                            className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-burgundy-900 shadow-md hover:shadow-lg hover:scale-105 transition-all"
-                            style={{ background: goldGradient }}
+                            className="flex items-center gap-2 px-7 py-3 rounded-xl font-bold text-sm text-burgundy-900 shadow-md hover:shadow-lg hover:scale-105 transition-all"
+                            style={{
+                                background: goldGradient,
+                                boxShadow: '0 4px 14px -3px rgba(212, 175, 55, 0.4)'
+                            }}
                         >
-                            Next
+                            Next Question
                             <ArrowRight className="w-4 h-4" />
                         </button>
                     )}
                 </div>
 
-                {/* Question Navigator - Gold accents */}
-                <div className="mt-5 flex flex-wrap gap-2 justify-center">
-                    {questions.map((q, idx) => (
-                        <button
-                            key={q.id}
-                            onClick={() => setCurrentQuestion(idx)}
-                            className={cn(
-                                "w-10 h-10 rounded-xl text-sm font-bold transition-all shadow-sm",
-                                answers[q.id] && currentQuestion !== idx
-                                    ? "ring-2 ring-amber-400"
-                                    : ""
-                            )}
-                            style={currentQuestion === idx
-                                ? { background: goldGradient, color: '#4E1F24' }
-                                : answers[q.id]
-                                    ? { background: '#FEF3C7', color: '#92400E' }
-                                    : { background: '#F3F4F6', color: '#6B7280' }
-                            }
-                        >
-                            {idx + 1}
-                        </button>
-                    ))}
+                {/* Question Navigator - Enhanced Gold Design */}
+                <div className="mt-6 relative z-10">
+                    <p className="text-xs text-burgundy-600 font-medium text-center mb-3">Quick Navigation</p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                        {questions.map((q, idx) => {
+                            const isAnswered = !!answers[q.id];
+                            const isCurrent = currentQuestion === idx;
+                            return (
+                                <button
+                                    key={q.id}
+                                    onClick={() => setCurrentQuestion(idx)}
+                                    className={cn(
+                                        "w-10 h-10 rounded-full text-sm font-bold transition-all relative",
+                                        isCurrent ? "shadow-md" : "shadow-sm hover:shadow-md hover:scale-105"
+                                    )}
+                                    style={isCurrent
+                                        ? { background: goldGradient, color: '#4E1F24' }
+                                        : isAnswered
+                                            ? { background: burgundyGradient, color: '#F7E7A0' }
+                                            : { background: 'white', color: '#6B7280', border: '2px solid #E5E7EB' }
+                                    }
+                                >
+                                    {idx + 1}
+                                    {isAnswered && !isCurrent && (
+                                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center shadow-sm">
+                                            <CheckCircle2 className="w-2.5 h-2.5 text-white" />
+                                        </div>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
 
-                {/* Exam Info Footer */}
-                <div className="mt-4 pt-3 border-t border-gray-200 flex items-center justify-between text-xs text-gray-500">
-                    <span className="font-mono">{examId}</span>
-                    <span>{allAnswered ? "✓ All questions answered" : `${totalQuestions - answeredCount} remaining`}</span>
+                {/* Exam Info Footer - Premium */}
+                <div className="mt-5 pt-4 border-t border-amber-200/50 flex items-center justify-between text-xs relative z-10">
+                    <div className="flex items-center gap-2 text-burgundy-600">
+                        <FileText className="w-3.5 h-3.5" />
+                        <span className="font-mono font-medium">{examId}</span>
+                    </div>
+                    <div className={cn(
+                        "px-3 py-1 rounded-full font-medium",
+                        allAnswered
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-amber-100 text-amber-700"
+                    )}>
+                        {allAnswered ? "✓ All questions answered" : `${totalQuestions - answeredCount} questions remaining`}
+                    </div>
                 </div>
             </div>
         </div>
