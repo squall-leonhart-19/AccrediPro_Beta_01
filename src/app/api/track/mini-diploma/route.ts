@@ -32,22 +32,29 @@ export async function POST(request: NextRequest) {
         const ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
         const userAgent = request.headers.get("user-agent") || "unknown";
 
-        // Store event in analytics table
-        await prisma.analyticsEvent.create({
-            data: {
-                event,
-                properties: {
-                    ...properties,
-                    timestamp,
-                    ip,
-                    userAgent,
-                    anonymousId
-                } as any,
-                userId: finalUserId || null,
-                source: "mini-diploma",
-                createdAt: new Date()
+        // Store event in analytics table (graceful - skip if table doesn't exist)
+        try {
+            if (prisma.analyticsEvent) {
+                await prisma.analyticsEvent.create({
+                    data: {
+                        event,
+                        properties: {
+                            ...properties,
+                            timestamp,
+                            ip,
+                            userAgent,
+                            anonymousId
+                        } as any,
+                        userId: finalUserId || null,
+                        source: "mini-diploma",
+                        createdAt: new Date()
+                    }
+                });
             }
-        });
+        } catch (analyticsError) {
+            // Analytics tracking is non-blocking - log but don't fail
+            console.warn("[TRACK] Analytics table not available:", (analyticsError as Error).message);
+        }
 
         // Special handling for certain events
         if (finalUserId) {
