@@ -340,3 +340,32 @@ export async function triggerExamPassedMessages(
 
     console.log(`[MASTERCLASS] Triggered exam passed celebration for user ${userId}, transitioning to post_completion`);
 }
+
+/**
+ * Advance a pod to the next day
+ * Called by cron job to progress pods daily
+ */
+export async function advanceToNextDay(podId: string): Promise<boolean> {
+    try {
+        const pod = await prisma.masterclassPod.findUnique({
+            where: { id: podId },
+        });
+
+        if (!pod || pod.masterclassDay >= 30) {
+            return false;
+        }
+
+        await prisma.masterclassPod.update({
+            where: { id: podId },
+            data: {
+                masterclassDay: pod.masterclassDay + 1,
+            },
+        });
+
+        console.log(`[MASTERCLASS] Advanced pod ${podId} from day ${pod.masterclassDay} to day ${pod.masterclassDay + 1}`);
+        return true;
+    } catch (error) {
+        console.error(`[MASTERCLASS] Failed to advance pod ${podId}:`, error);
+        return false;
+    }
+}
