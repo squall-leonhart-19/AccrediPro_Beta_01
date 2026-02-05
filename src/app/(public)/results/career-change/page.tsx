@@ -352,6 +352,48 @@ function CareerChangeResultsInner() {
             </div>
 
             <p className="text-[10px] sm:text-xs text-gray-500 italic pt-2">ASI {pract.label} — stacks with your RN/PA/MA, doubling your clinical value and opening private practice doors.</p>
+
+            {/* SCHOLARSHIP OFFER - No scary price anchor */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+              className="max-w-xl mx-auto p-5 sm:p-6 rounded-2xl border-2 shadow-lg" style={{ borderColor: B.gold, background: `linear-gradient(135deg, ${B.gold}08 0%, white 50%, ${B.gold}08 100%)` }}>
+              <div className="text-center space-y-3">
+                <p className="text-xs font-bold uppercase tracking-wider" style={{ color: B.gold }}>🎉 Scholarship Program</p>
+                <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: B.burgundy }}>Pay What You Can Afford</p>
+                <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto">
+                  Name your investment. If you qualify, the Institute covers the rest. No loans. No debt. Just opportunity.
+                </p>
+                <p className="text-sm sm:text-base font-bold px-4 py-2 rounded-lg inline-block" style={{ background: `${B.burgundy}10`, color: B.burgundy }}>
+                  🏛️ 94% of Applicants Get Approved
+                </p>
+              </div>
+              <p className="text-center text-[10px] sm:text-xs text-gray-500 mt-4 pt-3 border-t" style={{ borderColor: `${B.gold}20` }}>
+                <Sparkles className="w-3 h-3 inline mr-1" style={{ color: B.gold }} />
+                <strong>Limited Lifetime Opportunity</strong> — One payment, access forever, no subscriptions, no renewals
+              </p>
+            </motion.div>
+
+            {/* Trustpilot inline */}
+            <div className="flex items-center justify-center gap-2">
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map((s) => (
+                  <div key={s} className="w-4 h-4 flex items-center justify-center" style={{ backgroundColor: "#00b67a" }}>
+                    <Star className="w-2.5 h-2.5 fill-white text-white" />
+                  </div>
+                ))}
+              </div>
+              <span className="text-xs font-bold text-gray-700">Excellent 4.9</span>
+              <span className="text-xs text-gray-400">• 1,197+ reviews on Trustpilot</span>
+            </div>
+
+            {/* ★★★ HERO CTA — ABOVE THE FOLD ★★★ */}
+            <div className="pt-2 space-y-3">
+              <CTAButton className="max-w-md mx-auto" />
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[10px] sm:text-xs text-gray-500">
+                <span className="flex items-center gap-1"><Shield className="w-3 h-3" style={{ color: B.gold }} /> 7-Day Money-Back</span>
+                <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3" style={{ color: "#22c55e" }} /> 94% Approval Rate</span>
+                <span className="flex items-center gap-1"><Heart className="w-3 h-3" style={{ color: B.burgundy }} /> No Credit Card Required</span>
+              </div>
+            </div>
           </SectionInner>
         </Section>
 
