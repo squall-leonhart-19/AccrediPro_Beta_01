@@ -424,19 +424,26 @@ function HealthcareResultsInner() {
 
             {/* PRICE ANCHOR - $4,997 barred with scholarship */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-              className="max-w-lg mx-auto p-5 sm:p-6 rounded-2xl border-2 shadow-lg" style={{ borderColor: B.gold, background: `linear-gradient(135deg, ${B.gold}08 0%, white 50%, ${B.gold}08 100%)` }}>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+              className="max-w-xl mx-auto p-5 sm:p-6 rounded-2xl border-2 shadow-lg" style={{ borderColor: B.gold, background: `linear-gradient(135deg, ${B.gold}08 0%, white 50%, ${B.gold}08 100%)` }}>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
                 <div className="text-center">
                   <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Program Value</p>
                   <p className="text-3xl sm:text-4xl font-extrabold text-gray-300 line-through">$4,997</p>
+                  <p className="text-[10px] text-gray-400 mt-1">One-Time Payment • Lifetime Access</p>
                 </div>
-                <div className="hidden sm:block w-px h-16 bg-gray-200" />
+                <div className="hidden sm:block w-px h-20 bg-gray-200" />
                 <div className="text-center">
                   <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: B.gold }}>🎉 With Scholarship</p>
                   <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: B.burgundy }}>Pay What You Can</p>
-                  <p className="text-xs text-gray-500 mt-1">Institute covers the rest if approved</p>
+                  <p className="text-sm sm:text-base font-bold mt-2 px-3 py-1.5 rounded-lg" style={{ background: `${B.burgundy}10`, color: B.burgundy }}>
+                    🏛️ Institute Covers The Rest If Approved!
+                  </p>
                 </div>
               </div>
+              <p className="text-center text-[10px] sm:text-xs text-gray-500 mt-4 pt-3 border-t" style={{ borderColor: `${B.gold}20` }}>
+                <Sparkles className="w-3 h-3 inline mr-1" style={{ color: B.gold }} />
+                <strong>Limited Lifetime Opportunity</strong> — One payment, access forever, no subscriptions, no renewals
+              </p>
             </motion.div>
 
             {/* Trustpilot inline */}
@@ -481,6 +488,72 @@ function HealthcareResultsInner() {
             This credential stacks with your RN/PA/MA - doubling your clinical value and opening private practice doors.
           </p>
         </div>
+
+        {/* ═══ WHAT'S INCLUDED: 5-LEVEL PATH + DFY (moved up for value clarity) ═══ */}
+        <Section>
+          <div className="px-4 sm:px-6 py-3" style={{ background: B.burgundy }}>
+            <span className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+              <Sparkles className="w-4 h-4" style={{ color: B.gold }} /> What You Get — The Complete Package
+            </span>
+          </div>
+          <SectionInner className="space-y-5">
+            {/* 5 Levels - Compact */}
+            <div className="space-y-2">
+              <p className="text-xs font-bold uppercase tracking-widest text-center" style={{ color: B.gold }}>
+                5-Level Career Certification Path
+              </p>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+                {[
+                  { level: 1, title: "University-Certified Practitioner" },
+                  { level: 2, title: "Advanced Practitioner" },
+                  { level: 3, title: "Certified Specialist" },
+                  { level: 4, title: "Master Practitioner" },
+                  { level: 5, title: "University Fellow" },
+                ].map((item) => (
+                  <div key={item.level} className="flex items-center gap-2 p-2.5 rounded-lg bg-white border shadow-sm" style={{ borderColor: `${B.gold}30` }}>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.goldMetallic }}>
+                      <span className="text-xs font-extrabold" style={{ color: B.burgundyDark }}>{item.level}</span>
+                    </div>
+                    <p className="text-[10px] sm:text-xs font-semibold" style={{ color: B.burgundy }}>{item.title}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* DFY Bonuses - Compact */}
+            <div className="space-y-2">
+              <p className="text-xs font-bold uppercase tracking-widest text-center" style={{ color: B.gold }}>
+                + Done-For-You Business System
+              </p>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  { title: "DFY Website", value: "$2,997" },
+                  { title: "DFY Legal Templates", value: "$1,497" },
+                  { title: "DFY Client Onboarding", value: "$997" },
+                  { title: "DFY Marketing Materials", value: "$1,497" },
+                ].map((bonus, i) => (
+                  <div key={i} className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-white border shadow-sm" style={{ borderColor: `${B.gold}20` }}>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4" style={{ color: B.burgundy }} />
+                      <p className="text-[10px] sm:text-xs font-semibold" style={{ color: B.burgundy }}>{bonus.title}</p>
+                    </div>
+                    <p className="text-[9px] text-gray-400 line-through">{bonus.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="p-4 rounded-xl border-2 text-center" style={{ borderColor: B.gold, background: `${B.gold}08` }}>
+              <p className="text-sm sm:text-base font-bold" style={{ color: B.burgundyDark }}>
+                5-Level Certification + DFY Business System + Mentorship = Your Complete Path to {income.label}+/month
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                <strong>One-time payment</strong> • Lifetime access • No subscriptions
+              </p>
+            </div>
+          </SectionInner>
+        </Section>
 
         {/* ═══ SECTION 2: "YOU TOLD US" CALLOUT (from Q2 current income) ═══ */}
         <Section bg={`${B.gold}08`}>
@@ -1158,43 +1231,33 @@ function HealthcareResultsInner() {
               );
             })}
 
-            {/* BONUS #13: Coach Workspace Portal */}
-            <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.6 }}
-              className="rounded-2xl overflow-hidden border-2 bg-white shadow-lg" style={{ borderColor: B.gold }}>
-              <div className="p-4 sm:p-5">
-                <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.goldMetallic }}>
-                      <Laptop className="w-4 h-4" style={{ color: B.burgundyDark }} />
-                    </div>
-                    <p className="font-bold text-sm sm:text-base" style={{ color: B.burgundy }}>BONUS #13: Coach Workspace Portal</p>
-                  </div>
-                  <p className="text-xs font-bold text-gray-400 whitespace-nowrap">FREE <span className="line-through">$497</span></p>
+            {/* Coach Workspace Portal - text only */}
+            <motion.div key="workspace" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.6 }}
+              className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-white shadow-sm border" style={{ borderColor: `${B.gold}30` }}>
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.goldMetallic }}>
+                <Laptop className="w-4 h-4" style={{ color: B.burgundyDark }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-bold text-xs sm:text-sm" style={{ color: B.burgundy }}>Coach Workspace Portal</p>
+                  <p className="text-[10px] sm:text-xs font-bold text-gray-400 whitespace-nowrap">FREE <span className="line-through">$497</span></p>
                 </div>
-                <p className="text-xs sm:text-sm text-gray-600 mb-4">Your complete digital coaching command center — manage clients, track progress, and deliver protocols all in one beautiful platform. No more juggling spreadsheets and random tools.</p>
-                <div className="rounded-xl overflow-hidden border" style={{ borderColor: `${B.gold}30` }}>
-                  <Image src={COACH_WORKSPACE_IMG} alt="Coach Workspace Portal" width={800} height={500} className="w-full h-auto" />
-                </div>
+                <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">Your complete digital coaching command center — manage clients, track progress, and deliver protocols all in one platform.</p>
               </div>
             </motion.div>
 
-            {/* BONUS #14: Private Community */}
-            <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.7 }}
-              className="rounded-2xl overflow-hidden border-2 bg-white shadow-lg" style={{ borderColor: B.gold }}>
-              <div className="p-4 sm:p-5">
-                <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.goldMetallic }}>
-                      <Users2 className="w-4 h-4" style={{ color: B.burgundyDark }} />
-                    </div>
-                    <p className="font-bold text-sm sm:text-base" style={{ color: B.burgundy }}>BONUS #14: Private Community of 1,247+ Coaches</p>
-                  </div>
-                  <p className="text-xs font-bold text-gray-400 whitespace-nowrap">FREE <span className="line-through">$997</span></p>
+            {/* Private Community - text only */}
+            <motion.div key="community" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.7 }}
+              className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-white shadow-sm border" style={{ borderColor: `${B.gold}30` }}>
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.goldMetallic }}>
+                <Users2 className="w-4 h-4" style={{ color: B.burgundyDark }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-bold text-xs sm:text-sm" style={{ color: B.burgundy }}>Private Community of 1,247+ Coaches</p>
+                  <p className="text-[10px] sm:text-xs font-bold text-gray-400 whitespace-nowrap">FREE <span className="line-through">$997</span></p>
                 </div>
-                <p className="text-xs sm:text-sm text-gray-600 mb-4">Join our exclusive community of certified functional medicine coaches. Get support, share wins, ask questions, and network with practitioners who understand your journey. This is where the magic happens!</p>
-                <div className="rounded-xl overflow-hidden border" style={{ borderColor: `${B.gold}30` }}>
-                  <Image src={COMMUNITY_IMG} alt="Private Community of Coaches" width={800} height={500} className="w-full h-auto" />
-                </div>
+                <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">Exclusive community of certified FM coaches. Get support, share wins, and network with practitioners who understand your journey.</p>
               </div>
             </motion.div>
           </SectionInner>
