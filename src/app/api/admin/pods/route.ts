@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
                 select: {
                     id: true,
                     name: true,
-                    avatarUrl: true,
+                    avatar: true,
                 },
             },
             messages: {
@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
             zombie: pod.zombieProfile ? {
                 id: pod.zombieProfile.id,
                 name: pod.zombieProfile.name,
-                avatar: pod.zombieProfile.avatarUrl,
+                avatar: pod.zombieProfile.avatar,
             } : null,
             nicheCategory: pod.nicheCategory,
             status: pod.status,
