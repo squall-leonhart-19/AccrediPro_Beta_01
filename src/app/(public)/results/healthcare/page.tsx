@@ -426,23 +426,18 @@ function HealthcareResultsInner() {
               </p>
             </div>
 
-            {/* PRICE ANCHOR - $4,997 barred with scholarship */}
+            {/* SCHOLARSHIP OFFER - No scary price anchor */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
               className="max-w-xl mx-auto p-5 sm:p-6 rounded-2xl border-2 shadow-lg" style={{ borderColor: B.gold, background: `linear-gradient(135deg, ${B.gold}08 0%, white 50%, ${B.gold}08 100%)` }}>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-                <div className="text-center">
-                  <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Program Value</p>
-                  <p className="text-3xl sm:text-4xl font-extrabold text-gray-300 line-through">$4,997</p>
-                  <p className="text-[10px] text-gray-400 mt-1">One-Time Payment • Lifetime Access</p>
-                </div>
-                <div className="hidden sm:block w-px h-20 bg-gray-200" />
-                <div className="text-center">
-                  <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: B.gold }}>🎉 With Scholarship</p>
-                  <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: B.burgundy }}>Pay What You Can</p>
-                  <p className="text-sm sm:text-base font-bold mt-2 px-3 py-1.5 rounded-lg" style={{ background: `${B.burgundy}10`, color: B.burgundy }}>
-                    🏛️ Institute Covers The Rest If Approved!
-                  </p>
-                </div>
+              <div className="text-center space-y-3">
+                <p className="text-xs font-bold uppercase tracking-wider" style={{ color: B.gold }}>🎉 Scholarship Program</p>
+                <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: B.burgundy }}>Pay What You Can Afford</p>
+                <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto">
+                  Name your investment. If you qualify, the Institute covers the rest. No loans. No debt. Just opportunity.
+                </p>
+                <p className="text-sm sm:text-base font-bold px-4 py-2 rounded-lg inline-block" style={{ background: `${B.burgundy}10`, color: B.burgundy }}>
+                  🏛️ 94% of Applicants Get Approved
+                </p>
               </div>
               <p className="text-center text-[10px] sm:text-xs text-gray-500 mt-4 pt-3 border-t" style={{ borderColor: `${B.gold}20` }}>
                 <Sparkles className="w-3 h-3 inline mr-1" style={{ color: B.gold }} />
@@ -1152,14 +1147,14 @@ function HealthcareResultsInner() {
           <SectionInner className="space-y-5">
             <div className="grid gap-3 md:grid-cols-2">
               {[
-                { icon: BookOpen, title: "20-Module Clinical Curriculum", desc: "From foundations to advanced lab interpretation — complete clinical training", value: "$4,997" },
-                { icon: GraduationCap, title: "ASI-Accredited Certification", desc: "Nationally recognized credential that stacks with your RN/PA", value: "$2,500" },
-                { icon: FlaskConical, title: "Functional Lab Training", desc: labInterest === "already-doing" ? "Systematize and elevate your existing lab skills to clinical grade" : "Learn to order and interpret real lab panels — the #1 income multiplier", value: "$3,500" },
-                { icon: DollarSign, title: "Business Setup System", desc: missingSkill === "client-system" ? "You said this is exactly what you need — client acquisition done for you" : "Client acquisition, pricing strategy, and practice launch — done for you", value: "$2,997" },
-                { icon: Users, title: "1-on-1 Mentorship Access", desc: "Personal guidance from ASI clinical directors including Sarah M.", value: "$1,500" },
-                { icon: Target, title: "Done-For-You Protocols", desc: `Ready-to-use ${pract.specialization.toLowerCase()} templates for every client type`, value: "$997" },
-                { icon: Package, title: "Physical Welcome Kit", desc: "Certificate, practitioner badge, and branded materials mailed to your door", value: "$297" },
-                { icon: Infinity, title: "Lifetime Access + Updates", desc: "All future curriculum updates and community access included forever", value: "$Priceless" },
+                { icon: BookOpen, title: "20-Module Clinical Curriculum", desc: "From foundations to advanced lab interpretation — complete clinical training", value: "Included" },
+                { icon: GraduationCap, title: "ASI-Accredited Certification", desc: "Nationally recognized credential that stacks with your RN/PA", value: "Included" },
+                { icon: FlaskConical, title: "Functional Lab Training", desc: labInterest === "already-doing" ? "Systematize and elevate your existing lab skills to clinical grade" : "Learn to order and interpret real lab panels — the #1 income multiplier", value: "Included" },
+                { icon: DollarSign, title: "Business Setup System", desc: missingSkill === "client-system" ? "You said this is exactly what you need — client acquisition done for you" : "Client acquisition, pricing strategy, and practice launch — done for you", value: "Included" },
+                { icon: Users, title: "1-on-1 Mentorship Access", desc: "Personal guidance from ASI clinical directors including Sarah M.", value: "Included" },
+                { icon: Target, title: "Done-For-You Protocols", desc: `Ready-to-use ${pract.specialization.toLowerCase()} templates for every client type`, value: "Included" },
+                { icon: Package, title: "Physical Welcome Kit", desc: "Certificate, practitioner badge, and branded materials mailed to your door", value: "Included" },
+                { icon: Infinity, title: "Lifetime Access + Updates", desc: "All future curriculum updates and community access included forever", value: "Included" },
               ].map((item, i) => {
                 const Icon = item.icon;
                 return (
@@ -1170,7 +1165,7 @@ function HealthcareResultsInner() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-bold text-xs sm:text-sm" style={{ color: B.burgundy }}>{item.title}</p>
-                        <p className="text-[10px] sm:text-xs font-bold text-gray-400 line-through whitespace-nowrap">{item.value}</p>
+                        <p className="text-[10px] sm:text-xs font-bold whitespace-nowrap" style={{ color: B.gold }}>{item.value}</p>
                       </div>
                       <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{item.desc}</p>
                     </div>
@@ -1180,11 +1175,10 @@ function HealthcareResultsInner() {
             </div>
 
             <div className="p-5 sm:p-6 rounded-2xl border-2 text-center space-y-4" style={{ borderColor: B.gold, background: `${B.gold}08` }}>
-              <p className="text-xs text-gray-500 mb-1">Total Value</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-400 line-through">$19,979</p>
+              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: B.gold }}>ASI Scholarship Program</p>
+              <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: B.burgundy }}>Pay What You Can Afford</p>
               <div className="pt-2">
-                <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: B.gold }}>ASI Scholarship Program</p>
-                <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: B.burgundy }}>Pay What You Can</p>
+                <p className="text-sm text-gray-600 max-w-md mx-auto">The Institute believes in accessibility. Name your investment — if approved, we cover the difference.</p>
                 <p className="text-xs sm:text-sm text-gray-500 mt-2 max-w-sm mx-auto">
                   Tell Sarah what you can invest and she&apos;ll check if the institute can cover the difference through a scholarship.
                 </p>

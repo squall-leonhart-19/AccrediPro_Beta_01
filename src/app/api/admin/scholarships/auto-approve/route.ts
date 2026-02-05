@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
 I just got off the phone with the Institute and they've APPROVED your scholarship!
 
 ✅ Your scholarship has been approved for ${amount}
-✅ Full FM Certification access (normally $4,997)
+✅ Full FM Certification access
 ✅ 9 Clinical Certifications
 ✅ Lifetime access + mentorship
 ✅ Complete protocol library
@@ -147,7 +147,7 @@ AMAZING NEWS - I just got off the phone with the Institute and your scholarship 
 
 Here's what you're getting:
 
-✅ FM Certification (normally $4,997)
+✅ Full FM Certification
 ✅ 9 Clinical Certifications
 ✅ Lifetime access + mentorship
 ✅ Complete protocol library
@@ -186,7 +186,7 @@ Accredipro Specialists Institute`,
   <div style="background: #f0fdf4; border: 2px solid #10b981; padding: 20px; border-radius: 12px; margin: 20px 0;">
     <h2 style="color: #059669; margin: 0 0 15px 0; font-size: 18px;">✅ Here's What You're Getting:</h2>
     <ul style="margin: 0; padding-left: 20px; color: #166534;">
-      <li>FM Certification (normally $4,997)</li>
+      <li>Full FM Certification</li>
       <li>9 Clinical Certifications</li>
       <li>Lifetime access + mentorship</li>
       <li>Complete protocol library</li>

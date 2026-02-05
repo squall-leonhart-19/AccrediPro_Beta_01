@@ -935,14 +935,14 @@ function MomResultsInner() {
           <SectionInner className="space-y-5">
             <div className="grid gap-3 md:grid-cols-2">
               {[
-                { icon: BookOpen, title: "20-Module Clinical Curriculum", desc: "From foundations to advanced lab interpretation — complete clinical training", value: "$4,997" },
-                { icon: GraduationCap, title: "ASI-Accredited Certification", desc: "Nationally recognized credential that stacks with your RN/PA", value: "$2,500" },
-                { icon: FlaskConical, title: "Functional Lab Training", desc: labInterest === "already-doing" ? "Systematize and elevate your existing lab skills to clinical grade" : "Learn to order and interpret real lab panels — the #1 income multiplier", value: "$3,500" },
-                { icon: DollarSign, title: "Business Setup System", desc: missingSkill === "client-system" ? "You said this is exactly what you need — client acquisition done for you" : "Client acquisition, pricing strategy, and practice launch — done for you", value: "$2,997" },
-                { icon: Users, title: "1-on-1 Mentorship Access", desc: "Personal guidance from ASI clinical directors including Sarah M.", value: "$1,500" },
-                { icon: Target, title: "Done-For-You Protocols", desc: `Ready-to-use ${pract.specialization.toLowerCase()} templates for every client type`, value: "$997" },
-                { icon: Package, title: "Physical Welcome Kit", desc: "Certificate, practitioner badge, and branded materials mailed to your door", value: "$297" },
-                { icon: Infinity, title: "Lifetime Access + Updates", desc: "All future curriculum updates and community access included forever", value: "$Priceless" },
+                { icon: BookOpen, title: "20-Module Clinical Curriculum", desc: "From foundations to advanced lab interpretation — complete clinical training", value: "Included" },
+                { icon: GraduationCap, title: "ASI-Accredited Certification", desc: "Nationally recognized credential that stacks with your RN/PA", value: "Included" },
+                { icon: FlaskConical, title: "Functional Lab Training", desc: labInterest === "already-doing" ? "Systematize and elevate your existing lab skills to clinical grade" : "Learn to order and interpret real lab panels — the #1 income multiplier", value: "Included" },
+                { icon: DollarSign, title: "Business Setup System", desc: missingSkill === "client-system" ? "You said this is exactly what you need — client acquisition done for you" : "Client acquisition, pricing strategy, and practice launch — done for you", value: "Included" },
+                { icon: Users, title: "1-on-1 Mentorship Access", desc: "Personal guidance from ASI clinical directors including Sarah M.", value: "Included" },
+                { icon: Target, title: "Done-For-You Protocols", desc: `Ready-to-use ${pract.specialization.toLowerCase()} templates for every client type`, value: "Included" },
+                { icon: Package, title: "Physical Welcome Kit", desc: "Certificate, practitioner badge, and branded materials mailed to your door", value: "Included" },
+                { icon: Infinity, title: "Lifetime Access + Updates", desc: "All future curriculum updates and community access included forever", value: "Included" },
               ].map((item, i) => {
                 const Icon = item.icon;
                 return (
@@ -953,7 +953,7 @@ function MomResultsInner() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-bold text-xs sm:text-sm" style={{ color: B.burgundy }}>{item.title}</p>
-                        <p className="text-[10px] sm:text-xs font-bold text-gray-400 line-through whitespace-nowrap">{item.value}</p>
+                        <p className="text-[10px] sm:text-xs font-bold whitespace-nowrap" style={{ color: B.gold }}>{item.value}</p>
                       </div>
                       <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{item.desc}</p>
                     </div>
@@ -963,11 +963,10 @@ function MomResultsInner() {
             </div>
 
             <div className="p-5 sm:p-6 rounded-2xl border-2 text-center space-y-4" style={{ borderColor: B.gold, background: `${B.gold}08` }}>
-              <p className="text-xs text-gray-500 mb-1">Total Value</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-400 line-through">$19,979</p>
+              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: B.gold }}>ASI Scholarship Program</p>
+              <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: B.burgundy }}>Pay What You Can Afford</p>
               <div className="pt-2">
-                <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: B.gold }}>ASI Scholarship Program</p>
-                <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: B.burgundy }}>Pay What You Can</p>
+                <p className="text-sm text-gray-600 max-w-md mx-auto">The Institute believes in accessibility. Name your investment — if approved, we cover the difference.</p>
                 <p className="text-xs sm:text-sm text-gray-500 mt-2 max-w-sm mx-auto">
                   Tell Sarah what you can invest and she&apos;ll check if the institute can cover the difference through a scholarship.
                 </p>

@@ -725,26 +725,41 @@ export default function DEPTHMethodQuiz() {
   // Fetch and play welcome audio when transitioning from intro to quiz
   const playWelcomeAudio = async (firstName: string) => {
     try {
+      console.log("[Audio] Fetching welcome audio for:", firstName);
       const res = await fetch("/api/scholarship/welcome-audio", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ firstName }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.audio) {
-          setWelcomeAudio(data.audio);
-          // Auto-play after a short delay
-          setTimeout(() => {
-            if (audioRef.current) {
-              audioRef.current.play().catch(() => {});
-              setAudioPlaying(true);
-            }
-          }, 2000);
-        }
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        console.error("[Audio] API error:", res.status, errorData);
+        return;
       }
-    } catch {
-      // Silently fail - audio is a nice-to-have
+
+      const data = await res.json();
+      console.log("[Audio] Response:", { success: data.success, hasAudio: !!data.audio, cached: data.cached });
+
+      if (data.audio) {
+        setWelcomeAudio(data.audio);
+        // Auto-play after a short delay (may be blocked by browser)
+        setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.play()
+              .then(() => {
+                console.log("[Audio] Autoplay started");
+                setAudioPlaying(true);
+              })
+              .catch((err) => {
+                console.warn("[Audio] Autoplay blocked by browser:", err.message);
+                // Don't set audioPlaying - user can click play manually
+              });
+          }
+        }, 2000);
+      }
+    } catch (err) {
+      console.error("[Audio] Fetch error:", err);
     }
   };
 

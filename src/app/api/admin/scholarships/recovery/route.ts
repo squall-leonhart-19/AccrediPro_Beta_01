@@ -56,7 +56,7 @@ I remember you applied for our FM Certification scholarship recently, and I want
 
 Here's what you're getting with your approved scholarship:
 
-✅ Full FM Certification (normally $4,997)
+✅ Full FM Certification
 ✅ 9 Clinical Certifications
 ✅ Lifetime access + mentorship
 ✅ Complete protocol library
@@ -101,7 +101,7 @@ P.S. You can also chat with me directly here: https://learn.accredipro.academy/q
   <div style="background: #f0fdf4; border: 2px solid #10b981; padding: 20px; border-radius: 12px; margin: 20px 0;">
     <h2 style="color: #059669; margin: 0 0 15px 0; font-size: 18px;">✅ What You're Getting:</h2>
     <ul style="margin: 0; padding-left: 20px; color: #166534;">
-      <li>Full FM Certification (normally $4,997)</li>
+      <li>Full FM Certification</li>
       <li>9 Clinical Certifications</li>
       <li>Lifetime access + mentorship</li>
       <li>Complete protocol library</li>

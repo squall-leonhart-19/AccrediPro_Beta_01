@@ -112,7 +112,7 @@ const SCHOLARSHIP_REPLIES = [
   },
   {
     label: "🎉 APPROVED + FOMO",
-    text: "🎉 AMAZING NEWS!\n\nI just got off the phone with the Institute and they've APPROVED your scholarship!\n\n✅ Your scholarship has been approved for [AMOUNT]\n✅ Full FM Certification access (normally $4,997)\n✅ 9 Clinical Certifications\n✅ Lifetime access + mentorship\n\n⚠️ IMPORTANT: This scholarship approval is only valid for the next 10 MINUTES. After that, I'll have to resubmit your application.\n\nReady to lock in your spot? Just reply \"YES\" and I'll send you the secure payment link right now! 💜",
+    text: "🎉 AMAZING NEWS!\n\nI just got off the phone with the Institute and they've APPROVED your scholarship!\n\n✅ Your scholarship has been approved for [AMOUNT]\n✅ Full FM Certification access\n✅ 9 Clinical Certifications\n✅ Lifetime access + mentorship\n\n⚠️ IMPORTANT: This scholarship approval is only valid for the next 10 MINUTES. After that, I'll have to resubmit your application.\n\nReady to lock in your spot? Just reply \"YES\" and I'll send you the secure payment link right now! 💜",
     color: "bg-green-100 border-green-300 text-green-700 hover:bg-green-200 font-bold",
     isAutoStep: "approve" as const,
   },
@@ -123,7 +123,7 @@ const SCHOLARSHIP_REPLIES = [
   },
   {
     label: "✅ Simple Approved",
-    text: "Great news! I've reviewed your application and I'm happy to approve a scholarship for you. The FM Certification is normally $4,997 but with your scholarship, you'll only pay [AMOUNT]. This covers everything - 9 certifications, mentorship, and lifetime access. Ready to get started? 🎉",
+    text: "Great news! I've reviewed your application and I'm happy to approve a scholarship for you. With your scholarship, you'll only pay [AMOUNT]. This covers everything - 9 certifications, mentorship, and lifetime access. Ready to get started? 🎉",
     color: "bg-green-50 border-green-200 text-green-700 hover:bg-green-100",
   },
   {
@@ -1100,7 +1100,7 @@ export default function ScholarshipsClient() {
                       </Button>
                     ))}
                   </div>
-                  <p className="text-xs text-purple-600 mt-2">💡 Full price: $4,997 • Use auto-approve for FOMO sequence</p>
+                  <p className="text-xs text-purple-600 mt-2">💡 Use auto-approve for FOMO sequence</p>
                 </div>
               )}
 

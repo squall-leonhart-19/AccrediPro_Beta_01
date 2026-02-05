@@ -195,8 +195,9 @@ export default function FMMiniDiplomaLeadGen() {
                             <div className="absolute inset-0 bg-burgundy-600/20 blur-[120px] rounded-full" />
                             <div className="relative bg-white/5 border border-white/10 p-8 rounded-[40px] backdrop-blur-xl">
                                 <div className="bg-gradient-to-br from-gold-400 to-gold-600 text-black p-6 rounded-3xl text-center mb-8">
-                                    <p className="text-sm font-bold uppercase tracking-widest mb-1">Total Package Value</p>
-                                    <p className="text-5xl font-black">$4,997.00</p>
+                                    <p className="text-sm font-bold uppercase tracking-widest mb-1">🎉 Scholarship Program</p>
+                                    <p className="text-3xl font-black">Pay What You Can</p>
+                                    <p className="text-sm font-medium mt-2 opacity-80">Institute Covers the Rest If Approved</p>
                                 </div>
                                 <div className="space-y-6 text-center">
                                     <p className="text-2xl font-bold">Apply Today To See If You Qualify For Scholarship Pricing</p>
