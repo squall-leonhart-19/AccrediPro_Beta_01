@@ -310,28 +310,90 @@ function getCertificationDisplayName(course: string): string {
 }
 
 /**
- * Calculate lead score for sales prioritization (0-100)
+ * Calculate lead score for sales prioritization (0-185)
  * Higher score = more ready to buy
+ * Based on 8-question qualification form
  */
-function calculateLeadScore(investmentLevel?: string, readiness?: string): number {
-    let score = 50; // Base score
+function calculateLeadScore(data: {
+    background?: string;
+    motivation?: string;
+    workCost?: string;
+    holdingBack?: string;
+    successGoal?: string;
+    timeAvailable?: string;
+    investmentRange?: string;
+    readiness?: string;
+}): number {
+    let score = 0;
 
-    // Investment level scoring
-    switch (investmentLevel) {
-        case "5k-plus": score += 35; break;
+    // Q1: Background (healthcare = best fit)
+    switch (data.background) {
+        case "healthcare": score += 30; break;
+        case "wellness": score += 25; break;
+        case "educator": score += 20; break;
+        case "transition": score += 15; break;
+        case "other": score += 10; break;
+    }
+
+    // Q2: Motivation (help-heal/own-journey = strongest intent)
+    switch (data.motivation) {
+        case "help-heal": score += 20; break;
+        case "own-journey": score += 20; break;
+        case "burnout": score += 15; break;
+        case "flexibility": score += 15; break;
+        case "new-chapter": score += 15; break;
+    }
+
+    // Q3: Work Cost (any selection = emotional pain, all worth 10)
+    if (data.workCost) score += 10;
+
+    // Q4: Holding Back (ready = no objections = hot)
+    switch (data.holdingBack) {
+        case "ready": score += 25; break;
+        case "investment-concern": score += 15; break;
+        case "self-doubt": score += 10; break;
+        case "tried-before": score += 10; break;
+        case "unsure-where": score += 10; break;
+    }
+
+    // Q5: Success Goal (ambition level)
+    switch (data.successGoal) {
+        case "full-practice": score += 25; break;
+        case "replace-income": score += 20; break;
+        case "side-income": score += 15; break;
+    }
+
+    // Q6: Time Available
+    switch (data.timeAvailable) {
+        case "priority": score += 20; break;
+        case "part-time": score += 15; break;
+        case "few-hours": score += 10; break;
+    }
+
+    // Q7: Investment Range (💰 MONEY SIGNAL - biggest weight)
+    switch (data.investmentRange) {
+        case "5k-plus": score += 30; break;
         case "3k-5k": score += 25; break;
         case "1k-3k": score += 15; break;
-        case "under-1k": score += 5; break;
     }
 
-    // Readiness scoring
-    switch (readiness) {
-        case "yes-ready": score += 15; break;
-        case "need-time": score += 5; break;
-        case "talk-partner": score += 0; break;
+    // Q8: Readiness (closing signal)
+    switch (data.readiness) {
+        case "ready": score += 25; break;
+        case "need-time": score += 10; break;
+        case "talk-partner": score += 5; break;
     }
 
-    return Math.min(score, 100);
+    return score; // Max: 185
+}
+
+/**
+ * Get lead tier based on score
+ */
+function getLeadTier(score: number): "hot" | "warm" | "cold" {
+    if (score >= 130) return "hot";
+    if (score >= 80) return "warm";
+    return "cold";
 }
 
 export async function POST(request: NextRequest) {
@@ -349,8 +411,22 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const {
             firstName, lastName, email, phone, course,
-            lifeStage, motivation, investment, investmentLevel, readiness, segment,
-            formVariant, // A/B testing variant
+            // 8-Question Qualification Form Fields
+            background,        // Q1: Background (healthcare, wellness, educator, transition, other)
+            motivation,        // Q2: Why Functional Medicine (help-heal, own-journey, burnout, flexibility, new-chapter)
+            workCost,          // Q3: What it's costing you (missing-family, exhausted, working-holidays, etc.)
+            holdingBack,       // Q4: What's been in the way (unsure-where, tried-before, self-doubt, investment-concern, ready)
+            successGoal,       // Q5: Success goal (side-income, replace-income, full-practice)
+            timeAvailable,     // Q6: Time available (few-hours, part-time, priority)
+            investmentRange,   // Q7: Investment range (1k-3k, 3k-5k, 5k-plus)
+            readiness,         // Q8: Readiness (ready, need-time, talk-partner)
+            // Legacy field aliases (for backward compatibility)
+            lifeStage,         // Old name for timeAvailable
+            investment,        // Old name for successGoal
+            investmentLevel,   // Old name for investmentRange
+            segment,
+            formVariant,       // A/B testing variant
+            leadScore: providedLeadScore, // Optional pre-calculated score from frontend
             // UTM params for attribution (optional)
             utm_source, utm_medium, utm_campaign, utm_content, utm_term
         } = body;
@@ -511,34 +587,76 @@ export async function POST(request: NextRequest) {
             select: { id: true },
         });
 
-        // Add UserTags for mini diploma tracking
-        // Format: mini_diploma_{category} (e.g., mini_diploma_womens_health, mini_diploma_gut_health)
+        // ============================================================
+        // LEAD SCORING + QUALIFICATION TAGS
+        // ============================================================
+
+        // Normalize field names (handle both old and new form versions)
+        const qualData = {
+            background: background || "",
+            motivation: motivation || "",
+            workCost: workCost || "",
+            holdingBack: holdingBack || "",
+            successGoal: successGoal || investment || "",         // Fallback to legacy field
+            timeAvailable: timeAvailable || lifeStage || "",     // Fallback to legacy field
+            investmentRange: investmentRange || investmentLevel || "", // Fallback to legacy field
+            readiness: readiness || "",
+        };
+
+        // Calculate lead score
+        const leadScore = calculateLeadScore(qualData);
+        const leadTier = getLeadTier(leadScore);
+
+        // Build qualification tags
         const categorySlug = course.replace(/-/g, "_"); // womens-health -> womens_health
-        const userTags = [
+        const userTags: string[] = [
+            // Core tracking tags
             "mini_diploma_started",
-            `mini_diploma_${categorySlug}`, // e.g., mini_diploma_womens_health
+            `mini_diploma_${categorySlug}`,
             `mini_diploma_category:${course}`,
-            `lead:${course}-mini-diploma`, // Specific to mini diploma (not purchases)
+            `lead:${course}-mini-diploma`,
             "source:mini-diploma",
             `source:${course}`,
-            // Qualification Data (Q1-Q3)
-            `income_goal:${investment}`,
-            `time_commitment:${lifeStage}`,
-            `motivation:${motivation}`,
-            // Q4: Investment Level (budget for program)
-            ...(investmentLevel ? [`investment_level:${investmentLevel}`] : []),
-            // Q5: Readiness to Start
-            ...(readiness ? [`readiness:${readiness}`] : []),
-            // Segment tag for different landing page variants (e.g., healthcare-workers, general)
-            // Used for GHL workflow routing
+
+            // Lead scoring tags
+            `lead_score:${leadScore}`,
+            `lead_tier:${leadTier}`,
+
+            // Q1: Background (qualification:background:healthcare, etc.)
+            ...(qualData.background ? [`qualification:background:${qualData.background}`] : []),
+
+            // Q2: Motivation
+            ...(qualData.motivation ? [`qualification:motivation:${qualData.motivation}`] : []),
+
+            // Q3: Work Cost (emotional pain point)
+            ...(qualData.workCost ? [`qualification:work-cost:${qualData.workCost}`] : []),
+
+            // Q4: Holding Back
+            ...(qualData.holdingBack ? [`qualification:holding-back:${qualData.holdingBack}`] : []),
+
+            // Q5: Success Goal
+            ...(qualData.successGoal ? [`qualification:success-goal:${qualData.successGoal}`] : []),
+
+            // Q6: Time Available
+            ...(qualData.timeAvailable ? [`qualification:time:${qualData.timeAvailable}`] : []),
+
+            // Q7: Investment Range (💰 key sales signal)
+            ...(qualData.investmentRange ? [`qualification:investment:${qualData.investmentRange}`] : []),
+
+            // Q8: Readiness
+            ...(qualData.readiness ? [`qualification:readiness:${qualData.readiness}`] : []),
+
+            // Segment tag for different landing page variants
             ...(segment ? [`segment:${segment}`] : [])
         ];
+
+        // Create all tags
         for (const tag of userTags) {
             await prisma.userTag.create({
                 data: { userId: user.id, tag },
             });
         }
-        console.log(`🏷️ Created mini diploma UserTags for ${user.id}: ${userTags.join(", ")}`);
+        console.log(`🏷️ Lead Score: ${leadScore} (${leadTier}) | Tags created for ${user.id}: ${userTags.length} tags`);
 
         // Send welcome message from the appropriate Sarah coach
         if (coach) {
@@ -661,16 +779,20 @@ export async function POST(request: NextRequest) {
                     segment: segment || "general",
 
                     // === QUALIFICATION DATA (passed to Retell as dynamic vars) ===
-                    // These are the 5 questions from the form
-                    income_goal: investment || "",           // Q1: What's your income goal?
-                    time_commitment: lifeStage || "",        // Q2: How much time can you dedicate?
-                    motivation: motivation || "",            // Q3: What's driving you?
-                    budget: investmentLevel || "",           // Q4: Investment level (also as "investment_level")
-                    investment_level: investmentLevel || "", // Alias for budget
-                    readiness: readiness || "",              // Q5: Ready to start?
+                    // All 8 questions from the form
+                    background: qualData.background,           // Q1: Background
+                    motivation: qualData.motivation,           // Q2: Motivation
+                    work_cost: qualData.workCost,              // Q3: Work cost
+                    holding_back: qualData.holdingBack,        // Q4: Holding back
+                    success_goal: qualData.successGoal,        // Q5: Success goal
+                    time_commitment: qualData.timeAvailable,   // Q6: Time available
+                    budget: qualData.investmentRange,          // Q7: Investment range
+                    investment_level: qualData.investmentRange, // Alias for budget
+                    readiness: qualData.readiness,             // Q8: Ready to start?
 
                     // === LEAD SCORING (for sales prioritization) ===
-                    lead_score: calculateLeadScore(investmentLevel, readiness),
+                    lead_score: leadScore,
+                    lead_tier: leadTier,
 
                     // === VERCEL TRACKING ===
                     vercel_lead_id: user.id,                 // For Retell function callbacks
