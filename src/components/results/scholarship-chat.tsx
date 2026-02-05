@@ -397,27 +397,30 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           }
 
           setMessages(prev => {
-            // Keep local-only messages (not yet synced to server) that are newer than any server message
-            const serverTimestamps = new Set(serverMessages.map(m => m.timestamp));
-            const serverContents = new Set(serverMessages.map(m => m.content));
-            const latestServerTime = serverMessages.length > 0
-              ? Math.max(...serverMessages.map(m => new Date(m.timestamp).getTime()))
-              : 0;
+            // Keep ALL local-only messages that aren't duplicates of server messages
+            const serverContents = new Set(serverMessages.map(m => m.content.trim()));
 
-            // Keep local messages that:
-            // 1. Aren't duplicates of server messages (by content)
-            // 2. Are newer than the latest server message (still pending sync)
+            // Keep local messages that aren't duplicates (by content) of server messages
+            // This preserves pending local messages even if they're older/same time as server
             const pendingLocalMsgs = prev.filter(m =>
-              !m.fromServer &&
-              !serverContents.has(m.content) &&
-              new Date(m.timestamp).getTime() > latestServerTime
+              !m.fromServer && !serverContents.has(m.content.trim())
             );
 
             // Merge server messages + pending local messages
             const merged = [...serverMessages, ...pendingLocalMsgs];
             merged.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
-            // Only update if actually different (by content, not IDs which change)
+            // Debug log if message count changed
+            if (prev.length !== merged.length) {
+              console.log("[Chat Sync] Messages:", {
+                prevCount: prev.length,
+                serverCount: serverMessages.length,
+                pendingLocalCount: pendingLocalMsgs.length,
+                mergedCount: merged.length,
+              });
+            }
+
+            // Only update if actually different (by content)
             const prevContents = prev.map(m => m.content).join("|||");
             const mergedContents = merged.map(m => m.content).join("|||");
             return prevContents === mergedContents ? prev : merged;
@@ -1091,6 +1094,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
               {msg.id === "sarah-1" && welcomeAudioUrl && (
                 <button
                   onClick={() => {
+                    console.log("[Audio Button] Clicked, ref:", welcomeAudioRef.current);
                     if (welcomeAudioRef.current) {
                       if (isPlayingWelcomeAudio) {
                         welcomeAudioRef.current.pause();
@@ -1098,9 +1102,16 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
                       } else {
                         welcomeAudioRef.current.currentTime = 0;
                         welcomeAudioRef.current.play()
-                          .then(() => setIsPlayingWelcomeAudio(true))
-                          .catch(() => { });
+                          .then(() => {
+                            console.log("[Audio Button] Playing successfully!");
+                            setIsPlayingWelcomeAudio(true);
+                          })
+                          .catch((err) => {
+                            console.error("[Audio Button] Play failed:", err);
+                          });
                       }
+                    } else {
+                      console.error("[Audio Button] No audio ref available!");
                     }
                   }}
                   className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded-full transition-all hover:scale-105"
