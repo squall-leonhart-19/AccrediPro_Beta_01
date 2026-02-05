@@ -81,12 +81,13 @@ export async function GET() {
         app.unreadCount++;
       }
 
-      // Update visitorId to the one from visitor messages (not admin replies)
-      if (msg.isFromVisitor && msg.createdAt > app.lastMessageAt) {
+      // Always use the visitor's own visitorId (from their messages, not admin replies)
+      // This ensures replies get saved with the correct visitorId
+      if (msg.isFromVisitor) {
         app.visitorId = msg.visitorId;
       }
 
-      // Track last message
+      // Track last message (messages come newest first, so only first iteration wins)
       if (msg.createdAt > app.lastMessageAt) {
         app.lastMessage = msg.message;
         app.lastMessageAt = msg.createdAt;
