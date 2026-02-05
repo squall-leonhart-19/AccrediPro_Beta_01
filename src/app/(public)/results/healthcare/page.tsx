@@ -555,6 +555,69 @@ function HealthcareResultsInner() {
           </SectionInner>
         </Section>
 
+        {/* ═══ 20 MODULE CERTIFICATIONS ═══ */}
+        <Section>
+          <div className="px-4 sm:px-6 py-3" style={{ background: B.goldMetallic }}>
+            <span className="text-xs sm:text-sm font-bold flex items-center gap-2" style={{ color: B.burgundyDark }}>
+              <Award className="w-4 h-4" /> You&apos;ll Be Certified In All 20 Clinical Modules
+            </span>
+          </div>
+          <SectionInner className="space-y-4">
+            <p className="text-center text-xs sm:text-sm text-gray-600">
+              Each module comes with its own <strong>certificate of completion</strong> — 20 credentials to add to your portfolio
+            </p>
+
+            <div className="grid gap-1.5 sm:gap-2">
+              {[
+                { num: 1, title: "Functional Medicine Foundations", badge: null },
+                { num: 2, title: "Health Coaching Mastery", badge: null },
+                { num: 3, title: "Functional Assessment & Case Analysis", badge: null },
+                { num: 4, title: "Ethics, Scope & Professional Practice", badge: null },
+                { num: 5, title: "Functional Nutrition", badge: "HIGH DEMAND", badgeColor: "bg-blue-100 text-blue-700" },
+                { num: 6, title: "Gut Health & Microbiome", badge: "80% OF CASES", badgeColor: "bg-purple-100 text-purple-700" },
+                { num: 7, title: "Stress, Adrenals & Nervous System", badge: null },
+                { num: 8, title: "Sleep & Circadian Health", badge: null },
+                { num: 9, title: "Women's Hormone Health", badge: "$150+/SESSION", badgeColor: "bg-green-100 text-green-700" },
+                { num: 10, title: "Perimenopause & Menopause", badge: "MASSIVE MARKET", badgeColor: "bg-pink-100 text-pink-700" },
+                { num: 11, title: "Thyroid Health", badge: "MOST MISDIAGNOSED", badgeColor: "bg-orange-100 text-orange-700" },
+                { num: 12, title: "Metabolic Health & Weight", badge: null },
+                { num: 13, title: "Autoimmunity & Inflammation", badge: "GROWING 15%/YR", badgeColor: "bg-red-100 text-red-700" },
+                { num: 14, title: "Mental Health & Brain Function", badge: null },
+                { num: 15, title: "Cardiometabolic Health", badge: null },
+                { num: 16, title: "Energy & Mitochondrial Health", badge: null },
+                { num: 17, title: "Detox & Environmental Health", badge: null },
+                { num: 18, title: "Functional Lab Interpretation", badge: "PREMIUM SKILL", badgeColor: "bg-emerald-100 text-emerald-700" },
+                { num: 19, title: "Protocol Building & Program Design", badge: null },
+                { num: 20, title: "Building Your FM Practice", badge: "BUSINESS LAUNCH", badgeColor: "bg-amber-100 text-amber-700" },
+              ].map((mod) => (
+                <div key={mod.num} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-2.5 rounded-lg bg-white border shadow-sm" style={{ borderColor: `${B.gold}20` }}>
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] sm:text-xs font-bold" style={{ background: B.goldMetallic, color: B.burgundyDark }}>
+                    {mod.num}
+                  </div>
+                  <p className="flex-1 text-[11px] sm:text-xs font-medium" style={{ color: B.burgundy }}>{mod.title}</p>
+                  <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: "#22c55e" }} />
+                  {mod.badge && (
+                    <span className={`text-[8px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap ${mod.badgeColor}`}>
+                      {mod.badge}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="p-4 rounded-xl text-center" style={{ background: `${B.burgundy}08`, border: `2px solid ${B.burgundy}20` }}>
+              <p className="text-sm sm:text-base font-bold" style={{ color: B.burgundy }}>
+                = <span className="text-lg sm:text-xl">20 Certificates</span> + Master Certification
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Stack them on your wall, your LinkedIn, and your website — instant credibility
+              </p>
+            </div>
+
+            <CTAButton className="max-w-md mx-auto" />
+          </SectionInner>
+        </Section>
+
         {/* ═══ SECTION 2: "YOU TOLD US" CALLOUT (from Q2 current income) ═══ */}
         <Section bg={`${B.gold}08`}>
           <SectionInner className="space-y-4">
