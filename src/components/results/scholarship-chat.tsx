@@ -193,12 +193,15 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
   const [showPulse, setShowPulse] = useState(true);
   const [urgencyTimer, setUrgencyTimer] = useState<number | null>(null); // 10 min countdown in seconds
   const [approvalAmount, setApprovalAmount] = useState<string | null>(null);
+  const [welcomeAudioUrl, setWelcomeAudioUrl] = useState<string | null>(null);
+  const [isPlayingWelcomeAudio, setIsPlayingWelcomeAudio] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isNearBottom = useRef(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const welcomeTimers = useRef<NodeJS.Timeout[]>([]);
   const urgencyIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const welcomeAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // ─── Restore from localStorage on mount ─────────────────────────
   useEffect(() => {
@@ -220,9 +223,15 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     }
   }, [visitorId, messages, hasStarted, welcomeDone, email]);
 
-  // Cleanup welcome timers on unmount
+  // Cleanup welcome timers and audio on unmount
   useEffect(() => {
-    return () => { welcomeTimers.current.forEach(t => clearTimeout(t)); };
+    return () => {
+      welcomeTimers.current.forEach(t => clearTimeout(t));
+      if (welcomeAudioRef.current) {
+        welcomeAudioRef.current.pause();
+        welcomeAudioRef.current.src = "";
+      }
+    };
   }, []);
 
   // ─── Auto-scroll ───────────────────────────────────────────────
@@ -324,13 +333,30 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           }
 
           setMessages(prev => {
-            const localMsgs = prev.filter(m => !m.fromServer);
-            const merged = [...localMsgs, ...serverMessages];
+            // Keep local-only messages (not yet synced to server) that are newer than any server message
+            const serverTimestamps = new Set(serverMessages.map(m => m.timestamp));
+            const serverContents = new Set(serverMessages.map(m => m.content));
+            const latestServerTime = serverMessages.length > 0
+              ? Math.max(...serverMessages.map(m => new Date(m.timestamp).getTime()))
+              : 0;
+
+            // Keep local messages that:
+            // 1. Aren't duplicates of server messages (by content)
+            // 2. Are newer than the latest server message (still pending sync)
+            const pendingLocalMsgs = prev.filter(m =>
+              !m.fromServer &&
+              !serverContents.has(m.content) &&
+              new Date(m.timestamp).getTime() > latestServerTime
+            );
+
+            // Merge server messages + pending local messages
+            const merged = [...serverMessages, ...pendingLocalMsgs];
             merged.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-            // Only update if actually different
-            const prevIds = prev.map(m => m.id).join(",");
-            const mergedIds = merged.map(m => m.id).join(",");
-            return prevIds === mergedIds ? prev : merged;
+
+            // Only update if actually different (by content, not IDs which change)
+            const prevContents = prev.map(m => m.content).join("|||");
+            const mergedContents = merged.map(m => m.content).join("|||");
+            return prevContents === mergedContents ? prev : merged;
           });
         }
       } catch (err) {
@@ -458,13 +484,38 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       } catch {}
     };
 
-    const msg1Content = `Hey ${firstName}! I just saw your assessment come through.`;
+    // NEW WELCOME SEQUENCE - Clear "Name Your Price" Scholarship Model
+    const msg1Content = `Hey ${firstName}! 🎉 AMAZING news — you QUALIFY for our ASI Scholarship Program!`;
     const msg1: ChatMessage = {
       id: "sarah-1",
       role: "sarah",
       content: msg1Content,
       timestamp: new Date().toISOString(),
     };
+
+    // Pre-fetch welcome audio from ElevenLabs (Sarah's voice)
+    const fetchWelcomeAudio = async () => {
+      try {
+        const res = await fetch("/api/scholarship/welcome-audio", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ firstName }),
+        });
+        const data = await res.json();
+        if (data.success && data.audio) {
+          setWelcomeAudioUrl(data.audio);
+          // Pre-load the audio
+          const audio = new Audio(data.audio);
+          audio.preload = "auto";
+          welcomeAudioRef.current = audio;
+          audio.addEventListener("ended", () => setIsPlayingWelcomeAudio(false));
+          audio.addEventListener("error", () => setIsPlayingWelcomeAudio(false));
+        }
+      } catch (err) {
+        console.log("Welcome audio fetch failed (non-critical):", err);
+      }
+    };
+    fetchWelcomeAudio(); // Start fetching immediately
 
     // Delay message 1 by 3 seconds (Sarah "reading" the application)
     const t1 = setTimeout(() => {
@@ -474,18 +525,24 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
         setMessages(prev => [...prev, msg1]);
         saveSarahMessage(msg1Content); // Save to DB for admin
 
+        // 🎵 Play welcome audio 2 seconds after message 1 appears
+        const audioTimer = setTimeout(() => {
+          if (welcomeAudioRef.current) {
+            welcomeAudioRef.current.play()
+              .then(() => setIsPlayingWelcomeAudio(true))
+              .catch((err) => console.log("Audio autoplay blocked:", err));
+          }
+        }, 2000);
+        welcomeTimers.current.push(audioTimer);
+
         // Delay message 2 by 6-8 more seconds
         const t2 = setTimeout(() => {
           setIsTyping(true);
           const t2b = setTimeout(() => {
             setIsTyping(false);
 
-            let msg2Content = "";
-            if (quizData.currentIncome === "0" || quizData.currentIncome === "under-2k") {
-              msg2Content = `I can see you're at ${incomeLabel} right now and you want to reach ${goalLabel} with a ${typeLabel} specialization. Your clinical background makes you a really strong fit — I've worked with so many women in your exact position who made this transition successfully.`;
-            } else {
-              msg2Content = `You're already earning ${incomeLabel} — that's great. To get to ${goalLabel} as a ${typeLabel} specialist, the Functional Medicine Certification is the piece that connects everything. I've seen it work for women at your level many times.`;
-            }
+            // Message 2: Explain the scholarship model clearly (NO scary price!)
+            const msg2Content = `Here's how our scholarship works:\n\n✨ You tell us what you can invest\n🏛️ The Institute covers THE REST\n🎓 You get the FULL certification + 9 specializations\n\n👉 This is a ONE-TIME payment — not monthly, not recurring. Just one investment and you're in for LIFE.`;
 
             const msg2: ChatMessage = {
               id: "sarah-2",
@@ -502,14 +559,8 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
               const t3b = setTimeout(() => {
                 setIsTyping(false);
 
-                let msg3Content = "";
-                if (quizData.pastCerts === "spent-5k-plus" || quizData.pastCerts === "multiple-disappointed") {
-                  msg3Content = `I also noticed you've invested in certifications before and it didn't work out the way you hoped. I completely get that. That's actually one of the reasons we set up the ASI Scholarship Program.\n\nHere's what I'd love to do — tell me what you can realistically invest in yourself right now, and I'll personally check if the institute can cover the rest. No pressure at all. What number feels comfortable for you?`;
-                } else if (quizData.currentIncome === "0") {
-                  msg3Content = `I know investing in yourself when you're at ${incomeLabel} can feel like a big step. That's exactly why we have the ASI Scholarship Program — I review every single application myself.\n\nHere's how it works: you tell me what you can honestly put towards this right now, whatever that number is, and I'll check if we can cover the difference through a scholarship. There's genuinely no wrong answer here. What feels right for you?`;
-                } else {
-                  msg3Content = `So here's something I wanted to tell you about — we have an ASI Scholarship Program for healthcare professionals. I review these personally because I really believe in supporting women who are ready for this.\n\nJust tell me what investment feels comfortable for your situation right now, and I'll check with the institute about covering the difference. Totally no pressure — what works for you?`;
-                }
+                // Message 3: Ask for their number - NO example amounts, add "I'll call the Institute"
+                const msg3Content = `So ${firstName}, what amount can you realistically invest in yourself TODAY?\n\nType ANY number — there's no wrong answer. I'll call the Institute right now and see if they can cover the rest for you! 📞`;
 
                 const msg3: ChatMessage = {
                   id: "sarah-3",
@@ -735,6 +786,51 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
                 </div>
               ) : (
                 <p className="whitespace-pre-wrap">{msg.content}</p>
+              )}
+              {/* Voice message player for first welcome message */}
+              {msg.id === "sarah-1" && welcomeAudioUrl && (
+                <button
+                  onClick={() => {
+                    if (welcomeAudioRef.current) {
+                      if (isPlayingWelcomeAudio) {
+                        welcomeAudioRef.current.pause();
+                        setIsPlayingWelcomeAudio(false);
+                      } else {
+                        welcomeAudioRef.current.currentTime = 0;
+                        welcomeAudioRef.current.play()
+                          .then(() => setIsPlayingWelcomeAudio(true))
+                          .catch(() => {});
+                      }
+                    }
+                  }}
+                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded-full transition-all hover:scale-105"
+                  style={{ background: `${B.gold}20`, border: `1px solid ${B.gold}40` }}
+                >
+                  {isPlayingWelcomeAudio ? (
+                    <>
+                      <Pause className="w-3.5 h-3.5" style={{ color: B.burgundy }} />
+                      <span className="text-xs font-medium" style={{ color: B.burgundy }}>Pause</span>
+                      <span className="flex gap-0.5">
+                        {[...Array(4)].map((_, i) => (
+                          <span
+                            key={i}
+                            className="w-1 rounded-full animate-pulse"
+                            style={{
+                              height: `${8 + Math.random() * 8}px`,
+                              background: B.gold,
+                              animationDelay: `${i * 0.1}s`,
+                            }}
+                          />
+                        ))}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-3.5 h-3.5" style={{ color: B.burgundy }} />
+                      <span className="text-xs font-medium" style={{ color: B.burgundy }}>🎧 Hear Sarah&apos;s voice</span>
+                    </>
+                  )}
+                </button>
               )}
               <p className={`text-[10px] mt-1.5 ${msg.role === "user" ? "text-white/50" : "text-gray-400"}`}>
                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}

@@ -197,104 +197,90 @@ export async function POST(request: NextRequest) {
       `[Scholarship] Application submitted by ${normalizedEmail} (${user.id}) - ${TYPE_LABELS[quizData.type] || quizData.type}`
     );
 
-    // Send immediate confirmation email with quiz results
+    // Send simple plain-text scholarship qualification email
     try {
-      const typeLabel = TYPE_LABELS[quizData.type] || quizData.type;
-      const goalLabel = GOAL_LABELS[quizData.goal] || quizData.goal;
-      const incomeLabel = INCOME_LABELS[quizData.currentIncome] || quizData.currentIncome;
-      const visionLabel = VISION_LABELS[quizData.vision] || quizData.vision;
-
       await sendEmail({
         to: normalizedEmail,
         from: "Sarah M. <sarah@accredipro-certificate.com>",
-        subject: `${first}, Your DEPTH Method Results Are In!`,
+        subject: `🎉 Congratulations ${first} — You Qualify for a Scholarship!`,
         type: "transactional",
         text: `Hey ${first}!
 
-I just received your DEPTH Method Assessment results and I'm genuinely excited to connect with you.
+CONGRATULATIONS! 🎉
 
-Here's what stood out to me:
+You QUALIFY for our ASI Scholarship Program!
 
-✨ SPECIALIZATION MATCH: ${typeLabel}
-This is one of the fastest-growing areas in functional medicine right now. Women with your profile are seeing incredible results.
+I just reviewed your application and I'm excited to tell you — you're exactly the kind of practitioner we created this program for.
 
-💰 YOUR INCOME GOAL: ${goalLabel}
-You're currently at ${incomeLabel}, and this goal is absolutely achievable with the right clinical framework.
+Here's how it works:
 
-🎯 YOUR VISION: To ${visionLabel}
-This is exactly why we created the ASI Scholarship Program. We believe financial limitations shouldn't stop passionate practitioners.
+→ You tell us what you can invest
+→ The Institute covers THE REST
+→ You get the FULL FM Certification (9 specializations included)
+→ ONE-TIME payment — not monthly, not recurring
 
-WHAT HAPPENS NEXT:
-I'm personally reviewing your application right now. You should hear back from me within the next few minutes about your scholarship eligibility.
+There's no "right" amount. Whatever you can realistically invest in yourself today, that's your scholarship amount.
 
-In the meantime, I want you to know - we accept ALL scholarship applications. The only question is how much the institute can cover for you.
+I'm waiting for you in the chat right now to discuss your personalized rate.
 
-Talk soon!
+Go back to your results page and let's chat!
+
+Talk soon,
 
 Sarah M.
 Scholarship Director
 Accredipro Specialists Institute
 
-P.S. Keep an eye on the chat widget on the results page - that's where I'll send your scholarship decision!`,
-        html: `
-<!DOCTYPE html>
+P.S. I'll be online for the next few hours — don't miss this opportunity! 💛`,
+        html: `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+<body style="font-family: Georgia, serif; line-height: 1.8; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background: #fafafa;">
 
-  <div style="text-align: center; margin-bottom: 30px;">
-    <img src="https://assets.accredipro.academy/fm-certification/Senza-titolo-Logo-1.png" alt="AccrediPro" style="width: 80px; height: auto;">
+  <div style="background: white; padding: 30px; border-radius: 8px;">
+
+    <p style="font-size: 16px; margin: 0 0 20px 0;">Hey ${first}!</p>
+
+    <p style="font-size: 22px; font-weight: bold; color: #722f37; margin: 0 0 20px 0;">CONGRATULATIONS! 🎉</p>
+
+    <p style="font-size: 18px; margin: 0 0 25px 0;"><strong>You QUALIFY for our ASI Scholarship Program!</strong></p>
+
+    <p style="margin: 0 0 20px 0;">I just reviewed your application and I'm excited to tell you — you're exactly the kind of practitioner we created this program for.</p>
+
+    <div style="background: #f9f7f4; padding: 20px; margin: 25px 0; border-left: 3px solid #d4af37;">
+      <p style="margin: 0 0 10px 0; font-weight: bold;">Here's how it works:</p>
+      <p style="margin: 5px 0;">→ You tell us what you can invest</p>
+      <p style="margin: 5px 0;">→ The Institute covers THE REST</p>
+      <p style="margin: 5px 0;">→ You get the FULL FM Certification (9 specializations)</p>
+      <p style="margin: 5px 0;">→ ONE-TIME payment — not monthly, not recurring</p>
+    </div>
+
+    <p style="margin: 0 0 20px 0;">There's no "right" amount. Whatever you can realistically invest in yourself today, that's your scholarship amount.</p>
+
+    <p style="margin: 0 0 25px 0;"><strong>I'm waiting for you in the chat right now to discuss your personalized rate.</strong></p>
+
+    <p style="margin: 0 0 30px 0;">Go back to your results page and let's chat!</p>
+
+    <p style="margin: 0 0 5px 0;">Talk soon,</p>
+    <p style="margin: 0 0 5px 0; font-weight: bold; color: #722f37;">Sarah M.</p>
+    <p style="margin: 0; font-size: 14px; color: #666;">Scholarship Director<br>Accredipro Specialists Institute</p>
+
+    <p style="margin: 30px 0 0 0; font-size: 14px; color: #888; padding-top: 20px; border-top: 1px solid #eee;">
+      P.S. I'll be online for the next few hours — don't miss this opportunity! 💛
+    </p>
+
   </div>
-
-  <h1 style="color: #722f37; font-size: 24px; margin-bottom: 20px;">Hey ${first}! 👋</h1>
-
-  <p>I just received your <strong>DEPTH Method Assessment</strong> results and I'm genuinely excited to connect with you.</p>
-
-  <div style="background: linear-gradient(135deg, #f9f7f4 0%, #fff 100%); border-left: 4px solid #d4af37; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
-    <h2 style="color: #722f37; font-size: 18px; margin: 0 0 15px 0;">Here's What Stood Out:</h2>
-
-    <p style="margin: 10px 0;"><strong style="color: #d4af37;">✨ SPECIALIZATION MATCH:</strong> ${typeLabel}</p>
-    <p style="font-size: 14px; color: #666; margin: 0 0 15px 0;">This is one of the fastest-growing areas in functional medicine right now.</p>
-
-    <p style="margin: 10px 0;"><strong style="color: #d4af37;">💰 YOUR INCOME GOAL:</strong> ${goalLabel}</p>
-    <p style="font-size: 14px; color: #666; margin: 0 0 15px 0;">You're currently at ${incomeLabel} - this goal is absolutely achievable.</p>
-
-    <p style="margin: 10px 0;"><strong style="color: #d4af37;">🎯 YOUR VISION:</strong> To ${visionLabel}</p>
-    <p style="font-size: 14px; color: #666; margin: 0;">This is exactly why we created the ASI Scholarship Program.</p>
-  </div>
-
-  <div style="background: #722f37; color: white; padding: 25px; border-radius: 12px; margin: 25px 0; text-align: center;">
-    <h3 style="margin: 0 0 10px 0; font-size: 18px;">⏰ What Happens Next?</h3>
-    <p style="margin: 0; font-size: 14px; opacity: 0.9;">I'm personally reviewing your application right now.<br>You'll hear back within minutes about your scholarship eligibility.</p>
-  </div>
-
-  <p style="font-size: 14px; background: #fff8e1; padding: 15px; border-radius: 8px; border: 1px solid #d4af37;">
-    <strong>Remember:</strong> We accept ALL scholarship applications. The only question is how much the institute can cover for you. 💛
-  </p>
-
-  <p style="margin-top: 30px;">Talk soon!</p>
-
-  <div style="margin-top: 20px;">
-    <p style="margin: 0; font-weight: bold; color: #722f37;">Sarah M.</p>
-    <p style="margin: 0; font-size: 14px; color: #666;">Scholarship Director</p>
-    <p style="margin: 0; font-size: 14px; color: #666;">Accredipro Specialists Institute</p>
-  </div>
-
-  <p style="font-size: 13px; color: #888; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-    P.S. Keep an eye on the chat widget on the results page - that's where I'll send your scholarship decision! 💬
-  </p>
 
 </body>
-</html>
-        `,
+</html>`,
       });
 
-      console.log(`[Scholarship] Sent results email to ${normalizedEmail}`);
+      console.log(`[Scholarship] Sent qualification email to ${normalizedEmail}`);
     } catch (emailError) {
-      console.error("[Scholarship] Failed to send results email:", emailError);
+      console.error("[Scholarship] Failed to send qualification email:", emailError);
       // Don't fail the submission if email fails
     }
 
