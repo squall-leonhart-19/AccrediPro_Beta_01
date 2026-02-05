@@ -872,54 +872,74 @@ export default function DEPTHMethodQuiz() {
     if (stage === "optin") {
       return (
         <div className="space-y-5">
+          {/* Timer Badge */}
           <div className="text-center">
-            <Image src={ASI_LOGO} alt="ASI" width={48} height={48} className="mx-auto mb-1" />
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mt-2" style={{ backgroundColor: `${BRAND.burgundy}10`, color: BRAND.burgundy }}>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold" style={{ backgroundColor: `${BRAND.burgundy}10`, color: BRAND.burgundy }}>
               <Clock className="w-3 h-3" /> Results expire in {formatTimer(optinTimer)}
             </div>
           </div>
+
+          {/* Sarah Message */}
           <div className="rounded-xl p-4 border" style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}30` }}>
             <div className="flex items-start gap-3">
-              <Image src={SARAH_AVATAR} alt="Sarah M." width={44} height={44} className="rounded-full border-2 object-cover flex-shrink-0 shadow-md" style={{ borderColor: BRAND.gold }} />
+              <Image src={SARAH_AVATAR} alt="Sarah M." width={48} height={48} className="rounded-full border-2 object-cover flex-shrink-0 shadow-md" style={{ borderColor: BRAND.gold }} />
               <div>
-                <p className="text-gray-900 text-sm font-bold">Sarah M. <span className="text-gray-400 font-normal">- ASI Certified Clinical Director</span></p>
-                <p className="text-gray-600 text-xs mt-0.5">
-                  {name}, your assessment is complete! Enter your details below so I can review your qualification status and send your personalized certification roadmap.
+                <p className="text-gray-900 text-sm font-bold">Sarah M.</p>
+                <p className="text-gray-600 text-xs mt-1">
+                  &quot;{name}, your assessment is complete! 🎉 Enter your details below so I can send your personalized certification roadmap.&quot;
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Form with Gold Frame */}
-          <div className="rounded-xl p-4 space-y-3" style={{ background: `${BRAND.gold}08`, border: `2px solid ${BRAND.gold}30` }}>
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input type="text" value={name} readOnly className="w-full h-11 pl-11 pr-4 text-sm border-2 rounded-xl bg-gray-50 text-gray-500" style={{ borderColor: `${BRAND.gold}40` }} />
+          {/* Certificate Preview */}
+          <div className="flex justify-center">
+            <div className="relative w-full max-w-[200px]">
+              <Image src={CERTIFICATE_IMG} alt="Your Certificate" width={400} height={280} className="rounded-lg shadow-lg border border-gray-200" />
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-md whitespace-nowrap" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+                Your Certificate Awaits
+              </div>
             </div>
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input type="text" placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)}
-                className="w-full h-11 pl-11 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
-                style={{ borderColor: lastName.trim() ? BRAND.gold : "#e5e7eb" }} />
+          </div>
+
+          {/* Form with Full Gold Metallic Frame */}
+          <div className="rounded-2xl overflow-hidden" style={{ background: BRAND.goldMetallic, padding: "3px" }}>
+            <div className="bg-white rounded-xl p-4 space-y-3">
+              {/* First Name (readonly) */}
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input type="text" value={name} readOnly className="w-full h-11 pl-10 pr-4 text-sm border-2 rounded-xl bg-gray-50 text-gray-600 font-medium" style={{ borderColor: `${BRAND.gold}40` }} />
+              </div>
+              {/* Last Name */}
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input type="text" placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)}
+                  className="w-full h-11 pl-10 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
+                  style={{ borderColor: lastName.trim() ? BRAND.gold : "#e5e7eb" }} />
+              </div>
+              {/* Email */}
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input type="email" placeholder="Your best email" value={email} onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-11 pl-10 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
+                  style={{ borderColor: email.includes("@") ? BRAND.gold : "#e5e7eb" }} />
+              </div>
+              {/* Phone with US Flag + +1 */}
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                  <span className="text-base">🇺🇸</span>
+                  <span className="text-gray-500 font-medium text-sm">+1</span>
+                </div>
+                <input type="tel" placeholder="(555) 123-4567" value={phone}
+                  onChange={(e) => {
+                    const cleaned = e.target.value.replace(/[^\d\s()-]/g, "");
+                    setPhone(cleaned);
+                  }}
+                  className="w-full h-11 pl-[4.5rem] pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
+                  style={{ borderColor: phone.trim() ? BRAND.gold : "#e5e7eb" }} />
+              </div>
+              <p className="text-xs text-gray-500 text-center">📱 We&apos;ll text you your results + exclusive bonuses</p>
             </div>
-            <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input type="email" placeholder="Your best email" value={email} onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-11 pl-11 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
-                style={{ borderColor: email.includes("@") ? BRAND.gold : "#e5e7eb" }} />
-            </div>
-            <div className="relative">
-              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <div className="absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm">+1</div>
-              <input type="tel" placeholder="(555) 123-4567" value={phone}
-                onChange={(e) => {
-                  const cleaned = e.target.value.replace(/[^\d\s()-]/g, "");
-                  setPhone(cleaned);
-                }}
-                className="w-full h-11 pl-[4.5rem] pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
-                style={{ borderColor: phone.trim() ? BRAND.gold : "#e5e7eb" }} />
-            </div>
-            <p className="text-xs text-gray-500 text-center">📱 We&apos;ll text you your results + exclusive bonuses</p>
           </div>
 
           {/* DYNAMIC optin bullets */}
@@ -935,10 +955,11 @@ export default function DEPTHMethodQuiz() {
           {/* DYNAMIC scarcity */}
           <div className="text-center p-2 rounded-lg" style={{ backgroundColor: `${BRAND.burgundy}08` }}>
             <p className="text-[11px] font-bold" style={{ color: BRAND.burgundy }}>
-              Only {cohort.spots} spots left in the {cohort.name}
+              ⚡ Only {cohort.spots} spots left in the {cohort.name}
             </p>
           </div>
 
+          {/* Trust */}
           <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
             <Lock className="w-3 h-3" />
             <span>100% private • No spam ever • Unsubscribe anytime</span>
