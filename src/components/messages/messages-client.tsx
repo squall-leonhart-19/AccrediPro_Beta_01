@@ -321,6 +321,22 @@ export function MessagesClient({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null); // WhatsApp-style: keep focus on textarea
+
+  // Auto-resize textarea as user types
+  const autoResizeTextarea = useCallback(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto'; // Reset to recalculate
+      const newHeight = Math.min(textarea.scrollHeight, 150); // Max 150px
+      textarea.style.height = `${Math.max(40, newHeight)}px`; // Min 40px
+    }
+  }, []);
+
+  // Auto-resize when message changes
+  useEffect(() => {
+    autoResizeTextarea();
+  }, [newMessage, autoResizeTextarea]);
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -2946,7 +2962,7 @@ export function MessagesClient({
                         handleSendMessage(e);
                       }
                     }}
-                    className="border-0 bg-transparent focus-visible:ring-0 resize-none min-h-[40px] max-h-[120px] py-2 px-3"
+                    className="border-0 bg-transparent focus-visible:ring-0 resize-none py-2 px-3 overflow-y-auto"
                     style={{ fontSize: '16px' }}
                     disabled={isRecording || !!audioBlob}
                     rows={1}
