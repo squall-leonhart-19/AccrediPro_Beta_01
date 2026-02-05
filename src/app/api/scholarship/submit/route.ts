@@ -199,85 +199,11 @@ export async function POST(request: NextRequest) {
 
     // Send simple plain-text scholarship qualification email
     try {
-      await sendEmail({
+      const { sendScholarshipQualificationEmail } = await import("@/lib/scholarship-emails");
+      await sendScholarshipQualificationEmail({
         to: normalizedEmail,
-        from: "Sarah M. <sarah@accredipro-certificate.com>",
-        subject: `🎉 Congratulations ${first} — You Qualify for a Scholarship!`,
-        type: "transactional",
-        text: `Hey ${first}!
-
-CONGRATULATIONS! 🎉
-
-You QUALIFY for our ASI Scholarship Program!
-
-I just reviewed your application and I'm excited to tell you — you're exactly the kind of practitioner we created this program for.
-
-Here's how it works:
-
-→ You tell us what you can invest
-→ The Institute covers THE REST
-→ You get the FULL FM Certification (9 specializations included)
-→ ONE-TIME payment — not monthly, not recurring
-
-There's no "right" amount. Whatever you can realistically invest in yourself today, that's your scholarship amount.
-
-I'm waiting for you in the chat right now to discuss your personalized rate.
-
-Go back to your results page and let's chat!
-
-Talk soon,
-
-Sarah M.
-Scholarship Director
-Accredipro Specialists Institute
-
-P.S. I'll be online for the next few hours — don't miss this opportunity! 💛`,
-        html: `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="font-family: Georgia, serif; line-height: 1.8; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background: #fafafa;">
-
-  <div style="background: white; padding: 30px; border-radius: 8px;">
-
-    <p style="font-size: 16px; margin: 0 0 20px 0;">Hey ${first}!</p>
-
-    <p style="font-size: 22px; font-weight: bold; color: #722f37; margin: 0 0 20px 0;">CONGRATULATIONS! 🎉</p>
-
-    <p style="font-size: 18px; margin: 0 0 25px 0;"><strong>You QUALIFY for our ASI Scholarship Program!</strong></p>
-
-    <p style="margin: 0 0 20px 0;">I just reviewed your application and I'm excited to tell you — you're exactly the kind of practitioner we created this program for.</p>
-
-    <div style="background: #f9f7f4; padding: 20px; margin: 25px 0; border-left: 3px solid #d4af37;">
-      <p style="margin: 0 0 10px 0; font-weight: bold;">Here's how it works:</p>
-      <p style="margin: 5px 0;">→ You tell us what you can invest</p>
-      <p style="margin: 5px 0;">→ The Institute covers THE REST</p>
-      <p style="margin: 5px 0;">→ You get the FULL FM Certification (9 specializations)</p>
-      <p style="margin: 5px 0;">→ ONE-TIME payment — not monthly, not recurring</p>
-    </div>
-
-    <p style="margin: 0 0 20px 0;">There's no "right" amount. Whatever you can realistically invest in yourself today, that's your scholarship amount.</p>
-
-    <p style="margin: 0 0 25px 0;"><strong>I'm waiting for you in the chat right now to discuss your personalized rate.</strong></p>
-
-    <p style="margin: 0 0 30px 0;">Go back to your results page and let's chat!</p>
-
-    <p style="margin: 0 0 5px 0;">Talk soon,</p>
-    <p style="margin: 0 0 5px 0; font-weight: bold; color: #722f37;">Sarah M.</p>
-    <p style="margin: 0; font-size: 14px; color: #666;">Scholarship Director<br>Accredipro Specialists Institute</p>
-
-    <p style="margin: 30px 0 0 0; font-size: 14px; color: #888; padding-top: 20px; border-top: 1px solid #eee;">
-      P.S. I'll be online for the next few hours — don't miss this opportunity! 💛
-    </p>
-
-  </div>
-
-</body>
-</html>`,
+        firstName: first,
       });
-
       console.log(`[Scholarship] Sent qualification email to ${normalizedEmail}`);
     } catch (emailError) {
       console.error("[Scholarship] Failed to send qualification email:", emailError);

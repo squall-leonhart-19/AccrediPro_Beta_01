@@ -864,6 +864,22 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
                       repliedBy: "Sarah M. (Auto-Approval)",
                     }),
                   }).catch(() => { });
+
+                  // 📧 SEND EMAIL #2: Scholarship Approved (plain text)
+                  if (autoReply.tier && email) {
+                    fetch("/api/scholarship/send-approval-email", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        email,
+                        firstName,
+                        amount: autoReply.fullContext.offeredAmount,
+                        finalAmount: autoReply.fullContext.finalAmount,
+                        couponCode: autoReply.fullContext.couponCode,
+                        savings: autoReply.tier.savings,
+                      }),
+                    }).catch((err) => console.error("[Scholarship Email] Failed:", err));
+                  }
                 }, 3500); // Typing duration for approval
               }, approvalDelay);
             }, 2000); // Typing duration for calling

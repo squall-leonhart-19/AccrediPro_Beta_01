@@ -182,6 +182,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "learn.accredipro.academy",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "coach.accredipro.academy",
         pathname: "/**",
       },
