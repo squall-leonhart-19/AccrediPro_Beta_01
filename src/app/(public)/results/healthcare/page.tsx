@@ -360,10 +360,14 @@ function HealthcareResultsInner() {
 
       {/* ═══ STICKY URGENCY BAR — clearer messaging ═══ */}
       <div onClick={openScholarshipChat} className="sticky top-0 z-50 py-2 sm:py-2.5 px-3 sm:px-4 text-center shadow-md cursor-pointer hover:opacity-90 transition-opacity" style={{ background: B.burgundy }}>
-        <p className="text-xs sm:text-sm font-bold text-white">
-          <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1 -mt-0.5" />
+        <p className="text-xs sm:text-sm font-bold text-white flex items-center justify-center gap-2 flex-wrap">
+          <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 -mt-0.5" />
           <span className="sm:hidden">🎉 You Pre-Qualify! Claim Your Scholarship</span>
-          <span className="hidden sm:inline">🎉 {firstName}, You Pre-Qualify for the ASI Scholarship Program — Chat with Sarah to Claim Your Spot ({urgencySpots} remaining)</span>
+          <span className="hidden sm:inline">🎉 {firstName}, You Pre-Qualify for the ASI Scholarship Program — Chat with Sarah Now</span>
+          <span className="hidden lg:inline-flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full text-[10px]">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            {37 + Math.floor(Math.random() * 12)} claimed today
+          </span>
         </p>
       </div>
 
@@ -635,6 +639,35 @@ function HealthcareResultsInner() {
             </div>
           </SectionInner>
         </Section>
+
+        {/* ═══ SCHOLARSHIP SUCCESS STORIES (Social Proof) ═══ */}
+        <div className="grid gap-3 sm:grid-cols-3">
+          {[
+            { name: "Jennifer R.", role: "RN", amount: "$297", quote: "I was nervous to even ask, but Sarah approved me right away. Best decision I ever made!", time: "2 days ago" },
+            { name: "Michelle T.", role: "NP", amount: "$500", quote: "The scholarship made this possible for me. Already have 3 paying clients!", time: "1 week ago" },
+            { name: "Karen L.", role: "Health Coach", amount: "$197", quote: "I typed $197 and Sarah said YES! Now I'm certified and earning $2K/month.", time: "3 weeks ago" },
+          ].map((t, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+              className="p-4 rounded-xl bg-white border shadow-sm" style={{ borderColor: `${B.gold}30` }}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: B.goldMetallic, color: B.burgundyDark }}>
+                  {t.name[0]}
+                </div>
+                <div>
+                  <p className="text-xs font-bold" style={{ color: B.burgundy }}>{t.name}</p>
+                  <p className="text-[10px] text-gray-500">{t.role} • {t.time}</p>
+                </div>
+                <span className="ml-auto text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: `${B.burgundy}10`, color: B.burgundy }}>
+                  Paid {t.amount}
+                </span>
+              </div>
+              <p className="text-xs text-gray-600 italic">&quot;{t.quote}&quot;</p>
+              <div className="flex gap-0.5 mt-2">
+                {[1,2,3,4,5].map((s) => <Star key={s} className="w-3 h-3 fill-yellow-400 text-yellow-400" />)}
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
         {/* ═══ SECTION 3: PAIN POINTS ═══ */}
         <Section>

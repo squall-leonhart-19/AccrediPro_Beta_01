@@ -629,7 +629,36 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       });
     } catch {}
 
-    // NO auto-acknowledgment - admin will respond manually
+    // INSTANT AUTO-RESPONSE if they typed a number (their scholarship amount)
+    const hasNumber = /\$?\d+/.test(userMessage);
+    if (hasNumber && messages.length <= 5) { // Only for first number submission
+      // Show typing indicator briefly
+      setTimeout(() => {
+        setIsTyping(true);
+        setTimeout(() => {
+          setIsTyping(false);
+          const autoResponse: ChatMessage = {
+            id: `sarah-auto-${Date.now()}`,
+            role: "sarah",
+            content: `Got it! 🙏 Let me call the Institute right now to check if they can cover the rest for you...\n\n⏳ Hold tight — I'll be back in just a moment with your scholarship decision!`,
+            timestamp: new Date().toISOString(),
+          };
+          setMessages(prev => [...prev, autoResponse]);
+          // Also save to DB so admin can see it
+          fetch("/api/chat/sales", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: autoResponse.content,
+              page: `scholarship-${page}`,
+              visitorId,
+              isFromVisitor: false,
+              repliedBy: "Sarah M. (Auto)",
+            }),
+          }).catch(() => {});
+        }, 2000);
+      }, 1000);
+    }
   };
 
   // ─── Floating Button ────────────────────────────────────────────
