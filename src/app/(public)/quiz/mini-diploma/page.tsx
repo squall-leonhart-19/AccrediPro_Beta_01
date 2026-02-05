@@ -685,10 +685,13 @@ export default function MiniDiplomaQuiz() {
                     <Button
                       onClick={() => name.trim() && setStage("quiz")}
                       disabled={!name.trim()}
-                      className="w-full h-14 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                      className="group w-full h-14 text-lg font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 relative overflow-hidden"
                       style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                     >
-                      Start My Application <ArrowRight className="ml-2 w-5 h-5" />
+                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                      <span className="relative flex items-center justify-center">
+                        Start My Application <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </span>
                     </Button>
                   </div>
 
@@ -840,10 +843,13 @@ export default function MiniDiplomaQuiz() {
                         </div>
                         <Button
                           onClick={continueFromTestimonial}
-                          className="w-full h-12 font-bold rounded-xl shadow-lg"
+                          className="group w-full h-12 font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 relative overflow-hidden"
                           style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                         >
-                          Continue <ArrowRight className="ml-2 w-5 h-5" />
+                          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                          <span className="relative flex items-center justify-center">
+                            Continue <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          </span>
                         </Button>
                       </>
                     );
@@ -896,10 +902,13 @@ export default function MiniDiplomaQuiz() {
                   </div>
                   <Button
                     onClick={continueFromCheckpoint}
-                    className="w-full h-12 font-bold rounded-xl shadow-lg"
+                    className="group w-full h-12 font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 relative overflow-hidden"
                     style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                   >
-                    {currentQ === 2 ? "Yes, Show Me" : "Let's Finish This"} <ArrowRight className="ml-2 w-5 h-5" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <span className="relative flex items-center justify-center">
+                      {currentQ === 2 ? "Yes, Show Me" : "Let's Finish This"} <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
                   </Button>
                 </div>
               </motion.div>
@@ -934,10 +943,13 @@ export default function MiniDiplomaQuiz() {
                   <p className="text-sm text-gray-500">Just 3 more questions to confirm your qualification!</p>
                   <Button
                     onClick={continueFromTeaser}
-                    className="w-full h-12 font-bold rounded-xl shadow-lg"
+                    className="group w-full h-12 font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 relative overflow-hidden"
                     style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                   >
-                    Continue <ArrowRight className="ml-2 w-5 h-5" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <span className="relative flex items-center justify-center">
+                      Continue <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
                   </Button>
                 </div>
               </motion.div>
@@ -1011,10 +1023,13 @@ export default function MiniDiplomaQuiz() {
                     <Button
                       onClick={handleOptinSubmit}
                       disabled={!email || submitting}
-                      className="w-full h-14 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                      className="group w-full h-14 text-lg font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 relative overflow-hidden"
                       style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                     >
-                      {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Show My Results, Sarah! <ArrowRight className="ml-2 w-5 h-5" /></>}
+                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                      <span className="relative flex items-center justify-center">
+                        {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Show My Results, Sarah! <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" /></>}
+                      </span>
                     </Button>
                   </div>
 
@@ -1123,10 +1138,13 @@ export default function MiniDiplomaQuiz() {
                   {/* CTA */}
                   <Button
                     onClick={goToResults}
-                    className="w-full h-14 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                    className="group w-full h-14 text-lg font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 relative overflow-hidden"
                     style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                   >
-                    Claim My Spot <ArrowRight className="ml-2 w-5 h-5" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <span className="relative flex items-center justify-center">
+                      Claim My Spot <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
                   </Button>
 
                   {/* Trust Footer */}
