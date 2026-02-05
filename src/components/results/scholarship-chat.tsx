@@ -96,11 +96,14 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
   const [welcomeDone, setWelcomeDone] = useState(false);
   const [visitorId, setVisitorId] = useState("");
   const [showPulse, setShowPulse] = useState(true);
+  const [urgencyTimer, setUrgencyTimer] = useState<number | null>(null); // 10 min countdown in seconds
+  const [approvalAmount, setApprovalAmount] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isNearBottom = useRef(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const welcomeTimers = useRef<NodeJS.Timeout[]>([]);
+  const urgencyIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // ─── Restore from localStorage on mount ─────────────────────────
   useEffect(() => {
@@ -173,6 +176,30 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
             timestamp: m.createdAt || new Date().toISOString(),
             fromServer: true,
           }));
+
+          // Check for approval message and start urgency timer
+          const approvalMsg = serverMessages.find(m =>
+            m.role === "sarah" &&
+            m.content.toLowerCase().includes("approved") &&
+            (m.content.toLowerCase().includes("10 minute") || m.content.toLowerCase().includes("scholarship"))
+          );
+
+          if (approvalMsg && urgencyTimer === null) {
+            // Extract amount from message
+            const amountMatch = approvalMsg.content.match(/\$[\d,]+(?:\.\d{2})?/);
+            if (amountMatch) setApprovalAmount(amountMatch[0]);
+
+            // Calculate remaining time from when the approval was sent
+            const approvalTime = new Date(approvalMsg.timestamp).getTime();
+            const now = Date.now();
+            const elapsedSeconds = Math.floor((now - approvalTime) / 1000);
+            const remainingSeconds = Math.max(0, 600 - elapsedSeconds); // 10 minutes = 600 seconds
+
+            if (remainingSeconds > 0) {
+              setUrgencyTimer(remainingSeconds);
+            }
+          }
+
           setMessages(prev => {
             const localMsgs = prev.filter(m => !m.fromServer);
             const merged = [...localMsgs, ...serverMessages];
@@ -197,7 +224,26 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       if (interval) clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, [visitorId, hasStarted]);
+  }, [visitorId, hasStarted, urgencyTimer]);
+
+  // ─── Urgency countdown timer ──────────────────────────────────────
+  useEffect(() => {
+    if (urgencyTimer !== null && urgencyTimer > 0) {
+      urgencyIntervalRef.current = setInterval(() => {
+        setUrgencyTimer(prev => {
+          if (prev === null || prev <= 1) {
+            if (urgencyIntervalRef.current) clearInterval(urgencyIntervalRef.current);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (urgencyIntervalRef.current) clearInterval(urgencyIntervalRef.current);
+    };
+  }, [urgencyTimer !== null && urgencyTimer > 0]);
 
   // ─── Start scholarship chat ──────────────────────────────────────
   const startScholarshipChat = useCallback(async () => {
@@ -214,6 +260,22 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           name: `${firstName} ${lastName}`.trim(),
           email,
           page: `scholarship-${page}`,
+        }),
+      });
+    } catch {}
+
+    // 1b. Submit scholarship application (creates lead + sends email)
+    try {
+      await fetch("/api/scholarship/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          visitorId,
+          quizData,
+          page,
         }),
       });
     } catch {}
@@ -421,13 +483,38 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
         </button>
       </div>
 
-      {/* Scholarship badge */}
-      <div className="flex-none px-3 sm:px-4 py-2 border-b flex items-center gap-2" style={{ background: `${B.gold}10`, borderColor: `${B.gold}30` }}>
-        <Sparkles className="w-3.5 h-3.5 flex-shrink-0" style={{ color: B.gold }} />
-        <p className="text-[10px] sm:text-[11px] font-medium" style={{ color: B.burgundy }}>
-          ASI Scholarship Application — Pay What You Can, We&apos;ll Cover the Rest
-        </p>
-      </div>
+      {/* Scholarship badge or Urgency Timer */}
+      {urgencyTimer !== null && urgencyTimer > 0 ? (
+        <div className="flex-none px-3 sm:px-4 py-2.5 border-b flex items-center justify-between gap-2 animate-pulse" style={{ background: "linear-gradient(90deg, #dc2626 0%, #b91c1c 100%)", borderColor: "#991b1b" }}>
+          <div className="flex items-center gap-2">
+            <span className="text-white text-lg">🎉</span>
+            <div>
+              <p className="text-[11px] sm:text-xs font-bold text-white">SCHOLARSHIP APPROVED!</p>
+              <p className="text-[10px] text-white/80">{approvalAmount ? `Your rate: ${approvalAmount}` : "Special rate applied"}</p>
+            </div>
+          </div>
+          <div className="text-center">
+            <p className="text-lg sm:text-xl font-bold text-white font-mono">
+              {Math.floor(urgencyTimer / 60)}:{(urgencyTimer % 60).toString().padStart(2, "0")}
+            </p>
+            <p className="text-[9px] text-white/70">EXPIRES</p>
+          </div>
+        </div>
+      ) : urgencyTimer === 0 ? (
+        <div className="flex-none px-3 sm:px-4 py-2.5 border-b flex items-center gap-2" style={{ background: "#fef2f2", borderColor: "#fecaca" }}>
+          <span className="text-red-500 text-lg">⏰</span>
+          <p className="text-[11px] sm:text-xs font-medium text-red-700">
+            Scholarship offer expired. Reply to request a new approval!
+          </p>
+        </div>
+      ) : (
+        <div className="flex-none px-3 sm:px-4 py-2 border-b flex items-center gap-2" style={{ background: `${B.gold}10`, borderColor: `${B.gold}30` }}>
+          <Sparkles className="w-3.5 h-3.5 flex-shrink-0" style={{ color: B.gold }} />
+          <p className="text-[10px] sm:text-[11px] font-medium" style={{ color: B.burgundy }}>
+            ASI Scholarship Application — Pay What You Can, We&apos;ll Cover the Rest
+          </p>
+        </div>
+      )}
 
       {/* Messages */}
       <div

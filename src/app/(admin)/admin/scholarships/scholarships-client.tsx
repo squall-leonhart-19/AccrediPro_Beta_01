@@ -72,13 +72,25 @@ interface ScholarshipApplication {
 // Scholarship quick reply templates
 const SCHOLARSHIP_REPLIES = [
   {
+    label: "⏳ Bear With Me",
+    text: "Hold on! 🙏 Let me call the Institute right now to check on your scholarship approval. I'll be back in just a moment... ⏳",
+    color: "bg-amber-50 border-amber-300 text-amber-700 hover:bg-amber-100",
+    isAutoStep: "initiate" as const,
+  },
+  {
+    label: "🎉 APPROVED + FOMO",
+    text: "🎉 AMAZING NEWS!\n\nI just got off the phone with the Institute and they've APPROVED your scholarship!\n\n✅ Your scholarship has been approved for [AMOUNT]\n✅ Full FM Certification access (normally $4,997)\n✅ 9 Clinical Certifications\n✅ Lifetime access + mentorship\n\n⚠️ IMPORTANT: This scholarship approval is only valid for the next 10 MINUTES. After that, I'll have to resubmit your application.\n\nReady to lock in your spot? Just reply \"YES\" and I'll send you the secure payment link right now! 💜",
+    color: "bg-green-100 border-green-300 text-green-700 hover:bg-green-200 font-bold",
+    isAutoStep: "approve" as const,
+  },
+  {
     label: "👋 Acknowledge",
     text: "Hey! I just received your scholarship application. Give me a moment to review everything... 💜",
     color: "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100",
   },
   {
-    label: "✅ Approved",
-    text: "Great news! I've reviewed your application and I'm happy to approve a scholarship for you. The FM Certification is normally $1,997 but with your scholarship, you'll only pay [AMOUNT]. This covers everything - 9 certifications, mentorship, and lifetime access. Ready to get started? 🎉",
+    label: "✅ Simple Approved",
+    text: "Great news! I've reviewed your application and I'm happy to approve a scholarship for you. The FM Certification is normally $4,997 but with your scholarship, you'll only pay [AMOUNT]. This covers everything - 9 certifications, mentorship, and lifetime access. Ready to get started? 🎉",
     color: "bg-green-50 border-green-200 text-green-700 hover:bg-green-100",
   },
   {
@@ -100,6 +112,16 @@ const SCHOLARSHIP_REPLIES = [
     label: "🔔 Follow Up",
     text: "Hey! Just checking in on your scholarship application. Did you have any questions? I'm here to help! 💜",
     color: "bg-orange-50 border-orange-200 text-orange-700 hover:bg-orange-100",
+  },
+  {
+    label: "💳 Send Payment Link",
+    text: "Perfect! Here's your secure payment link to lock in your scholarship:\n\n🔗 [PAYMENT LINK]\n\nThis link is only valid for the next 10 minutes. Once you complete the payment, you'll get instant access to everything! 💜",
+    color: "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100",
+  },
+  {
+    label: "⏰ Urgency Reminder",
+    text: "Hey! Just a quick reminder - your scholarship approval expires in a few minutes. I really don't want you to miss this opportunity! Are you ready to proceed? 💜",
+    color: "bg-red-50 border-red-200 text-red-700 hover:bg-red-100",
   },
 ];
 
@@ -162,6 +184,8 @@ export default function ScholarshipsClient() {
   const [showQuickReplies, setShowQuickReplies] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [autoApproveStep, setAutoApproveStep] = useState<"idle" | "initiating" | "waiting" | "approving">("idle");
+  const [autoApproveCountdown, setAutoApproveCountdown] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const selectedVisitorIdRef = useRef<string | null>(null);
   const prevUnreadCountRef = useRef<number>(0);
@@ -325,6 +349,65 @@ export default function ScholarshipsClient() {
     }
   };
 
+  // Auto-approve with FOMO sequence
+  const triggerAutoApprove = async (step: "initiate" | "approve", offeredAmount?: string) => {
+    if (!selectedApp) return;
+
+    if (step === "initiate") {
+      setAutoApproveStep("initiating");
+      try {
+        const res = await fetch("/api/admin/scholarships/auto-approve", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ visitorId: selectedApp.visitorId, step: "initiate" }),
+        });
+        if (res.ok) {
+          await fetchApplications();
+          // Start countdown for approval (30 seconds)
+          setAutoApproveStep("waiting");
+          setAutoApproveCountdown(30);
+          const countdown = setInterval(() => {
+            setAutoApproveCountdown(prev => {
+              if (prev <= 1) {
+                clearInterval(countdown);
+                setAutoApproveStep("idle");
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+        }
+      } catch {
+        setError("Failed to initiate auto-approve");
+        setAutoApproveStep("idle");
+      }
+    } else if (step === "approve") {
+      const amount = offeredAmount || prompt("Enter the scholarship amount (e.g., $500):");
+      if (!amount) return;
+
+      setAutoApproveStep("approving");
+      try {
+        const res = await fetch("/api/admin/scholarships/auto-approve", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            visitorId: selectedApp.visitorId,
+            step: "approve",
+            offeredAmount: amount,
+          }),
+        });
+        if (res.ok) {
+          await fetchApplications();
+          setAutoApproveStep("idle");
+          setAutoApproveCountdown(0);
+        }
+      } catch {
+        setError("Failed to send approval");
+        setAutoApproveStep("idle");
+      }
+    }
+  };
+
   // Format time
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -440,6 +523,40 @@ export default function ScholarshipsClient() {
           <Button variant="outline" onClick={exportToCSV} disabled={applications.length === 0}>
             <Download className="w-4 h-4 mr-2" />
             Export CSV
+          </Button>
+          <Button
+            variant="outline"
+            onClick={async () => {
+              if (!selectedApp?.visitorEmail) {
+                alert("Select an application with an email first");
+                return;
+              }
+              const amount = prompt("Enter scholarship amount for recovery email (e.g., $500):");
+              if (!amount) return;
+              try {
+                const res = await fetch("/api/admin/scholarships/recovery", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    mode: "single",
+                    email: selectedApp.visitorEmail,
+                    firstName: selectedApp.visitorName?.split(" ")[0] || "there",
+                    offeredAmount: amount,
+                  }),
+                });
+                if (res.ok) {
+                  alert("Recovery email sent successfully!");
+                } else {
+                  alert("Failed to send recovery email");
+                }
+              } catch {
+                alert("Error sending recovery email");
+              }
+            }}
+            className="text-amber-700 border-amber-300 hover:bg-amber-50"
+          >
+            <Mail className="w-4 h-4 mr-2" />
+            Send Recovery
           </Button>
           <Button variant="outline" onClick={fetchApplications} disabled={loading}>
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
@@ -714,20 +831,60 @@ export default function ScholarshipsClient() {
                       Close
                     </Button>
                   </div>
+
+                  {/* Auto-approve status */}
+                  {autoApproveStep !== "idle" && (
+                    <div className="mb-3 p-3 rounded-lg bg-amber-100 border border-amber-300">
+                      {autoApproveStep === "initiating" && (
+                        <p className="text-sm text-amber-800 flex items-center gap-2">
+                          <RefreshCw className="w-4 h-4 animate-spin" /> Sending "Bear with me" message...
+                        </p>
+                      )}
+                      {autoApproveStep === "waiting" && (
+                        <div>
+                          <p className="text-sm text-amber-800 font-medium flex items-center gap-2">
+                            <Clock className="w-4 h-4" /> Wait {autoApproveCountdown}s before sending approval
+                          </p>
+                          <p className="text-xs text-amber-600 mt-1">Click "🎉 APPROVED + FOMO" when ready (or wait for dramatic effect!)</p>
+                        </div>
+                      )}
+                      {autoApproveStep === "approving" && (
+                        <p className="text-sm text-green-800 flex items-center gap-2">
+                          <RefreshCw className="w-4 h-4 animate-spin" /> Sending approval + email...
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   <div className="flex flex-wrap gap-2">
                     {SCHOLARSHIP_REPLIES.map((qr, i) => (
                       <Button
                         key={i}
                         variant="outline"
                         size="sm"
-                        onClick={() => { setReplyMessage(qr.text); setShowQuickReplies(false); textareaRef.current?.focus(); }}
+                        onClick={() => {
+                          if (qr.isAutoStep === "initiate") {
+                            triggerAutoApprove("initiate");
+                          } else if (qr.isAutoStep === "approve") {
+                            const offeredAmount = getUserOfferedAmount(selectedApp?.messages || []);
+                            triggerAutoApprove("approve", offeredAmount || undefined);
+                          } else {
+                            setReplyMessage(qr.text);
+                            setShowQuickReplies(false);
+                            textareaRef.current?.focus();
+                          }
+                        }}
+                        disabled={
+                          (qr.isAutoStep === "initiate" && autoApproveStep !== "idle") ||
+                          (qr.isAutoStep === "approve" && autoApproveStep === "initiating")
+                        }
                         className={`text-xs ${qr.color}`}
                       >
                         {qr.label}
                       </Button>
                     ))}
                   </div>
-                  <p className="text-xs text-purple-600 mt-2">💡 Replace [AMOUNT] with your offer. Full price is $1,997</p>
+                  <p className="text-xs text-purple-600 mt-2">💡 Full price: $4,997 • Use auto-approve for FOMO sequence</p>
                 </div>
               )}
 
