@@ -896,7 +896,8 @@ export default function DEPTHMethodQuiz() {
           {/* Certificate Preview */}
           <div className="flex justify-center">
             <div className="relative w-full max-w-[200px]">
-              <Image src={CERTIFICATE_IMG} alt="Your Certificate" width={400} height={280} className="rounded-lg shadow-lg border border-gray-200" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={CERTIFICATE_IMG} alt="Your Certificate" className="w-full rounded-lg shadow-lg border border-gray-200" />
               <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-md whitespace-nowrap" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
                 Your Certificate Awaits
               </div>
@@ -1056,7 +1057,8 @@ export default function DEPTHMethodQuiz() {
           {/* Certificate preview + DYNAMIC subtitle */}
           <div className="flex justify-center">
             <div className="relative w-full max-w-[220px]">
-              <Image src={CERTIFICATE_IMG} alt="Your ASI Certificate" width={560} height={400} className="rounded-lg shadow-lg border border-gray-200" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={CERTIFICATE_IMG} alt="Your ASI Certificate" className="w-full rounded-lg shadow-lg border border-gray-200" />
               <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-md whitespace-nowrap" style={{ background: BRAND.burgundy, color: "white" }}>
                 {practitionerType.label}
               </div>
