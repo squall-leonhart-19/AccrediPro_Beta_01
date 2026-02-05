@@ -29,10 +29,20 @@ export async function POST(request: NextRequest) {
             include: { user: true, product: true },
         });
 
-        if (!purchase || purchase.userId !== session.user.id) {
+        if (!purchase) {
+            console.error(`[DFY Intake] Purchase not found: ${purchaseId}`);
             return NextResponse.json(
                 { error: "Purchase not found" },
                 { status: 404 }
+            );
+        }
+
+        // Check ownership - compare as strings to handle type mismatches
+        if (String(purchase.userId) !== String(session.user.id)) {
+            console.error(`[DFY Intake] Ownership mismatch: purchase.userId=${purchase.userId}, session.user.id=${session.user.id}`);
+            return NextResponse.json(
+                { error: "Purchase does not belong to this user" },
+                { status: 403 }
             );
         }
 

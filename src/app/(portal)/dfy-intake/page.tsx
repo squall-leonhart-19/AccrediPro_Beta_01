@@ -390,10 +390,14 @@ function DFYIntakeFormContent() {
         });
     };
 
+    const [submitError, setSubmitError] = useState<string | null>(null);
+
     const handleSubmit = async () => {
         if (!purchaseId) return;
 
         setLoading(true);
+        setSubmitError(null);
+
         try {
             // Upload photos first if any
             let photoUrls: string[] = [];
@@ -429,9 +433,14 @@ function DFYIntakeFormContent() {
 
             if (res.ok) {
                 setSubmitted(true);
+            } else {
+                const errorData = await res.json().catch(() => ({}));
+                console.error("Submit failed:", res.status, errorData);
+                setSubmitError(errorData.error || `Submission failed (${res.status}). Please try again.`);
             }
         } catch (error) {
             console.error("Failed to submit:", error);
+            setSubmitError("Network error. Please check your connection and try again.");
         }
         setLoading(false);
     };
@@ -919,25 +928,30 @@ function DFYIntakeFormContent() {
                                 )}
 
                                 {isLastStep ? (
-                                    <Button
-                                        onClick={handleSubmit}
-                                        disabled={loading}
-                                        size="lg"
-                                        className="h-12 px-8 text-base font-bold rounded-xl shadow-lg"
-                                        style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
-                                    >
-                                        {loading ? (
-                                            <>
-                                                <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                                                Submitting...
-                                            </>
-                                        ) : (
-                                            <>
-                                                Submit My Info
-                                                <CheckCircle className="w-5 h-5 ml-2" />
-                                            </>
+                                    <div className="flex flex-col items-end gap-2">
+                                        {submitError && (
+                                            <p className="text-red-500 text-sm">{submitError}</p>
                                         )}
-                                    </Button>
+                                        <Button
+                                            onClick={handleSubmit}
+                                            disabled={loading}
+                                            size="lg"
+                                            className="h-12 px-8 text-base font-bold rounded-xl shadow-lg"
+                                            style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
+                                        >
+                                            {loading ? (
+                                                <>
+                                                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                                    Submitting...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Submit My Info
+                                                    <CheckCircle className="w-5 h-5 ml-2" />
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
                                 ) : (
                                     <Button
                                         onClick={handleNext}
