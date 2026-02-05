@@ -106,10 +106,13 @@ export async function GET() {
             // 1. Last message is from visitor
             // 2. Last message was >1 minute ago
             // 3. No admin reply exists yet
+            // 4. NOT a scholarship chat (those require manual admin response)
+            const isScholarshipChat = (lastMsg.page || "").toLowerCase().includes("scholarship");
             if (
                 lastMsg.isFromVisitor &&
                 lastMsg.createdAt < oneMinuteAgo &&
-                !sortedMsgs.some((m) => !m.isFromVisitor && m.createdAt > lastMsg.createdAt)
+                !sortedMsgs.some((m) => !m.isFromVisitor && m.createdAt > lastMsg.createdAt) &&
+                !isScholarshipChat
             ) {
                 // Generate and send auto-reply
                 try {

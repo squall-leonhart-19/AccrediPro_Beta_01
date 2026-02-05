@@ -357,7 +357,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     setMessages(prev => [...prev, userMsg]);
     isNearBottom.current = true;
 
-    // Send to admin panel
+    // Send to admin panel - scholarship chats require MANUAL admin response only
     try {
       await fetch("/api/chat/sales", {
         method: "POST",
@@ -372,27 +372,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       });
     } catch {}
 
-    // Show "Sarah is checking..." acknowledgment after a natural pause
-    setTimeout(() => {
-      setIsTyping(true);
-      setTimeout(() => {
-        setIsTyping(false);
-        // Only add a response if no server message came in during the wait
-        setMessages(prev => {
-          const lastMsg = prev[prev.length - 1];
-          // If the last message is from the user (no admin reply yet), add acknowledgment
-          if (lastMsg?.role === "user") {
-            return [...prev, {
-              id: `sarah-ack-${Date.now()}`,
-              role: "sarah" as const,
-              content: `Thanks ${firstName}, let me check on that for you. Give me just a moment...`,
-              timestamp: new Date().toISOString(),
-            }];
-          }
-          return prev;
-        });
-      }, 3000);
-    }, 2000);
+    // NO auto-acknowledgment - admin will respond manually
   };
 
   // ─── Floating Button ────────────────────────────────────────────
