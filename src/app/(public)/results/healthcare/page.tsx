@@ -306,54 +306,87 @@ function HealthcareResultsInner() {
 
       <div className="max-w-5xl lg:max-w-[1200px] mx-auto px-3 sm:px-4 lg:px-8 py-6 sm:py-8 md:py-14 space-y-6 sm:space-y-8">
 
-        {/* ═══ SECTION 1: HERO (dynamic subtitle from Q8) ═══ */}
+        {/* ═══ SECTION 1: HERO (dynamic subtitle from Q8) — CTA ABOVE FOLD ═══ */}
         <Section>
           <div className="px-4 sm:px-6 py-3 flex items-center justify-between gap-2" style={{ background: B.goldMetallic }}>
             <span className="text-xs sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2" style={{ color: B.burgundyDark }}>
-              <Stethoscope className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" /> <span className="hidden sm:inline">ASI Clinical Assessment —</span> Results
+              <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" /> Assessment Complete — <span className="text-green-700">You Qualify!</span>
             </span>
             <span className="text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-1 rounded-full whitespace-nowrap" style={{ backgroundColor: `${B.burgundyDark}20`, color: B.burgundyDark }}>
               Healthcare Fast-Track
             </span>
           </div>
 
-          <SectionInner className="text-center space-y-5 sm:space-y-6">
-            <Image src={ASI_LOGO} alt="ASI" width={72} height={72} className="mx-auto w-14 h-14 sm:w-[72px] sm:h-[72px]" />
-
-            <div className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest" style={{ backgroundColor: `${B.burgundy}10`, color: B.burgundy }}>
-              <Award className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> For Healthcare Professionals
+          <SectionInner className="text-center space-y-4 sm:space-y-5">
+            {/* Qualification Badge - no logo image */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shadow-lg" style={{ background: B.goldMetallic }}>
+                <Zap className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: B.burgundyDark }} />
+              </div>
+              <span className="text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide" style={{ background: B.burgundyDark, color: "white" }}>
+                You Qualify
+              </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-extrabold leading-[1.15]" style={{ color: B.burgundyDark }}>
-              {firstName}, Your Clinical Background Is Worth {income.label}
-              <br />
-              <span style={{ color: B.burgundy }}>Here&apos;s the Missing Piece.</span>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-[1.15]" style={{ color: B.burgundyDark }}>
+              {firstName}, You Qualify!
             </h1>
 
-            {/* DYNAMIC subtitle from Q8 missing skill */}
-            <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
-              {heroSubtitle[missingSkill] || heroSubtitle["framework"]}
+            <p className="text-sm sm:text-base text-gray-600 max-w-lg mx-auto">
+              Based on your assessment, ASI has identified you as a
             </p>
 
-            {/* Practitioner badge */}
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }}
-              className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-sm sm:text-lg shadow-lg" style={{ background: B.goldMetallic, color: B.burgundyDark }}>
-              <PractIcon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" /> {pract.label} — Specialized in {pract.specialization}
+            {/* Practitioner badge - PROMINENT */}
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-5 sm:px-8 py-3 sm:py-4 rounded-full font-bold text-base sm:text-xl shadow-xl border-2" style={{ background: `${B.gold}15`, borderColor: B.gold, color: B.burgundyDark }}>
+              <PractIcon className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" /> {pract.specialization} Specialist
             </motion.div>
 
-            {/* Certificate */}
-            <div className="flex justify-center pt-2">
-              <div className="relative w-full max-w-sm">
-                <Image src={CERT_IMG} alt="Your Certificate" width={560} height={400} className="rounded-xl shadow-2xl border-2" style={{ borderColor: `${B.gold}60` }} />
-                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-3 sm:px-5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider shadow-lg whitespace-nowrap" style={{ background: B.burgundy, color: "white" }}>
-                  Specialized in {pract.specialization}
-                </div>
+            <p className="text-xs sm:text-sm text-gray-600 max-w-md mx-auto">
+              {pract.desc}
+            </p>
+
+            {/* Qualification Score */}
+            <div className="max-w-md mx-auto p-4 rounded-xl border bg-white shadow-sm" style={{ borderColor: `${B.gold}30` }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold" style={{ color: B.burgundy }}>Qualification Score</span>
+                <span className="text-lg font-bold px-2 py-0.5 rounded" style={{ background: `${B.gold}20`, color: B.burgundyDark }}>82%</span>
               </div>
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: `${B.gold}20` }}>
+                <div className="h-full rounded-full" style={{ width: "82%", background: B.goldMetallic }} />
+              </div>
+              <p className="text-[10px] sm:text-xs text-gray-500 mt-2">
+                <span className="font-bold text-green-600">Top 6%</span> of all applicants. Your clinical background places you in our highest acceptance tier. Healthcare professionals qualify at a 94% rate.
+              </p>
             </div>
 
-            <p className="text-[10px] sm:text-xs text-gray-500 italic pt-2">ASI {pract.label} — stacks with your RN/PA/MA, doubling your clinical value and opening private practice doors.</p>
+            {/* ★★★ HERO CTA — ABOVE THE FOLD ★★★ */}
+            <div className="pt-2">
+              <CTAButton className="max-w-md mx-auto" />
+              <p className="text-[10px] sm:text-xs text-gray-400 mt-2 flex items-center justify-center gap-1">
+                <Shield className="w-3 h-3" /> Scholarship covers up to 90% • No credit card required
+              </p>
+            </div>
           </SectionInner>
         </Section>
+
+        {/* ═══ CERTIFICATE PREVIEW (compact, not full-width) ═══ */}
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative w-full max-w-sm mx-auto">
+            <img
+              src={CERT_IMG}
+              alt="Your Certificate"
+              className="w-full rounded-xl shadow-xl border-2"
+              style={{ borderColor: `${B.gold}60` }}
+            />
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg whitespace-nowrap" style={{ background: B.burgundy, color: "white" }}>
+              {pract.specialization.toUpperCase()} SPECIALIST
+            </div>
+          </div>
+          <p className="text-[10px] text-gray-500 italic text-center max-w-sm">
+            This credential stacks with your RN/PA/MA - doubling your clinical value and opening private practice doors.
+          </p>
+        </div>
 
         {/* ═══ SECTION 2: "YOU TOLD US" CALLOUT (from Q2 current income) ═══ */}
         <Section bg={`${B.gold}08`}>
@@ -397,6 +430,9 @@ function HealthcareResultsInner() {
             </div>
 
             <p className="text-center text-xs sm:text-sm text-gray-500 italic">If you felt a knot in your stomach reading any of that — you&apos;re in the right place.</p>
+
+            {/* CTA after pain points */}
+            <CTAButton className="max-w-md mx-auto pt-4" variant="burgundy" />
           </SectionInner>
         </Section>
 
@@ -440,6 +476,9 @@ function HealthcareResultsInner() {
             <p className="text-center text-xs text-gray-400 italic">
               You spent 4+ years in nursing school to earn $28/hr. DEPTH takes {certWeeks} weeks and leads to $200/hr. The ROI isn&apos;t even comparable.
             </p>
+
+            {/* CTA after cost of inaction - URGENCY */}
+            <CTAButton className="max-w-md mx-auto" />
           </SectionInner>
         </Section>
 
@@ -706,6 +745,9 @@ function HealthcareResultsInner() {
                 They were scared. They did it anyway. <strong>Now it&apos;s your turn.</strong>
               </p>
             </motion.div>
+
+            {/* CTA after testimonials */}
+            <CTAButton className="max-w-md mx-auto" />
           </SectionInner>
         </Section>
 
