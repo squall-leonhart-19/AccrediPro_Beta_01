@@ -770,77 +770,72 @@ export default function DEPTHMethodQuiz() {
     // ── INTRO ──
     if (stage === "intro") {
       return (
-        <div className="space-y-5">
-          <div className="text-center">
-            <Image src={ASI_LOGO} alt="AccrediPro Standards Institute" width={80} height={80} className="mx-auto mb-2" />
-            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: BRAND.burgundy }}>AccrediPro Standards Institute</p>
-            <p className="text-[10px] text-gray-400 uppercase tracking-wide">The Gold Standard in Accreditation</p>
-          </div>
-          <div className="text-center space-y-2">
-            <h1 className="text-2xl md:text-3xl font-bold leading-tight" style={{ color: BRAND.burgundyDark }}>
-              See If You Qualify to Start Earning $5-10K+/Month as a Certified Functional Medicine Practitioner
-            </h1>
-            <p className="text-gray-600 text-sm">12-question clinical assessment. We accept fewer than 40% of applicants.</p>
-          </div>
+        <div className="space-y-6">
+          {/* Sarah's Photo */}
           <div className="flex justify-center">
-            <div className="relative w-full max-w-[260px]">
-              <Image src={CERTIFICATE_IMG} alt="ASI Clinical Certificate" width={560} height={400} className="rounded-lg shadow-lg border border-gray-200" />
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-md whitespace-nowrap" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                Your Certificate Awaits
+            <div className="relative">
+              <Image
+                src={SARAH_AVATAR}
+                alt="Sarah"
+                width={100}
+                height={100}
+                className="rounded-full border-4 shadow-lg object-cover"
+                style={{ borderColor: BRAND.gold }}
+              />
+              <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center shadow-md" style={{ background: BRAND.goldMetallic }}>
+                <span className="text-sm">👋</span>
               </div>
             </div>
           </div>
-          <div className="rounded-xl p-4 border" style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}30` }}>
-            <div className="flex items-start gap-3">
-              <Image src={SARAH_AVATAR} alt="Sarah M." width={56} height={56} className="rounded-full border-2 object-cover flex-shrink-0 shadow-md" style={{ borderColor: BRAND.gold }} />
-              <div>
-                <p className="text-gray-900 text-sm font-bold">Sarah M. <span className="text-gray-400 font-normal">- ASI Certified Clinical Director</span></p>
-                <p className="text-gray-600 text-xs mt-0.5">Former ER nurse. Now leads ASI&apos;s clinical curriculum and mentors 200+ practitioners earning $5-10K+/month.</p>
-              </div>
-            </div>
+
+          {/* Welcome Message */}
+          <div className="space-y-4 text-center">
+            <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+              <em>&quot;Hey there! 👋 I&apos;m Sarah — a former burned-out ER nurse and single mum who was missing my kids&apos; school plays just to survive another double shift.</em>
+            </p>
+            <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+              <em>I built a 6-figure practice using the DEPTH Method... and I&apos;ve helped 2,847+ women do the same.</em>
+            </p>
+            <p className="text-sm sm:text-base font-medium leading-relaxed" style={{ color: BRAND.burgundy }}>
+              <em>This clinical assessment will reveal your Practitioner Type and earning potential. Not everyone qualifies — but let&apos;s see if YOU do.</em>
+            </p>
+            <p className="text-sm sm:text-base text-gray-700">
+              <em>First, what&apos;s your name?&quot;</em>
+            </p>
           </div>
-          <div>
-            <input type="text" placeholder="How should I call you?" value={name}
+
+          {/* Name Input */}
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="Enter your first name..."
+              value={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && name.trim()) handleNext(); }}
-              className="w-full h-12 px-5 text-base md:text-lg border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all text-center"
-              style={{ borderColor: name.trim() ? BRAND.gold : "#e5e7eb" }}
+              className="w-full px-4 py-3 rounded-xl border-2 text-center text-lg focus:outline-none transition-colors"
+              style={{ borderColor: name ? BRAND.gold : "#e5e7eb", background: name ? `${BRAND.gold}08` : "white" }}
             />
+            <Button
+              onClick={() => name.trim() && handleNext()}
+              disabled={!name.trim()}
+              className="group w-full h-14 text-lg font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 relative overflow-hidden"
+              style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <span className="relative flex items-center justify-center">
+                Start My Assessment <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Button>
           </div>
-          <div className="space-y-1.5">
-            {["ASI-accredited 20-module clinical certification", "Practitioners earning $5-10K+/month within 6 months", "73% land their first paying clients within 30 days", "Only 23 spots remaining - Q1 2026 Cohort"].map((item, i) => (
-              <div key={i} className="flex items-center gap-2 text-gray-700">
-                <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: BRAND.gold }} />
-                <span className="text-xs">{item}</span>
-              </div>
-            ))}
-          </div>
-          <div className="flex items-center justify-center gap-2 py-2">
-            <div className="flex gap-0.5">
-              {[1,2,3,4,5].map((s) => (
-                <div key={s} className="w-5 h-5 flex items-center justify-center" style={{ backgroundColor: "#00b67a" }}>
-                  <Star className="w-3.5 h-3.5 fill-white text-white" />
-                </div>
+
+          {/* Social Proof */}
+          <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+            <div className="flex -space-x-2">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="w-6 h-6 rounded-full border-2 border-white bg-gray-200" />
               ))}
             </div>
-            <div className="text-xs">
-              <span className="font-bold text-gray-800">Excellent 4.9</span>
-              <span className="text-gray-400 mx-1">|</span>
-              <span className="text-gray-500">Based on 1,197+ reviews</span>
-            </div>
-            <span className="text-[10px] font-bold text-gray-400">Trustpilot</span>
-          </div>
-          <p className="text-center text-[11px] text-gray-400">
-            <span className="font-semibold">2,847+ women</span> have taken this assessment
-          </p>
-          <div className="pt-1">
-            <p className="text-[9px] text-gray-400 uppercase tracking-wider text-center mb-2 font-medium">Accredited by ASI &amp; Backed by</p>
-            <Image src={ACCREDITATION_LOGOS} alt="Accreditation partners" width={800} height={40} className="w-full h-auto opacity-60" />
-          </div>
-          <div className="text-center flex items-center justify-center gap-4 text-xs text-gray-400">
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> 2 minutes</span>
-            <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Confidential</span>
-            <span className="flex items-center gap-1"><Award className="w-3 h-3" /> Practitioner Type reveal</span>
+            <span>2,847+ women have taken this assessment</span>
           </div>
         </div>
       );
