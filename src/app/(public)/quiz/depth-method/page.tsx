@@ -894,7 +894,9 @@ export default function DEPTHMethodQuiz() {
               </div>
             </div>
           </div>
-          <div className="space-y-3">
+
+          {/* Form with Gold Frame */}
+          <div className="rounded-xl p-4 space-y-3" style={{ background: `${BRAND.gold}08`, border: `2px solid ${BRAND.gold}30` }}>
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input type="text" value={name} readOnly className="w-full h-11 pl-11 pr-4 text-sm border-2 rounded-xl bg-gray-50 text-gray-500" style={{ borderColor: `${BRAND.gold}40` }} />
@@ -902,21 +904,27 @@ export default function DEPTHMethodQuiz() {
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input type="text" placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)}
-                className="w-full h-11 pl-11 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all"
+                className="w-full h-11 pl-11 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
                 style={{ borderColor: lastName.trim() ? BRAND.gold : "#e5e7eb" }} />
             </div>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input type="email" placeholder="Best email for your results" value={email} onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-11 pl-11 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all"
+              <input type="email" placeholder="Your best email" value={email} onChange={(e) => setEmail(e.target.value)}
+                className="w-full h-11 pl-11 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
                 style={{ borderColor: email.includes("@") ? BRAND.gold : "#e5e7eb" }} />
             </div>
             <div className="relative">
               <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input type="tel" placeholder="Phone - for private coaching support access" value={phone} onChange={(e) => setPhone(e.target.value)}
-                className="w-full h-11 pl-11 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all"
+              <div className="absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm">+1</div>
+              <input type="tel" placeholder="(555) 123-4567" value={phone}
+                onChange={(e) => {
+                  const cleaned = e.target.value.replace(/[^\d\s()-]/g, "");
+                  setPhone(cleaned);
+                }}
+                className="w-full h-11 pl-[4.5rem] pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
                 style={{ borderColor: phone.trim() ? BRAND.gold : "#e5e7eb" }} />
             </div>
+            <p className="text-xs text-gray-500 text-center">📱 We&apos;ll text you your results + exclusive bonuses</p>
           </div>
 
           {/* DYNAMIC optin bullets */}
@@ -936,9 +944,10 @@ export default function DEPTHMethodQuiz() {
             </p>
           </div>
 
-          <p className="text-[10px] text-gray-400 text-center flex items-center justify-center gap-1">
-            <Lock className="w-3 h-3" /> Your data is encrypted and never shared. Unsubscribe anytime.
-          </p>
+          <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
+            <Lock className="w-3 h-3" />
+            <span>100% private • No spam ever • Unsubscribe anytime</span>
+          </div>
         </div>
       );
     }
@@ -1161,8 +1170,12 @@ export default function DEPTHMethodQuiz() {
                 {renderContent()}
                 <div className="pt-6 mt-4 border-t border-gray-100">
                   <Button onClick={handleSeeResults} size="lg"
-                    className="w-full h-14 text-base font-bold rounded-xl shadow-lg" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                    See My Personalized Certification Path <ArrowRight className="w-5 h-5 ml-2" />
+                    className="group w-full h-14 text-base font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 relative overflow-hidden"
+                    style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <span className="relative flex items-center justify-center">
+                      See My Personalized Certification Path <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </span>
                   </Button>
                   <p className="text-center text-[10px] text-gray-400 mt-2">
                     Only {cohort.spots} spots remaining in the {cohort.name}
@@ -1215,14 +1228,21 @@ export default function DEPTHMethodQuiz() {
                   <Button onClick={handleOptinSubmit}
                     disabled={!email.includes("@") || !lastName.trim() || !phone.trim() || submitting}
                     size="lg"
-                    className="h-12 px-8 text-base font-bold rounded-xl shadow-lg min-w-[160px]"
+                    className="group h-12 px-8 text-base font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 min-w-[160px] disabled:opacity-50 relative overflow-hidden"
                     style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                    {submitting ? <><Loader2 className="w-5 h-5 animate-spin mr-2" /> Submitting...</> : <>Review My Assessment <ArrowRight className="w-5 h-5 ml-2" /></>}
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <span className="relative flex items-center justify-center">
+                      {submitting ? <><Loader2 className="w-5 h-5 animate-spin mr-2" /> Submitting...</> : <>Review My Assessment <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" /></>}
+                    </span>
                   </Button>
                 ) : (
                   <Button onClick={handleNext} disabled={!canProceed()} size="lg"
-                    className="h-12 px-8 text-base font-bold rounded-xl shadow-lg transition-all min-w-[160px] disabled:opacity-50" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                    {getNextLabel()} <ArrowRight className="w-5 h-5 ml-2" />
+                    className="group h-12 px-8 text-base font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 min-w-[160px] disabled:opacity-50 relative overflow-hidden"
+                    style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <span className="relative flex items-center justify-center">
+                      {getNextLabel()} <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </span>
                   </Button>
                 )}
               </div>
