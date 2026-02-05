@@ -31,12 +31,12 @@ export async function POST(request: Request) {
         // Store progress in metadata or create a separate tracking record
         // Using IntakeSubmission for now to track progress
         if (purchase) {
-            // Update purchase with progress tracking
+            // Update purchase with progress tracking in intakeData
             await prisma.dFYPurchase.update({
                 where: { id: purchase.id },
                 data: {
-                    metadata: {
-                        ...(purchase.metadata as object || {}),
+                    intakeData: {
+                        ...(purchase.intakeData as object || {}),
                         lastStep: currentStep,
                         lastStepId: stepId,
                         progressPercent,
@@ -90,15 +90,15 @@ export async function GET(request: Request) {
             return NextResponse.json({ progress: null });
         }
 
-        const metadata = purchase.metadata as any;
+        const intakeData = purchase.intakeData as any;
 
         return NextResponse.json({
             progress: {
-                lastStep: metadata?.lastStep || 0,
-                lastStepId: metadata?.lastStepId || null,
-                progressPercent: metadata?.progressPercent || 0,
-                lastActivity: metadata?.lastActivity || null,
-                formData: metadata?.formDataSnapshot || null,
+                lastStep: intakeData?.lastStep || 0,
+                lastStepId: intakeData?.lastStepId || null,
+                progressPercent: intakeData?.progressPercent || 0,
+                lastActivity: intakeData?.lastActivity || null,
+                formData: intakeData?.formDataSnapshot || null,
             }
         });
 
