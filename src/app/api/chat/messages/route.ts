@@ -43,13 +43,27 @@ export async function GET(request: NextRequest) {
         });
 
         // Format for widget consumption
-        const formattedMessages = messages.map((msg) => ({
-            id: msg.id,
-            role: msg.isFromVisitor ? "user" : "bot",
-            text: msg.message,
-            createdAt: msg.createdAt.toISOString(),
-            isAdmin: !msg.isFromVisitor && msg.repliedBy !== null,
-        }));
+        // Audio messages are stored as: [AUDIO:url]Optional caption text
+        const formattedMessages = messages.map((msg) => {
+            let text = msg.message;
+            let audioUrl: string | undefined;
+
+            // Check for audio message pattern: [AUDIO:url]
+            const audioMatch = msg.message.match(/^\[AUDIO:(https?:\/\/[^\]]+)\]/);
+            if (audioMatch) {
+                audioUrl = audioMatch[1];
+                text = msg.message.replace(audioMatch[0], "").trim();
+            }
+
+            return {
+                id: msg.id,
+                role: msg.isFromVisitor ? "user" : "bot",
+                text,
+                audioUrl,
+                createdAt: msg.createdAt.toISOString(),
+                isAdmin: !msg.isFromVisitor && msg.repliedBy !== null,
+            };
+        });
 
         return NextResponse.json(
             { messages: formattedMessages, count: formattedMessages.length },

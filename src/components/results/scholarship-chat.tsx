@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { X, Send, Sparkles, Heart, Award } from "lucide-react";
+import { X, Send, Sparkles, Heart, Award, Play, Pause, Volume2 } from "lucide-react";
 import Image from "next/image";
 
 // ─── Brand ────────────────────────────────────────────────────────
@@ -43,6 +43,7 @@ interface ChatMessage {
   content: string;
   timestamp: string; // ISO string for serialization
   fromServer?: boolean;
+  audioUrl?: string; // For audio messages
 }
 
 interface StoredChat {
@@ -84,6 +85,100 @@ function loadChat(): StoredChat | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch { return null; }
+}
+
+// ─── Audio Message Player Component ───────────────────────────────
+function AudioMessage({ url, isFromUser }: { url: string; isFromUser: boolean }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const audio = new Audio(url);
+    audioRef.current = audio;
+
+    audio.addEventListener("loadedmetadata", () => {
+      setDuration(audio.duration);
+    });
+
+    audio.addEventListener("timeupdate", () => {
+      setProgress((audio.currentTime / audio.duration) * 100 || 0);
+    });
+
+    audio.addEventListener("ended", () => {
+      setIsPlaying(false);
+      setProgress(0);
+    });
+
+    return () => {
+      audio.pause();
+      audio.src = "";
+    };
+  }, [url]);
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  };
+
+  return (
+    <div className={`flex items-center gap-2 p-2 rounded-xl ${isFromUser ? "bg-white/10" : "bg-gray-100"}`}>
+      <button
+        onClick={togglePlay}
+        className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+          isFromUser ? "bg-white/20 hover:bg-white/30 text-white" : "bg-white hover:bg-gray-50 shadow-sm"
+        }`}
+        style={!isFromUser ? { color: B.burgundy } : {}}
+      >
+        {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+      </button>
+      <div className="flex-1 min-w-0">
+        {/* Waveform visualization (simplified bars) */}
+        <div className="flex items-center gap-0.5 h-6">
+          {[...Array(20)].map((_, i) => {
+            const barHeight = Math.random() * 100;
+            const isActive = (i / 20) * 100 <= progress;
+            return (
+              <div
+                key={i}
+                className={`w-1 rounded-full transition-all ${
+                  isFromUser
+                    ? isActive ? "bg-white" : "bg-white/30"
+                    : isActive ? "bg-burgundy" : "bg-gray-300"
+                }`}
+                style={{
+                  height: `${20 + barHeight * 0.4}%`,
+                  backgroundColor: !isFromUser && isActive ? B.burgundy : undefined,
+                }}
+              />
+            );
+          })}
+        </div>
+        <div className="flex items-center justify-between mt-0.5">
+          <span className={`text-[10px] ${isFromUser ? "text-white/60" : "text-gray-400"}`}>
+            {formatTime(audioRef.current?.currentTime || 0)}
+          </span>
+          <span className={`text-[10px] ${isFromUser ? "text-white/60" : "text-gray-400"}`}>
+            {formatTime(duration)}
+          </span>
+        </div>
+      </div>
+      <Volume2 className={`w-3.5 h-3.5 flex-shrink-0 ${isFromUser ? "text-white/40" : "text-gray-300"}`} />
+    </div>
+  );
 }
 
 // ─── Component ────────────────────────────────────────────────────
@@ -158,6 +253,33 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     return () => clearTimeout(timer);
   }, []);
 
+  // ─── AUTO-OPEN after 15 seconds with FOMO notification ──────────
+  useEffect(() => {
+    // Don't auto-open if already opened or has existing chat
+    const stored = loadChat();
+    if (stored && stored.email === email && stored.hasStarted) return;
+
+    const autoOpenTimer = setTimeout(() => {
+      if (!isOpen && !hasStarted) {
+        // Show notification first
+        setShowAutoOpenNotification(true);
+      }
+    }, 15000); // 15 seconds
+
+    return () => clearTimeout(autoOpenTimer);
+  }, [isOpen, hasStarted, email]);
+
+  const [showAutoOpenNotification, setShowAutoOpenNotification] = useState(false);
+
+  // Handle auto-open notification click
+  const handleAutoOpenClick = () => {
+    setShowAutoOpenNotification(false);
+    setIsOpen(true);
+    if (!hasStarted) {
+      startScholarshipChat();
+    }
+  };
+
   // ─── Poll for admin replies (runs even when chat is closed!) ──
   useEffect(() => {
     if (!visitorId || !hasStarted) return;
@@ -175,6 +297,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
             content: m.text,
             timestamp: m.createdAt || new Date().toISOString(),
             fromServer: true,
+            audioUrl: m.audioUrl, // Support for audio messages
           }));
 
           // Check for approval message and start urgency timer
@@ -440,16 +563,53 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
   // ─── Floating Button ────────────────────────────────────────────
   if (!isOpen) {
     return (
-      <button
-        onClick={openChat}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center gap-2.5 shadow-2xl transition-all hover:scale-105 rounded-full overflow-hidden"
-        style={{ background: B.burgundy }}
-      >
-        <div className="relative flex items-center">
-          <Image src={SARAH} alt="Sarah" width={52} height={52} className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full border-2 border-white/30 object-cover" />
-          <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse" />
-        </div>
-        <div className="pr-4 sm:pr-5 pl-0.5">
+      <>
+        {/* AUTO-OPEN FOMO NOTIFICATION */}
+        {showAutoOpenNotification && (
+          <div
+            onClick={handleAutoOpenClick}
+            className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 z-50 max-w-[320px] sm:max-w-[360px] cursor-pointer animate-bounce"
+          >
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-2xl shadow-2xl border-2 border-white/20">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl">🎉</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm">GREAT NEWS, {firstName}!</p>
+                  <p className="text-xs text-white/90 mt-1">
+                    I just reviewed your application and you qualify for a <span className="font-bold underline">scholarship!</span> Click here to chat about your special rate...
+                  </p>
+                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setShowAutoOpenNotification(false); }}
+                  className="text-white/60 hover:text-white"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="mt-2 pt-2 border-t border-white/20 flex items-center justify-between">
+                <span className="text-[10px] text-white/70 flex items-center gap-1">
+                  <span className="w-2 h-2 bg-green-300 rounded-full animate-pulse" /> Sarah is online
+                </span>
+                <span className="text-xs font-bold">Tap to claim →</span>
+              </div>
+            </div>
+            {/* Arrow pointing to chat button */}
+            <div className="absolute -bottom-2 right-8 w-4 h-4 bg-gradient-to-br from-green-500 to-emerald-600 rotate-45" />
+          </div>
+        )}
+
+        <button
+          onClick={openChat}
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center gap-2.5 shadow-2xl transition-all hover:scale-105 rounded-full overflow-hidden"
+          style={{ background: B.burgundy }}
+        >
+          <div className="relative flex items-center">
+            <Image src={SARAH} alt="Sarah" width={52} height={52} className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full border-2 border-white/30 object-cover" />
+            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse" />
+          </div>
+          <div className="pr-4 sm:pr-5 pl-0.5">
           <p className="text-white text-xs sm:text-sm font-bold leading-tight">Apply for Scholarship</p>
           <p className="text-white/70 text-[10px] sm:text-[11px]">Chat with Sarah now</p>
         </div>
@@ -457,6 +617,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full border-2 border-white animate-ping" style={{ background: B.gold }} />
         )}
       </button>
+      </>
     );
   }
 
@@ -545,7 +706,15 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
                 color: msg.role === "user" ? "white" : "#374151",
               }}
             >
-              <p className="whitespace-pre-wrap">{msg.content}</p>
+              {/* Audio message */}
+              {msg.audioUrl ? (
+                <div className="min-w-[200px]">
+                  <AudioMessage url={msg.audioUrl} isFromUser={msg.role === "user"} />
+                  {msg.content && <p className="whitespace-pre-wrap mt-2 text-xs opacity-80">{msg.content}</p>}
+                </div>
+              ) : (
+                <p className="whitespace-pre-wrap">{msg.content}</p>
+              )}
               <p className={`text-[10px] mt-1.5 ${msg.role === "user" ? "text-white/50" : "text-gray-400"}`}>
                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </p>

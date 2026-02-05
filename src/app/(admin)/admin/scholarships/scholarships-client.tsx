@@ -31,6 +31,12 @@ import {
   Phone,
   Calendar,
   Download,
+  Mic,
+  Square,
+  Volume2,
+  Play,
+  Pause,
+  Trash2,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -171,6 +177,72 @@ const getUserOfferedAmount = (messages: ChatMessage[]) => {
 
 const SARAH_AVATAR = "/coaches/sarah-coach.webp";
 
+// Audio player component for admin panel
+function AudioMessageAdmin({ url, isFromVisitor }: { url: string; isFromVisitor: boolean }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (!url) return;
+    const audio = new Audio(url);
+    audioRef.current = audio;
+
+    audio.addEventListener("timeupdate", () => {
+      setProgress((audio.currentTime / audio.duration) * 100 || 0);
+    });
+
+    audio.addEventListener("ended", () => {
+      setIsPlaying(false);
+      setProgress(0);
+    });
+
+    return () => {
+      audio.pause();
+      audio.src = "";
+    };
+  }, [url]);
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  return (
+    <div className={`flex items-center gap-2 p-2 rounded-lg ${isFromVisitor ? "bg-gray-200" : "bg-white/10"}`}>
+      <button
+        onClick={togglePlay}
+        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+          isFromVisitor ? "bg-white shadow-sm text-gray-700" : "bg-white/20 text-white"
+        }`}
+      >
+        {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+      </button>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-0.5 h-5">
+          {[...Array(16)].map((_, i) => (
+            <div
+              key={i}
+              className={`w-1 rounded-full transition-all ${
+                (i / 16) * 100 <= progress
+                  ? (isFromVisitor ? "bg-gray-600" : "bg-white")
+                  : (isFromVisitor ? "bg-gray-300" : "bg-white/30")
+              }`}
+              style={{ height: `${6 + Math.random() * 10}px` }}
+            />
+          ))}
+        </div>
+      </div>
+      <Volume2 className={`w-3.5 h-3.5 flex-shrink-0 ${isFromVisitor ? "text-gray-400" : "text-white/40"}`} />
+    </div>
+  );
+}
+
 export default function ScholarshipsClient() {
   const [applications, setApplications] = useState<ScholarshipApplication[]>([]);
   const [selectedApp, setSelectedApp] = useState<ScholarshipApplication | null>(null);
@@ -186,11 +258,18 @@ export default function ScholarshipsClient() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [autoApproveStep, setAutoApproveStep] = useState<"idle" | "initiating" | "waiting" | "approving">("idle");
   const [autoApproveCountdown, setAutoApproveCountdown] = useState(0);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedAudio, setRecordedAudio] = useState<{ blob: Blob; url: string } | null>(null);
+  const [isPlayingPreview, setIsPlayingPreview] = useState(false);
+  const [uploadingAudio, setUploadingAudio] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const selectedVisitorIdRef = useRef<string | null>(null);
   const prevUnreadCountRef = useRef<number>(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Initialize notification sound
   useEffect(() => {
@@ -496,6 +575,120 @@ export default function ScholarshipsClient() {
     URL.revokeObjectURL(url);
   };
 
+  // Start audio recording
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          audioChunksRef.current.push(e.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        setRecordedAudio({ blob: audioBlob, url: audioUrl });
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error("Error starting recording:", err);
+      alert("Could not start recording. Please allow microphone access.");
+    }
+  };
+
+  // Stop audio recording
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  // Play/pause preview
+  const togglePreview = () => {
+    if (!recordedAudio) return;
+
+    if (!previewAudioRef.current) {
+      previewAudioRef.current = new Audio(recordedAudio.url);
+      previewAudioRef.current.onended = () => setIsPlayingPreview(false);
+    }
+
+    if (isPlayingPreview) {
+      previewAudioRef.current.pause();
+      setIsPlayingPreview(false);
+    } else {
+      previewAudioRef.current.play();
+      setIsPlayingPreview(true);
+    }
+  };
+
+  // Discard recording
+  const discardRecording = () => {
+    if (recordedAudio) {
+      URL.revokeObjectURL(recordedAudio.url);
+    }
+    setRecordedAudio(null);
+    if (previewAudioRef.current) {
+      previewAudioRef.current.pause();
+      previewAudioRef.current = null;
+    }
+    setIsPlayingPreview(false);
+  };
+
+  // Send audio message
+  const sendAudioMessage = async () => {
+    if (!recordedAudio || !selectedApp) return;
+
+    setUploadingAudio(true);
+    try {
+      // Upload audio to server
+      const formData = new FormData();
+      formData.append("audio", recordedAudio.blob, "voice-message.webm");
+      formData.append("visitorId", selectedApp.visitorId);
+
+      const uploadRes = await fetch("/api/admin/scholarships/upload-audio", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error("Failed to upload audio");
+      }
+
+      const { audioUrl } = await uploadRes.json();
+
+      // Send message with audio URL prefix
+      const res = await fetch("/api/admin/scholarships/reply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          visitorId: selectedApp.visitorId,
+          message: `[AUDIO:${audioUrl}]🎤 Voice message from Sarah`,
+        }),
+      });
+
+      if (res.ok) {
+        discardRecording();
+        await fetchApplications();
+      } else {
+        throw new Error("Failed to send message");
+      }
+    } catch (err) {
+      console.error("Error sending audio:", err);
+      alert("Failed to send audio message. Please try again.");
+    } finally {
+      setUploadingAudio(false);
+    }
+  };
+
   return (
     <div className="h-[calc(100vh-80px)] flex flex-col p-4 md:p-6 bg-gray-50">
       {/* Header */}
@@ -797,7 +990,22 @@ export default function ScholarshipsClient() {
                               : "bg-gradient-to-br from-[#722f37] to-[#5a252c] text-white rounded-tr-sm"
                           }`}
                         >
-                          <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.message}</p>
+                          {/* Check for audio message */}
+                          {msg.message.startsWith("[AUDIO:") ? (
+                            <div className="min-w-[200px]">
+                              <AudioMessageAdmin
+                                url={msg.message.match(/\[AUDIO:(https?:\/\/[^\]]+)\]/)?.[1] || ""}
+                                isFromVisitor={msg.isFromVisitor}
+                              />
+                              {msg.message.replace(/\[AUDIO:[^\]]+\]/, "").trim() && (
+                                <p className="text-xs mt-1 opacity-80">
+                                  {msg.message.replace(/\[AUDIO:[^\]]+\]/, "").trim()}
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.message}</p>
+                          )}
                           <div className={`flex items-center gap-1.5 mt-1 ${msg.isFromVisitor ? "text-gray-400" : "text-white/60"}`}>
                             <span className="text-xs">{formatTime(msg.createdAt)}</span>
                             {!msg.isFromVisitor && (
@@ -907,6 +1115,72 @@ export default function ScholarshipsClient() {
                 {error && (
                   <div className="mb-2 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</div>
                 )}
+
+                {/* Audio Recording UI */}
+                {(isRecording || recordedAudio) && (
+                  <div className="mb-3 p-3 rounded-lg bg-purple-50 border border-purple-200">
+                    {isRecording ? (
+                      <div className="flex items-center gap-3">
+                        <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                        <span className="text-sm font-medium text-purple-800">Recording voice message...</span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={stopRecording}
+                          className="ml-auto bg-red-100 border-red-300 text-red-700 hover:bg-red-200"
+                        >
+                          <Square className="w-4 h-4 mr-1 fill-current" />
+                          Stop
+                        </Button>
+                      </div>
+                    ) : recordedAudio && (
+                      <div className="flex items-center gap-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={togglePreview}
+                          className="bg-white"
+                        >
+                          {isPlayingPreview ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                        </Button>
+                        <div className="flex-1 flex items-center gap-1">
+                          {[...Array(20)].map((_, i) => (
+                            <div
+                              key={i}
+                              className="w-1 bg-purple-400 rounded-full"
+                              style={{ height: `${8 + Math.random() * 16}px` }}
+                            />
+                          ))}
+                        </div>
+                        <Volume2 className="w-4 h-4 text-purple-400" />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={discardRecording}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={sendAudioMessage}
+                          disabled={uploadingAudio}
+                          className="bg-[#722f37] hover:bg-[#5a252c] text-white"
+                        >
+                          {uploadingAudio ? (
+                            <RefreshCw className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <>
+                              <Send className="w-4 h-4 mr-1" />
+                              Send
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="flex items-center gap-2 mb-2">
                   <Button
                     variant="outline"
@@ -917,7 +1191,17 @@ export default function ScholarshipsClient() {
                     <Zap className="w-4 h-4 mr-1" />
                     Templates
                   </Button>
-                  <span className="text-xs text-gray-400 flex items-center gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={isRecording ? stopRecording : startRecording}
+                    disabled={!!recordedAudio}
+                    className={`${isRecording ? "bg-red-100 border-red-300 text-red-700 hover:bg-red-200" : "text-purple-700 border-purple-300 hover:bg-purple-50"}`}
+                  >
+                    <Mic className={`w-4 h-4 mr-1 ${isRecording ? "animate-pulse" : ""}`} />
+                    {isRecording ? "Recording..." : "Voice"}
+                  </Button>
+                  <span className="text-xs text-gray-400 flex items-center gap-1 ml-auto">
                     <Image src={SARAH_AVATAR} alt="Sarah" width={16} height={16} className="rounded-full" />
                     Replying as Sarah M.
                   </span>
@@ -934,12 +1218,12 @@ export default function ScholarshipsClient() {
                         sendReply();
                       }
                     }}
-                    disabled={sending}
+                    disabled={sending || isRecording}
                     className="flex-1 min-h-[50px] max-h-[120px] resize-none"
                   />
                   <Button
                     onClick={() => sendReply()}
-                    disabled={sending || !replyMessage.trim()}
+                    disabled={sending || !replyMessage.trim() || isRecording}
                     className="bg-[#722f37] hover:bg-[#5a252c] h-auto px-4"
                   >
                     <Send className="w-5 h-5" />

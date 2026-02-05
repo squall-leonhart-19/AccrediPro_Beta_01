@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense, useCallback } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -39,6 +39,8 @@ import {
   Download,
   Laptop,
   Users2,
+  X,
+  Bell,
 } from "lucide-react";
 import { ScholarshipChat } from "@/components/results/scholarship-chat";
 
@@ -172,11 +174,91 @@ function HealthcareResultsInner() {
   const [mounted, setMounted] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // CRO: Social proof notifications
+  const [showSocialProof, setShowSocialProof] = useState(false);
+  const [socialProofData, setSocialProofData] = useState({ name: "", action: "", time: "" });
+  const socialProofIndex = useRef(0);
+
+  // CRO: Exit intent popup
+  const [showExitIntent, setShowExitIntent] = useState(false);
+  const exitIntentShown = useRef(false);
+
+  // CRO: Sticky mobile CTA visibility
+  const [showMobileCTA, setShowMobileCTA] = useState(false);
+
   useEffect(() => {
     setMounted(true);
     timerRef.current = setInterval(() => setCountdown((p) => (p <= 0 ? 0 : p - 1)), 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
+
+  // ─── CRO: Social Proof Notifications ────────────────────────────────
+  const SOCIAL_PROOF_DATA = [
+    { name: "Jennifer M.", action: "just got her scholarship approved", time: "2 min ago" },
+    { name: "Lisa R.", action: "enrolled in Hormone Health track", time: "5 min ago" },
+    { name: "Amanda K.", action: "just started chatting with Sarah", time: "3 min ago" },
+    { name: "Michelle T.", action: "secured her scholarship spot", time: "7 min ago" },
+    { name: "Kathy L.", action: "just completed her application", time: "4 min ago" },
+    { name: "Susan B.", action: "got 85% scholarship coverage", time: "6 min ago" },
+    { name: "Patricia W.", action: "is chatting with Sarah now", time: "1 min ago" },
+    { name: "Nancy D.", action: "locked in her scholarship", time: "8 min ago" },
+  ];
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    // Show first notification after 20 seconds
+    const initialDelay = setTimeout(() => {
+      setSocialProofData(SOCIAL_PROOF_DATA[0]);
+      setShowSocialProof(true);
+
+      // Hide after 5 seconds
+      setTimeout(() => setShowSocialProof(false), 5000);
+    }, 20000);
+
+    // Show subsequent notifications every 45-60 seconds
+    const interval = setInterval(() => {
+      socialProofIndex.current = (socialProofIndex.current + 1) % SOCIAL_PROOF_DATA.length;
+      setSocialProofData(SOCIAL_PROOF_DATA[socialProofIndex.current]);
+      setShowSocialProof(true);
+
+      setTimeout(() => setShowSocialProof(false), 5000);
+    }, 45000 + Math.random() * 15000);
+
+    return () => {
+      clearTimeout(initialDelay);
+      clearInterval(interval);
+    };
+  }, [mounted]);
+
+  // ─── CRO: Exit Intent Detection ─────────────────────────────────────
+  useEffect(() => {
+    if (!mounted) return;
+
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !exitIntentShown.current) {
+        exitIntentShown.current = true;
+        setShowExitIntent(true);
+      }
+    };
+
+    document.addEventListener("mouseleave", handleMouseLeave);
+    return () => document.removeEventListener("mouseleave", handleMouseLeave);
+  }, [mounted]);
+
+  // ─── CRO: Sticky Mobile CTA Visibility (show after scrolling past hero) ───
+  useEffect(() => {
+    if (!mounted) return;
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      // Show mobile CTA after scrolling 600px
+      setShowMobileCTA(scrollY > 600);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [mounted]);
 
   const fmt = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
 
@@ -1320,6 +1402,145 @@ function HealthcareResultsInner() {
           </div>
         </div>
       </div>
+
+      {/* ═══ CRO: SOCIAL PROOF NOTIFICATION ═══ */}
+      <AnimatePresence>
+        {showSocialProof && (
+          <motion.div
+            initial={{ x: -400, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -400, opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="fixed bottom-24 left-4 z-40 max-w-[300px] cursor-pointer"
+            onClick={openScholarshipChat}
+          >
+            <div className="bg-white rounded-xl shadow-2xl border-2 p-3 flex items-start gap-3" style={{ borderColor: `${B.gold}60` }}>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `linear-gradient(135deg, ${B.gold} 0%, #f7e7a0 100%)` }}>
+                <Bell className="w-5 h-5" style={{ color: B.burgundyDark }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold" style={{ color: B.burgundy }}>
+                  🔔 {socialProofData.name}
+                </p>
+                <p className="text-[11px] text-gray-600">{socialProofData.action}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                  {socialProofData.time}
+                </p>
+              </div>
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowSocialProof(false); }}
+                className="text-gray-300 hover:text-gray-500 p-0.5"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ═══ CRO: EXIT INTENT POPUP ═══ */}
+      <AnimatePresence>
+        {showExitIntent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+            >
+              {/* Header */}
+              <div className="p-4 text-center" style={{ background: B.burgundy }}>
+                <button
+                  onClick={() => setShowExitIntent(false)}
+                  className="absolute top-3 right-3 text-white/60 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                <p className="text-2xl mb-1">⏰</p>
+                <h3 className="text-lg font-bold text-white">Wait, {firstName}!</h3>
+                <p className="text-sm text-white/80">Don&apos;t leave your scholarship on the table</p>
+              </div>
+
+              {/* Body */}
+              <div className="p-5 space-y-4">
+                <div className="flex items-start gap-3">
+                  <Image src={SARAH} alt="Sarah" width={48} height={48} className="w-12 h-12 rounded-full border-2 object-cover" style={{ borderColor: B.gold }} />
+                  <div className="flex-1 bg-gray-50 rounded-xl rounded-tl-sm p-3">
+                    <p className="text-sm text-gray-700">
+                      Hey {firstName}! I saw you were about to leave. I&apos;m holding a <strong>scholarship spot</strong> for you right now. Can we chat for 2 minutes? I think I can help you get started today.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl border-2" style={{ borderColor: B.gold, background: `${B.gold}08` }}>
+                  <p className="text-xs font-bold text-center" style={{ color: B.burgundy }}>
+                    ✅ 94% of healthcare professionals qualify
+                    <br />
+                    ✅ Scholarships cover up to 90%
+                    <br />
+                    ✅ No obligation to enroll
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => { setShowExitIntent(false); openScholarshipChat(); }}
+                  className="w-full py-3.5 rounded-xl font-bold text-white shadow-lg hover:shadow-xl transition-all"
+                  style={{ background: B.burgundy }}
+                >
+                  Chat With Sarah Now →
+                </button>
+
+                <button
+                  onClick={() => setShowExitIntent(false)}
+                  className="w-full py-2 text-xs text-gray-400 hover:text-gray-600"
+                >
+                  No thanks, I&apos;ll pass on the scholarship
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ═══ CRO: STICKY MOBILE CTA BAR ═══ */}
+      <AnimatePresence>
+        {showMobileCTA && (
+          <motion.div
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            exit={{ y: 100 }}
+            className="fixed bottom-0 left-0 right-0 z-40 sm:hidden"
+            style={{ background: "linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 100%)", borderTop: `2px solid ${B.gold}40` }}
+          >
+            <div className="p-3 pb-4 safe-area-inset-bottom">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span className="text-[10px] text-gray-500">Sarah is online</span>
+                </div>
+                <span className="text-[10px] text-gray-300">|</span>
+                <span className="text-[10px] font-bold" style={{ color: B.burgundy }}>Only {urgencySpots} spots left</span>
+              </div>
+              <button
+                onClick={openScholarshipChat}
+                className="w-full py-3 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2"
+                style={{ background: B.goldMetallic, color: B.burgundyDark }}
+              >
+                <MessageCircle className="w-4 h-4" />
+                Apply for Scholarship
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ═══ SCHOLARSHIP CHAT WIDGET ═══ */}
       <ScholarshipChat
