@@ -30,8 +30,10 @@ export async function GET() {
     const optinMap = new Map(optins.map((o) => [o.visitorId, o]));
 
     // Group messages by email or visitorId
+    // IMPORTANT: Track ALL visitorIds for each group so replies are found
     const applicationsMap = new Map<string, {
       visitorId: string;
+      allVisitorIds: string[]; // Track all visitor IDs for this conversation
       visitorName: string | null;
       visitorEmail: string | null;
       page: string;
@@ -49,6 +51,7 @@ export async function GET() {
       if (!applicationsMap.has(groupKey)) {
         applicationsMap.set(groupKey, {
           visitorId: msg.visitorId,
+          allVisitorIds: [msg.visitorId],
           visitorName: optin?.name || msg.visitorName,
           visitorEmail: email,
           page: msg.page,
@@ -62,6 +65,11 @@ export async function GET() {
       const app = applicationsMap.get(groupKey)!;
       app.messages.push(msg);
 
+      // Track all visitor IDs for this conversation
+      if (!app.allVisitorIds.includes(msg.visitorId)) {
+        app.allVisitorIds.push(msg.visitorId);
+      }
+
       if (!app.visitorName) {
         app.visitorName = optin?.name || msg.visitorName || null;
       }
@@ -73,11 +81,15 @@ export async function GET() {
         app.unreadCount++;
       }
 
-      // Update visitorId to latest and track last message
+      // Update visitorId to the one from visitor messages (not admin replies)
+      if (msg.isFromVisitor && msg.createdAt > app.lastMessageAt) {
+        app.visitorId = msg.visitorId;
+      }
+
+      // Track last message
       if (msg.createdAt > app.lastMessageAt) {
         app.lastMessage = msg.message;
         app.lastMessageAt = msg.createdAt;
-        app.visitorId = msg.visitorId; // Use most recent visitorId
       }
     });
 
@@ -94,7 +106,7 @@ export async function GET() {
       }))
       .sort((a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime());
 
-    console.log(`[Scholarships] Returning ${applications.length} applications`);
+    console.log(`[Scholarships] Returning ${applications.length} applications with messages`);
     return NextResponse.json({ applications });
   } catch (error) {
     console.error("Failed to fetch scholarship applications:", error);
