@@ -40,15 +40,14 @@ const SARAH_AVATAR = "/coaches/sarah-coach.webp";
 const ASI_LOGO = "/asi-logo-transparent.png";
 const ACCREDITATION_LOGOS = "/all-logos.png";
 
-// Testimonial photos for dynamic reactions
+// Testimonial photos for dynamic reactions (6 unique photos)
 const TESTIMONIAL_PHOTOS = {
-  grace: "/assets/migrated/TESTIMONIAL_03.jpg",
-  michelle: "/assets/migrated/TESTIMONIAL_01.jpg",
-  jennifer: "/assets/migrated/TESTIMONIAL_02.jpg",
-  amanda: "/assets/migrated/TESTIMONIAL_03.jpg",
-  susan: "/assets/migrated/TESTIMONIAL_01.jpg",
-  angela: "/assets/migrated/TESTIMONIAL_02.jpg",
-  karen: "/assets/migrated/TESTIMONIAL_03.jpg",
+  grace: "/assets/migrated/TESTIMONIAL_01.jpg",
+  michelle: "/assets/migrated/TESTIMONIAL_02.jpg",
+  jennifer: "/assets/migrated/TESTIMONIAL_03.jpg",
+  amanda: "/assets/migrated/TESTIMONIAL_04.jpg",
+  susan: "/assets/migrated/TESTIMONIAL_05.jpeg",
+  angela: "/assets/migrated/TESTIMONIAL_06.jpeg",
 };
 
 // ─── Confetti ──────────────────────────────────────────────────────
@@ -81,29 +80,29 @@ interface Testimonial { name: string; role: string; text: string; photo: string;
 
 const TESTIMONIALS_BY_PERSONA: Record<Persona, Testimonial[]> = {
   "healthcare-pro": [
-    { name: "Susan M.", role: "Former ICU Nurse, California", text: "I was exactly where you are, {{NAME}}. Burned out, wondering if there was more. Now I'm earning $6,200/month helping women balance their hormones — all from my living room.", photo: TESTIMONIAL_PHOTOS.susan, afterQ: 3 },
-    { name: "Angela R.", role: "LPN turned FM Practitioner, Texas", text: "I thought I needed a $15,000 program and 2 years of school. Sarah's path cost me less than dinner out — and I was certified in a weekend. Best decision I ever made.", photo: TESTIMONIAL_PHOTOS.angela, afterQ: 6 },
-    { name: "Karen T.", role: "Single Mom of 3, Florida", text: "I was skeptical — I'd tried other programs before. But within 90 days of starting with Sarah, I quit my hospital job. I never thought I'd say that. This actually works.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
+    { name: "Grace T.", role: "Former ICU Nurse, California", text: "I was exactly where you are, {{NAME}}. Burned out, wondering if there was more. Now I'm earning $6,200/month helping women balance their hormones — all from my living room.", photo: TESTIMONIAL_PHOTOS.grace, afterQ: 3 },
+    { name: "Michelle R.", role: "LPN turned FM Practitioner, Texas", text: "I thought I needed a $15,000 program and 2 years of school. Sarah's path cost me less than dinner out — and I was certified in a weekend. Best decision I ever made.", photo: TESTIMONIAL_PHOTOS.michelle, afterQ: 6 },
+    { name: "Jennifer K.", role: "Single Mom of 3, Florida", text: "I was skeptical — I'd tried other programs before. But within 90 days of starting with Sarah, I quit my hospital job. I never thought I'd say that. This actually works.", photo: TESTIMONIAL_PHOTOS.jennifer, afterQ: 9 },
   ],
   "health-coach": [
-    { name: "Susan M.", role: "Health Coach to Clinical Practitioner", text: "Before this, I was charging $50/session and struggling. Now I'm earning $6,200/month with a waitlist. The certification gave me the credibility I was missing.", photo: TESTIMONIAL_PHOTOS.susan, afterQ: 3 },
-    { name: "Angela R.", role: "Yoga Teacher Turned Practitioner", text: "I had wellness experience but no clinical framework. This gave me the structure to charge $200/session instead of $40 for yoga classes.", photo: TESTIMONIAL_PHOTOS.angela, afterQ: 6 },
-    { name: "Karen T.", role: "Nutrition Coach to FM Specialist", text: "Every coach should upgrade to clinical. My coaching was good but limited. Now I can create real protocols, and clients see me as an authority.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
+    { name: "Amanda S.", role: "Health Coach to Clinical Practitioner", text: "Before this, I was charging $50/session and struggling. Now I'm earning $6,200/month with a waitlist. The certification gave me the credibility I was missing.", photo: TESTIMONIAL_PHOTOS.amanda, afterQ: 3 },
+    { name: "Susan M.", role: "Yoga Teacher Turned Practitioner", text: "I had wellness experience but no clinical framework. This gave me the structure to charge $200/session instead of $40 for yoga classes.", photo: TESTIMONIAL_PHOTOS.susan, afterQ: 6 },
+    { name: "Angela R.", role: "Nutrition Coach to FM Specialist", text: "Every coach should upgrade to clinical. My coaching was good but limited. Now I can create real protocols, and clients see me as an authority.", photo: TESTIMONIAL_PHOTOS.angela, afterQ: 9 },
   ],
   "corporate": [
-    { name: "Susan M.", role: "Former Marketing Director, Age 52", text: "I left my corporate job at 49 with zero health credentials. This gave me everything — the skills, the framework, the confidence. Now earning $7K/month.", photo: TESTIMONIAL_PHOTOS.susan, afterQ: 3 },
-    { name: "Angela R.", role: "Ex-Finance Manager to Practitioner", text: "My corporate project management skills turned out to be my secret weapon. I launched my practice like a business from day one.", photo: TESTIMONIAL_PHOTOS.angela, afterQ: 6 },
-    { name: "Karen T.", role: "Former HR Executive to Clinical Director", text: "Everyone thought I was crazy leaving a 6-figure salary. 8 months later, I matched it with my own practice and actually love Mondays again.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
+    { name: "Grace T.", role: "Former Marketing Director, Age 52", text: "I left my corporate job at 49 with zero health credentials. This gave me everything — the skills, the framework, the confidence. Now earning $7K/month.", photo: TESTIMONIAL_PHOTOS.grace, afterQ: 3 },
+    { name: "Amanda S.", role: "Ex-Finance Manager to Practitioner", text: "My corporate project management skills turned out to be my secret weapon. I launched my practice like a business from day one.", photo: TESTIMONIAL_PHOTOS.amanda, afterQ: 6 },
+    { name: "Susan M.", role: "Former HR Executive to Clinical Director", text: "Everyone thought I was crazy leaving a 6-figure salary. 8 months later, I matched it with my own practice and actually love Mondays again.", photo: TESTIMONIAL_PHOTOS.susan, afterQ: 9 },
   ],
   "stay-at-home-mom": [
-    { name: "Susan M.", role: "Stay-at-Home Mom to Certified Practitioner", text: "I studied during nap times. Within 4 months I was certified. Now I see clients 3 days a week while my kids are at school and earn $6K/month.", photo: TESTIMONIAL_PHOTOS.susan, afterQ: 3 },
-    { name: "Angela R.", role: "Mom of 3 to FM Practitioner", text: "I felt invisible for years - just 'someone's mom.' This gave me my identity back. I built my practice from my kitchen table.", photo: TESTIMONIAL_PHOTOS.angela, afterQ: 6 },
-    { name: "Karen T.", role: "Former SAHM, Now Earning $8K/Month", text: "My husband was skeptical. Then my first month I earned $3K working part-time. Now I contribute more to our family than ever.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
+    { name: "Michelle R.", role: "Stay-at-Home Mom to Certified Practitioner", text: "I studied during nap times. Within 4 months I was certified. Now I see clients 3 days a week while my kids are at school and earn $6K/month.", photo: TESTIMONIAL_PHOTOS.michelle, afterQ: 3 },
+    { name: "Jennifer K.", role: "Mom of 3 to FM Practitioner", text: "I felt invisible for years - just 'someone's mom.' This gave me my identity back. I built my practice from my kitchen table.", photo: TESTIMONIAL_PHOTOS.jennifer, afterQ: 6 },
+    { name: "Angela R.", role: "Former SAHM, Now Earning $8K/Month", text: "My husband was skeptical. Then my first month I earned $3K working part-time. Now I contribute more to our family than ever.", photo: TESTIMONIAL_PHOTOS.angela, afterQ: 9 },
   ],
   "other-passionate": [
     { name: "Susan M.", role: "Career Changer, Age 52", text: "I was skeptical after wasting money on other programs. Now I'm earning $7K/month and fully booked. Started from zero at age 49.", photo: TESTIMONIAL_PHOTOS.susan, afterQ: 3 },
-    { name: "Angela R.", role: "Teacher to Clinical Practitioner", text: "I had no medical background - I was a high school teacher. Everything was broken down so clearly. My teaching skills help me explain protocols beautifully.", photo: TESTIMONIAL_PHOTOS.angela, afterQ: 6 },
-    { name: "Karen T.", role: "Complete Career Change at 47", text: "I proved everyone wrong. No degree in health, no clinical experience, nothing. Just passion. 6 months later: certified and earning more than my previous career.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
+    { name: "Grace T.", role: "Teacher to Clinical Practitioner", text: "I had no medical background - I was a high school teacher. Everything was broken down so clearly. My teaching skills help me explain protocols beautifully.", photo: TESTIMONIAL_PHOTOS.grace, afterQ: 6 },
+    { name: "Amanda S.", role: "Complete Career Change at 47", text: "I proved everyone wrong. No degree in health, no clinical experience, nothing. Just passion. 6 months later: certified and earning more than my previous career.", photo: TESTIMONIAL_PHOTOS.amanda, afterQ: 9 },
   ],
 };
 
@@ -229,30 +228,30 @@ const QUESTIONS: QuizStep[] = [
     id: 1, pillar: "Current State",
     question: "{{NAME}}, how would you describe your current work situation?",
     options: [
-      { label: "Burned out, exhausted, dreading every shift", value: "burned-out", reaction: "Exactly like Grace, a former ICU nurse from Ohio who felt the same way. She's now earning $7,200/month from home.", reactionName: "Grace", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "Getting by, but deeply unfulfilled", value: "getting-by", reaction: "That's how Michelle described it too. 6 months later, she left her clinic and never looked back.", reactionName: "Michelle", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "It's okay, but I know I'm capable of more", value: "capable-more", reaction: "Jennifer said the same thing. She knew she was meant for more. Now she runs her own practice.", reactionName: "Jennifer", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
-      { label: "I'm already building something on the side", value: "building-side", reaction: "Love that, {{NAME}}! Amanda was in the same spot — we helped her go full-time in 60 days.", reactionName: "Amanda", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "Burned out, exhausted, dreading every shift", value: "burned-out", reaction: "Exactly like Grace, a former ICU nurse from Ohio who felt the same way. She's now earning $7,200/month from home.", reactionName: "Grace T.", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
+      { label: "Getting by, but deeply unfulfilled", value: "getting-by", reaction: "That's how Michelle described it too. 6 months later, she left her clinic and never looked back.", reactionName: "Michelle R.", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
+      { label: "It's okay, but I know I'm capable of more", value: "capable-more", reaction: "Jennifer said the same thing. She knew she was meant for more. Now she runs her own practice.", reactionName: "Jennifer K.", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
+      { label: "I'm already building something on the side", value: "building-side", reaction: "Love that, {{NAME}}! Amanda was in the same spot — we helped her go full-time in 60 days.", reactionName: "Amanda S.", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
     ],
   },
   {
     id: 2, pillar: "Current State",
     question: "Be honest with me, {{NAME}} — how often do you think about leaving your current career?",
     options: [
-      { label: "Every single day — I can't stop thinking about it", value: "every-day", reaction: "Lisa told me the exact same thing. That constant feeling? It's trying to tell you something, {{NAME}}.", reactionName: "Lisa", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "Weekly — it crosses my mind more than I'd like", value: "weekly", reaction: "Barbara was there too. Those weekly thoughts turned into her new career.", reactionName: "Barbara", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "Monthly — usually after a rough shift", value: "monthly", reaction: "Patricia said the rough shifts were her wake-up call. Now she chooses her own hours.", reactionName: "Patricia", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
-      { label: "Rarely — I'm just exploring my options", value: "rarely", reaction: "Smart to explore early, {{NAME}}! Sandra wishes she had started looking sooner.", reactionName: "Sandra", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "Every single day — I can't stop thinking about it", value: "every-day", reaction: "Susan told me the exact same thing. That constant feeling? It's trying to tell you something, {{NAME}}.", reactionName: "Susan M.", reactionPhoto: TESTIMONIAL_PHOTOS.susan },
+      { label: "Weekly — it crosses my mind more than I'd like", value: "weekly", reaction: "Angela was there too. Those weekly thoughts turned into her new career.", reactionName: "Angela R.", reactionPhoto: TESTIMONIAL_PHOTOS.angela },
+      { label: "Monthly — usually after a rough shift", value: "monthly", reaction: "Grace said the rough shifts were her wake-up call. Now she chooses her own hours.", reactionName: "Grace T.", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
+      { label: "Rarely — I'm just exploring my options", value: "rarely", reaction: "Smart to explore early, {{NAME}}! Michelle wishes she had started looking sooner.", reactionName: "Michelle R.", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
     ],
   },
   {
     id: 3, pillar: "Current State",
     question: "I hear you, {{NAME}}. What's the BIGGEST thing holding you back from making a change right now?",
     options: [
-      { label: "I don't know where to start", value: "dont-know-start", reaction: "{{NAME}}, Nancy felt completely lost too. That's exactly why I created this path — to make it simple.", reactionName: "Nancy", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "I'm scared of losing income stability", value: "scared-income", reaction: "Betty was a single mom terrified of losing income. She kept her job until her side income replaced it.", reactionName: "Betty", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "I don't have the right credentials", value: "no-credentials", reaction: "Dorothy thought the same thing! She had no formal training — now she's board-certified.", reactionName: "Dorothy", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
-      { label: "I don't have enough time", value: "no-time", reaction: "Helen was working doubles and raising 2 kids. She did this in 1 hour a day. You can too.", reactionName: "Helen", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "I don't know where to start", value: "dont-know-start", reaction: "{{NAME}}, Jennifer felt completely lost too. That's exactly why I created this path — to make it simple.", reactionName: "Jennifer K.", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
+      { label: "I'm scared of losing income stability", value: "scared-income", reaction: "Amanda was a single mom terrified of losing income. She kept her job until her side income replaced it.", reactionName: "Amanda S.", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "I don't have the right credentials", value: "no-credentials", reaction: "Susan thought the same thing! She had no formal training — now she's board-certified.", reactionName: "Susan M.", reactionPhoto: TESTIMONIAL_PHOTOS.susan },
+      { label: "I don't have enough time", value: "no-time", reaction: "Angela was working doubles and raising 2 kids. She did this in 1 hour a day. You can too.", reactionName: "Angela R.", reactionPhoto: TESTIMONIAL_PHOTOS.angela },
     ],
   },
   // PILLAR 2: Desire Clarity (Future Pacing)
@@ -260,30 +259,30 @@ const QUESTIONS: QuizStep[] = [
     id: 4, pillar: "Desire Clarity",
     question: "Close your eyes for a second, {{NAME}}... Imagine it's 6 months from now. What does your IDEAL day look like?",
     options: [
-      { label: "Working from home, setting my own schedule", value: "work-from-home", reaction: "Margaret dropped her kids at school, made coffee, and logged 3 client calls by noon. That's her Tuesday now.", reactionName: "Margaret", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "Earning $5K+ helping clients I actually care about", value: "earning-5k", reaction: "Ruth hit $5K in her third month. She cried happy tears — first time in years.", reactionName: "Ruth", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "Location freedom — laptop and wifi is all I need", value: "location-freedom", reaction: "Sharon took her practice to Costa Rica last month. Laptop, wifi, and happy clients.", reactionName: "Sharon", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
-      { label: "Still in healthcare, but with meaning and less burnout", value: "meaningful-healthcare", reaction: "Donna still works with patients — but now they THANK her. No more being just a number.", reactionName: "Donna", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "Working from home, setting my own schedule", value: "work-from-home", reaction: "Grace dropped her kids at school, made coffee, and logged 3 client calls by noon. That's her Tuesday now.", reactionName: "Grace T.", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
+      { label: "Earning $5K+ helping clients I actually care about", value: "earning-5k", reaction: "Michelle hit $5K in her third month. She cried happy tears — first time in years.", reactionName: "Michelle R.", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
+      { label: "Location freedom — laptop and wifi is all I need", value: "location-freedom", reaction: "Jennifer took her practice to Costa Rica last month. Laptop, wifi, and happy clients.", reactionName: "Jennifer K.", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
+      { label: "Still in healthcare, but with meaning and less burnout", value: "meaningful-healthcare", reaction: "Amanda still works with patients — but now they THANK her. No more being just a number.", reactionName: "Amanda S.", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
     ],
   },
   {
     id: 5, pillar: "Desire Clarity",
     question: "{{NAME}}, if you could wake up 6 months from now earning predictable income from home — how much would you need to feel safe leaving your job?",
     options: [
-      { label: "$3,000 - $5,000/month", value: "3k-5k", reaction: "Carol hit $4,200 in month 2. Said it felt 'too easy.' {{NAME}}, this is absolutely within reach.", reactionName: "Carol", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "$5,000 - $8,000/month", value: "5k-8k", reaction: "Judy's goal was $6K. She hit $8,400 by month 4. The demand for this is REAL.", reactionName: "Judy", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "$8,000 - $12,000/month", value: "8k-12k", reaction: "Deborah scaled to $11K by adding group programs. It's a full business now.", reactionName: "Deborah", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
-      { label: "$12,000+/month", value: "12k-plus", reaction: "Cynthia built a team. She's at $18K/month now. Started exactly where you are.", reactionName: "Cynthia", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "$3,000 - $5,000/month", value: "3k-5k", reaction: "Susan hit $4,200 in month 2. Said it felt 'too easy.' {{NAME}}, this is absolutely within reach.", reactionName: "Susan M.", reactionPhoto: TESTIMONIAL_PHOTOS.susan },
+      { label: "$5,000 - $8,000/month", value: "5k-8k", reaction: "Angela's goal was $6K. She hit $8,400 by month 4. The demand for this is REAL.", reactionName: "Angela R.", reactionPhoto: TESTIMONIAL_PHOTOS.angela },
+      { label: "$8,000 - $12,000/month", value: "8k-12k", reaction: "Grace scaled to $11K by adding group programs. It's a full business now.", reactionName: "Grace T.", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
+      { label: "$12,000+/month", value: "12k-plus", reaction: "Michelle built a team. She's at $18K/month now. Started exactly where you are.", reactionName: "Michelle R.", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
     ],
   },
   {
     id: 6, pillar: "Desire Clarity",
     question: "If you could help women in ONE specific area, {{NAME}}, what pulls at your heart the most?",
     options: [
-      { label: "Hormone balance & women's health", value: "hormone-health", reaction: "Brenda chose hormones too. She says it's the most rewarding work of her life. 2,847 women who chose Hormone Health are now certified.", reactionName: "Brenda", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "Gut health & digestion issues", value: "gut-health", reaction: "Amy specialized in gut health — the demand is INSANE right now. 1,923 gut health practitioners certified.", reactionName: "Amy", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "Weight loss & metabolism struggles", value: "weight-metabolism", reaction: "Shirley helps women lose weight naturally. Her waitlist is 3 months long. 2,156 metabolism specialists certified.", reactionName: "Shirley", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
-      { label: "Energy, fatigue & burnout recovery", value: "energy-burnout", reaction: "Anna helps burned-out women like us. She gets it. So will your clients. 1,742 burnout recovery coaches certified.", reactionName: "Anna", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "Hormone balance & women's health", value: "hormone-health", reaction: "Jennifer chose hormones too. She says it's the most rewarding work of her life. 2,847 women who chose Hormone Health are now certified.", reactionName: "Jennifer K.", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
+      { label: "Gut health & digestion issues", value: "gut-health", reaction: "Amanda specialized in gut health — the demand is INSANE right now. 1,923 gut health practitioners certified.", reactionName: "Amanda S.", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "Weight loss & metabolism struggles", value: "weight-metabolism", reaction: "Susan helps women lose weight naturally. Her waitlist is 3 months long. 2,156 metabolism specialists certified.", reactionName: "Susan M.", reactionPhoto: TESTIMONIAL_PHOTOS.susan },
+      { label: "Energy, fatigue & burnout recovery", value: "energy-burnout", reaction: "Angela helps burned-out women like us. She gets it. So will your clients. 1,742 burnout recovery coaches certified.", reactionName: "Angela R.", reactionPhoto: TESTIMONIAL_PHOTOS.angela },
     ],
   },
   // PILLAR 3: Belief Gap (Objection Surfacing)
@@ -291,30 +290,30 @@ const QUESTIONS: QuizStep[] = [
     id: 7, pillar: "Belief Gap",
     question: "{{NAME}}, what's the #1 thing you believe is stopping you from becoming a certified practitioner?",
     options: [
-      { label: "It takes too long (years of school)", value: "too-long", reaction: "Kathy thought the same thing. She was certified in 9 days — while still working full-time.", reactionName: "Kathy", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "It costs too much ($10K+ programs)", value: "too-expensive", reaction: "Diane spent $127 total. Not $10K. Not $5K. $127. And she's earning $6K/month now.", reactionName: "Diane", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "I'm not sure I'm qualified", value: "not-qualified", reaction: "Janet was a medical assistant with no degree. She's now a certified practitioner with a waiting list.", reactionName: "Janet", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
-      { label: "I don't know how to get clients", value: "no-clients", reaction: "Frances got her first 3 clients in week 1 using our templates. I'll show you exactly how.", reactionName: "Frances", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "It takes too long (years of school)", value: "too-long", reaction: "Grace thought the same thing. She was certified in 9 days — while still working full-time.", reactionName: "Grace T.", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
+      { label: "It costs too much ($10K+ programs)", value: "too-expensive", reaction: "Michelle spent $127 total. Not $10K. Not $5K. $127. And she's earning $6K/month now.", reactionName: "Michelle R.", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
+      { label: "I'm not sure I'm qualified", value: "not-qualified", reaction: "Jennifer was a medical assistant with no degree. She's now a certified practitioner with a waiting list.", reactionName: "Jennifer K.", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
+      { label: "I don't know how to get clients", value: "no-clients", reaction: "Amanda got her first 3 clients in week 1 using our templates. I'll show you exactly how.", reactionName: "Amanda S.", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
     ],
   },
   {
     id: 8, pillar: "Belief Gap",
     question: "Be honest with me, {{NAME}} — have you looked into Functional Medicine certifications before?",
     options: [
-      { label: "Yes, but they were too expensive", value: "looked-expensive", reaction: "Virginia almost paid $8,500 for IIN. Then she found us. Same certification, fraction of the cost.", reactionName: "Virginia", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "Yes, but they took way too long", value: "looked-too-long", reaction: "Joyce didn't have 2 years. She had 2 weeks. That's all she needed with our path.", reactionName: "Joyce", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "No, I didn't know where to look", value: "didnt-know", reaction: "Marie was lost too. Said finding us felt like 'finally finding the door.'", reactionName: "Marie", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
-      { label: "No, I just discovered this recently", value: "just-discovered", reaction: "Perfect timing, {{NAME}}! Theresa found us at exactly the right moment too.", reactionName: "Theresa", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "Yes, but they were too expensive", value: "looked-expensive", reaction: "Susan almost paid $8,500 for IIN. Then she found us. Same certification, fraction of the cost.", reactionName: "Susan M.", reactionPhoto: TESTIMONIAL_PHOTOS.susan },
+      { label: "Yes, but they took way too long", value: "looked-too-long", reaction: "Angela didn't have 2 years. She had 2 weeks. That's all she needed with our path.", reactionName: "Angela R.", reactionPhoto: TESTIMONIAL_PHOTOS.angela },
+      { label: "No, I didn't know where to look", value: "didnt-know", reaction: "Grace was lost too. Said finding us felt like 'finally finding the door.'", reactionName: "Grace T.", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
+      { label: "No, I just discovered this recently", value: "just-discovered", reaction: "Perfect timing, {{NAME}}! Michelle found us at exactly the right moment too.", reactionName: "Michelle R.", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
     ],
   },
   {
     id: 9, pillar: "Belief Gap",
     question: "How soon are you looking to make a real change, {{NAME}}?",
     options: [
-      { label: "Immediately — I'm ready NOW", value: "immediately", reaction: "Alice said the same thing. 30 days later, she had quit her job. The 'ready NOW' energy is powerful.", reactionName: "Alice", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "Within 1-3 months", value: "1-3-months", reaction: "Jean gave herself 90 days. Hit her income goal in 60. You might surprise yourself, {{NAME}}.", reactionName: "Jean", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "Within 6 months", value: "6-months", reaction: "Kathryn planned for 6 months. Started earning at month 2. Plans change when results come fast.", reactionName: "Kathryn", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
-      { label: "Just researching for now", value: "researching", reaction: "Sara was 'just researching' for 6 months. She says she wishes she started sooner.", reactionName: "Sara", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "Immediately — I'm ready NOW", value: "immediately", reaction: "Jennifer said the same thing. 30 days later, she had quit her job. The 'ready NOW' energy is powerful.", reactionName: "Jennifer K.", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
+      { label: "Within 1-3 months", value: "1-3-months", reaction: "Amanda gave herself 90 days. Hit her income goal in 60. You might surprise yourself, {{NAME}}.", reactionName: "Amanda S.", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "Within 6 months", value: "6-months", reaction: "Susan planned for 6 months. Started earning at month 2. Plans change when results come fast.", reactionName: "Susan M.", reactionPhoto: TESTIMONIAL_PHOTOS.susan },
+      { label: "Just researching for now", value: "researching", reaction: "Angela was 'just researching' for 6 months. She says she wishes she started sooner.", reactionName: "Angela R.", reactionPhoto: TESTIMONIAL_PHOTOS.angela },
     ],
   },
   // PILLAR 4: Commitment Test (Intent Qualification)
@@ -322,9 +321,9 @@ const QUESTIONS: QuizStep[] = [
     id: 10, pillar: "Commitment",
     question: "{{NAME}}, if I could show you a way to get certified in under 2 weeks — without quitting your job, for less than $100 — would you take it seriously?",
     options: [
-      { label: "YES — I'm ready to invest in myself", value: "yes-ready", reaction: "That's the energy, {{NAME}}! Paula said YES too — and within 30 days, her life was completely different.", reactionName: "Paula", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "Maybe — show me what you've got", value: "maybe", reaction: "Christina was a 'maybe' — totally fair. By the end of week 1, she was ALL in.", reactionName: "Christina", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "Probably not — I'm still skeptical", value: "skeptical", reaction: "Lauren was skeptical too. She needed proof. I'll show you everything, {{NAME}}.", reactionName: "Lauren", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
+      { label: "YES — I'm ready to invest in myself", value: "yes-ready", reaction: "That's the energy, {{NAME}}! Grace said YES too — and within 30 days, her life was completely different.", reactionName: "Grace T.", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
+      { label: "Maybe — show me what you've got", value: "maybe", reaction: "Michelle was a 'maybe' — totally fair. By the end of week 1, she was ALL in.", reactionName: "Michelle R.", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
+      { label: "Probably not — I'm still skeptical", value: "skeptical", reaction: "Jennifer was skeptical too. She needed proof. I'll show you everything, {{NAME}}.", reactionName: "Jennifer K.", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
       { label: "No — I'm not ready", value: "not-ready", reaction: "No pressure, {{NAME}}. Let's see if the full picture changes your mind.", reactionName: "", reactionPhoto: "" },
     ],
   },
@@ -332,9 +331,9 @@ const QUESTIONS: QuizStep[] = [
     id: 11, pillar: "Commitment",
     question: "Here's the real question, {{NAME}}: How committed are you to making 2026 YOUR year?",
     options: [
-      { label: "100% — I'm making this happen no matter what", value: "100-percent", reaction: "Melissa had that same fire. 2026 WAS her year. I believe it can be yours too, {{NAME}}.", reactionName: "Melissa", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "80% — I just need the right roadmap", value: "80-percent", reaction: "Stephanie just needed clarity. Once she had the roadmap, she went to 100% instantly.", reactionName: "Stephanie", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "50% — I'm interested but still unsure", value: "50-percent", reaction: "Rebecca was 50/50. Said seeing other women's results pushed her over the edge.", reactionName: "Rebecca", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
+      { label: "100% — I'm making this happen no matter what", value: "100-percent", reaction: "Amanda had that same fire. 2026 WAS her year. I believe it can be yours too, {{NAME}}.", reactionName: "Amanda S.", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "80% — I just need the right roadmap", value: "80-percent", reaction: "Susan just needed clarity. Once she had the roadmap, she went to 100% instantly.", reactionName: "Susan M.", reactionPhoto: TESTIMONIAL_PHOTOS.susan },
+      { label: "50% — I'm interested but still unsure", value: "50-percent", reaction: "Angela was 50/50. Said seeing other women's results pushed her over the edge.", reactionName: "Angela R.", reactionPhoto: TESTIMONIAL_PHOTOS.angela },
       { label: "Just browsing for now", value: "browsing", reaction: "That's okay, {{NAME}}. Sometimes clarity comes from seeing what's possible.", reactionName: "", reactionPhoto: "" },
     ],
   },
@@ -342,10 +341,10 @@ const QUESTIONS: QuizStep[] = [
     id: 12, pillar: "Commitment",
     question: "Last one, {{NAME}}... Would you be willing to dedicate just 1 hour per day for the next 7 days to build your new career?",
     options: [
-      { label: "Absolutely — I'll make the time", value: "absolutely", reaction: "That's all it takes, {{NAME}}. Carolyn did exactly 1 hour a day. Changed her whole life.", reactionName: "Carolyn", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
-      { label: "Probably — if the content is worth it", value: "probably", reaction: "Christine thought the same. Said every minute was worth it — pure value, no fluff.", reactionName: "Christine", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
-      { label: "Maybe — depends on my schedule", value: "maybe-schedule", reaction: "Rachel squeezed it in during lunch breaks. Where there's a will, there's a way.", reactionName: "Rachel", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
-      { label: "No — I really don't have time", value: "no-time", reaction: "Kelly was the busiest person I know — 3 kids, night shifts. She still made it work.", reactionName: "Kelly", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
+      { label: "Absolutely — I'll make the time", value: "absolutely", reaction: "That's all it takes, {{NAME}}. Grace did exactly 1 hour a day. Changed her whole life.", reactionName: "Grace T.", reactionPhoto: TESTIMONIAL_PHOTOS.grace },
+      { label: "Probably — if the content is worth it", value: "probably", reaction: "Michelle thought the same. Said every minute was worth it — pure value, no fluff.", reactionName: "Michelle R.", reactionPhoto: TESTIMONIAL_PHOTOS.michelle },
+      { label: "Maybe — depends on my schedule", value: "maybe-schedule", reaction: "Jennifer squeezed it in during lunch breaks. Where there's a will, there's a way.", reactionName: "Jennifer K.", reactionPhoto: TESTIMONIAL_PHOTOS.jennifer },
+      { label: "No — I really don't have time", value: "no-time", reaction: "Amanda was the busiest person I know — 3 kids, night shifts. She still made it work.", reactionName: "Amanda S.", reactionPhoto: TESTIMONIAL_PHOTOS.amanda },
     ],
   },
 ];
@@ -962,10 +961,10 @@ export default function MiniDiplomaQuiz() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="bg-white rounded-2xl shadow-xl border overflow-hidden"
-                style={{ borderColor: `${BRAND.gold}40` }}
+                className="rounded-2xl shadow-xl overflow-hidden"
+                style={{ background: BRAND.goldMetallic, padding: "3px" }}
               >
-                <div className="p-6 sm:p-8 space-y-6">
+                <div className="bg-white rounded-2xl p-6 sm:p-8 space-y-6">
                   {/* Sarah */}
                   <div className="flex items-start gap-4">
                     <Image
@@ -981,7 +980,7 @@ export default function MiniDiplomaQuiz() {
                         &quot;{name}, I put together a custom certification plan just for you based on your answers.
                       </p>
                       <p className="text-sm sm:text-base text-gray-700 italic mt-2">
-                        Enter your best email and I&apos;ll send you:&quot;
+                        Enter your details and I&apos;ll send you:&quot;
                       </p>
                     </div>
                   </div>
@@ -996,47 +995,70 @@ export default function MiniDiplomaQuiz() {
                     ))}
                   </div>
 
-                  {/* Form */}
-                  <div className="space-y-3">
+                  {/* Form with Gold Frame */}
+                  <div className="rounded-xl p-4 space-y-3" style={{ background: `${BRAND.gold}08`, border: `2px solid ${BRAND.gold}30` }}>
+                    {/* Last Name */}
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Last name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 focus:outline-none transition-colors bg-white"
+                        style={{ borderColor: lastName ? BRAND.gold : "#e5e7eb" }}
+                      />
+                    </div>
+                    {/* Email */}
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
                         type="email"
-                        placeholder="Your best email..."
+                        placeholder="Your best email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 focus:outline-none transition-colors"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 focus:outline-none transition-colors bg-white"
                         style={{ borderColor: email ? BRAND.gold : "#e5e7eb" }}
                       />
                     </div>
+                    {/* Phone with +1 prefix */}
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <div className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-500 font-medium">+1</div>
                       <input
                         type="tel"
-                        placeholder="Phone (optional - for SMS updates)"
+                        placeholder="(555) 123-4567"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 focus:outline-none transition-colors"
+                        onChange={(e) => {
+                          // Only allow digits, parentheses, dashes, spaces
+                          const cleaned = e.target.value.replace(/[^\d\s()-]/g, "");
+                          setPhone(cleaned);
+                        }}
+                        className="w-full pl-[4.5rem] pr-4 py-3 rounded-xl border-2 focus:outline-none transition-colors bg-white"
                         style={{ borderColor: phone ? BRAND.gold : "#e5e7eb" }}
                       />
                     </div>
-                    <Button
-                      onClick={handleOptinSubmit}
-                      disabled={!email || submitting}
-                      className="group w-full h-14 text-lg font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 relative overflow-hidden"
-                      style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
-                    >
-                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                      <span className="relative flex items-center justify-center">
-                        {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Show My Results, Sarah! <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" /></>}
-                      </span>
-                    </Button>
+                    <p className="text-xs text-gray-500 text-center">📱 We&apos;ll text you your results + exclusive bonuses</p>
                   </div>
 
+                  {/* Submit Button */}
+                  <Button
+                    onClick={handleOptinSubmit}
+                    disabled={!email || !phone || !lastName || submitting}
+                    className="group w-full h-14 text-lg font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 relative overflow-hidden"
+                    style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <span className="relative flex items-center justify-center">
+                      {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Show My Results, Sarah! <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" /></>}
+                    </span>
+                  </Button>
+
                   {/* Trust */}
-                  <p className="text-center text-xs text-gray-400 italic">
-                    This is just between us — no spam, I promise. 💛
-                  </p>
+                  <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+                    <Lock className="w-3 h-3" />
+                    <span>100% private • No spam ever • Unsubscribe anytime</span>
+                  </div>
                 </div>
               </motion.div>
             )}
