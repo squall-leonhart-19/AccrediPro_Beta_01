@@ -140,7 +140,7 @@ function SectionInner({ children, className = "" }: { children: React.ReactNode;
 }
 
 // ─── Main ──────────────────────────────────────────────────────────
-function HealthcareResultsInner() {
+function CoachResultsInner() {
   const sp = useSearchParams();
 
   // Core params
@@ -149,7 +149,7 @@ function HealthcareResultsInner() {
   const email = sp.get("email") || "";
   const typeKey = sp.get("type") || "hormone-health";
   const goalKey = sp.get("goal") || "10k";
-  const role = sp.get("role") || "healthcare-pro";
+  const role = sp.get("role") || "health-coach";
 
   // ALL quiz answers for hyper-personalization
   const currentIncome = sp.get("currentIncome") || "0";
@@ -205,18 +205,18 @@ function HealthcareResultsInner() {
 
   // ─── Dynamic hero subtitle based on Q8 (missing skill) ──────────
   const heroSubtitle: Record<string, string> = {
-    "framework": `You said you're missing a real clinical framework. DEPTH gives you the exact 5-phase system — Discover, Evaluate, Pinpoint, Transform, Heal — that turns your nursing skills into a ${income.label} practice.`,
-    "confidence": `You said you need confidence to charge premium prices. The ASI certification IS that confidence. When clients see those credentials alongside your RN/PA, you'll command $150-250/session without hesitation.`,
-    "client-system": `You said you need a proven system to get clients. Our Business Setup System is included — and 73% of healthcare graduates land their first paying clients within 30 days of certification.`,
-    "credibility": `You said you need credibility and recognized credentials. ASI accreditation stacks with your healthcare license, creating a combination that commands instant trust and premium rates.`,
+    "framework": `You said you're missing a real clinical framework. DEPTH gives you the exact 5-phase system — Discover, Evaluate, Pinpoint, Transform, Heal — that transforms your coaching practice into a ${income.label} clinical business.`,
+    "confidence": `You said you need confidence to charge premium prices. The ASI certification IS that confidence. When clients see those credentials, you'll command $150-250/session without hesitation.`,
+    "client-system": `You said you need a proven system to get clients. Our Business Setup System is included — and 73% of certified coaches land their first premium clients within 30 days of certification.`,
+    "credibility": `You said you need credibility and recognized credentials. ASI accreditation gives you the clinical legitimacy that separates you from every other "wellness coach" out there — and justifies premium rates.`,
   };
 
   // ─── Dynamic Sarah message based on Q10 (vision) ────────────────
   const sarahVision: Record<string, string> = {
-    "leave-job": `I can see it in your answers — you're ready to leave the hospital. I left my ER job 4 years ago and it was terrifying. But ${firstName}, within 6 months I was earning MORE than my ER salary working 20 hours a week. 67% of our healthcare graduates make the same leap within a year. Your spot in the Healthcare Fast-Track is waiting.`,
-    "security": `Financial security — that's what drove me too. As an ER nurse I lived paycheck to paycheck despite working 60-hour weeks. Now I have savings, investments, and zero financial anxiety. ${firstName}, your clinical skills are worth so much more than what the hospital pays you. DEPTH shows you how to capture that value.`,
-    "fulfillment": `You went into healthcare to help people heal — not to be a pill dispenser in a broken system. I felt the same frustration every shift. ${firstName}, DEPTH lets you practice medicine the way you always dreamed. Real root-cause investigation. Real transformation. Real fulfillment. That's worth more than any paycheck.`,
-    "all-above": `Freedom, security, AND fulfillment — you want the complete transformation. I did too, ${firstName}. And I got it. Left the ER, built my practice, now I earn more working less and actually love what I do. Your clinical background makes you the perfect candidate. The only question is whether you'll take the step.`,
+    "leave-job": `I can see it in your answers — you're ready to go full-time with your coaching practice. I made that leap 4 years ago and it was terrifying. But ${firstName}, within 6 months I was earning more than I ever dreamed possible working 20 hours a week. 67% of our certified coaches go full-time within a year. Your spot is waiting.`,
+    "security": `Financial security — that's what drove me too. I spent years building other people's businesses while barely scraping by. Now I have savings, investments, and zero financial anxiety. ${firstName}, your coaching skills are worth so much more than you're currently charging. DEPTH shows you how to capture that value.`,
+    "fulfillment": `You got into coaching to help people transform — not to be another generic "wellness coach" lost in the noise. I felt the same frustration. ${firstName}, DEPTH lets you practice at a clinical level that gets REAL results. Real root-cause work. Real transformation. Real fulfillment. That's worth more than any paycheck.`,
+    "all-above": `Freedom, security, AND fulfillment — you want the complete transformation. I did too, ${firstName}. And I got it. Built my practice from scratch, now I earn more working less and actually love what I do. Your coaching experience makes you the perfect candidate. The only question is whether you'll take the step.`,
   };
 
   // ─── Dynamic timeline based on Q4 (experience) + Q12 ───────────
@@ -231,34 +231,34 @@ function HealthcareResultsInner() {
 
   // ─── Dynamic clinical framing based on Q5 ───────────────────────
   const clinicalFraming: Record<string, { headline: string; body: string }> = {
-    "very-confident": { headline: "Sharpen Your Clinical Edge", body: `You said you're already confident identifying root causes. DEPTH doesn't start from zero with you — it adds the functional medicine lens, the lab interpretation protocols, and the clinical decision-making framework that takes your existing skills to the next level. Think of it as clinical mastery, not clinical 101.` },
-    "somewhat": { headline: "Turn Instinct Into Certainty", body: `You said you can identify SOME causes — that means your clinical instincts are already working. DEPTH gives you the systematic 5-phase framework that turns "I think it might be..." into "I know exactly what's happening and here's the protocol." That confidence gap is worth $100K+/year.` },
-    "not-very": { headline: "Bridge the Root-Cause Gap", body: `You said you'd need to research to identify root causes — and that's completely normal in conventional healthcare. You were trained to treat symptoms, not find root causes. That's the EXACT gap DEPTH was built to fill. In 4-6 weeks, you'll have a systematic framework for every complex case.` },
-    "refer-out": { headline: "Become the Specialist They Refer TO", body: `You said you'd refer complex cases to someone else. What if YOU were that someone else? With your clinical background plus DEPTH certification, physicians will actively refer their functional medicine cases TO you. That's not a fantasy — it's what our healthcare graduates experience every day.` },
+    "very-confident": { headline: "Sharpen Your Clinical Edge", body: `You said you're already confident identifying root causes. DEPTH doesn't start from zero with you — it adds the functional medicine lens, the lab interpretation protocols, and the clinical decision-making framework that takes your existing coaching skills to a truly clinical level.` },
+    "somewhat": { headline: "Turn Instinct Into Certainty", body: `You said you can identify SOME causes — that means your coaching instincts are already working. DEPTH gives you the systematic 5-phase framework that turns "I think it might be..." into "I know exactly what's happening and here's the protocol." That confidence gap is worth $100K+/year.` },
+    "not-very": { headline: "Bridge the Root-Cause Gap", body: `You said you'd need to research to identify root causes — that's the reality for most coaches without clinical training. That's the EXACT gap DEPTH was built to fill. In 4-6 weeks, you'll have a systematic framework for every complex case.` },
+    "refer-out": { headline: "Become the Expert They Refer TO", body: `You said you'd refer complex cases to someone else. What if YOU were that someone else? With DEPTH certification, other coaches will actively refer their toughest cases TO you. That's not a fantasy — it's what our certified coaches experience every day.` },
   };
   const clinicalMsg = clinicalFraming[clinicalReady] || clinicalFraming["not-very"];
 
   // ─── Dynamic past cert section based on Q7 ──────────────────────
   const showPastCertSection = pastCerts === "multiple-disappointed" || pastCerts === "spent-5k-plus" || pastCerts === "some-value";
   const pastCertContent: Record<string, { headline: string; intro: string }> = {
-    "multiple-disappointed": { headline: `${firstName}, You Said You've Been Burned Before`, intro: `You told us you've invested in multiple certifications and they were disappointing. We hear this from 40%+ of our healthcare graduates. Here's why DEPTH is different from everything you've tried:` },
-    "spent-5k-plus": { headline: `${firstName}, You've Already Spent $5K+ on Certifications`, intro: `That's a lot of money for "still feeling unprepared." You're not alone — the wellness education industry is full of expensive theory with no clinical application. Here's why DEPTH practitioners earn their investment back within 60 days:` },
+    "multiple-disappointed": { headline: `${firstName}, You Said You've Been Burned Before`, intro: `You told us you've invested in multiple coaching certifications and they were disappointing. We hear this from 50%+ of coaches who come to us. Here's why DEPTH is different from everything you've tried:` },
+    "spent-5k-plus": { headline: `${firstName}, You've Already Spent $5K+ on Coaching Programs`, intro: `That's a lot of money for "still feeling unprepared." You're not alone — the coaching industry is full of expensive fluff with no clinical application. Here's why DEPTH coaches earn their investment back within 60 days:` },
     "some-value": { headline: `Good Foundation — But You're Ready for Clinical Grade`, intro: `You said your past certifications gave you SOME value. DEPTH doesn't compete with those — it builds on top of them and takes you from "certified coach" to "clinical practitioner" with the protocols, lab skills, and business system those programs never taught.` },
   };
 
   // ─── FAQs (dynamic based on all answers) ──────────────────────────
   const faqs = [
-    { q: "Can I practice functional medicine as a nurse/PA?", a: "Yes. The DEPTH Method certification is designed to complement your existing healthcare credentials. You'll work within your scope of practice while adding functional medicine services. Many of our nurse practitioners and PAs run thriving functional practices legally and ethically." },
-    { q: "Do I need to quit my hospital job first?", a: "Absolutely not. Most of our healthcare graduates started studying while still working. The program is self-paced (20 min/day). Many build their practice on the side first, then transition when their income matches or exceeds their salary." },
+    { q: "How does this differ from other coaching certifications?", a: "DEPTH isn't another generic coaching cert. It's a clinical methodology — complete with lab interpretation, protocol building, and root-cause analysis. You'll have the skills to work with complex cases that other coaches have to refer out. That's what commands premium rates." },
+    { q: "Do I need a medical background to enroll?", a: "Absolutely not. The DEPTH Method was designed for coaches without medical training. We break down clinical concepts in plain English and give you step-by-step protocols to follow. Many of our top performers came from zero clinical background." },
     ...(pastCerts === "multiple-disappointed" || pastCerts === "spent-5k-plus" ? [{ q: "I've wasted money on certifications before. How is THIS different?", a: "Most programs sell theory. DEPTH delivers a clinical framework you can apply immediately — real protocols, real lab interpretation, real client systems. Plus, our Business Setup System helps you land paying clients within 30 days. That's why 73% of graduates do. And with the 7-day money-back guarantee, you risk nothing." }] : []),
-    { q: "Is this recognized alongside my RN/PA credentials?", a: "Yes. ASI certification is nationally recognized and stacks with your existing healthcare credentials. In fact, the combination of RN/PA + DEPTH certification commands significantly higher rates than either alone." },
-    ...(experience === "no-experience" ? [{ q: "I haven't worked with clients directly yet — is that okay?", a: "Absolutely. 38% of our top performers started with zero direct client experience. Your healthcare training IS your foundation. DEPTH adds the functional medicine layer, and the Business Setup System teaches you exactly how to attract and serve clients." }] : []),
-    { q: "What if my state has scope-of-practice limitations?", a: "DEPTH certification teaches you to work within your existing scope while maximizing your functional medicine capabilities. We have practitioners in all 50 states. The program includes state-specific guidance and compliance frameworks." },
-    ...(commitment === "not-sure" || commitment === "rearrange" ? [{ q: "What if I can't study every day?", a: "The program is 100% self-paced. You don't need to study daily — even 3-4 sessions per week works great. Many of our nurses study between shifts or on days off. There's no deadline pressure, only progress." }] : []),
+    { q: "Will this actually help me get clients?", a: "Yes. The Business Setup System is included and teaches you exactly how to attract and convert premium clients. 73% of our coaches land their first paying client within 30 days of certification. The credential + the system = results." },
+    ...(experience === "no-experience" ? [{ q: "I haven't worked with clients directly yet — is that okay?", a: "Absolutely. 38% of our top performers started with zero direct client experience. Your passion for helping people IS your foundation. DEPTH adds the clinical framework, and the Business Setup System teaches you exactly how to attract and serve clients." }] : []),
+    { q: "Can I legally work with clients after this certification?", a: "Yes. As a coach (not a doctor), you're not diagnosing or treating diseases — you're supporting clients with education, protocols, and lifestyle optimization. DEPTH teaches you to work ethically and legally while delivering powerful results." },
+    ...(commitment === "not-sure" || commitment === "rearrange" ? [{ q: "What if I can't study every day?", a: "The program is 100% self-paced. You don't need to study daily — even 3-4 sessions per week works great. Many of our coaches study during lunch breaks or after the kids are asleep. There's no deadline pressure, only progress." }] : []),
     { q: "Is this lifetime access or a subscription?", a: "Lifetime access. Once you enroll, you have unlimited access forever — including all future updates, new protocols, and community features. No recurring fees, no expiration date, no surprise charges. It's yours for life." },
     { q: "Is this a one-time payment?", a: "Yes. This is a one-time investment with no hidden fees or ongoing subscriptions. Through Sarah's scholarship program, you pay what you can — and that's it. You'll never be charged again for this certification." },
-    { q: "Is the program self-paced?", a: "100% self-paced. There are no live class schedules or deadlines to keep up with. Study at midnight between shifts, on Sunday mornings, or during your lunch break — the material is always there when you are. Most graduates finish in 8-12 weeks at just 20 minutes per day." },
-    { q: "Do I need a medical degree to enroll?", a: "No medical degree required. The DEPTH Method certification is designed for health and wellness professionals at all levels — nurses, PAs, health coaches, nutritionists, and even career changers with no clinical background. Your passion for helping people is the only prerequisite." },
+    { q: "Is the program self-paced?", a: "100% self-paced. There are no live class schedules or deadlines to keep up with. Study whenever works for you — the material is always there when you are. Most graduates finish in 8-12 weeks at just 20 minutes per day." },
+    { q: "What if I already have other certifications?", a: "DEPTH stacks on top of what you already have. Your existing certifications gave you a foundation — DEPTH gives you the clinical edge that separates you from every other coach in your niche. Many of our top performers had 2-3 certifications before DEPTH." },
   ];
 
   // ─── CTA Button — opens scholarship chat ────────────────────────
@@ -313,7 +313,7 @@ function HealthcareResultsInner() {
               <Stethoscope className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" /> <span className="hidden sm:inline">ASI Clinical Assessment —</span> Results
             </span>
             <span className="text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-1 rounded-full whitespace-nowrap" style={{ backgroundColor: `${B.burgundyDark}20`, color: B.burgundyDark }}>
-              Healthcare Fast-Track
+              Coach Upgrade Track
             </span>
           </div>
 
@@ -321,11 +321,11 @@ function HealthcareResultsInner() {
             <Image src={ASI_LOGO} alt="ASI" width={72} height={72} className="mx-auto w-14 h-14 sm:w-[72px] sm:h-[72px]" />
 
             <div className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest" style={{ backgroundColor: `${B.burgundy}10`, color: B.burgundy }}>
-              <Award className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> For Healthcare Professionals
+              <Award className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> For Health & Wellness Coaches
             </div>
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-extrabold leading-[1.15]" style={{ color: B.burgundyDark }}>
-              {firstName}, Your Clinical Background Is Worth {income.label}
+              {firstName}, Your Coaching Practice Could Be Worth {income.label}
               <br />
               <span style={{ color: B.burgundy }}>Here&apos;s the Missing Piece.</span>
             </h1>
@@ -382,10 +382,10 @@ function HealthcareResultsInner() {
 
             <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
               {[
-                { emoji: "😤", title: "Exhausting shifts for declining pay", desc: `12-hour hospital shifts, mandatory overtime, and your real hourly rate keeps dropping.${currentIncome === "0" || currentIncome === "under-2k" ? " You didn't spend years in nursing school for THIS." : ""} Meanwhile, wellness influencers with zero medical training earn more posting on Instagram.` },
-                { emoji: "💊", title: "You KNOW the medicine isn't working", desc: `You watch patients leave with prescriptions that mask symptoms instead of solving the root cause.${clinicalReady === "refer-out" || clinicalReady === "not-very" ? " You FEEL it — but you don't have the functional framework yet to do it differently." : " You KNOW there's a better way."} You became a healthcare professional to HELP people.` },
-                { emoji: "💸", title: "$40K+ in education, still underpaid", desc: `Nursing school, certifications, continuing education — you've invested heavily.${pastCerts === "spent-5k-plus" ? " You even told us you've spent $5K+ on other certifications and STILL feel unprepared." : ""} But the system caps your earning no matter how good you are.` },
-                { emoji: "🔒", title: "Zero autonomy, zero fulfillment", desc: `Corporate medicine tells you how many minutes per patient.${vision === "leave-job" ? " You said you want to leave your 9-to-5 — and DEPTH is the fastest path to that freedom." : ""} You can't practice the way you KNOW is right. The burnout is real.` },
+                { emoji: "😤", title: "Competing with thousands of identical coaches", desc: `Every day, more coaches flood your niche with the same generic advice.${currentIncome === "0" || currentIncome === "under-2k" ? " You're fighting for scraps while they undercut your prices." : ""} Without clinical differentiation, you're just another voice in the noise.` },
+                { emoji: "💊", title: "Referring out your best opportunities", desc: `When clients come to you with complex cases — hormones, gut issues, fatigue — you have to send them somewhere else.${clinicalReady === "refer-out" || clinicalReady === "not-very" ? " You FEEL it — but you don't have the functional framework yet to help them." : " You KNOW there's a better way."} Those referrals could be $200/hr sessions.` },
+                { emoji: "💸", title: "Certifications that didn't pay off", desc: `You've invested in programs, courses, maybe even multiple certifications.${pastCerts === "spent-5k-plus" ? " You even told us you've spent $5K+ on other certifications and STILL feel unprepared." : ""} But none of them gave you the clinical edge to command premium rates.` },
+                { emoji: "🔒", title: "Impostor syndrome holding you back", desc: `You KNOW you're good at what you do.${vision === "leave-job" ? " You said you want to go full-time — but something's holding you back." : ""} But without proper clinical training, you hesitate to charge what you're worth. The confidence gap is costing you thousands.` },
               ].map((p, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                   className="p-4 sm:p-5 rounded-xl border bg-white shadow-sm" style={{ borderColor: `${B.burgundy}15` }}>
@@ -409,7 +409,7 @@ function HealthcareResultsInner() {
             </h2>
 
             <p className="text-center text-sm text-gray-600">
-              {firstName}, if you close this page and go back to your hospital shift, here&apos;s what the next 12 months look like:
+              {firstName}, if you close this page and keep coaching without clinical tools, here&apos;s what the next 12 months look like:
             </p>
 
             <div className="space-y-3">
@@ -536,7 +536,7 @@ function HealthcareResultsInner() {
                   ? `They started where you are right now — ${curIncome.label}/month, unsure if this was even possible. Read their words. You'll feel like they're talking directly to you.`
                   : currentIncome === "over-5k"
                   ? `They were already earning well — but they felt the same ceiling you feel. Here's what happened when they added DEPTH to their clinical career.`
-                  : `They were in your exact shoes — healthcare professionals earning ${curIncome.label}/month, wondering if there was something more. There was.`
+                  : `They were in your exact shoes — health coaches earning ${curIncome.label}/month, wondering if there was something more. There was.`
                 }
               </p>
             </div>
@@ -987,15 +987,15 @@ function HealthcareResultsInner() {
         <Section bg={`${B.gold}08`}>
           <div className="px-4 sm:px-6 py-3" style={{ background: B.goldMetallic }}>
             <span className="text-xs sm:text-sm font-bold flex items-center gap-2" style={{ color: B.burgundyDark }}>
-              <Gift className="w-4 h-4" /> Healthcare Fast-Track Bonuses (Included Free)
+              <Gift className="w-4 h-4" /> Coach Upgrade Track Bonuses (Included Free)
             </span>
           </div>
           <SectionInner className="space-y-3">
             {[
-              { title: "Nurse-to-Practitioner Transition Blueprint", desc: vision === "leave-job" ? "You said you want to leave your 9-to-5. This is the EXACT step-by-step guide for doing it safely and successfully." : "Step-by-step guide for leaving the hospital and launching your functional practice — written by former nurses.", value: "$497" },
-              { title: "Healthcare Professional Referral System", desc: "Scripts, templates, and strategies to turn your existing hospital network into a referral machine.", value: "$397" },
-              { title: "Scope-of-Practice Compliance Kit", desc: "State-by-state guide so you know exactly what you can offer as a certified DEPTH practitioner.", value: "$297" },
-              { title: "First 5 Clients Accelerator", desc: experience === "active-clients" ? "Upgrade your existing clients to premium DEPTH packages using these upsell scripts and templates." : experience === "no-experience" ? "The exact outreach templates to go from ZERO clients to your first 5 paying clients." : "The exact launch sequence our top healthcare graduates used to book their first 5 paying clients.", value: "$397" },
+              { title: "Coach-to-Practitioner Upgrade Blueprint", desc: vision === "leave-job" ? "You said you want to go full-time. This is the EXACT step-by-step guide for scaling your practice safely and successfully." : "The complete roadmap for transitioning from 'wellness coach' to 'clinical practitioner' — with premium pricing to match.", value: "$497" },
+              { title: "Coach Referral Network System", desc: "Scripts, templates, and strategies to build a referral network with other coaches, practitioners, and healthcare providers.", value: "$397" },
+              { title: "Niche Authority Positioning Kit", desc: "Position yourself as THE expert in your specialization — not just another coach. Includes bio templates, social proof strategies, and authority marketing blueprints.", value: "$297" },
+              { title: "First 5 Premium Clients Accelerator", desc: experience === "active-clients" ? "Upgrade your existing clients to premium DEPTH packages using these upsell scripts and templates." : experience === "no-experience" ? "The exact outreach templates to go from ZERO clients to your first 5 premium-paying clients." : "The exact launch sequence our top coaches used to book their first 5 premium clients.", value: "$397" },
               { title: "1-on-1 Private Mentor Chat with Sarah", desc: "Direct access to Coach Sarah M. for personalized guidance, protocol questions, and business advice — right inside your student dashboard.", value: "$1,497", icon: MessageCircle },
               { title: "Clinical Resources & Protocol Library", desc: "Downloadable intake forms, lab interpretation guides, supplement protocols, client handouts, and practice templates — ready to use with your first client.", value: "$697", icon: Download },
             ].map((bonus, i) => {
@@ -1072,7 +1072,7 @@ function HealthcareResultsInner() {
                 { step: "1", title: "Immediate Access (Today)", desc: `Log in to your clinical dashboard, receive your welcome kit, and meet your mentor within 24 hours.${startTimeline === "this-week" ? " You said you're ready to start THIS week — let's go." : ""}`, icon: Zap },
                 { step: "2", title: `Complete ${pract.specialization} Track (${certWeeks} weeks)`, desc: `Follow your personalized specialization track at your own pace — 20 min/day.${commitment === "absolutely" ? " With your commitment level, you'll likely finish even faster." : ""}`, icon: BookOpen },
                 { step: "3", title: "Get Certified", desc: "Pass your clinical assessment, receive your ASI-accredited certificate, and get listed in the practitioner directory.", icon: GraduationCap },
-                { step: "4", title: `Land Clients & Reach ${income.label}`, desc: `Use the Business Setup System to land your first paying clients ${clientsTimeline}. Our healthcare graduates average ${income.label} within 90 days.`, icon: DollarSign },
+                { step: "4", title: `Land Clients & Reach ${income.label}`, desc: `Use the Business Setup System to land your first paying clients ${clientsTimeline}. Our certified coaches average ${income.label} within 90 days.`, icon: DollarSign },
               ].map((s, i) => {
                 const StepIcon = s.icon;
                 return (
@@ -1125,7 +1125,7 @@ function HealthcareResultsInner() {
               ))}
             </div>
 
-            <p className="text-xs text-gray-500 italic">We can offer this because 97% of healthcare professionals who start — stay. The training speaks for itself.</p>
+            <p className="text-xs text-gray-500 italic">We can offer this because 97% of health coaches who start — stay. The training speaks for itself.</p>
           </SectionInner>
         </Section>
 
@@ -1137,10 +1137,10 @@ function HealthcareResultsInner() {
               <div className="space-y-3">
                 <div>
                   <p className="font-bold" style={{ color: B.burgundy }}>Sarah M. <span className="text-gray-400 font-normal text-sm">- ASI Certified Clinical Director</span></p>
-                  <p className="text-[10px] sm:text-[11px] text-gray-400">Former ER Nurse, 12 years</p>
+                  <p className="text-[10px] sm:text-[11px] text-gray-400">Coach turned Practitioner, 8 years</p>
                 </div>
                 <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
-                  {firstName}, as a former ER nurse myself, I know exactly what you&apos;re feeling. The exhaustion. The frustration of knowing the system isn&apos;t working. The guilt of wanting to leave.
+                  {firstName}, as a coach who made this exact transition myself, I know exactly what you&apos;re feeling. The frustration of giving great advice but feeling like you lack the clinical edge. The imposter syndrome when clients have complex cases.
                 </p>
                 <p className="text-xs sm:text-sm font-medium leading-relaxed" style={{ color: B.burgundy }}>
                   {sarahVision[vision] || sarahVision["all-above"]}
@@ -1164,7 +1164,7 @@ function HealthcareResultsInner() {
                 { objection: '"What if I fail?"', crush: `You have a 7-day money-back guarantee. If it's not right, you get every penny back. But with your clinical background and a 94% healthcare acceptance rate — the odds are overwhelmingly in your favor, ${firstName}.` },
                 { objection: '"Is this a subscription? Will I get charged again?"', crush: "No. One-time investment, lifetime access. No recurring fees, no annual renewals, no hidden charges. Once you're in, you're in — including all future updates, new protocols, and community access. Forever." },
                 { objection: '"I don\'t have time — I work 12-hour shifts."', crush: `It's 100% self-paced. 20 minutes a day, on YOUR schedule. No live classes, no deadlines. Study at 2am after a night shift or on your day off. ${commitment === "absolutely" ? "You already said 20 min/day is doable — that's all it takes." : "Most nurses finish in 8-12 weeks without changing their schedule."}` },
-                { objection: '"Do I need a medical degree or specific license?"', crush: "No medical degree required. The DEPTH certification is designed for healthcare professionals AND career changers. Nurses, PAs, health coaches, nutritionists — even women with zero clinical background have graduated and built practices earning $8K+/month." },
+                { objection: '"Do I need a medical degree or specific license?"', crush: "No medical degree required. The DEPTH certification is designed for health coaches AND career changers. Nurses, PAs, health coaches, nutritionists — even women with zero clinical background have graduated and built practices earning $8K+/month." },
                 { objection: '"What if it\'s just another certification that collects dust?"', crush: `This isn't theory — it's a business-in-a-box. You get the clinical training AND the Business Setup System that 73% of graduates used to land paying clients within 30 days. ${pastCerts === "multiple-disappointed" || pastCerts === "spent-5k-plus" ? "You've been burned before. This is different because we don't stop at certification — we help you earn from it." : "We don't stop at certification — we help you earn from it."}` },
               ].map((item, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
@@ -1208,7 +1208,7 @@ function HealthcareResultsInner() {
         <Section>
           <div className="px-4 sm:px-6 py-3" style={{ background: startTimeline === "this-week" ? B.burgundy : B.goldMetallic }}>
             <span className="text-xs sm:text-sm font-bold" style={{ color: startTimeline === "this-week" ? "white" : B.burgundyDark }}>
-              <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1.5 -mt-0.5" /> {startTimeline === "this-week" ? "URGENT — Your Cohort Starts This Week" : "Limited Availability — Healthcare Fast-Track Cohort"}
+              <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1.5 -mt-0.5" /> {startTimeline === "this-week" ? "URGENT — Your Cohort Starts This Week" : "Limited Availability — Coach Upgrade Track Cohort"}
             </span>
           </div>
           <SectionInner className="text-center space-y-5 sm:space-y-6">
@@ -1219,7 +1219,7 @@ function HealthcareResultsInner() {
             </h2>
 
             <p className="text-sm sm:text-base text-gray-600 max-w-lg mx-auto">
-              {vision === "leave-job" && `You said you want to leave your 9-to-5. This is the fastest path. ${urgencySpots} spots left in the Healthcare Fast-Track.`}
+              {vision === "leave-job" && `You said you want to leave your 9-to-5. This is the fastest path. ${urgencySpots} spots left in the Coach Upgrade Track.`}
               {vision === "security" && `You want financial security for your family. Every day you wait is another day of uncertainty. ${urgencySpots} spots left.`}
               {vision === "fulfillment" && `You want to do medicine the RIGHT way. Stop settling for a system that doesn't serve you or your patients. ${urgencySpots} spots left.`}
               {vision === "all-above" && `Freedom. Security. Fulfillment. You want it all — and DEPTH delivers. But only ${urgencySpots} spots remain in this cohort.`}
@@ -1291,14 +1291,14 @@ function HealthcareResultsInner() {
   );
 }
 
-export default function HealthcareResultsPage() {
+export default function CoachResultsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#fdfbf7" }}>
         <p className="text-gray-400">Loading your results...</p>
       </div>
     }>
-      <HealthcareResultsInner />
+      <CoachResultsInner />
     </Suspense>
   );
 }

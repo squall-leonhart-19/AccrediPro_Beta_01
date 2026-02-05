@@ -7,12 +7,15 @@
  * 3. Calculates lead score based on any existing data
  * 4. Adds lead_score and lead_tier tags
  * 
- * Run with: npx ts-node scripts/backfill-lead-scores.ts
+ * Run with: npx tsx scripts/backfill-lead-scores.ts
  */
 
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import "dotenv/config";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
 // Scoring function (same as in optin route)
 function calculateLeadScore(data: {
@@ -113,14 +116,8 @@ async function backfillLeadScores() {
             userType: "LEAD",
             miniDiplomaOptinAt: { not: null },
         },
-        select: {
-            id: true,
-            email: true,
-            firstName: true,
-            miniDiplomaOptinAt: true,
-            userTags: {
-                select: { tag: true },
-            },
+        include: {
+            tags: true,
         },
     });
 
@@ -131,7 +128,7 @@ async function backfillLeadScores() {
     let updated = 0;
 
     for (const lead of leads) {
-        const tags = lead.userTags.map(t => t.tag);
+        const tags = lead.tags.map(t => t.tag);
 
         // Skip if already has lead_score
         if (tags.some(t => t.startsWith("lead_score:"))) {
