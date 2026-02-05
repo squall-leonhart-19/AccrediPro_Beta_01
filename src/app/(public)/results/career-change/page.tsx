@@ -1326,7 +1326,7 @@ function CareerChangeResultsInner() {
         lastName={lastName}
         email={email}
         quizData={scholarshipQuizData}
-        page="healthcare-results"
+        page="career-change-results"
       />
     </div>
   );
