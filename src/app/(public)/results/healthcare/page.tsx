@@ -348,8 +348,8 @@ function HealthcareResultsInner() {
     <button onClick={openScholarshipChat} className={`block w-full ${className}`}>
       <div className={`w-full h-14 sm:h-16 text-base sm:text-lg font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all px-4 sm:px-6 flex items-center justify-center cursor-pointer`}
         style={{ background: variant === "burgundy" ? B.burgundy : B.goldMetallic, color: variant === "burgundy" ? "white" : B.burgundyDark }}>
-        <span className="sm:hidden">Apply for Scholarship</span>
-        <span className="hidden sm:inline">Apply for Your ASI Scholarship — Chat with Sarah</span>
+        <span className="sm:hidden">Claim My Scholarship →</span>
+        <span className="hidden sm:inline">Yes! Check My Scholarship Eligibility — Chat with Sarah</span>
         <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 ml-2 flex-shrink-0" />
       </div>
     </button>
@@ -358,12 +358,12 @@ function HealthcareResultsInner() {
   return (
     <div className="min-h-screen" style={{ background: `linear-gradient(180deg, ${B.cream} 0%, #f5f0e8 30%, ${B.cream} 100%)` }}>
 
-      {/* ═══ STICKY URGENCY BAR (dynamic intensity from Q12) — clickable ═══ */}
-      <div onClick={openScholarshipChat} className="sticky top-0 z-50 py-2 sm:py-2.5 px-3 sm:px-4 text-center shadow-md cursor-pointer hover:opacity-90 transition-opacity" style={{ background: startTimeline === "this-week" ? B.burgundy : B.goldMetallic }}>
-        <p className="text-xs sm:text-sm font-bold" style={{ color: startTimeline === "this-week" ? "white" : B.burgundyDark }}>
-          <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1 -mt-0.5" />
-          <span className="sm:hidden">{urgencySpots} spots — Apply Now</span>
-          <span className="hidden sm:inline">{urgencyText}</span>
+      {/* ═══ STICKY URGENCY BAR — clearer messaging ═══ */}
+      <div onClick={openScholarshipChat} className="sticky top-0 z-50 py-2 sm:py-2.5 px-3 sm:px-4 text-center shadow-md cursor-pointer hover:opacity-90 transition-opacity" style={{ background: B.burgundy }}>
+        <p className="text-xs sm:text-sm font-bold text-white">
+          <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1 -mt-0.5" />
+          <span className="sm:hidden">🎉 You Pre-Qualify! Claim Your Scholarship</span>
+          <span className="hidden sm:inline">🎉 {firstName}, You Pre-Qualify for the ASI Scholarship Program — Chat with Sarah to Claim Your Spot ({urgencySpots} remaining)</span>
         </p>
       </div>
 
@@ -388,66 +388,78 @@ function HealthcareResultsInner() {
 
       <div className="max-w-5xl lg:max-w-[1200px] mx-auto px-3 sm:px-4 lg:px-8 py-6 sm:py-8 md:py-14 space-y-6 sm:space-y-8">
 
-        {/* ═══ SECTION 1: HERO (dynamic subtitle from Q8) — CTA ABOVE FOLD ═══ */}
+        {/* ═══ SECTION 1: HERO — HIGH-CONVERTING DESIGN ═══ */}
         <Section>
           <div className="px-4 sm:px-6 py-3 flex items-center justify-between gap-2" style={{ background: B.goldMetallic }}>
             <span className="text-xs sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2" style={{ color: B.burgundyDark }}>
-              <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" /> Assessment Complete — <span className="text-green-700">You Qualify!</span>
+              <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" /> ✅ Assessment Complete — <span className="text-green-700">You Pre-Qualify!</span>
             </span>
             <span className="text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-1 rounded-full whitespace-nowrap" style={{ backgroundColor: `${B.burgundyDark}20`, color: B.burgundyDark }}>
               Healthcare Fast-Track
             </span>
           </div>
 
-          <SectionInner className="text-center space-y-4 sm:space-y-5">
-            {/* Qualification Badge - no logo image */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shadow-lg" style={{ background: B.goldMetallic }}>
-                <Zap className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: B.burgundyDark }} />
-              </div>
-              <span className="text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide" style={{ background: B.burgundyDark, color: "white" }}>
-                You Qualify
-              </span>
+          <SectionInner className="text-center space-y-5 sm:space-y-6">
+            {/* Big headline - their transformation */}
+            <div className="space-y-3">
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold" style={{ background: `${B.gold}15`, color: B.burgundyDark }}>
+                <Award className="w-4 h-4" style={{ color: B.gold }} />
+                Certified Functional Medicine Practitioner + {pract.specialization} Specialist
+              </motion.div>
+
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-[1.1]" style={{ color: B.burgundyDark }}>
+                {firstName}, As a <span style={{ color: B.burgundy }}>Certified FM Practitioner</span> You Could Earn{" "}
+                <span className="underline decoration-4" style={{ textDecorationColor: B.gold }}>{income.label}</span>
+              </h1>
+
+              <p className="text-lg sm:text-xl md:text-2xl font-semibold" style={{ color: B.burgundy }}>
+                Working <span className="underline">PART-TIME</span> from Home
+              </p>
+
+              <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
+                Help {pract.clients} using the DEPTH Method clinical framework — the same system 1,200+ healthcare professionals use to build thriving practices.
+              </p>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-[1.15]" style={{ color: B.burgundyDark }}>
-              {firstName}, You Qualify!
-            </h1>
-
-            <p className="text-sm sm:text-base text-gray-600 max-w-lg mx-auto">
-              Based on your assessment, ASI has identified you as a
-            </p>
-
-            {/* Practitioner badge - PROMINENT */}
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-5 sm:px-8 py-3 sm:py-4 rounded-full font-bold text-base sm:text-xl shadow-xl border-2" style={{ background: `${B.gold}15`, borderColor: B.gold, color: B.burgundyDark }}>
-              <PractIcon className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" /> {pract.specialization} Specialist
+            {/* PRICE ANCHOR - $4,997 barred with scholarship */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+              className="max-w-lg mx-auto p-5 sm:p-6 rounded-2xl border-2 shadow-lg" style={{ borderColor: B.gold, background: `linear-gradient(135deg, ${B.gold}08 0%, white 50%, ${B.gold}08 100%)` }}>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+                <div className="text-center">
+                  <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Program Value</p>
+                  <p className="text-3xl sm:text-4xl font-extrabold text-gray-300 line-through">$4,997</p>
+                </div>
+                <div className="hidden sm:block w-px h-16 bg-gray-200" />
+                <div className="text-center">
+                  <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: B.gold }}>🎉 With Scholarship</p>
+                  <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: B.burgundy }}>Pay What You Can</p>
+                  <p className="text-xs text-gray-500 mt-1">Institute covers the rest if approved</p>
+                </div>
+              </div>
             </motion.div>
 
-            <p className="text-xs sm:text-sm text-gray-600 max-w-md mx-auto">
-              {pract.desc}
-            </p>
-
-            {/* Qualification Score */}
-            <div className="max-w-md mx-auto p-4 rounded-xl border bg-white shadow-sm" style={{ borderColor: `${B.gold}30` }}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold" style={{ color: B.burgundy }}>Qualification Score</span>
-                <span className="text-lg font-bold px-2 py-0.5 rounded" style={{ background: `${B.gold}20`, color: B.burgundyDark }}>82%</span>
+            {/* Trustpilot inline */}
+            <div className="flex items-center justify-center gap-2">
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map((s) => (
+                  <div key={s} className="w-4 h-4 flex items-center justify-center" style={{ backgroundColor: "#00b67a" }}>
+                    <Star className="w-2.5 h-2.5 fill-white text-white" />
+                  </div>
+                ))}
               </div>
-              <div className="h-2 rounded-full overflow-hidden" style={{ background: `${B.gold}20` }}>
-                <div className="h-full rounded-full" style={{ width: "82%", background: B.goldMetallic }} />
-              </div>
-              <p className="text-[10px] sm:text-xs text-gray-500 mt-2">
-                <span className="font-bold text-green-600">Top 6%</span> of all applicants. Your clinical background places you in our highest acceptance tier. Healthcare professionals qualify at a 94% rate.
-              </p>
+              <span className="text-xs font-bold text-gray-700">Excellent 4.9</span>
+              <span className="text-xs text-gray-400">• 1,197+ reviews on Trustpilot</span>
             </div>
 
             {/* ★★★ HERO CTA — ABOVE THE FOLD ★★★ */}
-            <div className="pt-2">
+            <div className="pt-2 space-y-3">
               <CTAButton className="max-w-md mx-auto" />
-              <p className="text-[10px] sm:text-xs text-gray-400 mt-2 flex items-center justify-center gap-1">
-                <Shield className="w-3 h-3" /> Scholarship covers up to 90% • No credit card required
-              </p>
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[10px] sm:text-xs text-gray-500">
+                <span className="flex items-center gap-1"><Shield className="w-3 h-3" style={{ color: B.gold }} /> 7-Day Money-Back</span>
+                <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3" style={{ color: "#22c55e" }} /> 94% Approval Rate</span>
+                <span className="flex items-center gap-1"><Heart className="w-3 h-3" style={{ color: B.burgundy }} /> No Credit Card Required</span>
+              </div>
             </div>
           </SectionInner>
         </Section>
@@ -662,157 +674,69 @@ function HealthcareResultsInner() {
               </p>
             </div>
 
-            <div className="space-y-5 sm:space-y-6">
-              {/* ─── Testimonial 1: Karen — personalized to experience + income ─── */}
+            {/* ─── SHORTENED TESTIMONIALS ─── */}
+            <div className="grid gap-4 md:grid-cols-3">
+              {/* Testimonial 1: Karen */}
               <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                className="p-5 sm:p-6 md:p-8 rounded-2xl border bg-white shadow-md" style={{ borderColor: `${B.gold}30` }}>
-                {/* Match badge */}
-                {(experience === "active-clients" || experience === "past-clients") && (
-                  <div className="flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold w-fit" style={{ background: `${B.gold}12`, color: B.burgundy }}>
-                    <Heart className="w-3 h-3" style={{ color: B.gold }} /> Her story sounds familiar? She was just like you.
-                  </div>
-                )}
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <Image src={T_KAREN} alt="Karen L." width={64} height={64} className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 object-cover shadow-lg flex-shrink-0" style={{ borderColor: B.gold }} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex gap-0.5 mb-3">
-                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" style={{ color: B.gold }} />)}
-                    </div>
-                    <div className="space-y-3">
-                      <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
-                        &ldquo;I was a family practice nurse for <strong>18 years</strong>. Eighteen. I loved my patients, I loved the work, but I hit a wall. The hospital kept adding responsibilities, cutting staff, and I was making the same $32/hour I made five years ago. I remember sitting in my car after a 14-hour shift, crying, thinking <em>&apos;there has to be something more than this.&apos;</em>&rdquo;
-                      </p>
-                      <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
-                        &ldquo;I found ASI on a Sunday night. I almost didn&apos;t sign up — I&apos;d been burned by two other certifications before{pastCerts === "multiple-disappointed" || pastCerts === "spent-5k-plus" ? " (sound familiar?)" : ""}. But something about the clinical framework felt <em>real</em>. Not fluffy wellness coaching — actual root-cause protocols I could use with real patients.&rdquo;
-                      </p>
-                      <p className="text-sm sm:text-base leading-relaxed font-medium" style={{ color: B.burgundy }}>
-                        &ldquo;Within 4 weeks I was applying DEPTH protocols with my first private clients. Within 3 months I handed in my hospital resignation. Now? <strong>I earn $11,400/month</strong>, I work {experience === "active-clients" ? "about 20 hours a week" : "3-4 hour days"}, and I actually practice medicine the way I always dreamed. My nurse friends think I&apos;m crazy. My bank account thinks I&apos;m a genius.&rdquo;
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-4 border-t" style={{ borderColor: `${B.gold}20` }}>
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <div>
-                          <p className="font-bold text-sm sm:text-base" style={{ color: B.burgundy }}>Karen L.</p>
-                          <p className="text-[10px] sm:text-xs text-gray-400">Former Family Practice Nurse, 18 years • Age 47</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold" style={{ background: `${B.burgundy}10`, color: B.burgundy }}>
-                            Before: $32/hr hospital
-                          </div>
-                          <div className="px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold" style={{ background: `${B.gold}15`, color: B.burgundy }}>
-                            <ArrowUpRight className="w-3 h-3 inline mr-0.5 -mt-0.5" /> Now: $11,400/mo
-                          </div>
-                        </div>
-                      </div>
+                className="p-4 sm:p-5 rounded-2xl border bg-white shadow-md" style={{ borderColor: `${B.gold}30` }}>
+                <div className="flex items-center gap-3 mb-3">
+                  <Image src={T_KAREN} alt="Karen L." width={48} height={48} className="w-12 h-12 rounded-full border-2 object-cover shadow-lg flex-shrink-0" style={{ borderColor: B.gold }} />
+                  <div>
+                    <p className="font-bold text-sm" style={{ color: B.burgundy }}>Karen L.</p>
+                    <p className="text-[10px] text-gray-400">Former Nurse, 18 years</p>
+                    <div className="flex gap-0.5 mt-0.5">
+                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3 h-3 fill-current" style={{ color: B.gold }} />)}
                     </div>
                   </div>
                 </div>
+                <p className="text-xs sm:text-sm leading-relaxed text-gray-600">
+                  &ldquo;18 years as a nurse earning $32/hr. Within 4 weeks of DEPTH I had my first private clients. Within 3 months I quit the hospital.&rdquo;
+                </p>
+                <p className="text-sm font-bold mt-3" style={{ color: B.burgundy }}>
+                  Now: <span className="underline">$11,400/month</span>, 20 hrs/week
+                </p>
               </motion.div>
 
-              {/* ─── Testimonial 2: Margaret — personalized to vision + commitment ─── */}
+              {/* Testimonial 2: Margaret */}
               <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                className="p-5 sm:p-6 md:p-8 rounded-2xl border bg-white shadow-md" style={{ borderColor: `${B.gold}30` }}>
-                {vision === "leave-job" && (
-                  <div className="flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold w-fit" style={{ background: `${B.gold}12`, color: B.burgundy }}>
-                    <Heart className="w-3 h-3" style={{ color: B.gold }} /> She wanted to leave her job too — just like you told us.
-                  </div>
-                )}
-                {vision === "fulfillment" && (
-                  <div className="flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold w-fit" style={{ background: `${B.gold}12`, color: B.burgundy }}>
-                    <Heart className="w-3 h-3" style={{ color: B.gold }} /> She wanted fulfillment — just like you told us.
-                  </div>
-                )}
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <Image src={T_MARGARET} alt="Margaret S." width={64} height={64} className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 object-cover shadow-lg flex-shrink-0" style={{ borderColor: B.gold }} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex gap-0.5 mb-3">
-                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" style={{ color: B.gold }} />)}
-                    </div>
-                    <div className="space-y-3">
-                      <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
-                        &ldquo;I need to be honest with you — when I clicked &apos;enroll,&apos; my hands were shaking. I was a PA for 9 years. My husband thought I was having a midlife crisis. My mom said &apos;why would you leave a perfectly good job?&apos; Everyone around me thought I was making the biggest mistake of my life.&rdquo;
-                      </p>
-                      <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
-                        &ldquo;But here&apos;s what nobody understood: I was <strong>dying inside</strong>. 14-hour shifts. 8 minutes per patient. Watching people leave with prescriptions I knew wouldn&apos;t fix the real problem. I came home too exhausted to play with my kids. I was a shell of myself. {vision === "leave-job" || vision === "fulfillment" ? "If you're reading this and you FEEL that — I SEE you." : "I bet some of you know exactly what I mean."}&rdquo;
-                      </p>
-                      <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
-                        &ldquo;DEPTH gave me my life back. Not overnight — I won&apos;t lie to you. I studied 20 minutes during my kids&apos; nap time{commitment === "rearrange" || commitment === "not-sure" ? " (even when I felt too tired)" : ""}. I practiced protocols on weekends. It took me about 5 weeks to certify. But the day I walked into my hospital for the <em>last time</em>... I cried again. Happy tears this time.&rdquo;
-                      </p>
-                      <p className="text-sm sm:text-base leading-relaxed font-medium" style={{ color: B.burgundy }}>
-                        &ldquo;Now I set my OWN hours. I see 3-4 clients a day, max. I&apos;m home for school pickup every day. I earn more than my PA salary — I won&apos;t share exact numbers, but let&apos;s just say my husband stopped asking questions. <strong>If I can do it at 42 with two kids, you can do it too.</strong> I promise.&rdquo;
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-4 border-t" style={{ borderColor: `${B.gold}20` }}>
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <div>
-                          <p className="font-bold text-sm sm:text-base" style={{ color: B.burgundy }}>Margaret S.</p>
-                          <p className="text-[10px] sm:text-xs text-gray-400">Former Physician Assistant, 9 years • Mom of 2 • Age 42</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold" style={{ background: `${B.burgundy}10`, color: B.burgundy }}>
-                            Before: 14-hr shifts, dying inside
-                          </div>
-                          <div className="px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold" style={{ background: `${B.gold}15`, color: B.burgundy }}>
-                            <ArrowUpRight className="w-3 h-3 inline mr-0.5 -mt-0.5" /> Now: Own practice, own hours
-                          </div>
-                        </div>
-                      </div>
+                className="p-4 sm:p-5 rounded-2xl border bg-white shadow-md" style={{ borderColor: `${B.gold}30` }}>
+                <div className="flex items-center gap-3 mb-3">
+                  <Image src={T_MARGARET} alt="Margaret S." width={48} height={48} className="w-12 h-12 rounded-full border-2 object-cover shadow-lg flex-shrink-0" style={{ borderColor: B.gold }} />
+                  <div>
+                    <p className="font-bold text-sm" style={{ color: B.burgundy }}>Margaret S.</p>
+                    <p className="text-[10px] text-gray-400">Former PA, Mom of 2</p>
+                    <div className="flex gap-0.5 mt-0.5">
+                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3 h-3 fill-current" style={{ color: B.gold }} />)}
                     </div>
                   </div>
                 </div>
+                <p className="text-xs sm:text-sm leading-relaxed text-gray-600">
+                  &ldquo;14-hour shifts, 8 minutes per patient. I was dying inside. Certified in 5 weeks studying during my kids' naps. Now I'm home for school pickup every day.&rdquo;
+                </p>
+                <p className="text-sm font-bold mt-3" style={{ color: B.burgundy }}>
+                  Now: <span className="underline">Own practice</span>, 3-4 clients/day
+                </p>
               </motion.div>
 
-              {/* ─── Testimonial 3: Carolyn — personalized to age/fear + past certs ─── */}
+              {/* Testimonial 3: Carolyn */}
               <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-                className="p-5 sm:p-6 md:p-8 rounded-2xl border bg-white shadow-md" style={{ borderColor: `${B.gold}30` }}>
-                {(experience === "no-experience" || experience === "informal") && (
-                  <div className="flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold w-fit" style={{ background: `${B.gold}12`, color: B.burgundy }}>
-                    <Heart className="w-3 h-3" style={{ color: B.gold }} /> She had no functional medicine experience either — look at her now.
-                  </div>
-                )}
-                {(pastCerts === "multiple-disappointed" || pastCerts === "spent-5k-plus") && (
-                  <div className="flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold w-fit" style={{ background: `${B.gold}12`, color: B.burgundy }}>
-                    <Heart className="w-3 h-3" style={{ color: B.gold }} /> She was burned by other certs too — then she found DEPTH.
-                  </div>
-                )}
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <Image src={T_CAROLYN} alt="Carolyn R." width={64} height={64} className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 object-cover shadow-lg flex-shrink-0" style={{ borderColor: B.gold }} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex gap-0.5 mb-3">
-                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" style={{ color: B.gold }} />)}
-                    </div>
-                    <div className="space-y-3">
-                      <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
-                        &ldquo;I&apos;m going to tell you something embarrassing: I was 54 years old, sitting on my couch, scrolling through this EXACT page you&apos;re looking at right now — and I almost closed the tab. I thought, &apos;I&apos;m too old. It&apos;s too late. This is for younger women.&apos; I&apos;m SO glad I didn&apos;t close it.&rdquo;
-                      </p>
-                      <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
-                        &ldquo;I&apos;d been an ICU nurse for 22 years. {pastCerts === "multiple-disappointed" || pastCerts === "spent-5k-plus" ? "I'd already spent over $6,000 on two other certifications that promised the world and delivered PowerPoint slides. I was DONE trusting programs." : "I'd never done any certification outside of nursing. The idea of starting something new at my age terrified me."} My back hurt. My spirit was broken. I was counting down the years until retirement and dreading every single one of them.&rdquo;
-                      </p>
-                      <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
-                        &ldquo;The DEPTH framework clicked for me because it felt like <em>real medicine</em> — not coaching, not woo-woo, not another Instagram certification. Real clinical protocols. Real lab interpretation. Things my ICU brain could latch onto. I certified in 5 weeks studying during my days off.&rdquo;
-                      </p>
-                      <p className="text-sm sm:text-base leading-relaxed font-medium" style={{ color: B.burgundy }}>
-                        &ldquo;Within 60 days of certification I had <strong>5 paying clients</strong>. Within 4 months, 14 clients. My hospital colleagues — some of them 20 years younger — are asking ME how I did it. I tell every single one of them: <strong>&apos;It&apos;s never too late. I started at 54 and it was the best decision of my life.&apos;</strong> If you&apos;re reading this and you&apos;re scared — do it scared. I did.&rdquo;
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-4 border-t" style={{ borderColor: `${B.gold}20` }}>
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <div>
-                          <p className="font-bold text-sm sm:text-base" style={{ color: B.burgundy }}>Carolyn R.</p>
-                          <p className="text-[10px] sm:text-xs text-gray-400">Former ICU Nurse, 22 years • Started at age 54</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold" style={{ background: `${B.burgundy}10`, color: B.burgundy }}>
-                            Before: Counting to retirement
-                          </div>
-                          <div className="px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold" style={{ background: `${B.gold}15`, color: B.burgundy }}>
-                            <ArrowUpRight className="w-3 h-3 inline mr-0.5 -mt-0.5" /> Now: 14 clients, 5 weeks in
-                          </div>
-                        </div>
-                      </div>
+                className="p-4 sm:p-5 rounded-2xl border bg-white shadow-md" style={{ borderColor: `${B.gold}30` }}>
+                <div className="flex items-center gap-3 mb-3">
+                  <Image src={T_CAROLYN} alt="Carolyn R." width={48} height={48} className="w-12 h-12 rounded-full border-2 object-cover shadow-lg flex-shrink-0" style={{ borderColor: B.gold }} />
+                  <div>
+                    <p className="font-bold text-sm" style={{ color: B.burgundy }}>Carolyn R.</p>
+                    <p className="text-[10px] text-gray-400">Former ICU Nurse, Age 54</p>
+                    <div className="flex gap-0.5 mt-0.5">
+                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3 h-3 fill-current" style={{ color: B.gold }} />)}
                     </div>
                   </div>
                 </div>
+                <p className="text-xs sm:text-sm leading-relaxed text-gray-600">
+                  &ldquo;I thought I was too old at 54. Certified in 5 weeks. Within 60 days I had 5 paying clients. It&apos;s never too late.&rdquo;
+                </p>
+                <p className="text-sm font-bold mt-3" style={{ color: B.burgundy }}>
+                  Now: <span className="underline">14 clients</span>, counting to retirement no more
+                </p>
               </motion.div>
             </div>
 
@@ -1106,6 +1030,99 @@ function HealthcareResultsInner() {
         <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-2xl overflow-hidden shadow-xl border-2 max-w-3xl mx-auto" style={{ borderColor: B.gold }}>
           <Image src={FM_BUNDLE_IMG} alt="Functional Medicine Certification Bundle" width={1200} height={800} className="w-full h-auto" />
         </motion.div>
+
+        {/* ═══ NO-BRAINER OFFER: 5 LEVELS + DFY BONUSES ═══ */}
+        <Section bg={`linear-gradient(135deg, ${B.burgundy}08 0%, ${B.gold}08 100%)`}>
+          <div className="px-4 sm:px-6 py-3" style={{ background: B.burgundy }}>
+            <span className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+              <Sparkles className="w-4 h-4" style={{ color: B.gold }} /> The Complete Career Transformation Path
+            </span>
+          </div>
+          <SectionInner className="space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ color: B.burgundyDark }}>
+                Your 5-Level Path to {income.label}+/Month
+              </h2>
+              <p className="text-sm text-gray-600 max-w-xl mx-auto">
+                This isn&apos;t just a certification — it&apos;s a complete career system designed to take you from where you are to earning {income.label}+ in 3-6 months.
+              </p>
+            </div>
+
+            {/* 5 Certification Levels */}
+            <div className="space-y-3">
+              {[
+                { level: 1, title: "University-Certified Practitioner", desc: "Complete the DEPTH Method core curriculum and earn your ASI-accredited certification", icon: GraduationCap, included: true },
+                { level: 2, title: "Advanced Practitioner", desc: `Master your ${pract.specialization} specialization with advanced clinical protocols`, icon: Award, included: true },
+                { level: 3, title: "Certified Specialist", desc: "Domain-specific expertise in your chosen area — become THE expert", icon: Target, included: true },
+                { level: 4, title: "Master Practitioner", desc: "Senior professional level — mentor other practitioners, charge premium rates", icon: Users, included: true },
+                { level: 5, title: "University Fellow / Faculty", desc: "Teach, create content, build passive income streams from your expertise", icon: Stethoscope, included: true },
+              ].map((item) => {
+                const LevelIcon = item.icon;
+                return (
+                  <motion.div key={item.level} initial={{ opacity: 0, x: -15 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: item.level * 0.08 }}
+                    className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-white border shadow-sm" style={{ borderColor: `${B.gold}30` }}>
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex flex-col items-center justify-center flex-shrink-0 shadow-md" style={{ background: B.goldMetallic }}>
+                      <span className="text-[10px] font-bold" style={{ color: B.burgundyDark }}>Level</span>
+                      <span className="text-lg font-extrabold leading-none" style={{ color: B.burgundyDark }}>{item.level}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-bold text-sm sm:text-base" style={{ color: B.burgundy }}>{item.title}</p>
+                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: `${B.gold}20`, color: B.burgundyDark }}>INCLUDED</span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-gray-600 mt-0.5">{item.desc}</p>
+                    </div>
+                    <LevelIcon className="w-5 h-5 flex-shrink-0" style={{ color: B.gold }} />
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* DONE-FOR-YOU Bonuses */}
+            <div className="pt-4 border-t" style={{ borderColor: `${B.gold}30` }}>
+              <p className="text-xs font-bold uppercase tracking-widest text-center mb-4" style={{ color: B.gold }}>
+                🎁 Plus These Done-For-You Bonuses (All Included)
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  { title: "Done-For-You Website", desc: "Professional practitioner website template — just add your name and launch", value: "$2,997" },
+                  { title: "Done-For-You Legal Templates", desc: "Client agreements, waivers, HIPAA compliance docs — all ready to use", value: "$1,497" },
+                  { title: "Done-For-You Client Onboarding", desc: "Intake forms, welcome sequences, and client journey automations", value: "$997" },
+                  { title: "Done-For-You Marketing Materials", desc: "Social media templates, email sequences, and lead magnets", value: "$1,497" },
+                ].map((bonus, i) => (
+                  <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                    className="flex items-start gap-3 p-3 rounded-xl bg-white border shadow-sm" style={{ borderColor: `${B.gold}20` }}>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${B.burgundy}10` }}>
+                      <CheckCircle className="w-4 h-4" style={{ color: B.burgundy }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="font-bold text-xs sm:text-sm" style={{ color: B.burgundy }}>{bonus.title}</p>
+                        <p className="text-[10px] font-bold text-gray-400 whitespace-nowrap line-through">{bonus.value}</p>
+                      </div>
+                      <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{bonus.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Summary box */}
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
+              className="p-5 sm:p-6 rounded-2xl border-2 text-center" style={{ borderColor: B.burgundy, background: `${B.burgundy}08` }}>
+              <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: B.burgundy }}>The Complete Path</p>
+              <p className="text-lg sm:text-xl font-bold" style={{ color: B.burgundyDark }}>
+                5-Level Certification + DFY Business System + Mentorship Until You&apos;re Earning
+              </p>
+              <p className="text-sm text-gray-600 mt-2">
+                Everything you need to go from {curIncome.label}/month to {income.label}+ in 3-6 months
+              </p>
+              <div className="mt-4">
+                <CTAButton variant="burgundy" />
+              </div>
+            </motion.div>
+          </SectionInner>
+        </Section>
 
         {/* ═══ SECTION 13: BONUSES ═══ */}
         <Section bg={`${B.gold}08`}>
