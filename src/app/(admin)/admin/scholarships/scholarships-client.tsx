@@ -30,6 +30,7 @@ import {
   ChevronRight,
   Phone,
   Calendar,
+  Download,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -350,6 +351,68 @@ export default function ScholarshipsClient() {
 
   const totalUnread = applications.reduce((acc, a) => acc + a.unreadCount, 0);
 
+  // Export all chats to CSV
+  const exportToCSV = () => {
+    const rows: string[] = [];
+
+    // Header
+    rows.push([
+      "Name",
+      "Email",
+      "Specialization",
+      "Income Goal",
+      "Current Income",
+      "Vision",
+      "Past Certs",
+      "Offered Amount",
+      "Status",
+      "Messages Count",
+      "Last Message",
+      "Last Message Date",
+      "Full Conversation"
+    ].join(","));
+
+    // Data rows
+    applications.forEach(app => {
+      const offeredAmount = getUserOfferedAmount(app.messages) || "";
+      const hasResponse = app.messages.some(m => !m.isFromVisitor);
+      const status = app.unreadCount > 0 ? "Pending" : hasResponse ? "Responded" : "New";
+
+      // Get all messages as conversation (excluding application data)
+      const conversation = app.messages
+        .filter(m => !m.message.includes("SCHOLARSHIP APPLICATION"))
+        .map(m => `[${m.isFromVisitor ? app.visitorName || "Visitor" : "Sarah M."}]: ${m.message.replace(/[\n\r,]/g, " ")}`)
+        .join(" | ");
+
+      const row = [
+        `"${(app.visitorName || "").replace(/"/g, '""')}"`,
+        `"${(app.visitorEmail || "").replace(/"/g, '""')}"`,
+        `"${(app.applicationData?.specialization || "").replace(/"/g, '""')}"`,
+        `"${(app.applicationData?.incomeGoal || "").replace(/"/g, '""')}"`,
+        `"${(app.applicationData?.currentIncome || "").replace(/"/g, '""')}"`,
+        `"${(app.applicationData?.vision || "").replace(/"/g, '""')}"`,
+        `"${(app.applicationData?.pastCerts || "").replace(/"/g, '""')}"`,
+        `"${offeredAmount.replace(/"/g, '""')}"`,
+        `"${status}"`,
+        app.messages.filter(m => !m.message.includes("SCHOLARSHIP APPLICATION")).length,
+        `"${app.lastMessage.replace(/"/g, '""').replace(/[\n\r]/g, " ").slice(0, 100)}"`,
+        `"${new Date(app.lastMessageAt).toLocaleString()}"`,
+        `"${conversation.replace(/"/g, '""').slice(0, 500)}"`
+      ];
+      rows.push(row.join(","));
+    });
+
+    // Download
+    const csv = rows.join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `scholarship-applications-${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="h-[calc(100vh-80px)] flex flex-col p-4 md:p-6 bg-gray-50">
       {/* Header */}
@@ -374,6 +437,10 @@ export default function ScholarshipsClient() {
               <Bell className="w-3 h-3 mr-1" /> Alerts On
             </Badge>
           )}
+          <Button variant="outline" onClick={exportToCSV} disabled={applications.length === 0}>
+            <Download className="w-4 h-4 mr-2" />
+            Export CSV
+          </Button>
           <Button variant="outline" onClick={fetchApplications} disabled={loading}>
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
             Refresh
