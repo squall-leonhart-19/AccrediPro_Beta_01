@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   GraduationCap,
@@ -24,10 +24,14 @@ import {
   Briefcase,
   Sparkles,
   CheckCircle,
-  XCircle,
   AlertCircle,
   Bell,
+  MessageCircle,
+  ChevronRight,
+  Phone,
+  Calendar,
 } from "lucide-react";
+import Image from "next/image";
 
 interface ChatMessage {
   id: string;
@@ -49,8 +53,6 @@ interface ScholarshipApplication {
   lastMessage: string;
   lastMessageAt: string;
   unreadCount: number;
-  notes?: string;
-  // Parsed from application message
   applicationData?: {
     specialization?: string;
     incomeGoal?: string;
@@ -64,44 +66,39 @@ interface ScholarshipApplication {
     vision?: string;
     startTimeline?: string;
   };
-  // Scholarship status
-  status?: "pending" | "approved" | "declined" | "negotiating";
-  offeredAmount?: string;
 }
 
 // Scholarship quick reply templates
 const SCHOLARSHIP_REPLIES = [
   {
-    label: "Acknowledge",
+    label: "👋 Acknowledge",
     text: "Hey! I just received your scholarship application. Give me a moment to review everything... 💜",
+    color: "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100",
   },
   {
-    label: "Approved - Full",
-    text: "Great news! I've reviewed your application and I'm happy to approve a full scholarship for you. The FM Certification is normally $1,997 but with your scholarship, you'll only pay [AMOUNT]. This covers everything - 9 certifications, mentorship, and lifetime access. Ready to get started? 🎉",
+    label: "✅ Approved",
+    text: "Great news! I've reviewed your application and I'm happy to approve a scholarship for you. The FM Certification is normally $1,997 but with your scholarship, you'll only pay [AMOUNT]. This covers everything - 9 certifications, mentorship, and lifetime access. Ready to get started? 🎉",
+    color: "bg-green-50 border-green-200 text-green-700 hover:bg-green-100",
   },
   {
-    label: "Approved - Partial",
-    text: "I've reviewed your application and I want to make this work for you. Based on what you shared, I can offer you a partial scholarship. Instead of $1,997, your investment would be [AMOUNT]. This still includes everything - all 9 certifications, the 30-day mentorship, and lifetime access. How does that sound?",
+    label: "🤝 Counter",
+    text: "I appreciate you sharing what's comfortable for you. Here's what I can do - I can meet you at [AMOUNT]. This is a special scholarship rate that still includes everything you need. What do you think?",
+    color: "bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100",
   },
   {
-    label: "Counter Offer",
-    text: "I appreciate you sharing what's comfortable for you. Here's what I can do - I can meet you halfway at [AMOUNT]. This is the best scholarship rate I can offer right now. It still includes everything you need to build your practice. What do you think?",
+    label: "💰 Ask Budget",
+    text: "Thanks for applying! To find the right scholarship level for you, what investment feels comfortable for your situation right now? There's no wrong answer.",
+    color: "bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100",
   },
   {
-    label: "Ask Budget",
-    text: "Thanks for applying! To help me find the right scholarship level for you, can you tell me what investment feels comfortable for your situation right now? There's no wrong answer - I just want to see how we can make this work for you.",
+    label: "📅 Payment Plan",
+    text: "I understand budget can be tight. What if we set up a payment plan? You could start with [AMOUNT] today and then [AMOUNT]/month. Would that work better?",
+    color: "bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100",
   },
   {
-    label: "Payment Plan",
-    text: "I understand budget can be tight. What if we set up a payment plan? You could start with [AMOUNT] today and then [AMOUNT]/month for [X] months. This way you can get started right away without the full upfront cost. Would that work better?",
-  },
-  {
-    label: "Follow Up",
-    text: "Hey! Just checking in on your scholarship application. Did you have any questions about the offer? I'm here to help! 💜",
-  },
-  {
-    label: "Decline - Gentle",
-    text: "Thank you so much for your interest. Unfortunately, I'm not able to offer a scholarship at that level right now. However, I'd love to keep you on our waitlist for when more scholarship spots open up. In the meantime, is there a higher amount that might work for you?",
+    label: "🔔 Follow Up",
+    text: "Hey! Just checking in on your scholarship application. Did you have any questions? I'm here to help! 💜",
+    color: "bg-orange-50 border-orange-200 text-orange-700 hover:bg-orange-100",
   },
 ];
 
@@ -137,6 +134,20 @@ const isOnline = (lastMessageAt: string) => {
   return now - lastActive < 5 * 60 * 1000;
 };
 
+// Get user's offered amount from messages
+const getUserOfferedAmount = (messages: ChatMessage[]) => {
+  const userMessages = messages.filter(m => m.isFromVisitor && !m.message.includes("SCHOLARSHIP APPLICATION"));
+  for (const msg of userMessages) {
+    const match = msg.message.match(/\$?(\d{1,3}(?:,?\d{3})*(?:\.\d{2})?)/);
+    if (match) {
+      return match[0].startsWith("$") ? match[0] : `$${match[0]}`;
+    }
+  }
+  return null;
+};
+
+const SARAH_AVATAR = "/coaches/sarah-coach.webp";
+
 export default function ScholarshipsClient() {
   const [applications, setApplications] = useState<ScholarshipApplication[]>([]);
   const [selectedApp, setSelectedApp] = useState<ScholarshipApplication | null>(null);
@@ -145,7 +156,7 @@ export default function ScholarshipsClient() {
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterMode, setFilterMode] = useState<"all" | "unread" | "read">("all");
+  const [filterMode, setFilterMode] = useState<"all" | "unread" | "responded">("all");
   const [visitorNotes, setVisitorNotes] = useState("");
   const [showQuickReplies, setShowQuickReplies] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
@@ -154,13 +165,12 @@ export default function ScholarshipsClient() {
   const selectedVisitorIdRef = useRef<string | null>(null);
   const prevUnreadCountRef = useRef<number>(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Initialize notification sound
   useEffect(() => {
     audioRef.current = new Audio("/sounds/notification.mp3");
     audioRef.current.volume = 0.5;
-
-    // Check if notifications are already granted
     if (typeof Notification !== "undefined" && Notification.permission === "granted") {
       setNotificationsEnabled(true);
     }
@@ -169,71 +179,68 @@ export default function ScholarshipsClient() {
   // Request notification permission
   const requestNotificationPermission = async () => {
     if (typeof Notification === "undefined") {
-      alert("Notifications not supported on this browser");
+      alert("Notifications not supported");
       return;
     }
-
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
       setNotificationsEnabled(true);
-      // Test notification
-      new Notification("🎓 Scholarship Notifications Enabled!", {
-        body: "You'll receive alerts when new applications arrive",
+      new Notification("🎓 Notifications Enabled!", {
+        body: "You'll receive alerts for new scholarship messages",
         icon: "/favicon.ico",
       });
     }
   };
 
-  // Play notification sound and show browser notification
-  const notifyNewMessage = (appName: string, message: string) => {
-    // Play sound
+  // Notify new message
+  const notifyNewMessage = useCallback((appName: string, message: string) => {
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
       audioRef.current.play().catch(() => {});
     }
-
-    // Browser notification (works on mobile PWA too)
     if (notificationsEnabled && typeof Notification !== "undefined" && Notification.permission === "granted") {
       new Notification(`🎓 New Scholarship Message`, {
         body: `${appName}: ${message.substring(0, 100)}${message.length > 100 ? "..." : ""}`,
         icon: "/favicon.ico",
-        tag: "scholarship-notification", // Prevents duplicate notifications
-        requireInteraction: true, // Stays until user interacts (mobile)
+        tag: "scholarship-notification",
+        requireInteraction: true,
       });
     }
-  };
+  }, [notificationsEnabled]);
 
-  // Keep ref in sync with selected app
+  // Keep ref in sync
   useEffect(() => {
     selectedVisitorIdRef.current = selectedApp?.visitorId || null;
   }, [selectedApp?.visitorId]);
 
-  const fetchApplications = async () => {
+  // Fetch applications
+  const fetchApplications = useCallback(async () => {
     try {
       const res = await fetch("/api/admin/scholarships");
       const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to fetch");
+      }
+
       const newApps: ScholarshipApplication[] = (data.applications || []).map((app: ScholarshipApplication) => ({
         ...app,
         applicationData: parseApplicationMessage(app.messages),
       }));
 
-      // Check for new unread messages and notify
+      // Check for new messages and notify
       const newTotalUnread = newApps.reduce((acc, a) => acc + a.unreadCount, 0);
-      if (newTotalUnread > prevUnreadCountRef.current && prevUnreadCountRef.current > 0) {
-        // Find the app with new message
+      if (newTotalUnread > prevUnreadCountRef.current && prevUnreadCountRef.current >= 0 && !loading) {
         const appWithNewMsg = newApps.find(a => a.unreadCount > 0);
         if (appWithNewMsg) {
-          notifyNewMessage(
-            appWithNewMsg.visitorName || "New Applicant",
-            appWithNewMsg.lastMessage
-          );
+          notifyNewMessage(appWithNewMsg.visitorName || "New Applicant", appWithNewMsg.lastMessage);
         }
       }
       prevUnreadCountRef.current = newTotalUnread;
 
       setApplications(newApps);
 
-      // Use ref to get current selected visitor ID (avoids stale closure)
+      // Update selected app
       const currentVisitorId = selectedVisitorIdRef.current;
       if (currentVisitorId) {
         const updated = newApps.find(a => a.visitorId === currentVisitorId);
@@ -241,45 +248,46 @@ export default function ScholarshipsClient() {
           setSelectedApp(updated);
         }
       }
+      setError(null);
     } catch (err) {
-      console.error("Failed to fetch scholarship applications:", err);
-      setError("Failed to load applications. Please refresh.");
+      console.error("Failed to fetch:", err);
+      setError("Failed to load. Please refresh.");
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading, notifyNewMessage]);
 
+  // Poll every 2 seconds
   useEffect(() => {
     fetchApplications();
-    // Poll every 3 seconds for real-time sync
     const interval = setInterval(() => {
-      if (!document.hidden) {
-        fetchApplications();
-      }
-    }, 3000);
+      if (!document.hidden) fetchApplications();
+    }, 2000);
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchApplications]);
 
+  // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [selectedApp?.messages]);
+  }, [selectedApp?.messages?.length]);
 
+  // Load notes when selecting app
   useEffect(() => {
     if (selectedApp) {
       try {
-        const savedNotes = localStorage.getItem(`scholarship_notes_${selectedApp.visitorId}`);
-        setVisitorNotes(savedNotes || "");
+        const saved = localStorage.getItem(`scholarship_notes_${selectedApp.visitorId}`);
+        setVisitorNotes(saved || "");
       } catch {
         setVisitorNotes("");
       }
     }
   }, [selectedApp?.visitorId]);
 
+  // Send reply
   const sendReply = async (quickReplyText?: string) => {
     if (!selectedApp) return;
-    const messageToSend = quickReplyText || replyMessage;
-    if (!messageToSend.trim()) return;
+    const msg = quickReplyText || replyMessage;
+    if (!msg.trim()) return;
 
     setSending(true);
     setError(null);
@@ -287,532 +295,444 @@ export default function ScholarshipsClient() {
       const res = await fetch("/api/admin/scholarships/reply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          visitorId: selectedApp.visitorId,
-          message: messageToSend,
-        }),
+        body: JSON.stringify({ visitorId: selectedApp.visitorId, message: msg }),
       });
-
       const data = await res.json();
-
       if (res.ok && data.success) {
         setReplyMessage("");
         setShowQuickReplies(false);
         await fetchApplications();
+        textareaRef.current?.focus();
       } else {
-        console.error("Reply failed:", data);
-        setError(data.error || "Failed to send reply");
+        setError(data.error || "Failed to send");
       }
-    } catch (err) {
-      console.error("Failed to send reply:", err);
-      setError("Network error - please try again");
+    } catch {
+      setError("Network error");
     } finally {
       setSending(false);
     }
   };
 
+  // Save notes
   const saveNotes = async () => {
     if (!selectedApp) return;
     setSavingNotes(true);
     try {
       localStorage.setItem(`scholarship_notes_${selectedApp.visitorId}`, visitorNotes);
-      await fetch("/api/admin/live-chat/notes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          visitorId: selectedApp.visitorId,
-          notes: visitorNotes,
-        }),
-      }).catch(() => {});
     } finally {
       setSavingNotes(false);
     }
   };
 
+  // Format time
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffMinutes = Math.floor((now.getTime() - date.getTime()) / 60000);
-
-    if (diffMinutes < 1) return "Just now";
-    if (diffMinutes < 60) return `${diffMinutes}m ago`;
-    if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h ago`;
+    const diff = Math.floor((now.getTime() - date.getTime()) / 60000);
+    if (diff < 1) return "Just now";
+    if (diff < 60) return `${diff}m ago`;
+    if (diff < 1440) return `${Math.floor(diff / 60)}h ago`;
     return date.toLocaleDateString();
   };
 
-  // Filter conversations that are scholarship-related
+  // Filter applications
   const filteredApps = applications.filter((app) => {
     if (filterMode === "unread" && app.unreadCount === 0) return false;
-    if (filterMode === "read" && app.unreadCount > 0) return false;
-
+    if (filterMode === "responded" && !app.messages.some(m => !m.isFromVisitor)) return false;
     if (searchTerm) {
-      const search = searchTerm.toLowerCase();
-      const nameMatch = app.visitorName?.toLowerCase().includes(search);
-      const emailMatch = app.visitorEmail?.toLowerCase().includes(search);
-      const messageMatch = app.lastMessage.toLowerCase().includes(search);
-      return nameMatch || emailMatch || messageMatch;
+      const s = searchTerm.toLowerCase();
+      return app.visitorName?.toLowerCase().includes(s) ||
+             app.visitorEmail?.toLowerCase().includes(s) ||
+             app.lastMessage.toLowerCase().includes(s);
     }
     return true;
   });
 
   const totalUnread = applications.reduce((acc, a) => acc + a.unreadCount, 0);
 
-  // Get user's stated amount from their messages (if any)
-  const getUserOfferedAmount = (messages: ChatMessage[]) => {
-    const userMessages = messages.filter(m => m.isFromVisitor && !m.message.includes("SCHOLARSHIP APPLICATION"));
-    for (const msg of userMessages) {
-      // Look for dollar amounts in user messages
-      const match = msg.message.match(/\$?(\d{1,3}(?:,?\d{3})*(?:\.\d{2})?)/);
-      if (match) {
-        return match[0].startsWith("$") ? match[0] : `$${match[0]}`;
-      }
-    }
-    return null;
-  };
-
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <GraduationCap className="w-7 h-7 text-[#722f37]" />
-            Scholarship Applications
-          </h1>
-          <p className="text-gray-500">Manage ASI Scholarship requests (Manual responses only)</p>
+    <div className="h-[calc(100vh-80px)] flex flex-col p-4 md:p-6 bg-gray-50">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#722f37] to-[#4e1f24] flex items-center justify-center shadow-lg">
+            <GraduationCap className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">Scholarship Applications</h1>
+            <p className="text-sm text-gray-500">Manual responses • Full price: $1,997</p>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {!notificationsEnabled ? (
-            <Button variant="outline" onClick={requestNotificationPermission} className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100">
+            <Button onClick={requestNotificationPermission} className="bg-green-600 hover:bg-green-700 text-white">
               <Bell className="w-4 h-4 mr-2" />
-              Enable Notifications
+              Enable Alerts
             </Button>
           ) : (
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 py-1.5 px-3">
-              <Bell className="w-3 h-3 mr-1" />
-              Notifications On
+            <Badge className="bg-green-100 text-green-700 border-green-200 py-1.5 px-3">
+              <Bell className="w-3 h-3 mr-1" /> Alerts On
             </Badge>
           )}
-          <Button variant="outline" onClick={fetchApplications}>
-            <RefreshCw className="w-4 h-4 mr-2" />
+          <Button variant="outline" onClick={fetchApplications} disabled={loading}>
+            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{applications.length}</p>
-                <p className="text-sm text-gray-500">Total Applications</p>
-              </div>
+      {/* Stats Row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <div className="bg-white rounded-xl p-3 border shadow-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+              <MessageCircle className="w-4 h-4 text-blue-600" />
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                <AlertCircle className="w-5 h-5 text-red-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{totalUnread}</p>
-                <p className="text-sm text-gray-500">Needs Response</p>
-              </div>
+            <div>
+              <p className="text-lg font-bold text-gray-900">{applications.length}</p>
+              <p className="text-xs text-gray-500">Total</p>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">
-                  {applications.filter(a => a.messages.some(m => !m.isFromVisitor)).length}
-                </p>
-                <p className="text-sm text-gray-500">Responded</p>
-              </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl p-3 border shadow-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
+              <AlertCircle className="w-4 h-4 text-red-600" />
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">$1,997</p>
-                <p className="text-sm text-gray-500">Full Price</p>
-              </div>
+            <div>
+              <p className="text-lg font-bold text-red-600">{totalUnread}</p>
+              <p className="text-xs text-gray-500">Pending</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl p-3 border shadow-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+            </div>
+            <div>
+              <p className="text-lg font-bold text-gray-900">
+                {applications.filter(a => a.messages.some(m => !m.isFromVisitor)).length}
+              </p>
+              <p className="text-xs text-gray-500">Responded</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl p-3 border shadow-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+              <DollarSign className="w-4 h-4 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-lg font-bold text-purple-600">$1,997</p>
+              <p className="text-xs text-gray-500">Full Price</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-300px)]">
+      {/* Main Content */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-0">
         {/* Applications List */}
-        <Card className="lg:col-span-1">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-[#d4af37]" />
-              Applications
-              {totalUnread > 0 && (
-                <Badge variant="destructive" className="ml-auto">
-                  {totalUnread} new
-                </Badge>
-              )}
-            </CardTitle>
-            <div className="mt-3 space-y-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Search name, email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 text-sm"
-                />
-              </div>
-              <div className="flex gap-1">
-                <Button
-                  variant={filterMode === "all" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setFilterMode("all")}
-                  className="flex-1 text-xs"
-                >
-                  All
-                </Button>
-                <Button
-                  variant={filterMode === "unread" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setFilterMode("unread")}
-                  className="flex-1 text-xs"
-                >
-                  <Filter className="w-3 h-3 mr-1" />
-                  Pending
-                </Button>
-                <Button
-                  variant={filterMode === "read" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setFilterMode("read")}
-                  className="flex-1 text-xs"
-                >
-                  Responded
-                </Button>
-              </div>
+        <div className="lg:col-span-4 xl:col-span-3 bg-white rounded-xl border shadow-sm flex flex-col min-h-0">
+          <div className="p-3 border-b space-y-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 h-9 text-sm"
+              />
             </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <ScrollArea className="h-[calc(100vh-520px)]">
-              {loading ? (
-                <div className="p-4 text-center text-gray-500">Loading...</div>
-              ) : error ? (
-                <div className="p-4 text-center text-red-500 bg-red-50 m-4 rounded">
-                  {error}
-                  <Button variant="outline" size="sm" onClick={fetchApplications} className="mt-2 w-full">
-                    Retry
-                  </Button>
+            <div className="flex gap-1">
+              {(["all", "unread", "responded"] as const).map((mode) => (
+                <Button
+                  key={mode}
+                  variant={filterMode === mode ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setFilterMode(mode)}
+                  className={`flex-1 text-xs h-8 ${filterMode === mode ? "bg-[#722f37] hover:bg-[#5a252c]" : ""}`}
+                >
+                  {mode === "all" ? "All" : mode === "unread" ? `Pending (${totalUnread})` : "Replied"}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <ScrollArea className="flex-1">
+            {loading && applications.length === 0 ? (
+              <div className="p-8 text-center text-gray-400">Loading...</div>
+            ) : filteredApps.length === 0 ? (
+              <div className="p-8 text-center text-gray-400">No applications found</div>
+            ) : (
+              filteredApps.map((app) => {
+                const offeredAmount = getUserOfferedAmount(app.messages);
+                const isSelected = selectedApp?.visitorId === app.visitorId;
+                const online = isOnline(app.lastMessageAt);
+
+                return (
+                  <div
+                    key={app.visitorId}
+                    onClick={() => setSelectedApp(app)}
+                    className={`p-3 border-b cursor-pointer transition-all ${
+                      isSelected
+                        ? "bg-[#722f37]/5 border-l-4 border-l-[#722f37]"
+                        : "hover:bg-gray-50 border-l-4 border-l-transparent"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="relative flex-shrink-0">
+                        <Avatar className="w-10 h-10">
+                          <AvatarFallback className="bg-gradient-to-br from-[#722f37] to-[#4e1f24] text-white text-sm">
+                            {app.visitorName?.[0]?.toUpperCase() || "?"}
+                          </AvatarFallback>
+                        </Avatar>
+                        {online && (
+                          <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-semibold text-sm text-gray-900 truncate">
+                            {app.visitorName || "Unknown"}
+                          </span>
+                          {app.unreadCount > 0 && (
+                            <Badge className="bg-red-500 text-white text-xs px-1.5 py-0">
+                              {app.unreadCount}
+                            </Badge>
+                          )}
+                        </div>
+                        {app.visitorEmail && (
+                          <p className="text-xs text-gray-500 truncate">{app.visitorEmail}</p>
+                        )}
+                        {offeredAmount && (
+                          <div className="flex items-center gap-1 mt-1">
+                            <DollarSign className="w-3 h-3 text-green-600" />
+                            <span className="text-xs font-medium text-green-600">Offered: {offeredAmount}</span>
+                          </div>
+                        )}
+                        <p className="text-xs text-gray-400 truncate mt-1">
+                          {app.lastMessage.includes("SCHOLARSHIP") ? "New application" : app.lastMessage}
+                        </p>
+                        <div className="flex items-center gap-1 mt-1">
+                          <Clock className="w-3 h-3 text-gray-300" />
+                          <span className="text-xs text-gray-400">{formatTime(app.lastMessageAt)}</span>
+                        </div>
+                      </div>
+                      <ChevronRight className={`w-4 h-4 text-gray-300 flex-shrink-0 ${isSelected ? "text-[#722f37]" : ""}`} />
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </ScrollArea>
+        </div>
+
+        {/* Chat Area */}
+        <div className="lg:col-span-8 xl:col-span-9 bg-white rounded-xl border shadow-sm flex flex-col min-h-0">
+          {selectedApp ? (
+            <>
+              {/* Chat Header */}
+              <div className="p-3 md:p-4 border-b bg-gradient-to-r from-[#722f37]/5 to-transparent">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <Avatar className="w-10 h-10 md:w-12 md:h-12">
+                        <AvatarFallback className="bg-gradient-to-br from-[#722f37] to-[#4e1f24] text-white">
+                          {selectedApp.visitorName?.[0]?.toUpperCase() || "?"}
+                        </AvatarFallback>
+                      </Avatar>
+                      {isOnline(selectedApp.lastMessageAt) && (
+                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">{selectedApp.visitorName || "Applicant"}</h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {selectedApp.visitorEmail && (
+                          <a href={`mailto:${selectedApp.visitorEmail}`} className="text-xs text-blue-600 hover:underline flex items-center gap-1">
+                            <Mail className="w-3 h-3" />
+                            {selectedApp.visitorEmail}
+                          </a>
+                        )}
+                        <Badge variant="outline" className={isOnline(selectedApp.lastMessageAt) ? "text-green-600 border-green-200" : "text-gray-400"}>
+                          {isOnline(selectedApp.lastMessageAt) ? "Online" : "Offline"}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                  {getUserOfferedAmount(selectedApp.messages) && (
+                    <div className="hidden md:block bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                      <p className="text-xs text-green-600">Their Offer</p>
+                      <p className="text-lg font-bold text-green-700">{getUserOfferedAmount(selectedApp.messages)}</p>
+                    </div>
+                  )}
                 </div>
-              ) : filteredApps.length === 0 ? (
-                <div className="p-4 text-center text-gray-500">
-                  {searchTerm || filterMode !== "all" ? "No matching applications" : "No scholarship applications yet"}
-                </div>
-              ) : (
-                filteredApps.map((app) => {
-                  const offeredAmount = getUserOfferedAmount(app.messages);
-                  return (
-                    <div
-                      key={app.visitorId}
-                      onClick={() => setSelectedApp(app)}
-                      className={`p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors ${
-                        selectedApp?.visitorId === app.visitorId ? "bg-purple-50 border-l-4 border-l-[#722f37]" : ""
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="relative">
-                          <Avatar className="w-10 h-10">
-                            <AvatarFallback className="bg-[#722f37]/10 text-[#722f37]">
-                              {app.visitorName?.[0]?.toUpperCase() || <User className="w-5 h-5" />}
+
+                {/* Application Summary */}
+                {selectedApp.applicationData && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {selectedApp.applicationData.specialization && (
+                      <Badge variant="outline" className="text-xs"><Briefcase className="w-3 h-3 mr-1" />{selectedApp.applicationData.specialization}</Badge>
+                    )}
+                    {selectedApp.applicationData.incomeGoal && (
+                      <Badge variant="outline" className="text-xs text-green-600 border-green-200"><Target className="w-3 h-3 mr-1" />Goal: {selectedApp.applicationData.incomeGoal}</Badge>
+                    )}
+                    {selectedApp.applicationData.currentIncome && (
+                      <Badge variant="outline" className="text-xs"><DollarSign className="w-3 h-3 mr-1" />Now: {selectedApp.applicationData.currentIncome}</Badge>
+                    )}
+                    {selectedApp.applicationData.vision && (
+                      <Badge variant="outline" className="text-xs text-purple-600 border-purple-200"><Sparkles className="w-3 h-3 mr-1" />{selectedApp.applicationData.vision}</Badge>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Messages */}
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-4 max-w-3xl mx-auto">
+                  {selectedApp.messages
+                    .filter(msg => !msg.message.includes("SCHOLARSHIP APPLICATION"))
+                    .map((msg) => (
+                      <div
+                        key={msg.id}
+                        className={`flex ${msg.isFromVisitor ? "justify-start" : "justify-end"}`}
+                      >
+                        {msg.isFromVisitor && (
+                          <Avatar className="w-8 h-8 mr-2 flex-shrink-0">
+                            <AvatarFallback className="bg-gray-200 text-gray-600 text-xs">
+                              {selectedApp.visitorName?.[0]?.toUpperCase() || "?"}
                             </AvatarFallback>
                           </Avatar>
-                          {isOnline(app.lastMessageAt) && (
-                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-sm truncate">
-                              {app.visitorName || `Applicant`}
-                            </span>
-                            {app.unreadCount > 0 && (
-                              <Badge variant="destructive" className="text-xs">
-                                {app.unreadCount}
-                              </Badge>
+                        )}
+                        <div
+                          className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${
+                            msg.isFromVisitor
+                              ? "bg-gray-100 text-gray-900 rounded-tl-sm"
+                              : "bg-gradient-to-br from-[#722f37] to-[#5a252c] text-white rounded-tr-sm"
+                          }`}
+                        >
+                          <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.message}</p>
+                          <div className={`flex items-center gap-1.5 mt-1 ${msg.isFromVisitor ? "text-gray-400" : "text-white/60"}`}>
+                            <span className="text-xs">{formatTime(msg.createdAt)}</span>
+                            {!msg.isFromVisitor && (
+                              <>
+                                <span className="text-xs">•</span>
+                                <span className="text-xs">Sarah M.</span>
+                              </>
                             )}
                           </div>
-                          {app.visitorEmail && (
-                            <p className="text-xs text-blue-600 truncate">{app.visitorEmail}</p>
-                          )}
-                          {offeredAmount && (
-                            <p className="text-xs text-green-600 font-medium flex items-center gap-1 mt-0.5">
-                              <DollarSign className="w-3 h-3" />
-                              Offered: {offeredAmount}
-                            </p>
-                          )}
-                          <p className="text-sm text-gray-500 truncate mt-0.5">
-                            {app.lastMessage.includes("SCHOLARSHIP APPLICATION")
-                              ? "New application submitted"
-                              : app.lastMessage}
-                          </p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Clock className="w-3 h-3 text-gray-400" />
-                            <span className="text-xs text-gray-400">{formatTime(app.lastMessageAt)}</span>
-                          </div>
                         </div>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </ScrollArea>
-          </CardContent>
-        </Card>
-
-        {/* Chat + Application Details */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="pb-3 border-b">
-            <CardTitle className="text-lg flex items-center gap-2 flex-wrap">
-              {selectedApp ? (
-                <>
-                  <div className="relative">
-                    <Avatar className="w-8 h-8">
-                      <AvatarFallback className="bg-[#722f37]/10 text-[#722f37]">
-                        {selectedApp.visitorName?.[0]?.toUpperCase() || <User className="w-4 h-4" />}
-                      </AvatarFallback>
-                    </Avatar>
-                    {isOnline(selectedApp.lastMessageAt) && (
-                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
-                    )}
-                  </div>
-                  <span>{selectedApp.visitorName || "Applicant"}</span>
-                  {isOnline(selectedApp.lastMessageAt) ? (
-                    <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Online</Badge>
-                  ) : (
-                    <Badge variant="outline" className="text-gray-400">Offline</Badge>
-                  )}
-                  {selectedApp.visitorEmail && (
-                    <a href={`mailto:${selectedApp.visitorEmail}`} className="text-sm text-blue-600 hover:underline flex items-center gap-1">
-                      <Mail className="w-3 h-3" />
-                      {selectedApp.visitorEmail}
-                    </a>
-                  )}
-                </>
-              ) : (
-                <span className="text-gray-500">Select an application</span>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0 flex flex-col h-[calc(100vh-480px)]">
-            {selectedApp ? (
-              <>
-                {/* Application Data Summary */}
-                {selectedApp.applicationData && (
-                  <div className="px-4 py-3 border-b bg-gradient-to-r from-[#722f37]/5 to-[#d4af37]/5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <GraduationCap className="w-4 h-4 text-[#722f37]" />
-                      <span className="text-sm font-semibold text-[#722f37]">Application Summary</span>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                      {selectedApp.applicationData.specialization && (
-                        <div className="flex items-center gap-1.5 bg-white p-2 rounded border">
-                          <Briefcase className="w-3 h-3 text-gray-400" />
-                          <span className="truncate">{selectedApp.applicationData.specialization}</span>
-                        </div>
-                      )}
-                      {selectedApp.applicationData.incomeGoal && (
-                        <div className="flex items-center gap-1.5 bg-white p-2 rounded border">
-                          <Target className="w-3 h-3 text-green-500" />
-                          <span>Goal: {selectedApp.applicationData.incomeGoal}</span>
-                        </div>
-                      )}
-                      {selectedApp.applicationData.currentIncome && (
-                        <div className="flex items-center gap-1.5 bg-white p-2 rounded border">
-                          <DollarSign className="w-3 h-3 text-blue-500" />
-                          <span>Now: {selectedApp.applicationData.currentIncome}</span>
-                        </div>
-                      )}
-                      {selectedApp.applicationData.experience && (
-                        <div className="flex items-center gap-1.5 bg-white p-2 rounded border">
-                          <User className="w-3 h-3 text-purple-500" />
-                          <span className="truncate">{selectedApp.applicationData.experience}</span>
-                        </div>
-                      )}
-                    </div>
-                    {(selectedApp.applicationData.pastCerts || selectedApp.applicationData.vision) && (
-                      <div className="grid grid-cols-2 gap-2 mt-2 text-xs">
-                        {selectedApp.applicationData.pastCerts && (
-                          <div className="bg-yellow-50 p-2 rounded border border-yellow-200">
-                            <span className="font-medium text-yellow-700">Past Certs:</span>{" "}
-                            <span className="text-yellow-600">{selectedApp.applicationData.pastCerts}</span>
-                          </div>
-                        )}
-                        {selectedApp.applicationData.vision && (
-                          <div className="bg-purple-50 p-2 rounded border border-purple-200">
-                            <span className="font-medium text-purple-700">Vision:</span>{" "}
-                            <span className="text-purple-600">{selectedApp.applicationData.vision}</span>
-                          </div>
+                        {!msg.isFromVisitor && (
+                          <Avatar className="w-8 h-8 ml-2 flex-shrink-0">
+                            <AvatarImage src={SARAH_AVATAR} alt="Sarah" />
+                            <AvatarFallback className="bg-[#722f37] text-white text-xs">SM</AvatarFallback>
+                          </Avatar>
                         )}
                       </div>
-                    )}
-                  </div>
-                )}
+                    ))}
+                  <div ref={messagesEndRef} />
+                </div>
+              </ScrollArea>
 
-                <ScrollArea className="flex-1 p-4">
-                  <div className="space-y-4">
-                    {selectedApp.messages
-                      .filter(msg => !msg.message.includes("SCHOLARSHIP APPLICATION"))
-                      .map((msg) => (
-                        <div
-                          key={msg.id}
-                          className={`flex ${msg.isFromVisitor ? "justify-start" : "justify-end"}`}
-                        >
-                          <div
-                            className={`max-w-[80%] rounded-lg p-3 ${
-                              msg.isFromVisitor
-                                ? "bg-gray-100 text-gray-900"
-                                : "bg-[#722f37] text-white"
-                            }`}
-                          >
-                            <div className="flex items-center gap-2 mb-1">
-                              <User className="w-3 h-3" />
-                              <span className="text-xs opacity-70">
-                                {msg.isFromVisitor ? selectedApp.visitorName || "Applicant" : (msg.repliedBy || "Sarah M.")}
-                              </span>
-                            </div>
-                            <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
-                            <span className="text-xs opacity-50 mt-1 block">
-                              {formatTime(msg.createdAt)}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    <div ref={messagesEndRef} />
-                  </div>
-                </ScrollArea>
-
-                {/* Notes Section */}
-                <div className="px-4 py-2 border-t bg-yellow-50">
-                  <div className="flex items-center gap-2 mb-2">
-                    <StickyNote className="w-4 h-4 text-yellow-600" />
-                    <span className="text-sm font-medium text-yellow-800">Internal Notes</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={saveNotes}
-                      disabled={savingNotes}
-                      className="ml-auto text-xs h-6"
-                    >
-                      {savingNotes ? "Saving..." : "Save"}
+              {/* Quick Replies */}
+              {showQuickReplies && (
+                <div className="px-4 py-3 border-t bg-purple-50/50">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-purple-800 flex items-center gap-1">
+                      <Zap className="w-4 h-4" /> Quick Templates
+                    </span>
+                    <Button variant="ghost" size="sm" onClick={() => setShowQuickReplies(false)} className="h-6 text-xs">
+                      Close
                     </Button>
                   </div>
-                  <Textarea
-                    placeholder="Add notes (offered amount, status, follow-up date...)"
+                  <div className="flex flex-wrap gap-2">
+                    {SCHOLARSHIP_REPLIES.map((qr, i) => (
+                      <Button
+                        key={i}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => { setReplyMessage(qr.text); setShowQuickReplies(false); textareaRef.current?.focus(); }}
+                        className={`text-xs ${qr.color}`}
+                      >
+                        {qr.label}
+                      </Button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-purple-600 mt-2">💡 Replace [AMOUNT] with your offer. Full price is $1,997</p>
+                </div>
+              )}
+
+              {/* Notes */}
+              <div className="px-4 py-2 border-t bg-yellow-50/50">
+                <div className="flex items-center gap-2">
+                  <StickyNote className="w-4 h-4 text-yellow-600" />
+                  <Input
+                    placeholder="Internal notes (offered amount, status...)"
                     value={visitorNotes}
                     onChange={(e) => setVisitorNotes(e.target.value)}
-                    className="text-sm h-16 resize-none bg-white"
+                    onBlur={saveNotes}
+                    className="flex-1 h-8 text-sm bg-white border-yellow-200"
                   />
                 </div>
+              </div>
 
-                {/* Quick Replies */}
-                {showQuickReplies && (
-                  <div className="px-4 py-2 border-t bg-purple-50">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Zap className="w-4 h-4 text-purple-600" />
-                      <span className="text-sm font-medium text-purple-800">Scholarship Templates</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowQuickReplies(false)}
-                        className="ml-auto text-xs h-6"
-                      >
-                        Close
-                      </Button>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {SCHOLARSHIP_REPLIES.map((qr, i) => (
-                        <Button
-                          key={i}
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setReplyMessage(qr.text);
-                            setShowQuickReplies(false);
-                          }}
-                          disabled={sending}
-                          className="text-xs bg-white hover:bg-purple-100"
-                        >
-                          {qr.label}
-                        </Button>
-                      ))}
-                    </div>
-                    <p className="text-xs text-purple-600 mt-2">
-                      💡 Remember: Full price is <strong>$1,997</strong>. Replace [AMOUNT] with actual scholarship offer.
-                    </p>
-                  </div>
+              {/* Input Area */}
+              <div className="p-3 md:p-4 border-t bg-gray-50">
+                {error && (
+                  <div className="mb-2 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</div>
                 )}
-
-                {/* Reply Input */}
-                <div className="p-4 border-t bg-gray-50">
-                  <div className="flex gap-2 mb-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowQuickReplies(!showQuickReplies)}
-                      className="text-[#722f37] border-[#722f37]/30 hover:bg-[#722f37]/5"
-                    >
-                      <Zap className="w-4 h-4 mr-1" />
-                      Templates
-                    </Button>
-                    <div className="flex-1 flex items-center gap-2 text-xs text-gray-500">
-                      <AlertCircle className="w-3 h-3" />
-                      Responses are sent as Sarah M.
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Textarea
-                      placeholder="Type your scholarship response... (Remember: Full price is $1,997)"
-                      value={replyMessage}
-                      onChange={(e) => setReplyMessage(e.target.value)}
-                      disabled={sending}
-                      className="flex-1 min-h-[60px] resize-none"
-                    />
-                    <Button
-                      onClick={() => sendReply()}
-                      disabled={sending || !replyMessage.trim()}
-                      className="bg-[#722f37] hover:bg-[#5a252c]"
-                    >
-                      <Send className="w-4 h-4" />
-                    </Button>
-                  </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowQuickReplies(!showQuickReplies)}
+                    className="text-[#722f37] border-[#722f37]/30 hover:bg-[#722f37]/5"
+                  >
+                    <Zap className="w-4 h-4 mr-1" />
+                    Templates
+                  </Button>
+                  <span className="text-xs text-gray-400 flex items-center gap-1">
+                    <Image src={SARAH_AVATAR} alt="Sarah" width={16} height={16} className="rounded-full" />
+                    Replying as Sarah M.
+                  </span>
                 </div>
-              </>
-            ) : (
-              <div className="flex-1 flex items-center justify-center text-gray-500">
-                <div className="text-center">
-                  <GraduationCap className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p>Select an application to view details</p>
+                <div className="flex gap-2">
+                  <Textarea
+                    ref={textareaRef}
+                    placeholder="Type your response..."
+                    value={replyMessage}
+                    onChange={(e) => setReplyMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        sendReply();
+                      }
+                    }}
+                    disabled={sending}
+                    className="flex-1 min-h-[50px] max-h-[120px] resize-none"
+                  />
+                  <Button
+                    onClick={() => sendReply()}
+                    disabled={sending || !replyMessage.trim()}
+                    className="bg-[#722f37] hover:bg-[#5a252c] h-auto px-4"
+                  >
+                    <Send className="w-5 h-5" />
+                  </Button>
                 </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center text-gray-400">
+                <GraduationCap className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                <p className="text-lg font-medium">Select an application</p>
+                <p className="text-sm">Choose from the list to view conversation</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
