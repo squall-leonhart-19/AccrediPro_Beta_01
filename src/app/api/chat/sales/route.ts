@@ -15,7 +15,7 @@ export async function OPTIONS() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { message, page, visitorId, userName, userEmail } = body;
+    const { message, page, visitorId, userName, userEmail, isFromVisitor, repliedBy } = body;
 
     if (!message) {
       return NextResponse.json({ error: "Message is required" }, { status: 400, headers: corsHeaders });
@@ -23,8 +23,11 @@ export async function POST(request: NextRequest) {
 
     const finalVisitorId = visitorId || "anonymous_" + Date.now();
 
-    // Save chat optin if we have a name
-    if (userName && userName !== "Friend") {
+    // Default to visitor message unless explicitly set to false (admin/Sarah message)
+    const isMsgFromVisitor = isFromVisitor !== false;
+
+    // Save chat optin if we have a name (only for visitor messages)
+    if (isMsgFromVisitor && userName && userName !== "Friend") {
       try {
         await prisma.chatOptin.upsert({
           where: { visitorId: finalVisitorId },
@@ -45,21 +48,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Log the chat message for admin review (NO AUTO AI REPLY - manual responses only)
+    // Log the chat message for admin review
     await prisma.salesChat.create({
       data: {
         visitorId: finalVisitorId,
         page: page || "fm-certification",
         message,
-        isFromVisitor: true,
+        isFromVisitor: isMsgFromVisitor,
         visitorName: userName || null,
         visitorEmail: userEmail || null,
+        repliedBy: isMsgFromVisitor ? null : (repliedBy || "Sarah M."),
       },
     });
 
-    // Return acknowledgment - Sarah will respond manually from admin panel
+    // Return acknowledgment
     return NextResponse.json({
-      reply: "Thanks for your message! I'm reading it now and will respond shortly. 💬",
+      reply: isMsgFromVisitor
+        ? "Thanks for your message! I'm reading it now and will respond shortly. 💬"
+        : "Message saved",
       status: "received"
     }, { headers: corsHeaders });
   } catch (error) {

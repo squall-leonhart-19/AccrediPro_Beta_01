@@ -441,10 +441,28 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     const goalLabel = GOAL_LABELS[quizData.goal] || "$10,000/month";
     const typeLabel = TYPE_LABELS[quizData.type] || "your specialization";
 
+    // Helper to save Sarah's message to database (so admin can see it)
+    const saveSarahMessage = async (content: string) => {
+      try {
+        await fetch("/api/chat/sales", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: content,
+            page: `scholarship-${page}`,
+            visitorId,
+            isFromVisitor: false, // This is Sarah's message
+            repliedBy: "Sarah M. (Auto)",
+          }),
+        });
+      } catch {}
+    };
+
+    const msg1Content = `Hey ${firstName}! I just saw your assessment come through.`;
     const msg1: ChatMessage = {
       id: "sarah-1",
       role: "sarah",
-      content: `Hey ${firstName}! I just saw your assessment come through.`,
+      content: msg1Content,
       timestamp: new Date().toISOString(),
     };
 
@@ -454,6 +472,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       const t1b = setTimeout(() => {
         setIsTyping(false);
         setMessages(prev => [...prev, msg1]);
+        saveSarahMessage(msg1Content); // Save to DB for admin
 
         // Delay message 2 by 6-8 more seconds
         const t2 = setTimeout(() => {
@@ -475,6 +494,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
               timestamp: new Date().toISOString(),
             };
             setMessages(prev => [...prev, msg2]);
+            saveSarahMessage(msg2Content); // Save to DB for admin
 
             // Delay message 3 by another 8-10 seconds (the scholarship ask)
             const t3 = setTimeout(() => {
@@ -498,6 +518,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
                   timestamp: new Date().toISOString(),
                 };
                 setMessages(prev => [...prev, msg3]);
+                saveSarahMessage(msg3Content); // Save to DB for admin
                 setWelcomeDone(true);
               }, 4000); // Typing duration for msg3
               welcomeTimers.current.push(t3b);
