@@ -492,19 +492,22 @@ export function ScholarshipClient({ firstName, email, examScore, deadline }: Sch
                                 ))}
                             </div>
 
-                            <div className="p-3 border-t border-slate-800">
+                            <div className="p-3 border-t border-slate-800 pb-[env(safe-area-inset-bottom,12px)]">
                                 <div className="flex gap-2">
                                     <Input
                                         value={userMessage}
                                         onChange={(e) => setUserMessage(e.target.value)}
                                         onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                                         placeholder="Type a message..."
-                                        className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+                                        inputMode="text"
+                                        autoComplete="off"
+                                        className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 text-base"
+                                        style={{ fontSize: "16px" }}
                                     />
                                     <Button
                                         onClick={handleSendMessage}
                                         disabled={!userMessage.trim()}
-                                        className="bg-burgundy-600 hover:bg-burgundy-700"
+                                        className="bg-burgundy-600 hover:bg-burgundy-700 flex-shrink-0"
                                     >
                                         <Send className="w-4 h-4" />
                                     </Button>

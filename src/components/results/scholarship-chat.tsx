@@ -533,14 +533,17 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     };
 
     // Pre-fetch welcome audio from ElevenLabs (Sarah's voice)
+    let audioReady = false;
     const fetchWelcomeAudio = async () => {
       try {
+        console.log("[Audio] Fetching welcome audio for:", firstName);
         const res = await fetch("/api/scholarship/welcome-audio", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ firstName }),
         });
         const data = await res.json();
+        console.log("[Audio] Response:", { success: data.success, hasAudio: !!data.audio });
         if (data.success && data.audio) {
           setWelcomeAudioUrl(data.audio);
           // Pre-load the audio
@@ -548,10 +551,19 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           audio.preload = "auto";
           welcomeAudioRef.current = audio;
           audio.addEventListener("ended", () => setIsPlayingWelcomeAudio(false));
-          audio.addEventListener("error", () => setIsPlayingWelcomeAudio(false));
+          audio.addEventListener("error", (e) => {
+            console.log("[Audio] Error:", e);
+            setIsPlayingWelcomeAudio(false);
+          });
+          audio.addEventListener("canplaythrough", () => {
+            console.log("[Audio] Ready to play!");
+            audioReady = true;
+          });
+          // Force load
+          audio.load();
         }
       } catch (err) {
-        console.log("Welcome audio fetch failed (non-critical):", err);
+        console.log("[Audio] Fetch failed:", err);
       }
     };
     fetchWelcomeAudio(); // Start fetching immediately
@@ -566,12 +578,28 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
 
         // 🎵 Play welcome audio 2 seconds after message 1 appears
         const audioTimer = setTimeout(() => {
-          if (welcomeAudioRef.current) {
-            welcomeAudioRef.current.play()
-              .then(() => setIsPlayingWelcomeAudio(true))
-              .catch((err) => console.log("Audio autoplay blocked:", err));
+          const audio = welcomeAudioRef.current;
+          if (audio) {
+            console.log("[Audio] Attempting to play...");
+            // Reset to start
+            audio.currentTime = 0;
+            audio.volume = 1.0;
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  console.log("[Audio] Playing!");
+                  setIsPlayingWelcomeAudio(true);
+                })
+                .catch((err) => {
+                  console.log("[Audio] Autoplay blocked:", err.message);
+                  // Show a play button instead
+                });
+            }
+          } else {
+            console.log("[Audio] No audio ref available");
           }
-        }, 2000);
+        }, 2500);
         welcomeTimers.current.push(audioTimer);
 
         // Delay message 2 by 6-8 more seconds
@@ -765,7 +793,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
 
   // ─── Chat Window ────────────────────────────────────────────────
   return (
-    <div className="fixed bottom-0 right-0 sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 z-50 w-full sm:w-[400px] sm:max-w-[calc(100vw-32px)] bg-white sm:rounded-2xl shadow-2xl overflow-hidden border border-gray-200 flex flex-col" style={{ height: "min(600px, 85vh)" }}>
+    <div className="fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 z-50 w-full sm:w-[400px] sm:max-w-[calc(100vw-32px)] bg-white sm:rounded-2xl shadow-2xl overflow-hidden border border-gray-200 flex flex-col max-h-[100dvh] sm:max-h-[85vh]" style={{ height: "min(600px, 100dvh)" }}>
       {/* Header */}
       <div className="flex-none p-3 sm:p-4 flex items-center gap-3" style={{ background: B.burgundy }}>
         <div className="relative">
@@ -936,23 +964,32 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <div className="flex-none p-2.5 sm:p-3 bg-white border-t flex gap-2" style={{ borderColor: `${B.gold}20` }}>
+      {/* Input - safe area for mobile */}
+      <div className="flex-none p-2.5 sm:p-3 bg-white border-t flex gap-2 pb-[env(safe-area-inset-bottom,8px)]" style={{ borderColor: `${B.gold}20` }}>
         <input
           ref={inputRef}
           type="text"
+          inputMode="text"
+          autoComplete="off"
+          autoCorrect="off"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          onFocus={() => {
+            // Scroll to bottom when input focused (mobile keyboard)
+            setTimeout(() => {
+              inputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 300);
+          }}
           placeholder={welcomeDone ? "Type your message..." : "Sarah is reviewing your results..."}
           disabled={!welcomeDone}
-          className="flex-1 border rounded-full px-4 py-2.5 text-sm focus:outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400"
-          style={{ borderColor: `${B.gold}40` }}
+          className="flex-1 border rounded-full px-4 py-2.5 text-base sm:text-sm focus:outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400"
+          style={{ borderColor: `${B.gold}40`, fontSize: "16px" }}
         />
         <button
           onClick={sendMessage}
           disabled={!inputValue.trim() || !welcomeDone}
-          className="w-10 h-10 rounded-full flex items-center justify-center transition-all disabled:opacity-40"
+          className="w-10 h-10 flex-shrink-0 rounded-full flex items-center justify-center transition-all disabled:opacity-40"
           style={{ background: inputValue.trim() ? B.burgundy : "#d1d5db" }}
         >
           <Send className="h-4 w-4 text-white" />
