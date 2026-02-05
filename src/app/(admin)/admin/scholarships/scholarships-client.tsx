@@ -513,66 +513,45 @@ export default function ScholarshipsClient() {
 
   const totalUnread = applications.reduce((acc, a) => acc + a.unreadCount, 0);
 
-  // Export all chats to CSV
-  const exportToCSV = () => {
-    const rows: string[] = [];
+  // Export all chats to CSV (saves to server + downloads)
+  const [exporting, setExporting] = useState(false);
 
-    // Header
-    rows.push([
-      "Name",
-      "Email",
-      "Specialization",
-      "Income Goal",
-      "Current Income",
-      "Vision",
-      "Past Certs",
-      "Offered Amount",
-      "Status",
-      "Messages Count",
-      "Last Message",
-      "Last Message Date",
-      "Full Conversation"
-    ].join(","));
+  const exportToCSV = async () => {
+    if (exporting) return;
+    setExporting(true);
 
-    // Data rows
-    applications.forEach(app => {
-      const offeredAmount = getUserOfferedAmount(app.messages) || "";
-      const hasResponse = app.messages.some(m => !m.isFromVisitor);
-      const status = app.unreadCount > 0 ? "Pending" : hasResponse ? "Responded" : "New";
+    try {
+      const res = await fetch("/api/admin/scholarships/export-csv", {
+        method: "POST",
+      });
 
-      // Get all messages as conversation (excluding application data)
-      const conversation = app.messages
-        .filter(m => !m.message.includes("SCHOLARSHIP APPLICATION"))
-        .map(m => `[${m.isFromVisitor ? app.visitorName || "Visitor" : "Sarah M."}]: ${m.message.replace(/[\n\r,]/g, " ")}`)
-        .join(" | ");
+      if (!res.ok) {
+        throw new Error("Export failed");
+      }
 
-      const row = [
-        `"${(app.visitorName || "").replace(/"/g, '""')}"`,
-        `"${(app.visitorEmail || "").replace(/"/g, '""')}"`,
-        `"${(app.applicationData?.specialization || "").replace(/"/g, '""')}"`,
-        `"${(app.applicationData?.incomeGoal || "").replace(/"/g, '""')}"`,
-        `"${(app.applicationData?.currentIncome || "").replace(/"/g, '""')}"`,
-        `"${(app.applicationData?.vision || "").replace(/"/g, '""')}"`,
-        `"${(app.applicationData?.pastCerts || "").replace(/"/g, '""')}"`,
-        `"${offeredAmount.replace(/"/g, '""')}"`,
-        `"${status}"`,
-        app.messages.filter(m => !m.message.includes("SCHOLARSHIP APPLICATION")).length,
-        `"${app.lastMessage.replace(/"/g, '""').replace(/[\n\r]/g, " ").slice(0, 100)}"`,
-        `"${new Date(app.lastMessageAt).toLocaleString()}"`,
-        `"${conversation.replace(/"/g, '""').slice(0, 500)}"`
-      ];
-      rows.push(row.join(","));
-    });
+      // Get the CSV content and trigger download
+      const blob = await res.blob();
+      const filename = res.headers.get("Content-Disposition")?.match(/filename="([^"]+)"/)?.[1]
+        || `scholarship-applications-${new Date().toISOString().split("T")[0]}.csv`;
 
-    // Download
-    const csv = rows.join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `scholarship-applications-${new Date().toISOString().split("T")[0]}.csv`;
-    link.click();
-    URL.revokeObjectURL(url);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      // Show success message
+      const serverPath = res.headers.get("X-Server-Path");
+      if (serverPath) {
+        console.log(`[CSV Export] Also saved to server: ${serverPath}`);
+      }
+    } catch (err) {
+      console.error("Export error:", err);
+      alert("Failed to export CSV. Please try again.");
+    } finally {
+      setExporting(false);
+    }
   };
 
   // Start audio recording
