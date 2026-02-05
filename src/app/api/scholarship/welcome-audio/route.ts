@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const audioDataUrl = `data:audio/mp3;base64,${result.audioBase64}`;
+    const audioDataUrl = `data:audio/mpeg;base64,${result.audioBase64}`;
 
     // Cache the result
     audioCache.set(cacheKey, {
