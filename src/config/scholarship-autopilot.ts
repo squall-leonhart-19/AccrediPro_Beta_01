@@ -291,7 +291,7 @@ You save ${formatCurrency(tier.savings)}! 🙌
 ${CHECKOUT_URL}
 
 At the bottom of checkout, apply code:
-✨ ${tier.couponCode} ✨
+${tier.couponCode}
 
 This is ONE-TIME payment — includes:
 ✅ Full FM Certification

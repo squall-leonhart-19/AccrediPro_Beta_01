@@ -903,6 +903,66 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
         }, 1000);
       }
     }
+
+    // ═══ PAID/DONE DETECTION — Send Email #5 + Welcome Response ═══
+    const paidKeywords = ["done", "paid", "purchased", "completed", "i paid", "just paid", "payment done", "payment complete"];
+    const isPaidMessage = paidKeywords.some(kw => userMessage.toLowerCase().includes(kw));
+
+    if (isPaidMessage) {
+      // Show welcome response after 2 seconds
+      setTimeout(() => {
+        setIsTyping(true);
+        setTimeout(() => {
+          setIsTyping(false);
+          const welcomeMsg: ChatMessage = {
+            id: `sarah-welcome-${Date.now()}`,
+            role: "sarah",
+            content: `🎉 ${firstName}!! I AM SO EXCITED FOR YOU!
+
+You just made a decision that's going to change your life!
+
+Here's what happens next:
+
+1️⃣ Check your email in the next 5 minutes — you'll get your login credentials
+2️⃣ Log into your portal at learn.accredipro.academy  
+3️⃣ Start with Module 1 — it's already unlocked for you
+4️⃣ Join our private community — links are inside your portal
+
+I'll personally check in on you in 24 hours to see how you're doing.
+
+Congratulations on investing in yourself. You're going to do AMAZING things! 💜
+
+SO PROUD OF YOU!`,
+            timestamp: new Date().toISOString(),
+          };
+          setMessages(prev => [...prev, welcomeMsg]);
+
+          // Save to DB
+          fetch("/api/chat/sales", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: welcomeMsg.content,
+              page: `scholarship-${page}`,
+              visitorId,
+              userName: `${firstName} ${lastName}`.trim(),
+              userEmail: email,
+              isFromVisitor: false,
+              repliedBy: "Sarah M. (Auto-Welcome)",
+            }),
+          }).catch(() => { });
+
+          // 📧 SEND EMAIL #5: Welcome to the family!
+          if (email) {
+            fetch("/api/scholarship/send-welcome-email", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, firstName }),
+            }).catch((err) => console.error("[Scholarship Welcome Email] Failed:", err));
+          }
+        }, 2500);
+      }, 1500);
+    }
   };
 
   // ─── Floating Button ────────────────────────────────────────────
