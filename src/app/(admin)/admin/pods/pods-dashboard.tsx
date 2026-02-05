@@ -97,6 +97,8 @@ export default function PodsDashboard() {
 
     const getStatusColor = (status: string) => {
         switch (status) {
+            case "pre_completion": return "bg-blue-100 text-blue-800";
+            case "post_completion": return "bg-green-100 text-green-800";
             case "active": return "bg-green-100 text-green-800";
             case "waiting": return "bg-yellow-100 text-yellow-800";
             case "completed": return "bg-blue-100 text-blue-800";
@@ -135,9 +137,8 @@ export default function PodsDashboard() {
                         className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#722f37] focus:border-transparent"
                     >
                         <option value="all">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="waiting">Waiting</option>
-                        <option value="completed">Completed</option>
+                        <option value="pre_completion">Pre-Completion (Learning)</option>
+                        <option value="post_completion">Post-Completion (Nurture)</option>
                         <option value="converted">Converted</option>
                     </select>
                     <button
@@ -157,10 +158,10 @@ export default function PodsDashboard() {
                     <div className="text-sm text-gray-600">Total Pods</div>
                 </div>
                 <div className="bg-white rounded-xl p-4 border border-gray-200">
-                    <div className="text-2xl font-bold text-green-600">
-                        {pods.filter(p => p.status === "active").length}
+                    <div className="text-2xl font-bold text-blue-600">
+                        {pods.filter(p => p.status === "pre_completion").length}
                     </div>
-                    <div className="text-sm text-gray-600">Active</div>
+                    <div className="text-sm text-gray-600">Learning</div>
                 </div>
                 <div className="bg-white rounded-xl p-4 border border-gray-200">
                     <div className="text-2xl font-bold text-orange-600">
@@ -271,10 +272,10 @@ export default function PodsDashboard() {
                                                 >
                                                     <div
                                                         className={`max-w-[70%] rounded-2xl px-4 py-2 ${msg.senderType === "user"
-                                                                ? "bg-[#722f37] text-white"
-                                                                : msg.senderType === "sarah"
-                                                                    ? "bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-white"
-                                                                    : "bg-white border border-gray-200 text-gray-800"
+                                                            ? "bg-[#722f37] text-white"
+                                                            : msg.senderType === "sarah"
+                                                                ? "bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-white"
+                                                                : "bg-white border border-gray-200 text-gray-800"
                                                             }`}
                                                     >
                                                         <div className="text-xs opacity-75 mb-1">
