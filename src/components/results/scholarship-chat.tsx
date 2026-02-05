@@ -191,7 +191,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     const handleVisibility = () => { if (!document.hidden) fetchMessages(); };
     document.addEventListener("visibilitychange", handleVisibility);
     fetchMessages();
-    interval = setInterval(fetchMessages, 10000); // Poll every 10s
+    interval = setInterval(fetchMessages, 3000); // Poll every 3s for real-time sync
 
     return () => {
       if (interval) clearInterval(interval);

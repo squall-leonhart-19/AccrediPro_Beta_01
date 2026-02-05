@@ -179,11 +179,12 @@ export default function ScholarshipsClient() {
 
   useEffect(() => {
     fetchApplications();
+    // Poll every 3 seconds for real-time sync
     const interval = setInterval(() => {
       if (!document.hidden) {
         fetchApplications();
       }
-    }, 5000);
+    }, 3000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -209,6 +210,7 @@ export default function ScholarshipsClient() {
     if (!messageToSend.trim()) return;
 
     setSending(true);
+    setError(null);
     try {
       const res = await fetch("/api/admin/scholarships/reply", {
         method: "POST",
@@ -219,13 +221,19 @@ export default function ScholarshipsClient() {
         }),
       });
 
-      if (res.ok) {
+      const data = await res.json();
+
+      if (res.ok && data.success) {
         setReplyMessage("");
         setShowQuickReplies(false);
         await fetchApplications();
+      } else {
+        console.error("Reply failed:", data);
+        setError(data.error || "Failed to send reply");
       }
     } catch (err) {
       console.error("Failed to send reply:", err);
+      setError("Network error - please try again");
     } finally {
       setSending(false);
     }

@@ -73,9 +73,11 @@ export async function GET() {
         app.unreadCount++;
       }
 
+      // Update visitorId to latest and track last message
       if (msg.createdAt > app.lastMessageAt) {
         app.lastMessage = msg.message;
         app.lastMessageAt = msg.createdAt;
+        app.visitorId = msg.visitorId; // Use most recent visitorId
       }
     });
 

@@ -7,13 +7,18 @@ import { prisma } from "@/lib/prisma";
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
+    console.log("[Scholarship Reply] Session:", session?.user?.email, session?.user?.role);
+
     if (!session?.user || !["ADMIN", "SUPERUSER", "INSTRUCTOR"].includes(session.user.role as string)) {
+      console.log("[Scholarship Reply] Unauthorized - role:", session?.user?.role);
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { visitorId, message } = await request.json();
+    console.log("[Scholarship Reply] Request:", { visitorId, messageLength: message?.length });
 
     if (!visitorId || !message?.trim()) {
+      console.log("[Scholarship Reply] Missing fields:", { visitorId: !!visitorId, message: !!message?.trim() });
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -22,6 +27,8 @@ export async function POST(request: NextRequest) {
       where: { visitorId },
       orderBy: { createdAt: "desc" },
     });
+
+    console.log("[Scholarship Reply] Found existing message:", !!existingMessage, existingMessage?.page);
 
     if (!existingMessage) {
       return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
