@@ -716,6 +716,14 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
         </button>
       </div>
 
+      {/* FOMO Warning Banner */}
+      <div className="flex-none px-3 py-1.5 flex items-center justify-center gap-2" style={{ background: "#fef3cd", borderBottom: "1px solid #ffc107" }}>
+        <span className="text-amber-600 text-sm">⚠️</span>
+        <p className="text-[10px] sm:text-[11px] font-medium text-amber-800">
+          Don&apos;t close this page — your scholarship spot is reserved for this session only!
+        </p>
+      </div>
+
       {/* Scholarship badge or Urgency Timer */}
       {urgencyTimer !== null && urgencyTimer > 0 ? (
         <div className="flex-none px-3 sm:px-4 py-2.5 border-b flex items-center justify-between gap-2 animate-pulse" style={{ background: "linear-gradient(90deg, #dc2626 0%, #b91c1c 100%)", borderColor: "#991b1b" }}>

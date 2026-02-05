@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendEmail } from "@/lib/email";
 
 // POST - Send reply to scholarship applicant
 export async function POST(request: NextRequest) {
@@ -59,6 +60,56 @@ export async function POST(request: NextRequest) {
       },
       data: { isRead: true },
     });
+
+    // Send email notification if we have visitor's email
+    if (existingMessage.visitorEmail) {
+      const firstName = existingMessage.visitorName?.split(" ")[0] || "there";
+      try {
+        await sendEmail({
+          to: existingMessage.visitorEmail,
+          from: "Sarah M. <sarah@accredipro-certificate.com>",
+          subject: `${firstName}, I just replied to your message! 💬`,
+          type: "transactional",
+          text: `Hey ${firstName}!
+
+I just sent you a message about your scholarship application.
+
+Go back to your results page to see my reply — I'm waiting for you in the chat!
+
+Talk soon,
+
+Sarah M.
+Scholarship Director
+Accredipro Specialists Institute
+
+P.S. Don't wait too long — scholarship spots are limited! 💛`,
+          html: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: Georgia, serif; line-height: 1.8; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background: #fafafa;">
+  <div style="background: white; padding: 30px; border-radius: 8px;">
+    <p style="font-size: 16px; margin: 0 0 20px 0;">Hey ${firstName}!</p>
+    <p style="font-size: 18px; margin: 0 0 20px 0;"><strong>I just sent you a message about your scholarship application. 💬</strong></p>
+    <p style="margin: 0 0 25px 0;">Go back to your results page to see my reply — I'm waiting for you in the chat!</p>
+    <p style="margin: 0 0 5px 0;">Talk soon,</p>
+    <p style="margin: 0 0 5px 0; font-weight: bold; color: #722f37;">Sarah M.</p>
+    <p style="margin: 0; font-size: 14px; color: #666;">Scholarship Director<br>Accredipro Specialists Institute</p>
+    <p style="margin: 30px 0 0 0; font-size: 14px; color: #888; padding-top: 20px; border-top: 1px solid #eee;">
+      P.S. Don't wait too long — scholarship spots are limited! 💛
+    </p>
+  </div>
+</body>
+</html>`,
+        });
+        console.log(`[Scholarships] Sent reply notification email to ${existingMessage.visitorEmail}`);
+      } catch (emailError) {
+        console.error("[Scholarships] Failed to send reply notification:", emailError);
+        // Don't fail the reply if email fails
+      }
+    }
 
     console.log(`[Scholarships] Reply sent to ${visitorId}: ${message.substring(0, 50)}...`);
     return NextResponse.json({ success: true, reply });
