@@ -71,7 +71,8 @@ const PRACTITIONER_TYPES: Record<string, { label: string; icon: typeof Stethosco
   "gut-restoration": { label: "Gut Restoration Specialist", icon: FlaskConical, description: "Master the gut-body connection and help clients heal digestive issues using root-cause protocols." },
   "metabolic-optimization": { label: "Metabolic Optimization Specialist", icon: Zap, description: "Help clients transform their metabolism, manage weight, and optimize energy through clinical protocols." },
   "burnout-recovery": { label: "Burnout Recovery Specialist", icon: Brain, description: "Help high-achieving women recover from adrenal fatigue and chronic burnout using evidence-based protocols." },
-  "autoimmune-support": { label: "Autoimmune Support Specialist", icon: Stethoscope, description: "Help clients manage autoimmune conditions naturally using the DEPTH Method clinical framework." },
+  "autoimmune-support": { label: "Autoimmune Support Specialist", icon: Stethoscope, description: "Help clients manage autoimmune conditions naturally using the FM Certification clinical framework." },
+  "other-specialty": { label: "Custom Specialty Path", icon: Sparkles, description: "Tell us your passion and we'll map it to our specialty tracks. Your unique focus becomes your competitive advantage." },
 };
 
 // ─── Persona types ─────────────────────────────────────────────────
@@ -84,29 +85,29 @@ interface Testimonial { name: string; role: string; text: string; photo: string;
 
 const TESTIMONIALS_BY_PERSONA: Record<Persona, Testimonial[]> = {
   "healthcare-pro": [
-    { name: "Dr. Karen L.", role: "Former Family Practice - Now DEPTH Practitioner", text: "As a nurse for 18 years, I thought I knew clinical medicine. DEPTH showed me a whole new level. I left the hospital and now earn $11K/month running my own functional practice.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 3 },
-    { name: "Margaret S.", role: "PA to Clinical Practitioner", text: "I was exhausted from the hospital grind. Now I set my own hours, see clients I actually want to help, and earn MORE than my PA salary. DEPTH changed everything.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 6 },
-    { name: "Carolyn R.", role: "Former ICU Nurse, Age 54", text: "I used my nursing background to fast-track through DEPTH. Within 60 days I had my first 5 paying clients. My hospital colleagues can't believe the transformation.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 9 },
+    { name: "Dr. Karen L.", role: "Former Family Practice - Now FM Certified Practitioner", text: "As a nurse for 18 years, I thought I knew clinical medicine. The program showed me a whole new level. I left the hospital and now earn $11K/month running my own functional practice.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 3 },
+    { name: "Margaret S.", role: "PA to Clinical Practitioner", text: "I was exhausted from the hospital grind. Now I set my own hours, see clients I actually want to help, and earn MORE than my PA salary. The certification changed everything.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 6 },
+    { name: "Carolyn R.", role: "Former ICU Nurse, Age 54", text: "I used my nursing background to fast-track through the program. Within 60 days I had my first 5 paying clients. My hospital colleagues can't believe the transformation.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 9 },
   ],
   "health-coach": [
-    { name: "Margaret S.", role: "Health Coach to Clinical Practitioner", text: "Before DEPTH I was a health coach charging $50/session and struggling to fill my calendar. Now: $9K/month with a waitlist. The ASI certification gave me the credibility I was missing.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 3 },
-    { name: "Dr. Karen L.", role: "Yoga Teacher to DEPTH Practitioner", text: "I had years of wellness experience but no clinical framework. DEPTH gave me the structure to charge $200/session instead of $40 for yoga classes. Total game-changer.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 6 },
-    { name: "Carolyn R.", role: "Nutritionist to Certified Specialist", text: "Every coach should upgrade to DEPTH. My nutrition coaching was good but limited. Now I can run labs, create clinical protocols, and clients see me as a real authority.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 9 },
+    { name: "Margaret S.", role: "Health Coach to Clinical Practitioner", text: "Before the certification I was a health coach charging $50/session and struggling to fill my calendar. Now: $9K/month with a waitlist. The ASI certification gave me the credibility I was missing.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 3 },
+    { name: "Dr. Karen L.", role: "Yoga Teacher to FM Certified Practitioner", text: "I had years of wellness experience but no clinical framework. The certification gave me the structure to charge $200/session instead of $40 for yoga classes. Total game-changer.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 6 },
+    { name: "Carolyn R.", role: "Nutritionist to Certified Specialist", text: "Every coach should upgrade to FM Certification. My nutrition coaching was good but limited. Now I can run labs, create clinical protocols, and clients see me as a real authority.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 9 },
   ],
   "corporate": [
-    { name: "Carolyn R.", role: "Former Marketing Director, Age 52", text: "I left my corporate job at 49 with zero health credentials. DEPTH gave me everything - the clinical skills, the business framework, the confidence. Now earning $7K/month and fully booked.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 3 },
-    { name: "Margaret S.", role: "Ex-Finance Manager to Practitioner", text: "My corporate project management skills turned out to be my secret weapon. I launched my practice like a business from day one. DEPTH gave me the clinical side - I brought the business acumen.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 6 },
+    { name: "Carolyn R.", role: "Former Marketing Director, Age 52", text: "I left my corporate job at 49 with zero health credentials. The certification gave me everything - the clinical skills, the business framework, the confidence. Now earning $7K/month and fully booked.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 3 },
+    { name: "Margaret S.", role: "Ex-Finance Manager to Practitioner", text: "My corporate project management skills turned out to be my secret weapon. I launched my practice like a business from day one. The certification gave me the clinical side - I brought the business acumen.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 6 },
     { name: "Dr. Karen L.", role: "Former HR Executive to Clinical Director", text: "Everyone thought I was crazy leaving a 6-figure corporate salary. 8 months later, I matched it with my own practice and actually love Monday mornings again.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
   ],
   "stay-at-home-mom": [
     { name: "Margaret S.", role: "Stay-at-Home Mom to Certified Practitioner", text: "I studied during nap times and after bedtime. Within 4 months I was certified. Now I see clients 3 days a week while my kids are at school and earn $6K/month. Best decision I ever made.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 3 },
-    { name: "Carolyn R.", role: "Mom of 3 to DEPTH Practitioner", text: "I felt invisible for years - just 'someone's mom.' DEPTH gave me my identity back. I built my practice from my kitchen table and now my kids tell their friends 'my mom helps people heal.'", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 6 },
-    { name: "Dr. Karen L.", role: "Former SAHM, Now Earning $8K/Month", text: "My husband was skeptical. Then my first month I earned $3K working part-time. Now I contribute more to our family than I ever did before kids. DEPTH fits around family life perfectly.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
+    { name: "Carolyn R.", role: "Mom of 3 to FM Certified Practitioner", text: "I felt invisible for years - just 'someone's mom.' The certification gave me my identity back. I built my practice from my kitchen table and now my kids tell their friends 'my mom helps people heal.'", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 6 },
+    { name: "Dr. Karen L.", role: "Former SAHM, Now Earning $8K/Month", text: "My husband was skeptical. Then my first month I earned $3K working part-time. Now I contribute more to our family than I ever did before kids. The program fits around family life perfectly.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
   ],
   "other-passionate": [
-    { name: "Carolyn R.", role: "Career Changer, Age 52", text: "I was skeptical after wasting money on other programs. Now I'm earning $7K/month and fully booked. Started from zero at age 49. No health background needed - DEPTH teaches everything.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 3 },
-    { name: "Margaret S.", role: "Teacher to Clinical Practitioner", text: "I had no medical background at all - I was a high school teacher. DEPTH broke everything down so clearly. My teaching skills actually help me explain protocols to clients beautifully.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 6 },
-    { name: "Dr. Karen L.", role: "Complete Career Change at 47", text: "I proved everyone wrong. No degree in health, no clinical experience, nothing. Just passion and DEPTH. 6 months later: certified, confident, and earning more than my previous career.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
+    { name: "Carolyn R.", role: "Career Changer, Age 52", text: "I was skeptical after wasting money on other programs. Now I'm earning $7K/month and fully booked. Started from zero at age 49. No health background needed - The program teaches everything.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 3 },
+    { name: "Margaret S.", role: "Teacher to Clinical Practitioner", text: "I had no medical background at all - I was a high school teacher. The program broke everything down so clearly. My teaching skills actually help me explain protocols to clients beautifully.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 6 },
+    { name: "Dr. Karen L.", role: "Complete Career Change at 47", text: "I proved everyone wrong. No degree in health, no clinical experience, nothing. Just passion and FM Certification. 6 months later: certified, confident, and earning more than my previous career.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
   ],
 };
 
@@ -118,27 +119,27 @@ const PERSONA_REACTIONS: Record<Persona, Record<string, string>> = {
   "healthcare-pro": {
     // Q2 - Income
     "q1-0": "Most healthcare professionals start at zero in private practice - but your clinical training means you'll ramp up 2x faster than average.",
-    "q1-under-2k": "With your clinical background, you should be earning 5-6x that. DEPTH certification bridges that gap immediately.",
-    "q1-2k-5k": "Solid for a nurse or PA side-hustling. But with DEPTH, your clinical credibility means you can realistically double this within 60 days.",
-    "q1-over-5k": "Outstanding. Healthcare professionals at your level typically scale to $15-25K/month with DEPTH because you already have the clinical instincts.",
+    "q1-under-2k": "With your clinical background, you should be earning 5-6x that. FM Certification bridges that gap immediately.",
+    "q1-2k-5k": "Solid for a nurse or PA side-hustling. But with FM Certification, your clinical credibility means you can realistically double this within 60 days.",
+    "q1-over-5k": "Outstanding. Healthcare professionals at your level typically scale to $15-25K/month with FM Certification because you already have the clinical instincts.",
     // Q3 - Income goal
     "q2-5k": "Very achievable for someone with your clinical background. Most healthcare professionals hit $5K within their first 60 days.",
-    "q2-10k": "Perfect target. Nurses and PAs who add DEPTH certification typically earn 2-3x their hospital salary within 6 months.",
-    "q2-20k": "With your medical training plus DEPTH, $20K/month is realistic. You'd add group protocols and physician referral networks.",
-    "q2-50k-plus": "Clinical directors with your background build multi-practitioner clinics. DEPTH gives you the framework to scale beyond just you.",
+    "q2-10k": "Perfect target. Nurses and PAs who add FM Certification typically earn 2-3x their hospital salary within 6 months.",
+    "q2-20k": "With your medical training plus FM Certification, $20K/month is realistic. You'd add group protocols and physician referral networks.",
+    "q2-50k-plus": "Clinical directors with your background build multi-practitioner clinics. The program gives you the framework to scale beyond just you.",
     // Q4 - Experience
-    "q3-active-clients": "Having active patients/clients means you can start applying DEPTH protocols immediately. Your clinical experience is a massive accelerator.",
-    "q3-past-clients": "Your clinical experience doesn't expire. DEPTH gives you a modern framework to re-enter with more confidence and higher rates.",
-    "q3-informal": "Even informal health guidance from a healthcare professional carries weight. DEPTH formalizes what you already do naturally.",
-    "q3-no-experience": "Your healthcare training IS experience. You understand anatomy, physiology, and patient care. DEPTH adds the functional medicine layer.",
+    "q3-active-clients": "Having active patients/clients means you can start applying ASI protocols immediately. Your clinical experience is a massive accelerator.",
+    "q3-past-clients": "Your clinical experience doesn't expire. The program gives you a modern framework to re-enter with more confidence and higher rates.",
+    "q3-informal": "Even informal health guidance from a healthcare professional carries weight. The program formalizes what you already do naturally.",
+    "q3-no-experience": "Your healthcare training IS experience. You understand anatomy, physiology, and patient care. The program adds the functional medicine layer.",
     // Q5 - Clinical readiness
-    "q4-very-confident": "Expected from someone with your clinical training. DEPTH adds the functional medicine lens to your existing diagnostic skills.",
-    "q4-somewhat": "Your medical training gives you the foundation. DEPTH adds the root-cause framework that conventional medicine often misses.",
-    "q4-not-very": "That's actually common in conventional healthcare. You were trained to treat symptoms, not root causes. DEPTH fills that exact gap.",
+    "q4-very-confident": "Expected from someone with your clinical training. The program adds the functional medicine lens to your existing diagnostic skills.",
+    "q4-somewhat": "Your medical training gives you the foundation. The program adds the root-cause framework that conventional medicine often misses.",
+    "q4-not-very": "That's actually common in conventional healthcare. You were trained to treat symptoms, not root causes. FM Certification fills that exact gap.",
     "q4-refer-out": "What if you WERE the specialist? With your clinical background, adding functional medicine skills makes you the complete practitioner.",
     // Q6 - Labs
-    "q5-already-doing": "Excellent - most healthcare professionals have some lab experience. DEPTH takes it to functional interpretation, which is a different skill entirely.",
-    "q5-want-to-learn": "You already understand lab values from your healthcare training. DEPTH teaches you the functional ranges and clinical decision-making.",
+    "q5-already-doing": "Excellent - most healthcare professionals have some lab experience. The program takes it to functional interpretation, which is a different skill entirely.",
+    "q5-want-to-learn": "You already understand lab values from your healthcare training. The program teaches you the functional ranges and clinical decision-making.",
     "q5-open-to-it": "Your medical background means you'll pick this up faster than anyone. You already speak the language of labs.",
     "q5-not-sure": "As a healthcare professional, lab skills will feel natural. It's the same data you've worked with, just interpreted through a functional lens.",
     // Q9 - Commitment
@@ -149,127 +150,127 @@ const PERSONA_REACTIONS: Record<Persona, Record<string, string>> = {
     // Q10 - Vision
     "q9-leave-job": "67% of our healthcare graduates left hospital/clinic jobs within a year. No more 12-hour shifts, no more burnout, full autonomy.",
     "q9-security": "Imagine earning MORE than your nursing/PA salary, but working half the hours and actually choosing your patients.",
-    "q9-fulfillment": "Remember why you went into healthcare? DEPTH lets you practice medicine the way you always wanted - actually helping people heal.",
+    "q9-fulfillment": "Remember why you went into healthcare? The program lets you practice medicine the way you always wanted - actually helping people heal.",
     "q9-all-above": "Healthcare professionals who make this switch don't just change careers - they rediscover why they went into medicine in the first place.",
   },
   "health-coach": {
-    "q1-0": "That's surprising for a coach - but it means you haven't been limited by a 'coaching ceiling' yet. DEPTH removes all ceilings.",
-    "q1-under-2k": "That's the classic coaching trap - trading time for too little money. DEPTH certification means you charge 3-4x more per session.",
-    "q1-2k-5k": "Solid for coaching, but you're hitting the ceiling. Coaches who upgrade to DEPTH clinical certification typically 3x their income.",
-    "q1-over-5k": "You're already a successful coach. DEPTH takes you from 'coach' to 'clinical practitioner' - and your rates follow.",
-    "q2-5k": "Very achievable. Coaches who add DEPTH certification see an average 3x income increase because clinical > coaching in perceived value.",
-    "q2-10k": "That's the sweet spot for upgraded coaches. You already know how to work with clients - DEPTH gives you the clinical authority to charge more.",
+    "q1-0": "That's surprising for a coach - but it means you haven't been limited by a 'coaching ceiling' yet. FM Certification removes all ceilings.",
+    "q1-under-2k": "That's the classic coaching trap - trading time for too little money. FM Certification means you charge 3-4x more per session.",
+    "q1-2k-5k": "Solid for coaching, but you're hitting the ceiling. Coaches who upgrade to FM Certification clinical certification typically 3x their income.",
+    "q1-over-5k": "You're already a successful coach. The program takes you from 'coach' to 'clinical practitioner' - and your rates follow.",
+    "q2-5k": "Very achievable. Coaches who add FM Certification see an average 3x income increase because clinical > coaching in perceived value.",
+    "q2-10k": "That's the sweet spot for upgraded coaches. You already know how to work with clients - The program gives you the clinical authority to charge more.",
     "q2-20k": "Coaches who add group clinical programs and lab interpretation hit $20K+ regularly. Your coaching skills are the delivery system.",
-    "q2-50k-plus": "Think clinic director. Your coaching background plus DEPTH clinical skills plus team leverage. It's the proven path.",
+    "q2-50k-plus": "Think clinic director. Your coaching background plus FM clinical skills plus team leverage. It's the proven path.",
     "q3-active-clients": "Perfect! You can immediately upsell existing coaching clients to clinical packages. Most coaches 2x their client value overnight.",
-    "q3-past-clients": "Your coaching skills are transferable. DEPTH adds the clinical dimension that makes clients see you as an authority, not just a coach.",
-    "q3-informal": "Coaching friends and family IS experience. You already have the empathy and communication skills - DEPTH adds clinical structure.",
+    "q3-past-clients": "Your coaching skills are transferable. The program adds the clinical dimension that makes clients see you as an authority, not just a coach.",
+    "q3-informal": "Coaching friends and family IS experience. You already have the empathy and communication skills - The program adds clinical structure.",
     "q3-no-experience": "Your coaching training gives you client communication skills that clinical people often lack. That's actually a huge advantage.",
-    "q4-very-confident": "Impressive for a coach! DEPTH will formalize that intuition into a repeatable clinical framework with evidence-based protocols.",
-    "q4-somewhat": "Most coaches can identify surface-level causes. DEPTH takes you deeper - to the hormonal, gut, and metabolic root causes.",
-    "q4-not-very": "That's exactly the gap between coaching and clinical practice. DEPTH bridges it with a systematic 5-phase framework.",
+    "q4-very-confident": "Impressive for a coach! The program will formalize that intuition into a repeatable clinical framework with evidence-based protocols.",
+    "q4-somewhat": "Most coaches can identify surface-level causes. The program takes you deeper - to the hormonal, gut, and metabolic root causes.",
+    "q4-not-very": "That's exactly the gap between coaching and clinical practice. FM Certification bridges it with a systematic 5-phase framework.",
     "q4-refer-out": "What if you WERE the referral? Coaches who upgrade to clinical practitioners keep their clients AND charge 3x more.",
-    "q5-already-doing": "You're ahead of 99% of coaches. DEPTH will systematize your lab skills and give you clinical-grade interpretation frameworks.",
-    "q5-want-to-learn": "This is THE skill that separates $50/hr coaches from $200/hr practitioners. DEPTH teaches it step by step.",
+    "q5-already-doing": "You're ahead of 99% of coaches. The program will systematize your lab skills and give you clinical-grade interpretation frameworks.",
+    "q5-want-to-learn": "This is THE skill that separates $50/hr coaches from $200/hr practitioners. The program teaches it step by step.",
     "q5-open-to-it": "Lab interpretation is what turns a coach into a clinician. It's the single biggest upgrade you can make to your practice.",
     "q5-not-sure": "As a coach, adding lab skills doubles your value proposition. Clients want someone who can test, not just guess.",
-    "q8-absolutely": "With your coaching discipline, you'll love the bite-sized modules. Many coaches say DEPTH is the best investment they've made.",
+    "q8-absolutely": "With your coaching discipline, you'll love the bite-sized modules. Many coaches say The program is the best investment they've made.",
     "q8-yes-work": "The program fits around client sessions. Many coaches study in the morning before their first client.",
     "q8-rearrange": "Your coaching schedule is already flexible. Even squeezing in 20 minutes between clients adds up fast.",
     "q8-not-sure": "Self-paced means self-scheduled. Many coaches do 3-4 intensive sessions per week instead of daily. Works just as well.",
     "q9-leave-job": "You're already your own boss as a coach - now imagine earning 3x more doing clinical work you're truly passionate about.",
     "q9-security": "Financial stability that coaching alone rarely provides. Clinical practitioners have predictable, premium income streams.",
     "q9-fulfillment": "You already help people as a coach. Imagine the fulfillment of actually SOLVING their root-cause health issues, not just supporting them.",
-    "q9-all-above": "Coaches who upgrade to DEPTH don't just earn more - they transform from 'wellness supporter' to 'clinical authority.' Complete identity shift.",
+    "q9-all-above": "Coaches who upgrade to FM Certification don't just earn more - they transform from 'wellness supporter' to 'clinical authority.' Complete identity shift.",
   },
   "corporate": {
     "q1-0": "Starting from zero is actually powerful - no bad habits, no limiting beliefs about what health professionals 'should' charge. Your corporate mindset is an advantage.",
-    "q1-under-2k": "You're just getting started. Corporate professionals who go all-in with DEPTH typically scale faster because you think in systems, not sessions.",
-    "q1-2k-5k": "Not bad for a side-hustle! But your corporate skills deserve more. DEPTH gives you the clinical credibility to build a real business.",
-    "q1-over-5k": "Impressive for someone transitioning. Your business acumen is clearly working. DEPTH adds clinical depth to accelerate even further.",
-    "q2-5k": "Very achievable. Most corporate professionals who complete DEPTH replace their previous income within 90 days of certification.",
+    "q1-under-2k": "You're just getting started. Corporate professionals who go all-in with FM Certification typically scale faster because you think in systems, not sessions.",
+    "q1-2k-5k": "Not bad for a side-hustle! But your corporate skills deserve more. The program gives you the clinical credibility to build a real business.",
+    "q1-over-5k": "Impressive for someone transitioning. Your business acumen is clearly working. The program adds clinical expertise to accelerate even further.",
+    "q2-5k": "Very achievable. Most corporate professionals who complete FM Certification replace their previous income within 90 days of certification.",
     "q2-10k": "$10K/month is realistic within 6 months. Your project management and professional skills give you a massive advantage in building a practice.",
     "q2-20k": "Think like a CEO, not a practitioner. Your corporate experience in building systems and managing teams translates directly to a multi-revenue practice.",
-    "q2-50k-plus": "Your corporate mind thinks at scale - that's rare in wellness. DEPTH plus your business skills is the formula for building a real company.",
-    "q3-active-clients": "Already working with clients while in corporate? That drive is exactly what predicts success in DEPTH.",
-    "q3-past-clients": "Your professional skills are fully transferable. DEPTH adds the clinical expertise - you already have the business foundation.",
-    "q3-informal": "Helping friends and family with health already shows you have the instinct. DEPTH gives you the framework to monetize that passion.",
+    "q2-50k-plus": "Your corporate mind thinks at scale - that's rare in wellness. FM Certification plus your business skills is the formula for building a real company.",
+    "q3-active-clients": "Already working with clients while in corporate? That drive is exactly what predicts success in FM Certification.",
+    "q3-past-clients": "Your professional skills are fully transferable. The program adds the clinical expertise - you already have the business foundation.",
+    "q3-informal": "Helping friends and family with health already shows you have the instinct. The program gives you the framework to monetize that passion.",
     "q3-no-experience": "31% of our highest earners came from corporate with zero health experience. Your professional skills are the unfair advantage nobody talks about.",
-    "q4-very-confident": "That's unusual for someone from corporate - you've clearly been studying. DEPTH will formalize and certify that knowledge.",
-    "q4-somewhat": "You're already ahead of most career changers. DEPTH takes your self-study and gives it clinical structure and accreditation.",
-    "q4-not-very": "Expected for a career change - and totally fine. The DEPTH framework teaches everything from the ground up, step by step.",
-    "q4-refer-out": "Right now, yes. But imagine being the expert everyone refers TO. Your corporate credibility plus DEPTH certification is a powerful combination.",
-    "q5-already-doing": "You've been studying ahead - that corporate work ethic is showing. DEPTH will formalize your lab knowledge with clinical protocols.",
+    "q4-very-confident": "That's unusual for someone from corporate - you've clearly been studying. The program will formalize and certify that knowledge.",
+    "q4-somewhat": "You're already ahead of most career changers. The program takes your self-study and gives it clinical structure and accreditation.",
+    "q4-not-very": "Expected for a career change - and totally fine. The the ASI clinical framework teaches everything from the ground up, step by step.",
+    "q4-refer-out": "Right now, yes. But imagine being the expert everyone refers TO. Your corporate credibility plus FM Certification is a powerful combination.",
+    "q5-already-doing": "You've been studying ahead - that corporate work ethic is showing. The program will formalize your lab knowledge with clinical protocols.",
     "q5-want-to-learn": "Lab interpretation is learnable - it's like learning to read financial statements. Structured, logical, and your analytical mind will love it.",
     "q5-open-to-it": "Think of lab interpretation like data analysis for the body. Your corporate analytical skills translate perfectly.",
-    "q5-not-sure": "It sounds intimidating but it's really not. If you can read a spreadsheet, you can learn to read a lab panel. DEPTH makes it systematic.",
+    "q5-not-sure": "It sounds intimidating but it's really not. If you can read a spreadsheet, you can learn to read a lab panel. The program makes it systematic.",
     "q8-absolutely": "That corporate discipline will serve you well. 20 minutes a day is less than your commute used to be.",
     "q8-yes-work": "You can study during lunch, on the train, whenever. Many corporate professionals study during their notice period.",
     "q8-rearrange": "That willingness to restructure your schedule shows you're serious about this career change. That's exactly what our top earners did.",
     "q8-not-sure": "The program is fully self-paced. Many career changers batch their study on weekends while still working their corporate job.",
     "q9-leave-job": "That's the dream of every corporate professional we work with. No more office politics, no more ceiling. 67% achieve it within 12 months.",
     "q9-security": "Financial security WITHOUT the corporate stress. No more layoff anxiety, no more politics. Income YOU control.",
-    "q9-fulfillment": "Imagine trading pointless meetings for meaningful client sessions where you genuinely transform someone's health. That's the DEPTH career change.",
-    "q9-all-above": "Corporate professionals who make this leap don't just change jobs - they transform their entire quality of life. That's what DEPTH delivers.",
+    "q9-fulfillment": "Imagine trading pointless meetings for meaningful client sessions where you genuinely transform someone's health. That's the FM practitioner career change.",
+    "q9-all-above": "Corporate professionals who make this leap don't just change jobs - they transform their entire quality of life. That's what FM Certification delivers.",
   },
   "stay-at-home-mom": {
     "q1-0": "Most moms in our program start at zero. That's not a limitation - it's a clean slate. And you'll be amazed at how fast you can build when motivated.",
-    "q1-under-2k": "Even earning something while managing a household shows incredible drive. DEPTH can turn that side income into a real practice.",
-    "q1-2k-5k": "Earning $2-5K while raising kids? That takes serious hustle. DEPTH gives you the clinical authority to double that working the SAME hours.",
-    "q1-over-5k": "That's remarkable while managing a family! You clearly have the drive. DEPTH certification will take your earning to the next tier.",
+    "q1-under-2k": "Even earning something while managing a household shows incredible drive. The program can turn that side income into a real practice.",
+    "q1-2k-5k": "Earning $2-5K while raising kids? That takes serious hustle. The program gives you the clinical authority to double that working the SAME hours.",
+    "q1-over-5k": "That's remarkable while managing a family! You clearly have the drive. FM Certification will take your earning to the next tier.",
     "q2-5k": "Totally achievable around a family schedule. Most mom practitioners work 3 days/week and hit $5K/month within 90 days of certification.",
     "q2-10k": "$10K/month working around school hours is absolutely doable. Our mom practitioners are proof. You don't need 40 hours a week.",
-    "q2-20k": "Ambitious and possible. Moms who add virtual group programs can earn $20K+ while only working during school hours. DEPTH shows you how.",
+    "q2-20k": "Ambitious and possible. Moms who add virtual group programs can earn $20K+ while only working during school hours. The program shows you how.",
     "q2-50k-plus": "Think big. Some of our mom practitioners built full practices with team members. Your organizational skills from running a household? That's CEO training.",
-    "q3-active-clients": "Working with clients while managing a household? That's incredibly impressive. DEPTH gives you clinical tools to serve them even better.",
-    "q3-past-clients": "Life got busy with the kids - totally understandable. DEPTH is designed to restart your career at a higher level, on YOUR schedule.",
-    "q3-informal": "Every mom is an informal health advisor - for your kids, your mom friends, your family. DEPTH turns that natural instinct into a real career.",
+    "q3-active-clients": "Working with clients while managing a household? That's incredibly impressive. The program gives you clinical tools to serve them even better.",
+    "q3-past-clients": "Life got busy with the kids - totally understandable. The program is designed to restart your career at a higher level, on YOUR schedule.",
+    "q3-informal": "Every mom is an informal health advisor - for your kids, your mom friends, your family. The program turns that natural instinct into a real career.",
     "q3-no-experience": "Your life experience as a mom IS relevant. Empathy, patience, multitasking, problem-solving - those are clinical superpowers that can't be taught.",
-    "q4-very-confident": "That's impressive! You've clearly been studying. DEPTH will give you the certification to match your knowledge.",
-    "q4-somewhat": "Your instincts are strong - probably from all those late-night Google searches about your kids' health. DEPTH turns that curiosity into clinical skill.",
-    "q4-not-very": "Completely normal. You haven't had formal training yet. DEPTH starts from the foundation and builds step by step, designed for beginners.",
+    "q4-very-confident": "That's impressive! You've clearly been studying. The program will give you the certification to match your knowledge.",
+    "q4-somewhat": "Your instincts are strong - probably from all those late-night Google searches about your kids' health. The program turns that curiosity into clinical skill.",
+    "q4-not-very": "Completely normal. You haven't had formal training yet. The program starts from the foundation and builds step by step, designed for beginners.",
     "q4-refer-out": "What if other moms referred THEIR friends to YOU? That's what happens when a caring mom adds clinical certification. Referrals explode.",
-    "q5-already-doing": "You've been self-studying labs? That's incredible initiative. DEPTH will formalize everything and give you confidence to use it professionally.",
+    "q5-already-doing": "You've been self-studying labs? That's incredible initiative. The program will formalize everything and give you confidence to use it professionally.",
     "q5-want-to-learn": "Lab interpretation sounds scary but it's completely learnable. Many of our mom practitioners say it's their favorite part of the program.",
-    "q5-open-to-it": "Imagine being the mom who can actually READ your kids' lab results and know what they mean. DEPTH gives you that superpower.",
-    "q5-not-sure": "It's simpler than you think. If you can follow a recipe, you can follow a lab interpretation framework. DEPTH makes it step-by-step.",
+    "q5-open-to-it": "Imagine being the mom who can actually READ your kids' lab results and know what they mean. The program gives you that superpower.",
+    "q5-not-sure": "It's simpler than you think. If you can follow a recipe, you can follow a lab interpretation framework. The program makes it step-by-step.",
     "q8-absolutely": "20 minutes during nap time, after bedtime, during school hours - our mom practitioners find the time because the results are so worth it.",
     "q8-yes-work": "Many moms study during nap time or after the kids go to bed. 20 minutes is less time than scrolling social media.",
     "q8-rearrange": "That willingness to carve out time for YOURSELF shows you're ready. Your kids will see a mom building something incredible.",
     "q8-not-sure": "The program is completely self-paced. Some moms do 3 sessions a week instead of daily. There's no pressure - only progress.",
-    "q9-leave-job": "You're already not in a 9-to-5 - you're in a 24/7 job called motherhood. DEPTH gives you a career that works WITH your family, not against it.",
-    "q9-security": "Imagine contributing $5-10K/month to your family while being fully present for your kids. No daycare needed. No guilt. That's the DEPTH mom life.",
+    "q9-leave-job": "You're already not in a 9-to-5 - you're in a 24/7 job called motherhood. The program gives you a career that works WITH your family, not against it.",
+    "q9-security": "Imagine contributing $5-10K/month to your family while being fully present for your kids. No daycare needed. No guilt. That's the FM practitioner life.",
     "q9-fulfillment": "Beyond 'just a mom' - imagine your kids seeing you help people heal, earn your own income, and build something meaningful. What a role model.",
-    "q9-all-above": "DEPTH moms get it all - income, identity, flexibility, fulfillment. You don't have to choose between family and career. That's the whole point.",
+    "q9-all-above": "FM Certified moms get it all - income, identity, flexibility, fulfillment. You don't have to choose between family and career. That's the whole point.",
   },
   "other-passionate": {
     "q1-0": "Starting from zero with pure passion is the best starting point. 38% of our top performers had non-traditional backgrounds. You're in good company.",
-    "q1-under-2k": "You've already started earning from your passion - that's more than most. DEPTH gives you the certification to charge what you're really worth.",
-    "q1-2k-5k": "Building income from a non-traditional background shows real entrepreneurial spirit. DEPTH adds the clinical credibility to scale further.",
-    "q1-over-5k": "Earning $5K+ from a non-traditional path? That's exceptional. DEPTH certification will accelerate your growth even further.",
+    "q1-under-2k": "You've already started earning from your passion - that's more than most. The program gives you the certification to charge what you're really worth.",
+    "q1-2k-5k": "Building income from a non-traditional background shows real entrepreneurial spirit. The program adds the clinical credibility to scale further.",
+    "q1-over-5k": "Earning $5K+ from a non-traditional path? That's exceptional. FM Certification will accelerate your growth even further.",
     "q2-5k": "Totally achievable regardless of background. 38% of our practitioners who hit $5K/month came from non-health fields.",
     "q2-10k": "Your unique background is actually an advantage. You bring fresh perspective that traditional health professionals lack.",
     "q2-20k": "Ambitious and proven. Non-traditional backgrounds often build the most creative, successful practices because you think differently.",
     "q2-50k-plus": "Love that mindset. The most innovative practices in our network were built by people from non-traditional backgrounds. Think different, earn different.",
-    "q3-active-clients": "Already working with clients from a non-traditional starting point? That shows incredible initiative. DEPTH adds the clinical structure.",
-    "q3-past-clients": "Your experience hasn't disappeared. DEPTH gives you a fresh framework to re-enter with clinical-grade credibility.",
-    "q3-informal": "Helping people informally IS experience. Your passion and empathy are the foundation. DEPTH adds the clinical framework on top.",
-    "q3-no-experience": "38% of our top performers had zero experience. Passion + DEPTH framework = a proven formula regardless of background.",
-    "q4-very-confident": "That's incredible for someone without a traditional health background. You've clearly done your homework. DEPTH certifies that knowledge.",
-    "q4-somewhat": "Self-taught knowledge shows dedication. DEPTH turns that passion-driven learning into a structured, certified clinical skill set.",
-    "q4-not-very": "Completely expected and completely fine. DEPTH was designed to take passionate beginners and create confident clinical practitioners.",
-    "q4-refer-out": "Soon, people will be referring TO you. Your unique perspective plus DEPTH certification is a combination clients actively seek out.",
-    "q5-already-doing": "Self-studying labs from a non-traditional background? That's the kind of initiative that predicts success in DEPTH.",
-    "q5-want-to-learn": "Lab interpretation is 100% learnable from scratch. DEPTH breaks it down into simple, logical steps. No medical degree required.",
-    "q5-open-to-it": "It's one of the most empowering skills you can learn. Imagine reading a lab panel and knowing exactly what's going on. DEPTH teaches that.",
-    "q5-not-sure": "It sounds more intimidating than it is. Our most successful lab interpreters include a former teacher and a former artist. DEPTH makes it accessible.",
+    "q3-active-clients": "Already working with clients from a non-traditional starting point? That shows incredible initiative. The program adds the clinical structure.",
+    "q3-past-clients": "Your experience hasn't disappeared. The program gives you a fresh framework to re-enter with clinical-grade credibility.",
+    "q3-informal": "Helping people informally IS experience. Your passion and empathy are the foundation. The program adds the clinical framework on top.",
+    "q3-no-experience": "38% of our top performers had zero experience. Passion + the ASI clinical framework = a proven formula regardless of background.",
+    "q4-very-confident": "That's incredible for someone without a traditional health background. You've clearly done your homework. The program certifies that knowledge.",
+    "q4-somewhat": "Self-taught knowledge shows dedication. The program turns that passion-driven learning into a structured, certified clinical skill set.",
+    "q4-not-very": "Completely expected and completely fine. The program was designed to take passionate beginners and create confident clinical practitioners.",
+    "q4-refer-out": "Soon, people will be referring TO you. Your unique perspective plus FM Certification is a combination clients actively seek out.",
+    "q5-already-doing": "Self-studying labs from a non-traditional background? That's the kind of initiative that predicts success in FM Certification.",
+    "q5-want-to-learn": "Lab interpretation is 100% learnable from scratch. The program breaks it down into simple, logical steps. No medical degree required.",
+    "q5-open-to-it": "It's one of the most empowering skills you can learn. Imagine reading a lab panel and knowing exactly what's going on. The program teaches that.",
+    "q5-not-sure": "It sounds more intimidating than it is. Our most successful lab interpreters include a former teacher and a former artist. The program makes it accessible.",
     "q8-absolutely": "That passion-driven commitment is exactly what predicts success. 20 minutes a day of focused learning leads to life-changing results.",
     "q8-yes-work": "The program adapts to your schedule. Many of our non-traditional practitioners study in the evenings or on weekends.",
     "q8-rearrange": "That willingness to restructure your life shows you're serious about this transformation. Our top earners all started with that same decision.",
     "q8-not-sure": "Completely self-paced. Even 3-4 sessions per week works. The key is consistency, not intensity.",
     "q9-leave-job": "Imagine replacing your current work with something you're genuinely passionate about. That's not a fantasy - 67% of our practitioners achieve it.",
     "q9-security": "Financial stability doing work you love. No more wondering 'what if.' No more feeling stuck in the wrong career.",
-    "q9-fulfillment": "Picture it: every day you wake up excited, knowing you're transforming lives using skills you built from pure passion. That's the DEPTH life.",
+    "q9-fulfillment": "Picture it: every day you wake up excited, knowing you're transforming lives using skills you built from pure passion. That's the FM practitioner life.",
     "q9-all-above": "People from non-traditional backgrounds often have the biggest transformations because they're not just changing careers - they're finally becoming who they were meant to be.",
   },
 };
@@ -280,43 +281,43 @@ const PERSONA_REACTIONS: Record<Persona, Record<string, string>> = {
 const REVIEW_STEPS_BY_PERSONA: Record<Persona, string[]> = {
   "healthcare-pro": [
     "Validating clinical credentials...",
-    "Analyzing healthcare experience level...",
-    "Matching clinical skills to DEPTH framework...",
+    "Submitting to ASI Scholarship Review Board...",
+    "Matching clinical skills to ASI curriculum...",
     "Checking Healthcare Fast-Track cohort availability...",
-    "Verifying acceptance into accelerated program...",
-    "Assessment complete!",
+    "Verifying scholarship eligibility...",
+    "Case #" + Math.floor(1400 + Math.random() * 200) + " — Assessment complete!",
   ],
   "health-coach": [
     "Analyzing coaching experience...",
-    "Evaluating clinical upgrade potential...",
-    "Matching coaching skills to DEPTH framework...",
+    "Submitting to ASI Scholarship Review Board...",
+    "Matching coaching skills to clinical framework...",
     "Checking Coach-to-Clinical cohort availability...",
     "Calculating income upgrade projection...",
-    "Assessment complete!",
+    "Case #" + Math.floor(1400 + Math.random() * 200) + " — Assessment complete!",
   ],
   "corporate": [
     "Evaluating transferable professional skills...",
-    "Mapping corporate experience to practice-building...",
+    "Submitting to ASI Scholarship Review Board...",
     "Analyzing career transition readiness...",
     "Checking Career Transition cohort availability...",
-    "Verifying qualification for fast-track...",
-    "Assessment complete!",
+    "Verifying qualification for ASI fast-track...",
+    "Case #" + Math.floor(1400 + Math.random() * 200) + " — Assessment complete!",
   ],
   "stay-at-home-mom": [
     "Analyzing schedule flexibility...",
-    "Matching family-friendly certification path...",
+    "Submitting to ASI Scholarship Review Board...",
     "Evaluating empathy and communication strengths...",
     "Checking Flexible Schedule cohort availability...",
     "Calculating part-time earning potential...",
-    "Assessment complete!",
+    "Case #" + Math.floor(1400 + Math.random() * 200) + " — Assessment complete!",
   ],
   "other-passionate": [
     "Analyzing passion and motivation profile...",
-    "Evaluating unique background advantages...",
-    "Matching learning style to DEPTH curriculum...",
+    "Submitting to ASI Scholarship Review Board...",
+    "Matching learning style to ASI curriculum...",
     "Checking next available cohort...",
     "Verifying eligibility for certification...",
-    "Assessment complete!",
+    "Case #" + Math.floor(1400 + Math.random() * 200) + " — Assessment complete!",
   ],
 };
 
@@ -347,29 +348,29 @@ const COHORT_NAMES: Record<Persona, { name: string; spots: number }> = {
 // ═══════════════════════════════════════════════════════════════════
 const OPTIN_BULLETS: Record<Persona, string[]> = {
   "healthcare-pro": [
-    "Your clinical skills gap analysis + fast-track timeline",
-    "Personalized healthcare-to-DEPTH transition roadmap",
-    "Private coaching support access via phone/SMS",
+    "Your clinical skills gap analysis + ASI fast-track timeline",
+    "Personalized healthcare-to-practitioner transition roadmap",
+    "Scholarship eligibility review (average approval: 94%)",
   ],
   "health-coach": [
-    "Your coach-to-clinical upgrade assessment",
-    "Personalized income growth roadmap (3x projection)",
-    "Private coaching support access via phone/SMS",
+    "Your coach-to-clinical upgrade assessment from ASI",
+    "Personalized income growth roadmap (3x average increase)",
+    "52 CEU hours accreditation verification",
   ],
   "corporate": [
-    "Your career transition readiness report",
+    "Your career transition readiness report from ASI",
     "Personalized corporate-to-practitioner roadmap",
-    "Private coaching support access via phone/SMS",
+    "Access to 2,847+ certified practitioner network",
   ],
   "stay-at-home-mom": [
     "Your family-friendly study schedule + earning timeline",
     "Personalized part-time practice launch roadmap",
-    "Private coaching support access via phone/SMS",
+    "Flexible Schedule cohort availability check",
   ],
   "other-passionate": [
     "Your qualification status + Practitioner Type reveal",
-    "Personalized certification roadmap from ASI",
-    "Private coaching support access via phone/SMS",
+    "Personalized ASI certification roadmap",
+    "Scholarship eligibility assessment (73% acceptance rate)",
   ],
 };
 
@@ -378,10 +379,10 @@ const OPTIN_BULLETS: Record<Persona, string[]> = {
 // ═══════════════════════════════════════════════════════════════════
 const PERSONA_SUBTITLES: Record<Persona, Record<number, string>> = {
   "healthcare-pro": {
-    1: "Your clinical salary is your baseline. DEPTH practitioners earn 2-3x their hospital salary.",
+    1: "Your clinical salary is your baseline. FM practitioners earn 2-3x their hospital salary.",
     3: "Your medical training is already a head start. This measures how much we can accelerate you.",
     5: "As a healthcare professional, you already have lab exposure. This is about functional interpretation.",
-    8: "Between shifts? Days off? Many nurses complete DEPTH faster than expected.",
+    8: "Between shifts? Days off? Many nurses complete FM Certification faster than expected.",
   },
   "health-coach": {
     1: "Be honest. This helps us show you the income gap between coaching and clinical practice.",
@@ -447,7 +448,7 @@ const QUESTIONS: QuizStep[] = [
       { label: "Nothing yet - I haven't started", value: "0", reaction: "That's actually the best place to start. No bad habits, no ceiling. Our top earners started from zero.", strength: "good" },
       { label: "Under $2,000/month", value: "under-2k", reaction: "You're leaving serious money on the table. The average ASI practitioner earns 4-5x that within 6 months.", strength: "good" },
       { label: "$2,000 - $5,000/month", value: "2k-5k", reaction: "Solid base. But you're ready for the next level. ASI practitioners at your stage typically double within 90 days.", strength: "strong" },
-      { label: "Over $5,000/month", value: "over-5k", reaction: "Impressive. You're already ahead of 90% of wellness professionals. DEPTH certification could take you to $15-25K/month.", strength: "strong" },
+      { label: "Over $5,000/month", value: "over-5k", reaction: "Impressive. You're already ahead of 90% of wellness professionals. FM Certification could take you to $15-25K/month.", strength: "strong" },
     ],
   },
   {
@@ -456,7 +457,7 @@ const QUESTIONS: QuizStep[] = [
     subtitle: "Think big. We'll tell you if it's realistic based on your profile.",
     options: [
       { label: "$5,000/month - replace my current income", value: "5k", reaction: "Very achievable. 73% of our practitioners hit $5K/month within their first 90 days of certification.", strength: "strong" },
-      { label: "$10,000/month - real financial freedom", value: "10k", reaction: "That's our sweet spot. The average ASI DEPTH practitioner earns $8-12K/month within 6 months.", strength: "strong" },
+      { label: "$10,000/month - real financial freedom", value: "10k", reaction: "That's our sweet spot. The average ASI FM practitioner earns $8-12K/month within 6 months.", strength: "strong" },
       { label: "$20,000/month - build a serious practice", value: "20k", reaction: "Ambitious but proven. Practitioners who add group programs and courses hit $20K+ regularly.", strength: "strong" },
       { label: "$50,000+/month - I want to build an empire", value: "50k-plus", reaction: "That's the mindset of a future clinical director. It requires leverage - and we'll show you exactly how.", strength: "strong" },
     ],
@@ -465,10 +466,10 @@ const QUESTIONS: QuizStep[] = [
     id: 4, pillar: "Experience",
     question: "Have you worked directly with clients on their health before?",
     options: [
-      { label: "Yes - I have active clients right now", value: "active-clients", reaction: "Perfect. You can start applying DEPTH protocols with your existing clients immediately after certification.", strength: "strong" },
-      { label: "Yes, but I stopped or took a break", value: "past-clients", reaction: "The skills don't disappear. DEPTH will give you the framework and confidence to restart stronger.", strength: "good" },
-      { label: "Only informally - friends, family", value: "informal", reaction: "That counts more than you think. You already have the instinct. DEPTH gives you the clinical structure.", strength: "good" },
-      { label: "No direct experience yet", value: "no-experience", reaction: "Don't worry - 38% of our top performers had zero experience. The DEPTH framework teaches everything from scratch.", strength: "developing" },
+      { label: "Yes - I have active clients right now", value: "active-clients", reaction: "Perfect. You can start applying ASI protocols with your existing clients immediately after certification.", strength: "strong" },
+      { label: "Yes, but I stopped or took a break", value: "past-clients", reaction: "The skills don't disappear. The program will give you the framework and confidence to restart stronger.", strength: "good" },
+      { label: "Only informally - friends, family", value: "informal", reaction: "That counts more than you think. You already have the instinct. The program gives you the clinical structure.", strength: "good" },
+      { label: "No direct experience yet", value: "no-experience", reaction: "Don't worry - 38% of our top performers had zero experience. The the ASI clinical framework teaches everything from scratch.", strength: "developing" },
     ],
   },
   {
@@ -476,9 +477,9 @@ const QUESTIONS: QuizStep[] = [
     question: "When a client presents with fatigue, brain fog, and weight gain - how confident are you identifying the root cause?",
     subtitle: "Be honest. This is what separates coaches from clinical practitioners.",
     options: [
-      { label: "Very confident - I have a systematic approach", value: "very-confident", reaction: "That's rare. Let's see if DEPTH can add clinical depth to what you already have.", strength: "strong" },
-      { label: "Somewhat - I can identify some causes", value: "somewhat", reaction: "Good instincts. DEPTH turns that intuition into a repeatable 5-phase clinical framework.", strength: "good" },
-      { label: "Not very - I'd need to research", value: "not-very", reaction: "Honest answer. That's exactly the gap DEPTH was designed to fill. This is learnable.", strength: "developing" },
+      { label: "Very confident - I have a systematic approach", value: "very-confident", reaction: "That's rare. Let's see if FM Certification can add clinical expertise to what you already have.", strength: "strong" },
+      { label: "Somewhat - I can identify some causes", value: "somewhat", reaction: "Good instincts. The program turns that intuition into a repeatable 5-phase clinical framework.", strength: "good" },
+      { label: "Not very - I'd need to research", value: "not-very", reaction: "Honest answer. That's exactly the gap The program was designed to fill. This is learnable.", strength: "developing" },
       { label: "I'd refer them to someone else", value: "refer-out", reaction: "What if YOU were the someone else? That's what ASI certification makes possible.", strength: "developing" },
     ],
   },
@@ -487,10 +488,10 @@ const QUESTIONS: QuizStep[] = [
     question: "Have you ever wanted to order and interpret functional lab panels for your clients?",
     subtitle: "Lab interpretation is the #1 skill that separates $50/hr coaches from $200/hr practitioners.",
     options: [
-      { label: "Yes - I already do this or I'm learning", value: "already-doing", reaction: "You're ahead of 95% of applicants. DEPTH will systematize and elevate your lab skills.", strength: "strong" },
-      { label: "Yes, but I have no idea where to start", value: "want-to-learn", reaction: "Module 7-9 of DEPTH is entirely focused on labs. Our practitioners go from zero to confidently ordering panels.", strength: "good" },
-      { label: "I hadn't considered it, but it sounds powerful", value: "open-to-it", reaction: "It IS powerful. Lab interpretation is the difference between guessing and knowing. DEPTH teaches both.", strength: "good" },
-      { label: "I'm not sure that's for me", value: "not-sure", reaction: "Hmm. We'll need to see strong results on the remaining questions. Lab skills are central to the DEPTH Method.", strength: "developing" },
+      { label: "Yes - I already do this or I'm learning", value: "already-doing", reaction: "You're ahead of 95% of applicants. The program will systematize and elevate your lab skills.", strength: "strong" },
+      { label: "Yes, but I have no idea where to start", value: "want-to-learn", reaction: "Module 7-9 of The program is entirely focused on labs. Our practitioners go from zero to confidently ordering panels.", strength: "good" },
+      { label: "I hadn't considered it, but it sounds powerful", value: "open-to-it", reaction: "It IS powerful. Lab interpretation is the difference between guessing and knowing. The program teaches both.", strength: "good" },
+      { label: "I'm not sure that's for me", value: "not-sure", reaction: "Hmm. We'll need to see strong results on the remaining questions. Lab skills are central to the FM Certification.", strength: "developing" },
     ],
   },
   {
@@ -498,8 +499,8 @@ const QUESTIONS: QuizStep[] = [
     question: "Have you invested in health or wellness certifications before?",
     options: [
       { label: "Yes, multiple - and they were disappointing", value: "multiple-disappointed", reaction: "You're not alone. Most programs sell theory without clinical application. That's exactly why ASI was created.", strength: "good" },
-      { label: "Yes, one or two - got some value", value: "some-value", reaction: "Good foundation. DEPTH builds on everything you've already learned and takes it to clinical level.", strength: "good" },
-      { label: "Yes, spent $5K+ and still feel unprepared", value: "spent-5k-plus", reaction: "That's the industry's dirty secret. Expensive doesn't mean effective. DEPTH delivers real clinical skills for a fraction of the cost.", strength: "good" },
+      { label: "Yes, one or two - got some value", value: "some-value", reaction: "Good foundation. The program builds on everything you've already learned and takes it to clinical level.", strength: "good" },
+      { label: "Yes, spent $5K+ and still feel unprepared", value: "spent-5k-plus", reaction: "That's the industry's dirty secret. Expensive doesn't mean effective. The program delivers real clinical skills for a fraction of the cost.", strength: "good" },
       { label: "No - this would be my first certification", value: "first-time", reaction: "Then you're starting with the gold standard. No bad habits to unlearn. Clean slate, best possible foundation.", strength: "strong" },
     ],
   },
@@ -508,7 +509,7 @@ const QUESTIONS: QuizStep[] = [
     question: "What's the #1 thing missing from your current skill set?",
     subtitle: "Understanding your gap helps us determine your readiness.",
     options: [
-      { label: "A real clinical framework - not just theory", value: "framework", reaction: "That's the exact gap DEPTH fills. A 5-phase clinical system: Discover, Evaluate, Pinpoint, Transform, Heal.", strength: "strong" },
+      { label: "A real clinical framework - not just theory", value: "framework", reaction: "That's the exact gap FM Certification fills. A 5-phase clinical system: Discover, Evaluate, Pinpoint, Transform, Heal.", strength: "strong" },
       { label: "Confidence to charge premium prices", value: "confidence", reaction: "ASI certification IS that confidence. Our practitioners charge $150-250/hour without hesitation.", strength: "strong" },
       { label: "A proven system to actually get clients", value: "client-system", reaction: "Our Business Setup System is included. 73% of graduates land their first paying clients within 30 days.", strength: "strong" },
       { label: "Credibility and recognized credentials", value: "credibility", reaction: "That's what ASI accreditation provides. A nationally recognized certification that commands respect.", strength: "strong" },
@@ -517,7 +518,7 @@ const QUESTIONS: QuizStep[] = [
   {
     id: 9, pillar: "Commitment",
     question: "Would you watch a 20-minute training video each day if it meant earning $10K+/month within 6 months?",
-    subtitle: "That's all the DEPTH Method requires. 20 minutes a day.",
+    subtitle: "That's all the FM Certification requires. 20 minutes a day.",
     options: [
       { label: "Absolutely - that's a no-brainer", value: "absolutely", reaction: "That's the answer of someone who's going to succeed. 20 minutes a day. Life-changing results.", strength: "strong" },
       { label: "Yes, I can make that work", value: "yes-work", reaction: "Great. The program is fully self-paced. You can watch during lunch, before bed, whenever works.", strength: "strong" },
@@ -532,7 +533,7 @@ const QUESTIONS: QuizStep[] = [
     options: [
       { label: "I'd finally leave my 9-to-5 and work for myself", value: "leave-job", reaction: "Freedom. That's what 67% of our practitioners achieved within their first year. It's real.", strength: "strong" },
       { label: "Financial security and peace of mind for my family", value: "security", reaction: "That stability changes everything. No more stress about bills. No more saying no to what matters.", strength: "strong" },
-      { label: "I'd feel confident, fulfilled, and doing meaningful work", value: "fulfillment", reaction: "Imagine waking up excited every morning, knowing you're genuinely transforming lives. That's the DEPTH life.", strength: "strong" },
+      { label: "I'd feel confident, fulfilled, and doing meaningful work", value: "fulfillment", reaction: "Imagine waking up excited every morning, knowing you're genuinely transforming lives. That's the FM practitioner life.", strength: "strong" },
       { label: "All of the above - I want the complete transformation", value: "all-above", reaction: "That's exactly what ASI certification delivers. Not just income - a complete life and career transformation.", strength: "strong" },
     ],
   },
@@ -546,14 +547,48 @@ const QUESTIONS: QuizStep[] = [
       { label: "Metabolic & Weight Optimization", value: "metabolic-optimization", reaction: "Beyond basic diets - real metabolic transformation. One of the highest-paying specialties.", strength: "strong" },
       { label: "Burnout & Stress Recovery", value: "burnout-recovery", reaction: "1 in 3 professional women suffer burnout. The demand for qualified burnout practitioners is exploding.", strength: "strong" },
       { label: "Autoimmune & Immune Support", value: "autoimmune-support", reaction: "Complex cases need clinical practitioners. This is advanced-level, premium-rate work.", strength: "strong" },
+      { label: "Other specialty (tell us your passion)", value: "other-specialty", reaction: "Love it! We'll map your unique focus to our specialty tracks. Your personal passion becomes your competitive edge.", strength: "strong" },
     ],
   },
   {
-    id: 12, pillar: "Readiness",
-    question: "If accepted into the ASI DEPTH Method program, how soon could you start?",
-    subtitle: "We have limited spots in each cohort to ensure quality mentorship.",
+    id: 12, pillar: "Career Path",
+    question: "Which ASI certification level interests you?",
+    subtitle: "The ASI Functional Medicine career path has 4 levels - each unlocks higher earning potential.",
     options: [
-      { label: "I could start this week", value: "this-week", reaction: "Let me check availability in the current cohort for you...", strength: "strong" },
+      { label: "⭐ Level 1: Certified Practitioner ($2K-$5K/month)", value: "level-1", reaction: "Perfect starting point. Level 1 Practitioners earn $2K-$5K/month working part-time. Foundation of everything.", strength: "strong" },
+      { label: "⭐⭐ Level 2: Advanced Practitioner ($5K-$8K/month)", value: "level-2", reaction: "Next tier. Advanced Practitioners add lab interpretation and specialized protocols. $5K-$8K/month is typical.", strength: "strong" },
+      { label: "⭐⭐⭐ Level 3: Master Practitioner ($8K-$15K/month)", value: "level-3", reaction: "Expert level. Masters run group programs, mentor others, and earn $8K-$15K/month consistently.", strength: "strong" },
+      { label: "⭐⭐⭐⭐ Level 4: Fellow / Clinical Director ($15K+/month)", value: "level-4", reaction: "Leadership tier. Fellows train practitioners, run clinics, and earn $15K-$30K+ monthly.", strength: "strong" },
+    ],
+  },
+  {
+    id: 13, pillar: "Client Acquisition",
+    question: "How do you currently get clients or plan to get them?",
+    subtitle: "Be honest — this helps us understand where we can help most.",
+    options: [
+      { label: "Referrals only (word of mouth)", value: "referrals", reaction: "That's the best kind! Our Business Setup System helps you 10x those referrals with proven frameworks.", strength: "strong" },
+      { label: "Social media marketing", value: "social-media", reaction: "Great start! We include advanced social strategies specifically for health practitioners.", strength: "strong" },
+      { label: "I have a website or funnel", value: "website-funnel", reaction: "You're ahead of 80%! We'll help you optimize and scale what's already working.", strength: "strong" },
+      { label: "I struggle to get clients consistently", value: "struggle", reaction: "That's EXACTLY why we include the Business Setup System. 73% of grads get clients in their first 30 days.", strength: "good" },
+      { label: "I don't have any clients yet", value: "no-clients", reaction: "Perfect starting point. You'll launch with our proven client acquisition framework from day one.", strength: "good" },
+    ],
+  },
+  {
+    id: 14, pillar: "Decision",
+    question: "Is this investment decision 100% yours to make today?",
+    subtitle: "This helps us understand how to best support you.",
+    options: [
+      { label: "Yes - if this is right for me, I'm ready to commit", value: "yes-mine", reaction: "Perfect. That means we can move quickly once you're accepted. No delays.", strength: "strong" },
+      { label: "I'll want to discuss with my spouse/partner first", value: "discuss-spouse", reaction: "Totally understand. Many of our practitioners had that conversation. We'll prepare everything you need to share.", strength: "good" },
+      { label: "I need to review my finances first", value: "check-finances", reaction: "Makes sense. Good news - the Institute offers flexible scholarship options based on what you can invest.", strength: "good" },
+    ],
+  },
+  {
+    id: 15, pillar: "Readiness",
+    question: "If accepted into the ASI Functional Medicine Practitioner Certification, how soon could you start?",
+    subtitle: "Limited spots per cohort to ensure quality mentorship. Current cohort: 47/50 filled.",
+    options: [
+      { label: "I could start this week", value: "this-week", reaction: "Excellent! Let me check availability in the current cohort for you...", strength: "strong" },
       { label: "Within the next 2 weeks", value: "2-weeks", reaction: "That works perfectly with our next intake window. Let me verify your spot...", strength: "strong" },
       { label: "Within the next month", value: "1-month", reaction: "We can reserve a spot for you. Let's get your details and secure your place...", strength: "good" },
       { label: "I need to plan, but I'm committed", value: "planning", reaction: "Commitment is what matters. We'll work with your timeline. Let's lock in your qualification...", strength: "good" },
@@ -563,7 +598,7 @@ const QUESTIONS: QuizStep[] = [
 
 // ─── Types ─────────────────────────────────────────────────────────
 type Stage = "intro" | "quiz" | "testimonial" | "optin" | "reviewing" | "qualified" | "result";
-const TOTAL_STEPS = 16;
+const TOTAL_STEPS = 19; // Now 15 questions + intro + optin + reviewing + qualified
 
 // ─── Route mapping ─────────────────────────────────────────────────
 const ROLE_ROUTES: Record<string, string> = {
@@ -574,7 +609,7 @@ const ROLE_ROUTES: Record<string, string> = {
   "other-passionate": "/results/career-change",
 };
 
-export default function DEPTHMethodQuiz() {
+export default function FMCertificationQuiz() {
   const [stage, setStage] = useState<Stage>("intro");
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -587,9 +622,7 @@ export default function DEPTHMethodQuiz() {
   const [submitting, setSubmitting] = useState(false);
   const [showExitPopup, setShowExitPopup] = useState(false);
   const exitPopupShown = useRef(false);
-  const [welcomeAudio, setWelcomeAudio] = useState<string | null>(null);
-  const [audioPlaying, setAudioPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // Audio removed from quiz - now plays only in scholarship chat
   const [direction, setDirection] = useState(1);
   const [reviewStep, setReviewStep] = useState(0);
   const [optinTimer, setOptinTimer] = useState(900);
@@ -694,7 +727,7 @@ export default function DEPTHMethodQuiz() {
       handleSeeResults();
     }, 2000);
     return () => clearTimeout(redirectTimer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage]);
 
   const getStepNumber = (): number => {
@@ -722,46 +755,7 @@ export default function DEPTHMethodQuiz() {
     }, 1200);
   };
 
-  // Fetch and play welcome audio when transitioning from intro to quiz
-  const playWelcomeAudio = async (firstName: string) => {
-    try {
-      console.log("[Audio] Fetching welcome audio for:", firstName);
-      const res = await fetch("/api/scholarship/welcome-audio", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        console.error("[Audio] API error:", res.status, errorData);
-        return;
-      }
-
-      const data = await res.json();
-      console.log("[Audio] Response:", { success: data.success, hasAudio: !!data.audio, cached: data.cached });
-
-      if (data.audio) {
-        setWelcomeAudio(data.audio);
-        // Auto-play after a short delay (may be blocked by browser)
-        setTimeout(() => {
-          if (audioRef.current) {
-            audioRef.current.play()
-              .then(() => {
-                console.log("[Audio] Autoplay started");
-                setAudioPlaying(true);
-              })
-              .catch((err) => {
-                console.warn("[Audio] Autoplay blocked by browser:", err.message);
-                // Don't set audioPlaying - user can click play manually
-              });
-          }
-        }, 2000);
-      }
-    } catch (err) {
-      console.error("[Audio] Fetch error:", err);
-    }
-  };
+  // Audio removed from quiz - now plays only in scholarship chat (see scholarship-chat.tsx)
 
   const handleNext = () => {
     setDirection(1);
@@ -769,8 +763,6 @@ export default function DEPTHMethodQuiz() {
     if (stage === "intro") {
       if (!name.trim()) return;
       setStage("quiz");
-      // Fetch personalized welcome audio in background
-      playWelcomeAudio(name.trim());
       return;
     }
     if (stage === "testimonial") {
@@ -810,7 +802,7 @@ export default function DEPTHMethodQuiz() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name, lastName, email, phone,
-          funnel: "depth-method",
+          funnel: "fm-certification",
           answers,
           practitionerType: practitionerTypeKey,
           incomeGoal,
@@ -839,7 +831,9 @@ export default function DEPTHMethodQuiz() {
       missingSkill: answers[7] || "",          // Q8: missing skill
       commitment: answers[8] || "",            // Q9: commitment
       vision: answers[9] || "",                // Q10: vision
-      startTimeline: answers[11] || "",        // Q12: start timeline
+      careerPathLevel: answers[11] || "",      // Q12: career path level ($2-5K, $5-8K, etc.)
+      decisionMaker: answers[12] || "",        // Q13: decision maker (yes-mine, spouse, finances)
+      startTimeline: answers[13] || "",        // Q14: start timeline
     });
     const route = ROLE_ROUTES[currentRole] || "/results/career-change";
     setTimeout(() => { window.location.href = `${route}?${params.toString()}`; }, 1500);
@@ -960,7 +954,7 @@ export default function DEPTHMethodQuiz() {
             <p className="text-sm text-gray-500">{testimonial.role}</p>
           </div>
           <div className="flex justify-center gap-1">
-            {[1,2,3,4,5].map((s) => (<Star key={s} className="w-5 h-5 fill-current" style={{ color: BRAND.gold }} />))}
+            {[1, 2, 3, 4, 5].map((s) => (<Star key={s} className="w-5 h-5 fill-current" style={{ color: BRAND.gold }} />))}
           </div>
           {testimonial.afterQ === 9 && (
             <div className="p-4 rounded-xl text-left" style={{ backgroundColor: `${BRAND.gold}08`, border: `1px solid ${BRAND.gold}40` }}>
@@ -1174,49 +1168,6 @@ export default function DEPTHMethodQuiz() {
     const dynamicSubtitle = getSubtitle(currentQ);
     return (
       <div className="space-y-5">
-        {/* Welcome audio player - shows on Q1 if audio is loaded */}
-        {welcomeAudio && currentQ === 0 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="rounded-xl p-3 border flex items-center justify-between gap-3"
-            style={{ backgroundColor: `${BRAND.burgundy}08`, borderColor: `${BRAND.burgundy}30` }}
-          >
-            <div className="flex items-center gap-2">
-              <Volume2 className="w-4 h-4" style={{ color: BRAND.burgundy }} />
-              <span className="text-xs font-medium" style={{ color: BRAND.burgundy }}>
-                {audioPlaying ? "🎧 Listening to Sarah..." : "🎧 Hear Sarah's welcome message"}
-              </span>
-            </div>
-            <button
-              onClick={() => {
-                if (audioRef.current) {
-                  if (audioPlaying) {
-                    audioRef.current.pause();
-                    setAudioPlaying(false);
-                  } else {
-                    audioRef.current.play().catch(() => {});
-                    setAudioPlaying(true);
-                  }
-                }
-              }}
-              className="text-xs font-bold px-3 py-1.5 rounded-full transition-colors"
-              style={{
-                backgroundColor: audioPlaying ? `${BRAND.burgundy}20` : BRAND.burgundy,
-                color: audioPlaying ? BRAND.burgundy : "white",
-              }}
-            >
-              {audioPlaying ? "Pause" : "Play"}
-            </button>
-            <audio
-              ref={audioRef}
-              src={welcomeAudio}
-              onEnded={() => setAudioPlaying(false)}
-              className="hidden"
-            />
-          </motion.div>
-        )}
-
         {/* Sarah is typing indicator */}
         {isTyping && (
           <motion.div

@@ -162,7 +162,35 @@ function HealthcareResultsInner() {
   const missingSkill = sp.get("missingSkill") || "framework";
   const commitment = sp.get("commitment") || "absolutely";
   const vision = sp.get("vision") || "all-above";
+  const careerPathLevel = sp.get("careerPathLevel") || "level-2";
+  const decisionMaker = sp.get("decisionMaker") || "yes-mine";
   const startTimeline = sp.get("startTimeline") || "2-weeks";
+
+  // Career Path Level config
+  const CAREER_PATH_MAP: Record<string, { stars: string; title: string; range: string; badge: string }> = {
+    "level-1": { stars: "⭐", title: "Certified Practitioner", range: "$2K-$5K/month", badge: "bg-blue-100 text-blue-700" },
+    "level-2": { stars: "⭐⭐", title: "Advanced Practitioner", range: "$5K-$8K/month", badge: "bg-purple-100 text-purple-700" },
+    "level-3": { stars: "⭐⭐⭐", title: "Master Practitioner", range: "$8K-$15K/month", badge: "bg-amber-100 text-amber-700" },
+    "level-4": { stars: "⭐⭐⭐⭐", title: "Fellow / Clinical Director", range: "$15K+/month", badge: "bg-emerald-100 text-emerald-700" },
+  };
+  const careerPath = CAREER_PATH_MAP[careerPathLevel] || CAREER_PATH_MAP["level-2"];
+
+  // Decision Maker objection handling
+  const DECISION_MAKER_CONTENT: Record<string, { sarah: string; cta: string }> = {
+    "yes-mine": {
+      sarah: `${firstName}, you said this decision is 100% yours. That means once you're approved, we can move FAST. No waiting, no delays — just you taking control of your future.`,
+      cta: "Lock In Your Scholarship Now"
+    },
+    "discuss-spouse": {
+      sarah: `${firstName}, you mentioned wanting to discuss with your spouse first — I love that! Many of our most successful practitioners had that same conversation. Bring your partner to chat with me! I'm happy to answer their questions too. 💜`,
+      cta: "Chat Together with Sarah"
+    },
+    "check-finances": {
+      sarah: `${firstName}, you said you want to review your finances first — that's exactly why we created the \"Pay What You Can\" scholarship. You name YOUR number. The Institute covers the rest. There's no minimum, no judgment. What matters is your commitment, not your current bank balance.`,
+      cta: "See What You Qualify For"
+    },
+  };
+  const decisionContent = DECISION_MAKER_CONTENT[decisionMaker] || DECISION_MAKER_CONTENT["yes-mine"];
 
   const pract = PRACT[typeKey] || PRACT["hormone-health"];
   const PractIcon = pract.icon;
@@ -406,14 +434,23 @@ function HealthcareResultsInner() {
           <SectionInner className="text-center space-y-5 sm:space-y-6">
             {/* Big headline - their transformation */}
             <div className="space-y-3">
+              {/* Career Path Level Badge - Their chosen aspiration */}
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                className="inline-flex flex-col items-center gap-2">
+                <span className={`px-4 py-2 rounded-full text-sm sm:text-base font-bold ${careerPath.badge}`}>
+                  {careerPath.stars} {careerPath.title} Path → {careerPath.range}
+                </span>
+                <span className="text-[10px] text-gray-500">You selected this career level in your assessment</span>
+              </motion.div>
+
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.1 }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold" style={{ background: `${B.gold}15`, color: B.burgundyDark }}>
                 <Award className="w-4 h-4" style={{ color: B.gold }} />
-                Certified Functional Medicine Practitioner + {pract.specialization} Specialist
+                ASI Functional Medicine Certification + {pract.specialization} Specialist
               </motion.div>
 
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-[1.1]" style={{ color: B.burgundyDark }}>
-                {firstName}, As a <span style={{ color: B.burgundy }}>Certified FM Practitioner</span> You Could Earn{" "}
+                {firstName}, As an <span style={{ color: B.burgundy }}>ASI Certified Practitioner</span> You Could Earn{" "}
                 <span className="underline decoration-4" style={{ textDecorationColor: B.gold }}>{income.label}</span>
               </h1>
 
@@ -421,8 +458,24 @@ function HealthcareResultsInner() {
                 Working <span className="underline">PART-TIME</span> from Home
               </p>
 
+              {/* Trust Stats Bar */}
+              <div className="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-6 gap-y-2 pt-2">
+                <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold" style={{ color: B.burgundy }}>
+                  <Users className="w-4 h-4" style={{ color: B.gold }} />
+                  2,847+ Certified Practitioners
+                </span>
+                <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold" style={{ color: B.burgundy }}>
+                  <GraduationCap className="w-4 h-4" style={{ color: B.gold }} />
+                  52 CEU Hours Accredited
+                </span>
+                <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold" style={{ color: B.burgundy }}>
+                  <BadgeCheck className="w-4 h-4" style={{ color: B.gold }} />
+                  Recognized in 50 States
+                </span>
+              </div>
+
               <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
-                Help {pract.clients} using the DEPTH Method clinical framework — the same system 1,200+ healthcare professionals use to build thriving practices.
+                Help {pract.clients} using the ASI clinical framework — the same system 2,847+ healthcare professionals use to build thriving practices.
               </p>
             </div>
 
@@ -448,7 +501,7 @@ function HealthcareResultsInner() {
             {/* Trustpilot inline */}
             <div className="flex items-center justify-center gap-2">
               <div className="flex gap-0.5">
-                {[1,2,3,4,5].map((s) => (
+                {[1, 2, 3, 4, 5].map((s) => (
                   <div key={s} className="w-4 h-4 flex items-center justify-center" style={{ backgroundColor: "#00b67a" }}>
                     <Star className="w-2.5 h-2.5 fill-white text-white" />
                   </div>
@@ -488,69 +541,75 @@ function HealthcareResultsInner() {
           </p>
         </div>
 
-        {/* ═══ WHAT'S INCLUDED: 5-LEVEL PATH + DFY (moved up for value clarity) ═══ */}
+        {/* ═══ AS FEATURED IN — TRUST LOGOS ═══ */}
+        <div className="py-4 sm:py-6">
+          <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-center mb-3 sm:mb-4" style={{ color: B.gold }}>
+            As Featured In
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 opacity-60">
+            {["Forbes Health", "Healthline", "MindBodyGreen", "Well+Good", "Shape"].map((logo, i) => (
+              <span key={i} className="text-xs sm:text-sm font-semibold text-gray-400">{logo}</span>
+            ))}
+          </div>
+          <p className="text-[9px] text-gray-400 text-center mt-2">
+            Functional medicine practitioners trained by ASI have been featured in leading health publications
+          </p>
+        </div>
+
+        {/* ═══ WHAT'S INCLUDED: HORMOZI $14K+ VALUE STACK ═══ */}
         <Section>
-          <div className="px-4 sm:px-6 py-3" style={{ background: B.burgundy }}>
+          <div className="px-4 sm:px-6 py-3 flex items-center justify-between" style={{ background: B.burgundy }}>
             <span className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4" style={{ color: B.gold }} /> What You Get — The Complete Package
+              <Package className="w-4 h-4" style={{ color: B.gold }} /> What You Get — The Complete Package
+            </span>
+            <span className="text-[10px] sm:text-xs font-bold px-2 py-1 rounded-full bg-white/20 text-white">
+              $14,485+ VALUE
             </span>
           </div>
           <SectionInner className="space-y-5">
-            {/* 5 Levels - Compact */}
+            {/* Value Stack Items - Hormozi Style */}
             <div className="space-y-2">
-              <p className="text-xs font-bold uppercase tracking-widest text-center" style={{ color: B.gold }}>
-                5-Level Career Certification Path
-              </p>
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
-                {[
-                  { level: 1, title: "University-Certified Practitioner" },
-                  { level: 2, title: "Advanced Practitioner" },
-                  { level: 3, title: "Certified Specialist" },
-                  { level: 4, title: "Master Practitioner" },
-                  { level: 5, title: "University Fellow" },
-                ].map((item) => (
-                  <div key={item.level} className="flex items-center gap-2 p-2.5 rounded-lg bg-white border shadow-sm" style={{ borderColor: `${B.gold}30` }}>
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.goldMetallic }}>
-                      <span className="text-xs font-extrabold" style={{ color: B.burgundyDark }}>{item.level}</span>
-                    </div>
-                    <p className="text-[10px] sm:text-xs font-semibold" style={{ color: B.burgundy }}>{item.title}</p>
+              {[
+                { item: "ASI Functional Medicine Certification (5-Level Path)", value: "$2,997", included: true },
+                { item: "20 Clinical Module Certifications", value: "$4,000", included: true },
+                { item: "DFY Professional Website", value: "$2,997", included: true },
+                { item: "DFY Legal Templates & Contracts", value: "$1,497", included: true },
+                { item: "DFY Client Onboarding System", value: "$997", included: true },
+                { item: "DFY Marketing Materials Kit", value: "$1,497", included: true },
+                { item: "Lifetime Community Access", value: "$500/yr", included: true },
+                { item: "Weekly Live Mentorship Calls", value: "PRICELESS", included: true },
+              ].map((item, i) => (
+                <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
+                  className="flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl bg-white border shadow-sm" style={{ borderColor: `${B.gold}30` }}>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: "#22c55e" }} />
+                    <span className="text-xs sm:text-sm font-medium" style={{ color: B.burgundy }}>{item.item}</span>
                   </div>
-                ))}
-              </div>
+                  <span className="text-xs sm:text-sm font-bold text-gray-400 line-through">{item.value}</span>
+                </motion.div>
+              ))}
             </div>
 
-            {/* DFY Bonuses - Compact */}
-            <div className="space-y-2">
-              <p className="text-xs font-bold uppercase tracking-widest text-center" style={{ color: B.gold }}>
-                + Done-For-You Business System
-              </p>
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                {[
-                  { title: "DFY Website", value: "$2,997" },
-                  { title: "DFY Legal Templates", value: "$1,497" },
-                  { title: "DFY Client Onboarding", value: "$997" },
-                  { title: "DFY Marketing Materials", value: "$1,497" },
-                ].map((bonus, i) => (
-                  <div key={i} className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-white border shadow-sm" style={{ borderColor: `${B.gold}20` }}>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4" style={{ color: B.burgundy }} />
-                      <p className="text-[10px] sm:text-xs font-semibold" style={{ color: B.burgundy }}>{bonus.title}</p>
-                    </div>
-                    <p className="text-[9px] text-gray-400 line-through">{bonus.value}</p>
-                  </div>
-                ))}
+            {/* Total Value Box */}
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }}
+              className="p-5 sm:p-6 rounded-2xl border-2 text-center" style={{ borderColor: B.gold, background: `linear-gradient(135deg, ${B.gold}15 0%, white 50%, ${B.gold}15 100%)` }}>
+              <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: B.gold }}>Total Real-World Value</p>
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <span className="text-3xl sm:text-4xl font-extrabold text-gray-400 line-through">$14,485+</span>
+                <ArrowRight className="w-6 h-6" style={{ color: B.gold }} />
+                <span className="text-3xl sm:text-4xl font-extrabold" style={{ color: B.burgundy }}>Pay What You Can</span>
               </div>
-            </div>
-
-            {/* Summary */}
-            <div className="p-4 rounded-xl border-2 text-center" style={{ borderColor: B.gold, background: `${B.gold}08` }}>
               <p className="text-sm sm:text-base font-bold" style={{ color: B.burgundyDark }}>
-                5-Level Certification + DFY Business System + Mentorship = Your Complete Path to {income.label}+/month
+                Through the ASI Scholarship Program, YOU name your investment
               </p>
-              <p className="text-xs text-gray-500 mt-1">
-                <strong>One-time payment</strong> • Lifetime access • No subscriptions
-              </p>
-            </div>
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-3 text-xs text-gray-500">
+                <span className="flex items-center gap-1"><Infinity className="w-3 h-3" style={{ color: B.gold }} /> Lifetime Access</span>
+                <span className="flex items-center gap-1"><Shield className="w-3 h-3" style={{ color: B.gold }} /> 7-Day Guarantee</span>
+                <span className="flex items-center gap-1"><Heart className="w-3 h-3" style={{ color: B.gold }} /> No Subscriptions</span>
+              </div>
+            </motion.div>
+
+            <CTAButton className="max-w-md mx-auto" />
           </SectionInner>
         </Section>
 
@@ -627,13 +686,38 @@ function HealthcareResultsInner() {
                 <p className="text-xs sm:text-sm text-gray-700 mt-1 leading-relaxed">
                   {currentIncome === "0" && `"${firstName}, you told me you're currently earning $0 from health & wellness work. That actually puts you in a powerful position — no bad habits, no low-rate clients to "upgrade." You're starting with a clean slate and your clinical training as your foundation. Let me show you exactly how to go from $0 to ${income.label}."`}
                   {currentIncome === "under-2k" && `"${firstName}, you said you're earning under $2K/month. With your clinical background, you should be earning 5-10x that. The gap between ${curIncome.label}/month and ${income.label} isn't about working harder — it's about having the right certification and framework. Let me show you the bridge."`}
-                  {currentIncome === "2k-5k" && `"${firstName}, $2K-$5K/month is solid — but with your healthcare credentials? You're leaving serious money on the table. Your clinical training makes you worth $200+/session, not $50. DEPTH closes that gap. I've seen nurses go from exactly where you are to ${income.label} in under 6 months."`}
-                  {currentIncome === "over-5k" && `"${firstName}, you're already earning $5K+ — impressive for a healthcare professional. But here's what I know: DEPTH certification could take you from $5K to ${income.label} because you'll add functional medicine protocols, lab interpretation, and group programs. The ceiling disappears."`}
+                  {currentIncome === "2k-5k" && `"${firstName}, $2K-$5K/month is solid — but with your healthcare credentials? You're leaving serious money on the table. Your clinical training makes you worth $200+/session, not $50. ASI closes that gap. I've seen nurses go from exactly where you are to ${income.label} in under 6 months."`}
+                  {currentIncome === "over-5k" && `"${firstName}, you're already earning $5K+ — impressive for a healthcare professional. But here's what I know: ASI certification could take you from $5K to ${income.label} because you'll add functional medicine protocols, lab interpretation, and group programs. The ceiling disappears."`}
                 </p>
               </div>
             </div>
           </SectionInner>
         </Section>
+
+        {/* ═══ DECISION MAKER OBJECTION HANDLING — Preemptive based on Q13 ═══ */}
+        {decisionMaker !== "yes-mine" && (
+          <Section bg={`${B.burgundy}06`}>
+            <SectionInner className="space-y-4">
+              <div className="flex items-start gap-3 sm:gap-4">
+                <Image src={SARAH} alt="Sarah M." width={48} height={48} className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 object-cover shadow-md flex-shrink-0" style={{ borderColor: B.gold }} />
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: `${B.gold}20`, color: B.burgundyDark }}>
+                      {decisionMaker === "discuss-spouse" ? "💜 About Your Partner" : "💰 About Finances"}
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-gray-700 leading-relaxed italic">
+                    "{decisionContent.sarah}"
+                  </p>
+                  <button onClick={openScholarshipChat} className="mt-2 px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all"
+                    style={{ background: B.goldMetallic, color: B.burgundyDark }}>
+                    {decisionContent.cta} →
+                  </button>
+                </div>
+              </div>
+            </SectionInner>
+          </Section>
+        )}
 
         {/* ═══ SCHOLARSHIP SUCCESS STORIES (Social Proof) ═══ */}
         <div className="grid gap-3 sm:grid-cols-3">
@@ -658,7 +742,7 @@ function HealthcareResultsInner() {
               </div>
               <p className="text-xs text-gray-600 italic">&quot;{t.quote}&quot;</p>
               <div className="flex gap-0.5 mt-2">
-                {[1,2,3,4,5].map((s) => <Star key={s} className="w-3 h-3 fill-yellow-400 text-yellow-400" />)}
+                {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-3 h-3 fill-yellow-400 text-yellow-400" />)}
               </div>
             </motion.div>
           ))}
@@ -832,8 +916,8 @@ function HealthcareResultsInner() {
                 {currentIncome === "0" || currentIncome === "under-2k"
                   ? `They started where you are right now — ${curIncome.label}/month, unsure if this was even possible. Read their words. You'll feel like they're talking directly to you.`
                   : currentIncome === "over-5k"
-                  ? `They were already earning well — but they felt the same ceiling you feel. Here's what happened when they added DEPTH to their clinical career.`
-                  : `They were in your exact shoes — healthcare professionals earning ${curIncome.label}/month, wondering if there was something more. There was.`
+                    ? `They were already earning well — but they felt the same ceiling you feel. Here's what happened when they added DEPTH to their clinical career.`
+                    : `They were in your exact shoes — healthcare professionals earning ${curIncome.label}/month, wondering if there was something more. There was.`
                 }
               </p>
             </div>
@@ -849,7 +933,7 @@ function HealthcareResultsInner() {
                     <p className="font-bold text-sm" style={{ color: B.burgundy }}>Karen L.</p>
                     <p className="text-[10px] text-gray-400">Former Nurse, 18 years</p>
                     <div className="flex gap-0.5 mt-0.5">
-                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3 h-3 fill-current" style={{ color: B.gold }} />)}
+                      {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-3 h-3 fill-current" style={{ color: B.gold }} />)}
                     </div>
                   </div>
                 </div>
@@ -870,7 +954,7 @@ function HealthcareResultsInner() {
                     <p className="font-bold text-sm" style={{ color: B.burgundy }}>Margaret S.</p>
                     <p className="text-[10px] text-gray-400">Former PA, Mom of 2</p>
                     <div className="flex gap-0.5 mt-0.5">
-                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3 h-3 fill-current" style={{ color: B.gold }} />)}
+                      {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-3 h-3 fill-current" style={{ color: B.gold }} />)}
                     </div>
                   </div>
                 </div>
@@ -891,7 +975,7 @@ function HealthcareResultsInner() {
                     <p className="font-bold text-sm" style={{ color: B.burgundy }}>Carolyn R.</p>
                     <p className="text-[10px] text-gray-400">Former ICU Nurse, Age 54</p>
                     <div className="flex gap-0.5 mt-0.5">
-                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3 h-3 fill-current" style={{ color: B.gold }} />)}
+                      {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-3 h-3 fill-current" style={{ color: B.gold }} />)}
                     </div>
                   </div>
                 </div>
@@ -992,8 +1076,8 @@ function HealthcareResultsInner() {
                 <CheckCircle className="w-4 h-4 inline mr-1 -mt-0.5" style={{ color: B.gold }} />
                 {firstName}, based on your assessment — you passed.{" "}
                 {commitment === "absolutely" ? "Your commitment level scored in the top tier." :
-                 commitment === "yes-work" ? "Your willingness to make it work shows you're serious." :
-                 "Your dedication to rearranging your schedule shows real commitment."}
+                  commitment === "yes-work" ? "Your willingness to make it work shows you're serious." :
+                    "Your dedication to rearranging your schedule shows real commitment."}
                 {" "}You&apos;re exactly who this program was built for.
               </p>
             </div>
@@ -1305,19 +1389,19 @@ function HealthcareResultsInner() {
             ].map((bonus, i) => {
               const BonusIcon = bonus.icon || Gift;
               return (
-              <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-white shadow-sm border" style={{ borderColor: `${B.gold}30` }}>
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.goldMetallic }}>
-                  <BonusIcon className="w-4 h-4" style={{ color: B.burgundyDark }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-bold text-xs sm:text-sm" style={{ color: B.burgundy }}>{bonus.title}</p>
-                    <p className="text-[10px] sm:text-xs font-bold text-gray-400 whitespace-nowrap">FREE <span className="line-through">{bonus.value}</span></p>
+                <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                  className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-white shadow-sm border" style={{ borderColor: `${B.gold}30` }}>
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.goldMetallic }}>
+                    <BonusIcon className="w-4 h-4" style={{ color: B.burgundyDark }} />
                   </div>
-                  <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{bonus.desc}</p>
-                </div>
-              </motion.div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-bold text-xs sm:text-sm" style={{ color: B.burgundy }}>{bonus.title}</p>
+                      <p className="text-[10px] sm:text-xs font-bold text-gray-400 whitespace-nowrap">FREE <span className="line-through">{bonus.value}</span></p>
+                    </div>
+                    <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{bonus.desc}</p>
+                  </div>
+                </motion.div>
               );
             })}
 
@@ -1552,7 +1636,7 @@ function HealthcareResultsInner() {
         <div className="text-center space-y-4 pb-8 pt-2">
           <div className="flex flex-wrap items-center justify-center gap-2 py-2">
             <div className="flex gap-0.5">
-              {[1,2,3,4,5].map((s) => (
+              {[1, 2, 3, 4, 5].map((s) => (
                 <div key={s} className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center" style={{ backgroundColor: "#00b67a" }}>
                   <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-white text-white" />
                 </div>

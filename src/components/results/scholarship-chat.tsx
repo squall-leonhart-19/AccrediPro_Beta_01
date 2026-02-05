@@ -59,9 +59,8 @@ function renderMessageWithLinks(text: string, isFromUser: boolean) {
           href={part}
           target="_blank"
           rel="noopener noreferrer"
-          className={`underline hover:opacity-80 break-all ${
-            isFromUser ? "text-blue-200" : "text-blue-600"
-          }`}
+          className={`underline hover:opacity-80 break-all ${isFromUser ? "text-blue-200" : "text-blue-600"
+            }`}
           onClick={(e) => e.stopPropagation()}
         >
           {part}
@@ -101,9 +100,41 @@ const VISION_LABELS: Record<string, string> = {
   "fulfillment": "fulfillment & meaningful work", "all-above": "the complete transformation",
 };
 
+// ─── Social Proof Notifications ──────────────────────────────────
+const SOCIAL_PROOF_NAMES = [
+  "Jennifer M.", "Patricia K.", "Linda S.", "Barbara T.", "Susan R.",
+  "Jessica W.", "Sarah L.", "Karen D.", "Nancy P.", "Lisa H.",
+  "Margaret B.", "Betty C.", "Sandra G.", "Ashley N.", "Dorothy F.",
+  "Kimberly J.", "Emily V.", "Donna Z.", "Michelle A.", "Carol E.",
+  "Amanda Y.", "Melissa O.", "Deborah I.", "Stephanie U.", "Rebecca Q.",
+  "Sharon X.", "Laura W.", "Cynthia M.", "Kathleen P.", "Amy S.",
+];
+
+const SOCIAL_PROOF_LOCATIONS = [
+  "Austin, TX", "Phoenix, AZ", "Denver, CO", "Seattle, WA", "Portland, OR",
+  "Nashville, TN", "Charlotte, NC", "San Diego, CA", "Tampa, FL", "Atlanta, GA",
+  "Boston, MA", "Miami, FL", "Dallas, TX", "Chicago, IL", "Los Angeles, CA",
+  "Philadelphia, PA", "Houston, TX", "San Antonio, TX", "Columbus, OH", "Indianapolis, IN",
+  "Jacksonville, FL", "Fort Worth, TX", "San Jose, CA", "Austin, TX", "Sacramento, CA",
+];
+
+const SOCIAL_PROOF_TIMES = [
+  "2 minutes ago", "3 minutes ago", "5 minutes ago", "7 minutes ago", "12 minutes ago",
+  "15 minutes ago", "just now", "1 minute ago", "4 minutes ago", "8 minutes ago",
+];
+
+function getRandomSocialProof() {
+  const name = SOCIAL_PROOF_NAMES[Math.floor(Math.random() * SOCIAL_PROOF_NAMES.length)];
+  const location = SOCIAL_PROOF_LOCATIONS[Math.floor(Math.random() * SOCIAL_PROOF_LOCATIONS.length)];
+  const time = SOCIAL_PROOF_TIMES[Math.floor(Math.random() * SOCIAL_PROOF_TIMES.length)];
+  const amounts = [297, 400, 500, 350, 450, 600, 300, 550];
+  const amount = amounts[Math.floor(Math.random() * amounts.length)];
+  return { name, location, time, amount };
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────
 function saveChat(data: StoredChat) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch { }
 }
 
 function loadChat(): StoredChat | null {
@@ -164,9 +195,8 @@ function AudioMessage({ url, isFromUser }: { url: string; isFromUser: boolean })
     <div className={`flex items-center gap-2 p-2 rounded-xl ${isFromUser ? "bg-white/10" : "bg-gray-100"}`}>
       <button
         onClick={togglePlay}
-        className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
-          isFromUser ? "bg-white/20 hover:bg-white/30 text-white" : "bg-white hover:bg-gray-50 shadow-sm"
-        }`}
+        className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${isFromUser ? "bg-white/20 hover:bg-white/30 text-white" : "bg-white hover:bg-gray-50 shadow-sm"
+          }`}
         style={!isFromUser ? { color: B.burgundy } : {}}
       >
         {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
@@ -180,11 +210,10 @@ function AudioMessage({ url, isFromUser }: { url: string; isFromUser: boolean })
             return (
               <div
                 key={i}
-                className={`w-1 rounded-full transition-all ${
-                  isFromUser
-                    ? isActive ? "bg-white" : "bg-white/30"
-                    : isActive ? "bg-burgundy" : "bg-gray-300"
-                }`}
+                className={`w-1 rounded-full transition-all ${isFromUser
+                  ? isActive ? "bg-white" : "bg-white/30"
+                  : isActive ? "bg-burgundy" : "bg-gray-300"
+                  }`}
                 style={{
                   height: `${20 + barHeight * 0.4}%`,
                   backgroundColor: !isFromUser && isActive ? B.burgundy : undefined,
@@ -228,6 +257,15 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
   const welcomeTimers = useRef<NodeJS.Timeout[]>([]);
   const urgencyIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const welcomeAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Social proof notification state
+  const [socialProofNotification, setSocialProofNotification] = useState<{
+    name: string;
+    location: string;
+    time: string;
+    amount: number;
+    visible: boolean;
+  } | null>(null);
 
   // ─── Restore from localStorage on mount ─────────────────────────
   useEffect(() => {
@@ -442,7 +480,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           page: `scholarship-${page}`,
         }),
       });
-    } catch {}
+    } catch { }
 
     // 1b. Submit scholarship application (creates lead + sends email)
     try {
@@ -458,7 +496,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           page,
         }),
       });
-    } catch {}
+    } catch { }
 
     // 2. Send application data to admin panel (silent)
     const applicationSummary = [
@@ -492,7 +530,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           isFromVisitor: true, // This is visitor's application data
         }),
       });
-    } catch {}
+    } catch { }
 
     // 3. Sarah's welcome sequence — DELAYED for natural feel
     const incomeLabel = INCOME_LABELS[quizData.currentIncome] || "$0/month";
@@ -576,7 +614,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
         setMessages(prev => [...prev, msg1]);
         saveSarahMessage(msg1Content); // Save to DB for admin
 
-        // 🎵 Play welcome audio 2 seconds after message 1 appears
+        // 🎵 Play welcome audio 5 seconds after chat opens (before message 2)
         const audioTimer = setTimeout(() => {
           const audio = welcomeAudioRef.current;
           if (audio) {
@@ -599,7 +637,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           } else {
             console.log("[Audio] No audio ref available");
           }
-        }, 2500);
+        }, 5000); // 5 seconds after chat opens
         welcomeTimers.current.push(audioTimer);
 
         // Delay message 2 by 6-8 more seconds
@@ -694,39 +732,157 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           userEmail: email,
         }),
       });
-    } catch {}
+    } catch { }
 
-    // INSTANT AUTO-RESPONSE if they typed a number (their scholarship amount)
+    // ═══ FULL AUTOPILOT SCHOLARSHIP SYSTEM ═══
+    // Detect if user typed a number and auto-generate approval with coupon
     const hasNumber = /\$?\d+/.test(userMessage);
-    if (hasNumber && messages.length <= 5) { // Only for first number submission
-      // Show typing indicator briefly
-      setTimeout(() => {
-        setIsTyping(true);
+    if (hasNumber && messages.length <= 8) { // Only for early messages (first number submission)
+      try {
+        // Call autopilot API to get coupon tier and messages
+        const autoReplyRes = await fetch("/api/scholarship/auto-reply", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: userMessage,
+            firstName,
+            lastName,
+            email,
+            visitorId,
+            quizData,
+          }),
+        });
+
+        const autoReply = await autoReplyRes.json();
+
+        if (autoReply.hasAmount && autoReply.callingMessage && autoReply.approvalMessage) {
+          // Step 1: Show "calling Institute" message after 1 second
+          setTimeout(() => {
+            setIsTyping(true);
+            setTimeout(() => {
+              setIsTyping(false);
+              const callingMsg: ChatMessage = {
+                id: `sarah-calling-${Date.now()}`,
+                role: "sarah",
+                content: autoReply.callingMessage,
+                timestamp: new Date().toISOString(),
+              };
+              setMessages(prev => [...prev, callingMsg]);
+
+              // Save calling message to DB
+              fetch("/api/chat/sales", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  message: autoReply.callingMessage,
+                  page: `scholarship-${page}`,
+                  visitorId,
+                  userName: `${firstName} ${lastName}`.trim(),
+                  userEmail: email,
+                  isFromVisitor: false,
+                  repliedBy: "Sarah M. (Auto)",
+                }),
+              }).catch(() => { });
+
+              // Step 2: HORMOZI-STYLE ANTICIPATION — 35-45 second delay with intermittent typing + social proof
+              const approvalDelay = 35000 + Math.random() * 10000; // 35-45 seconds
+
+              // Show intermittent "typing" indicators during the wait
+              const typingIntervals: NodeJS.Timeout[] = [];
+
+              // Typing pulse 1: at 8s
+              const t1 = setTimeout(() => {
+                setIsTyping(true);
+                setTimeout(() => setIsTyping(false), 2000);
+              }, 8000);
+              typingIntervals.push(t1);
+
+              // 🔥 SOCIAL PROOF 1: at 12s - someone just enrolled!
+              const sp1 = setTimeout(() => {
+                const proof = getRandomSocialProof();
+                setSocialProofNotification({ ...proof, visible: true });
+                // Hide after 4 seconds
+                setTimeout(() => setSocialProofNotification(null), 4000);
+              }, 12000);
+              typingIntervals.push(sp1);
+
+              // Typing pulse 2: at 18s
+              const t2 = setTimeout(() => {
+                setIsTyping(true);
+                setTimeout(() => setIsTyping(false), 2500);
+              }, 18000);
+              typingIntervals.push(t2);
+
+              // 🔥 SOCIAL PROOF 2: at 24s - another enrollment!
+              const sp2 = setTimeout(() => {
+                const proof = getRandomSocialProof();
+                setSocialProofNotification({ ...proof, visible: true });
+                // Hide after 4 seconds
+                setTimeout(() => setSocialProofNotification(null), 4000);
+              }, 24000);
+              typingIntervals.push(sp2);
+
+              // Typing pulse 3: at 30s (building to climax)
+              const t3 = setTimeout(() => {
+                setIsTyping(true);
+                setTimeout(() => setIsTyping(false), 3000);
+              }, 30000);
+              typingIntervals.push(t3);
+
+              // Final approval message
+              setTimeout(() => {
+                // Clear any remaining typing intervals
+                typingIntervals.forEach(t => clearTimeout(t));
+
+                setIsTyping(true);
+                setTimeout(() => {
+                  setIsTyping(false);
+                  const approvalMsg: ChatMessage = {
+                    id: `sarah-approval-${Date.now()}`,
+                    role: "sarah",
+                    content: autoReply.approvalMessage,
+                    timestamp: new Date().toISOString(),
+                  };
+                  setMessages(prev => [...prev, approvalMsg]);
+
+                  // Save approval message to DB with full context
+                  const contextNote = `\n\n--- AUTOPILOT ---\nOffered: $${autoReply.fullContext.offeredAmount}\nFinal: $${autoReply.fullContext.finalAmount}\nCoupon: ${autoReply.fullContext.couponCode || "NONE"}\nCheckout: ${autoReply.checkoutUrl}`;
+
+                  fetch("/api/chat/sales", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      message: autoReply.approvalMessage + contextNote,
+                      page: `scholarship-${page}`,
+                      visitorId,
+                      userName: `${firstName} ${lastName}`.trim(),
+                      userEmail: email,
+                      isFromVisitor: false,
+                      repliedBy: "Sarah M. (Auto-Approval)",
+                    }),
+                  }).catch(() => { });
+                }, 3500); // Typing duration for approval
+              }, approvalDelay);
+            }, 2000); // Typing duration for calling
+          }, 1000); // Initial delay
+        }
+      } catch (err) {
+        console.error("[Scholarship Autopilot] Error:", err);
+        // Fallback to old behavior if API fails
         setTimeout(() => {
-          setIsTyping(false);
-          const autoResponse: ChatMessage = {
-            id: `sarah-auto-${Date.now()}`,
-            role: "sarah",
-            content: `Got it! 🙏 Let me call the Institute right now to check if they can cover the rest for you...\n\n⏳ Hold tight — I'll be back in just a moment with your scholarship decision!`,
-            timestamp: new Date().toISOString(),
-          };
-          setMessages(prev => [...prev, autoResponse]);
-          // Also save to DB so admin can see it
-          fetch("/api/chat/sales", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              message: autoResponse.content,
-              page: `scholarship-${page}`,
-              visitorId,
-              userName: `${firstName} ${lastName}`.trim(),
-              userEmail: email,
-              isFromVisitor: false,
-              repliedBy: "Sarah M. (Auto)",
-            }),
-          }).catch((err) => console.error("[Scholarship Chat] Auto-response save error:", err));
-        }, 2000);
-      }, 1000);
+          setIsTyping(true);
+          setTimeout(() => {
+            setIsTyping(false);
+            const fallbackMsg: ChatMessage = {
+              id: `sarah-fallback-${Date.now()}`,
+              role: "sarah",
+              content: `Got it! 🙏 Let me check with the Institute on your scholarship amount...\n\n⏳ One moment please!`,
+              timestamp: new Date().toISOString(),
+            };
+            setMessages(prev => [...prev, fallbackMsg]);
+          }, 2000);
+        }, 1000);
+      }
     }
   };
 
@@ -770,6 +926,39 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           </div>
         )}
 
+        {/* 🔥 SOCIAL PROOF NOTIFICATION — "X just enrolled from Y location" */}
+        {socialProofNotification?.visible && (
+          <div
+            className="fixed bottom-20 left-4 sm:bottom-24 sm:left-6 z-50 max-w-[320px] animate-bounce"
+            style={{
+              animation: "slideInLeft 0.4s ease-out, fadeOut 0.5s ease-in 3.5s forwards"
+            }}
+          >
+            <div className="bg-white rounded-xl shadow-2xl border-2 overflow-hidden" style={{ borderColor: `${B.gold}40` }}>
+              <div className="p-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${B.burgundy}15` }}>
+                    <span className="text-lg">🎓</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm" style={{ color: B.burgundy }}>
+                      {socialProofNotification.name} just enrolled!
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {socialProofNotification.location} • {socialProofNotification.time}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="px-3 py-2 text-center text-xs font-medium"
+                style={{ background: `${B.gold}20`, color: B.burgundy }}>
+                ${socialProofNotification.amount} scholarship applied ✨
+              </div>
+            </div>
+          </div>
+        )}
+
         <button
           onClick={openChat}
           className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center gap-2.5 shadow-2xl transition-all hover:scale-105 rounded-full overflow-hidden"
@@ -780,13 +969,13 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
             <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse" />
           </div>
           <div className="pr-4 sm:pr-5 pl-0.5">
-          <p className="text-white text-xs sm:text-sm font-bold leading-tight">Apply for Scholarship</p>
-          <p className="text-white/70 text-[10px] sm:text-[11px]">Chat with Sarah now</p>
-        </div>
-        {showPulse && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full border-2 border-white animate-ping" style={{ background: B.gold }} />
-        )}
-      </button>
+            <p className="text-white text-xs sm:text-sm font-bold leading-tight">Apply for Scholarship</p>
+            <p className="text-white/70 text-[10px] sm:text-[11px]">Chat with Sarah now</p>
+          </div>
+          {showPulse && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full border-2 border-white animate-ping" style={{ background: B.gold }} />
+          )}
+        </button>
       </>
     );
   }
@@ -873,11 +1062,10 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
               <Image src={SARAH} alt="Sarah" width={32} height={32} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover mr-2 mt-1 flex-shrink-0 border" style={{ borderColor: `${B.gold}40` }} />
             )}
             <div
-              className={`max-w-[82%] p-3 sm:p-3.5 rounded-2xl text-sm leading-relaxed ${
-                msg.role === "user"
-                  ? "rounded-br-sm text-white"
-                  : "rounded-bl-sm border shadow-sm"
-              }`}
+              className={`max-w-[82%] p-3 sm:p-3.5 rounded-2xl text-sm leading-relaxed ${msg.role === "user"
+                ? "rounded-br-sm text-white"
+                : "rounded-bl-sm border shadow-sm"
+                }`}
               style={{
                 background: msg.role === "user" ? B.burgundy : "white",
                 borderColor: msg.role === "user" ? "transparent" : `${B.gold}25`,
@@ -911,7 +1099,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
                         welcomeAudioRef.current.currentTime = 0;
                         welcomeAudioRef.current.play()
                           .then(() => setIsPlayingWelcomeAudio(true))
-                          .catch(() => {});
+                          .catch(() => { });
                       }
                     }
                   }}

@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
 
     // Generate personalized welcome message
     // Keep it SHORT (under 10 seconds) for best engagement
-    const welcomeText = `Hey ${cleanName}! Amazing news — you qualify for our A.S.I. Scholarship Program! I'm so excited to chat with you about this.`;
+    const welcomeText = `Congratulations ${cleanName}! Sarah here... BIG NEWS! You've qualified for our scholarship!`;
 
     console.log(`🎙️ Generating scholarship welcome audio for: ${cleanName}`);
 

@@ -160,7 +160,44 @@ function CoachResultsInner() {
   const missingSkill = sp.get("missingSkill") || "framework";
   const commitment = sp.get("commitment") || "absolutely";
   const vision = sp.get("vision") || "all-above";
+  const careerPathLevel = sp.get("careerPathLevel") || "level-2";
+  const decisionMaker = sp.get("decisionMaker") || "yes-mine";
   const startTimeline = sp.get("startTimeline") || "2-weeks";
+
+  // Career Path Level config
+  const CAREER_PATH_MAP: Record<string, { stars: string; title: string; range: string; badge: string }> = {
+    "level-1": { stars: "⭐", title: "Certified Practitioner", range: "$2K-$5K/month", badge: "bg-blue-100 text-blue-700" },
+    "level-2": { stars: "⭐⭐", title: "Advanced Practitioner", range: "$5K-$8K/month", badge: "bg-purple-100 text-purple-700" },
+    "level-3": { stars: "⭐⭐⭐", title: "Master Practitioner", range: "$8K-$15K/month", badge: "bg-amber-100 text-amber-700" },
+    "level-4": { stars: "⭐⭐⭐⭐", title: "Fellow / Clinical Director", range: "$15K+/month", badge: "bg-emerald-100 text-emerald-700" },
+  };
+  const careerPath = CAREER_PATH_MAP[careerPathLevel] || CAREER_PATH_MAP["level-2"];
+
+  // Decision Maker objection handling
+  const DECISION_MAKER_CONTENT: Record<string, { sarah: string; cta: string }> = {
+    "yes-mine": {
+      sarah: `${firstName}, you said this decision is 100% yours. That means once you're approved, we can move FAST. No waiting, no delays — just you taking control of your future.`,
+      cta: "Lock In Your Scholarship Now"
+    },
+    "discuss-spouse": {
+      sarah: `${firstName}, you mentioned wanting to discuss with your spouse first — I love that! Many of our most successful practitioners had that same conversation. Bring your partner to chat with me! I'm happy to answer their questions too. 💜`,
+      cta: "Chat Together with Sarah"
+    },
+    "check-finances": {
+      sarah: `${firstName}, you said you want to review your finances first — that's exactly why we created the "Pay What You Can" scholarship. You name YOUR number. The Institute covers the rest. There's no minimum, no judgment. What matters is your commitment, not your current bank balance.`,
+      cta: "See What You Qualify For"
+    },
+  };
+  const decisionContent = DECISION_MAKER_CONTENT[decisionMaker] || DECISION_MAKER_CONTENT["yes-mine"];
+
+  // Scholarship Reason Why (Hormozi principle)
+  const SCHOLARSHIP_REASONS = [
+    { reason: "February Network Expansion", why: "We're building our practitioner network in your state. The Institute subsidizes 50 scholarships this month to fast-track regional coverage.", icon: "🌎" },
+    { reason: "Testimonial Sprint", why: "We're collecting 100 success stories before accreditation renewal. In exchange for your testimonial after certification, we cover most of your tuition.", icon: "⭐" },
+    { reason: "Founder's Circle", why: "Dr. Sarah Mitchell's personal mission is making FM accessible to coaches who can't afford traditional programs. She funds 3 scholarships per month.", icon: "💜" },
+  ];
+  const dayOfMonth = new Date().getDate();
+  const scholarshipReason = SCHOLARSHIP_REASONS[dayOfMonth % SCHOLARSHIP_REASONS.length];
 
   const pract = PRACT[typeKey] || PRACT["hormone-health"];
   const PractIcon = pract.icon;
@@ -375,7 +412,7 @@ function CoachResultsInner() {
             {/* Trustpilot inline */}
             <div className="flex items-center justify-center gap-2">
               <div className="flex gap-0.5">
-                {[1,2,3,4,5].map((s) => (
+                {[1, 2, 3, 4, 5].map((s) => (
                   <div key={s} className="w-4 h-4 flex items-center justify-center" style={{ backgroundColor: "#00b67a" }}>
                     <Star className="w-2.5 h-2.5 fill-white text-white" />
                   </div>
@@ -577,8 +614,8 @@ function CoachResultsInner() {
                 {currentIncome === "0" || currentIncome === "under-2k"
                   ? `They started where you are right now — ${curIncome.label}/month, unsure if this was even possible. Read their words. You'll feel like they're talking directly to you.`
                   : currentIncome === "over-5k"
-                  ? `They were already earning well — but they felt the same ceiling you feel. Here's what happened when they added DEPTH to their clinical career.`
-                  : `They were in your exact shoes — health coaches earning ${curIncome.label}/month, wondering if there was something more. There was.`
+                    ? `They were already earning well — but they felt the same ceiling you feel. Here's what happened when they added DEPTH to their clinical career.`
+                    : `They were in your exact shoes — health coaches earning ${curIncome.label}/month, wondering if there was something more. There was.`
                 }
               </p>
             </div>
@@ -597,7 +634,7 @@ function CoachResultsInner() {
                   <Image src={T_KAREN} alt="Karen L." width={64} height={64} className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 object-cover shadow-lg flex-shrink-0" style={{ borderColor: B.gold }} />
                   <div className="flex-1 min-w-0">
                     <div className="flex gap-0.5 mb-3">
-                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" style={{ color: B.gold }} />)}
+                      {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" style={{ color: B.gold }} />)}
                     </div>
                     <div className="space-y-3">
                       <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
@@ -647,7 +684,7 @@ function CoachResultsInner() {
                   <Image src={T_MARGARET} alt="Margaret S." width={64} height={64} className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 object-cover shadow-lg flex-shrink-0" style={{ borderColor: B.gold }} />
                   <div className="flex-1 min-w-0">
                     <div className="flex gap-0.5 mb-3">
-                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" style={{ color: B.gold }} />)}
+                      {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" style={{ color: B.gold }} />)}
                     </div>
                     <div className="space-y-3">
                       <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
@@ -700,7 +737,7 @@ function CoachResultsInner() {
                   <Image src={T_CAROLYN} alt="Carolyn R." width={64} height={64} className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 object-cover shadow-lg flex-shrink-0" style={{ borderColor: B.gold }} />
                   <div className="flex-1 min-w-0">
                     <div className="flex gap-0.5 mb-3">
-                      {[1,2,3,4,5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" style={{ color: B.gold }} />)}
+                      {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" style={{ color: B.gold }} />)}
                     </div>
                     <div className="space-y-3">
                       <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
@@ -822,8 +859,8 @@ function CoachResultsInner() {
                 <CheckCircle className="w-4 h-4 inline mr-1 -mt-0.5" style={{ color: B.gold }} />
                 {firstName}, based on your assessment — you passed.{" "}
                 {commitment === "absolutely" ? "Your commitment level scored in the top tier." :
-                 commitment === "yes-work" ? "Your willingness to make it work shows you're serious." :
-                 "Your dedication to rearranging your schedule shows real commitment."}
+                  commitment === "yes-work" ? "Your willingness to make it work shows you're serious." :
+                    "Your dedication to rearranging your schedule shows real commitment."}
                 {" "}You&apos;re exactly who this program was built for.
               </p>
             </div>
@@ -1042,19 +1079,19 @@ function CoachResultsInner() {
             ].map((bonus, i) => {
               const BonusIcon = bonus.icon || Gift;
               return (
-              <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-white shadow-sm border" style={{ borderColor: `${B.gold}30` }}>
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.goldMetallic }}>
-                  <BonusIcon className="w-4 h-4" style={{ color: B.burgundyDark }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-bold text-xs sm:text-sm" style={{ color: B.burgundy }}>{bonus.title}</p>
-                    <p className="text-[10px] sm:text-xs font-bold text-gray-400 whitespace-nowrap">FREE <span className="line-through">{bonus.value}</span></p>
+                <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                  className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-white shadow-sm border" style={{ borderColor: `${B.gold}30` }}>
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.goldMetallic }}>
+                    <BonusIcon className="w-4 h-4" style={{ color: B.burgundyDark }} />
                   </div>
-                  <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{bonus.desc}</p>
-                </div>
-              </motion.div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-bold text-xs sm:text-sm" style={{ color: B.burgundy }}>{bonus.title}</p>
+                      <p className="text-[10px] sm:text-xs font-bold text-gray-400 whitespace-nowrap">FREE <span className="line-through">{bonus.value}</span></p>
+                    </div>
+                    <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{bonus.desc}</p>
+                  </div>
+                </motion.div>
               );
             })}
 
@@ -1299,7 +1336,7 @@ function CoachResultsInner() {
         <div className="text-center space-y-4 pb-8 pt-2">
           <div className="flex flex-wrap items-center justify-center gap-2 py-2">
             <div className="flex gap-0.5">
-              {[1,2,3,4,5].map((s) => (
+              {[1, 2, 3, 4, 5].map((s) => (
                 <div key={s} className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center" style={{ backgroundColor: "#00b67a" }}>
                   <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-white text-white" />
                 </div>
