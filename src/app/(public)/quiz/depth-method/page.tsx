@@ -42,7 +42,8 @@ const BRAND = {
 
 const SARAH_AVATAR = "/coaches/sarah-coach.webp";
 const ASI_LOGO = "/asi-logo-transparent.png";
-const CERTIFICATE_IMG = "/certificate-preview.png";
+const CERTIFICATE_IMG = "/FUNCTIONAL_MEDICINE_CERTIFICATE.webp";
+const BUNDLE_IMG = "https://assets.accredipro.academy/fm-certification/FM-BUNDLE-IMG.png";
 const ACCREDITATION_LOGOS = "/all-logos.png";
 
 const TESTIMONIAL_PHOTOS = {
@@ -1062,6 +1063,17 @@ export default function DEPTHMethodQuiz() {
             </div>
           </div>
           <p className="text-xs text-gray-500 italic">{certSubtitle}</p>
+
+          {/* Bundle Preview */}
+          <div className="flex justify-center">
+            <div className="relative w-full max-w-[280px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={BUNDLE_IMG} alt="FM Certification Bundle" className="w-full rounded-lg shadow-lg" />
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-md whitespace-nowrap" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+                Everything Included
+              </div>
+            </div>
+          </div>
 
           <div className="grid grid-cols-3 gap-3 text-center">
             {[{ val: "$5-10K+", label: "Monthly Income" }, { val: "30 Days", label: "To Certify" }, { val: "73%", label: "Clients in 30d" }].map((s) => (
