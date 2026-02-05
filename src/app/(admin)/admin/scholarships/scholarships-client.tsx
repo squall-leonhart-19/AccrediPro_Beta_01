@@ -26,6 +26,7 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
+  Bell,
 } from "lucide-react";
 
 interface ChatMessage {
@@ -148,8 +149,59 @@ export default function ScholarshipsClient() {
   const [visitorNotes, setVisitorNotes] = useState("");
   const [showQuickReplies, setShowQuickReplies] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const selectedVisitorIdRef = useRef<string | null>(null);
+  const prevUnreadCountRef = useRef<number>(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Initialize notification sound
+  useEffect(() => {
+    audioRef.current = new Audio("/sounds/notification.mp3");
+    audioRef.current.volume = 0.5;
+
+    // Check if notifications are already granted
+    if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+      setNotificationsEnabled(true);
+    }
+  }, []);
+
+  // Request notification permission
+  const requestNotificationPermission = async () => {
+    if (typeof Notification === "undefined") {
+      alert("Notifications not supported on this browser");
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      setNotificationsEnabled(true);
+      // Test notification
+      new Notification("🎓 Scholarship Notifications Enabled!", {
+        body: "You'll receive alerts when new applications arrive",
+        icon: "/favicon.ico",
+      });
+    }
+  };
+
+  // Play notification sound and show browser notification
+  const notifyNewMessage = (appName: string, message: string) => {
+    // Play sound
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => {});
+    }
+
+    // Browser notification (works on mobile PWA too)
+    if (notificationsEnabled && typeof Notification !== "undefined" && Notification.permission === "granted") {
+      new Notification(`🎓 New Scholarship Message`, {
+        body: `${appName}: ${message.substring(0, 100)}${message.length > 100 ? "..." : ""}`,
+        icon: "/favicon.ico",
+        tag: "scholarship-notification", // Prevents duplicate notifications
+        requireInteraction: true, // Stays until user interacts (mobile)
+      });
+    }
+  };
 
   // Keep ref in sync with selected app
   useEffect(() => {
@@ -164,6 +216,21 @@ export default function ScholarshipsClient() {
         ...app,
         applicationData: parseApplicationMessage(app.messages),
       }));
+
+      // Check for new unread messages and notify
+      const newTotalUnread = newApps.reduce((acc, a) => acc + a.unreadCount, 0);
+      if (newTotalUnread > prevUnreadCountRef.current && prevUnreadCountRef.current > 0) {
+        // Find the app with new message
+        const appWithNewMsg = newApps.find(a => a.unreadCount > 0);
+        if (appWithNewMsg) {
+          notifyNewMessage(
+            appWithNewMsg.visitorName || "New Applicant",
+            appWithNewMsg.lastMessage
+          );
+        }
+      }
+      prevUnreadCountRef.current = newTotalUnread;
+
       setApplications(newApps);
 
       // Use ref to get current selected visitor ID (avoids stale closure)
@@ -313,10 +380,23 @@ export default function ScholarshipsClient() {
           </h1>
           <p className="text-gray-500">Manage ASI Scholarship requests (Manual responses only)</p>
         </div>
-        <Button variant="outline" onClick={fetchApplications}>
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Refresh
-        </Button>
+        <div className="flex items-center gap-2">
+          {!notificationsEnabled ? (
+            <Button variant="outline" onClick={requestNotificationPermission} className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100">
+              <Bell className="w-4 h-4 mr-2" />
+              Enable Notifications
+            </Button>
+          ) : (
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 py-1.5 px-3">
+              <Bell className="w-3 h-3 mr-1" />
+              Notifications On
+            </Badge>
+          )}
+          <Button variant="outline" onClick={fetchApplications}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
