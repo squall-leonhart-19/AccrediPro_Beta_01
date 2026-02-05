@@ -270,7 +270,7 @@ async function sendAutoReply(conversationMsgs: any[], visitorId: string): Promis
         page.includes("hormone") || page.includes("menopause") ||
         page.includes("fertility") || page.includes("prenatal") ||
         page.includes("pcos") || page.includes("thyroid");
-    const coachEmail = isWH ? "sarah_womenhealth@accredipro-certificate.com" : PERSONA_EMAILS[personaKey];
+    const coachEmail = isWH ? "sarah@accredipro-certificate.com" : PERSONA_EMAILS[personaKey];
 
     // Fetch coach's knowledge base AND ID from database
     const coach = await prisma.user.findFirst({

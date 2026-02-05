@@ -26,6 +26,15 @@ export function Lesson9Income({
     const [score, setScore] = useState(totalScore);
 
     const messages: Message[] = [
+        // AUDIO NARRATION
+        {
+            id: 0,
+            type: 'pre-recorded-audio',
+            audioUrl: 'https://assets.accredipro.academy/audio/functional-medicine/lesson-9.mp3',
+            audioDuration: '4:42',
+            content: '🎧 Listen to Sarah explain this lesson',
+        },
+
         // OPENING - CELEBRATION
         {
             id: 1,
@@ -65,6 +74,15 @@ This isn't fantasy. This is Diana's real Tuesday. And Jennifer's. And Michelle's
             id: 4,
             type: 'coach',
             content: `The kids see you present. Your clients see results. Your bank account sees growth. And YOU? You finally feel like you're doing what you were meant to do.`,
+        },
+
+        // VISUAL - Your New Life
+        {
+            id: 49,
+            type: 'image',
+            imageUrl: 'https://assets.accredipro.academy/images/lessons/functional-medicine/lesson-9-doodle.png',
+            imageAlt: 'Your new life awaits',
+            content: 'This could be your schedule',
         },
 
         // YOUR SCORE

@@ -31,7 +31,7 @@ async function sendLeadDM(userId: string, message: string) {
         const coachUser = await prisma.user.findFirst({
             where: {
                 OR: [
-                    { email: "sarah_womenhealth@accredipro-certificate.com" },
+                    { email: "sarah@accredipro-certificate.com" },
                     { role: "MENTOR" }, // Fallback
                 ],
             },

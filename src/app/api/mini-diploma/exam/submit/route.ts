@@ -62,7 +62,7 @@ async function sendCompletionNotifications(
     try {
         // Find the real Sarah coach (same one used in optin and welcome messages)
         const sarah = await prisma.user.findFirst({
-            where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+            where: { email: "sarah@accredipro-certificate.com" },
         });
 
         if (!sarah) {

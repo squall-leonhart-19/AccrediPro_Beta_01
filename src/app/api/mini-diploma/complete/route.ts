@@ -104,10 +104,10 @@ export async function POST(request: NextRequest) {
         console.log(`📱 GHL milestone sent: ${user.email} - mini_diploma_graduate`);
 
         // Find Sarah Women's Health coach for mini diploma completion messages
-        // Mini diploma messages ALWAYS use sarah_womenhealth@accredipro-certificate.com
+        // Mini diploma messages ALWAYS use sarah@accredipro-certificate.com
         const sarahCoach = await prisma.user.findFirst({
             where: {
-                email: "sarah_womenhealth@accredipro-certificate.com",
+                email: "sarah@accredipro-certificate.com",
             },
         });
 

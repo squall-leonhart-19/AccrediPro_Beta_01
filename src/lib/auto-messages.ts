@@ -938,7 +938,7 @@ export async function triggerAutoMessage({
 
     if (!coachId) {
       // DEFAULT COACH for main course messages: sarah@accredipro-certificate.com
-      // Mini diploma (wh_*) triggers override this to sarah_womenhealth@ in their handlers below
+      // Mini diploma (wh_*) triggers override this to sarah@ in their handlers below
       const defaultCoach = await prisma.user.findFirst({
         where: {
           OR: [
@@ -981,7 +981,7 @@ export async function triggerAutoMessage({
 
     // SPECIAL HANDLING: Mini Diploma module completion DM with voice
     // Module 0-3 = Content modules, Module 4 = Final Exam (handled by mini_diploma_complete)
-    // Mini diploma messages ALWAYS use sarah_womenhealth@
+    // Mini diploma messages ALWAYS use sarah@
     if (trigger === "mini_diploma_module_complete" && triggerValue) {
       const moduleNumber = parseInt(triggerValue, 10);
       // Send DMs for modules 0, 1, 2, 3 (not Final Exam which is 4+)
@@ -990,7 +990,7 @@ export async function triggerAutoMessage({
         if (miniDiplomaModuleContent) {
           // Get Sarah Women's Health coach specifically for mini diploma
           const sarahWH = await prisma.user.findFirst({
-            where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+            where: { email: "sarah@accredipro-certificate.com" },
             select: { id: true },
           });
           const miniDiplomaCoachId = sarahWH?.id || coachId;
@@ -1010,7 +1010,7 @@ export async function triggerAutoMessage({
       if (whLessonContent) {
         // Get Sarah Women's Health coach specifically
         const sarahWH = await prisma.user.findFirst({
-          where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+          where: { email: "sarah@accredipro-certificate.com" },
           select: { id: true },
         });
         const whCoachId = sarahWH?.id || coachId;
@@ -1028,7 +1028,7 @@ export async function triggerAutoMessage({
       const whContent = WH_DM_MESSAGES[messageKey];
       if (whContent) {
         const sarahWH = await prisma.user.findFirst({
-          where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+          where: { email: "sarah@accredipro-certificate.com" },
           select: { id: true },
         });
         const whCoachId = sarahWH?.id || coachId;
@@ -1042,7 +1042,7 @@ export async function triggerAutoMessage({
       const whContent = WH_DM_MESSAGES["certificate_ready"];
       if (whContent) {
         const sarahWH = await prisma.user.findFirst({
-          where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+          where: { email: "sarah@accredipro-certificate.com" },
           select: { id: true },
         });
         const whCoachId = sarahWH?.id || coachId;
@@ -1058,7 +1058,7 @@ export async function triggerAutoMessage({
       const whContent = WH_DM_MESSAGES[messageKey];
       if (whContent) {
         const sarahWH = await prisma.user.findFirst({
-          where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+          where: { email: "sarah@accredipro-certificate.com" },
           select: { id: true },
         });
         const whCoachId = sarahWH?.id || coachId;
@@ -1070,7 +1070,7 @@ export async function triggerAutoMessage({
     // Handle DM triggers with voice messages
     const dmContent = DM_CONTENT[trigger as keyof typeof DM_CONTENT];
     if (dmContent) {
-      // Mini diploma related triggers (completion + sequence days) use sarah_womenhealth@
+      // Mini diploma related triggers (completion + sequence days) use sarah@
       // These are all for mini diploma leads being nurtured toward purchase
       const miniDiplomaTriggers = [
         "mini_diploma_complete",
@@ -1086,11 +1086,11 @@ export async function triggerAutoMessage({
       if (miniDiplomaTriggers.includes(trigger)) {
         // Get Sarah Women's Health coach for mini diploma leads
         const sarahWH = await prisma.user.findFirst({
-          where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+          where: { email: "sarah@accredipro-certificate.com" },
           select: { id: true },
         });
         senderId = sarahWH?.id || coachId;
-        console.log(`[AUTO-MESSAGE] Mini diploma trigger "${trigger}" - using sarah_womenhealth@`);
+        console.log(`[AUTO-MESSAGE] Mini diploma trigger "${trigger}" - using sarah@`);
       }
 
       await sendAutoDM(userId, user.firstName || "there", senderId, trigger, dmContent);
@@ -1235,10 +1235,10 @@ async function sendFirstLoginWelcome(userId: string, firstName: string, coachId:
       userEnrollments.every(e => MINI_DIPLOMA_SLUGS.includes(e.course.slug));
 
     // Get the correct Sarah based on user type:
-    // - Mini diploma leads → sarah_womenhealth@accredipro-certificate.com
+    // - Mini diploma leads → sarah@accredipro-certificate.com
     // - Main course students → sarah@accredipro-certificate.com
     const sarahEmail = isMiniDiplomaOnly
-      ? "sarah_womenhealth@accredipro-certificate.com"
+      ? "sarah@accredipro-certificate.com"
       : "sarah@accredipro-certificate.com";
 
     const sarahCoach = await prisma.user.findFirst({

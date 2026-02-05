@@ -24,6 +24,15 @@ export function Lesson1RootCause({
     const [score, setScore] = useState(0);
 
     const messages: Message[] = [
+        // AUDIO NARRATION
+        {
+            id: 0,
+            type: 'pre-recorded-audio',
+            audioUrl: 'https://assets.accredipro.academy/audio/functional-medicine/lesson-1.mp3',
+            audioDuration: '3:12',
+            content: '🎧 Listen to Sarah explain this lesson',
+        },
+
         // THE OPPORTUNITY HOOK - First thing they see
         {
             id: 1,
@@ -66,6 +75,15 @@ Millions of people are DESPERATE for someone who will:
 
 This isn't about replacing doctors. This is about filling a MASSIVE gap they can't fill.`,
             systemStyle: 'stats',
+        },
+
+        // VISUAL - Root Cause Concept
+        {
+            id: 55,
+            type: 'image',
+            imageUrl: 'https://assets.accredipro.academy/images/lessons/functional-medicine/lesson-1-doodle.png',
+            imageAlt: 'Root cause medicine - fix the cause, not the symptom',
+            content: 'This is the core of what we teach',
         },
 
         // THE MARKET OPPORTUNITY

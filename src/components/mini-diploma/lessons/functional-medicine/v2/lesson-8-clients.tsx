@@ -24,6 +24,15 @@ export function Lesson8Clients({
     const [score, setScore] = useState(0);
 
     const messages: Message[] = [
+        // AUDIO NARRATION
+        {
+            id: 0,
+            type: 'pre-recorded-audio',
+            audioUrl: 'https://assets.accredipro.academy/audio/functional-medicine/lesson-8.mp3',
+            audioDuration: '3:45',
+            content: '🎧 Listen to Sarah explain this lesson',
+        },
+
         // HOOK - The Real Fear
         {
             id: 1,
@@ -67,6 +76,15 @@ People aren't comparing you to doctors. They're comparing you to feeling stuck, 
 
 A graduate told us: "I was terrified no one would take me seriously. Then I realized: My first client cried in our first session because I was the first person who actually LISTENED to her health story. That's what she was paying for."`,
             systemStyle: 'comparison',
+        },
+
+        // VISUAL - Client Funnel
+        {
+            id: 48,
+            type: 'image',
+            imageUrl: 'https://assets.accredipro.academy/images/lessons/functional-medicine/lesson-8-doodle.png',
+            imageAlt: 'Help first, sell second',
+            content: 'Your path to paying clients',
         },
 
         // TESTIMONIAL - First Client Story

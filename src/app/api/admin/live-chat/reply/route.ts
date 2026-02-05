@@ -32,7 +32,7 @@ function detectPersonaAndCoach(page: string | null): { personaKey: keyof typeof 
   if (p.includes("womens-health") || p.includes("women-health") || p.includes("hormone") ||
     p.includes("menopause") || p.includes("fertility") || p.includes("prenatal") ||
     p.includes("pcos") || p.includes("thyroid")) {
-    return { personaKey: "fm-health", coachEmail: "sarah_womenhealth@accredipro-certificate.com" };
+    return { personaKey: "fm-health", coachEmail: "sarah@accredipro-certificate.com" };
   }
 
   // FM/Health (Sarah FM)

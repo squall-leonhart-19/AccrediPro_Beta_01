@@ -31,6 +31,7 @@ import {
   GraduationCap,
   UserPlus,
   Package,
+  CircleDot,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -69,6 +70,7 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/admin/courses", label: "Courses", icon: BookOpen, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/users", label: "Students", icon: Users, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] },
+      { href: "/admin/pods", label: "Circle Pods", icon: CircleDot, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/community", label: "Community", icon: Heart, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
     ],
   },

@@ -24,6 +24,15 @@ export function Lesson4Toxins({
     const [score, setScore] = useState(0);
 
     const messages: Message[] = [
+        // AUDIO NARRATION
+        {
+            id: 0,
+            type: 'pre-recorded-audio',
+            audioUrl: 'https://assets.accredipro.academy/audio/functional-medicine/lesson-4.mp3',
+            audioDuration: '3:15',
+            content: '🎧 Listen to Sarah explain this lesson',
+        },
+
         // HOOK - Shocking Reality
         {
             id: 1,
@@ -83,6 +92,15 @@ This isn't paranoia. It's the explanation for why so many people feel terrible d
 
 "Mold clients stay with me for 8-12 months. That's $2,400-4,000 per client." - Christine, 46`,
             systemStyle: 'income-hook',
+        },
+
+        // VISUAL - Toxin Reality
+        {
+            id: 45,
+            type: 'image',
+            imageUrl: 'https://assets.accredipro.academy/images/lessons/functional-medicine/lesson-4-doodle.png',
+            imageAlt: 'The toxin reality - 5 categories',
+            content: 'Understanding the toxic burden',
         },
 
         // OBJECTION CRUSHER: "Can I legally advise on this?"

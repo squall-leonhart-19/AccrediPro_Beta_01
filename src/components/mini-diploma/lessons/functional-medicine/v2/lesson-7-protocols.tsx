@@ -24,6 +24,15 @@ export function Lesson7Protocols({
     const [score, setScore] = useState(0);
 
     const messages: Message[] = [
+        // AUDIO NARRATION
+        {
+            id: 0,
+            type: 'pre-recorded-audio',
+            audioUrl: 'https://assets.accredipro.academy/audio/functional-medicine/lesson-7.mp3',
+            audioDuration: '3:22',
+            content: '🎧 Listen to Sarah explain this lesson',
+        },
+
         // HOOK - The Transformation Moment
         {
             id: 1,
@@ -66,6 +75,15 @@ export function Lesson7Protocols({
 
 "When I switched from per-session to protocols, my income doubled and my results improved." - Sandra, 45`,
             systemStyle: 'income-hook',
+        },
+
+        // VISUAL - Protocol Pyramid
+        {
+            id: 47,
+            type: 'image',
+            imageUrl: 'https://assets.accredipro.academy/images/lessons/functional-medicine/lesson-7-doodle.png',
+            imageAlt: 'Simple protocols = client results',
+            content: 'The 90-day transformation framework',
         },
 
         // OBJECTION CRUSHER: "Am I qualified to create protocols?"

@@ -24,6 +24,15 @@ export function Lesson5Stress({
     const [score, setScore] = useState(0);
 
     const messages: Message[] = [
+        // AUDIO NARRATION
+        {
+            id: 0,
+            type: 'pre-recorded-audio',
+            audioUrl: 'https://assets.accredipro.academy/audio/functional-medicine/lesson-5.mp3',
+            audioDuration: '3:38',
+            content: '🎧 Listen to Sarah explain this lesson',
+        },
+
         // HOOK - Personal & Relatable
         {
             id: 1,
@@ -81,6 +90,15 @@ This is a MASSIVE, underserved market. And it's personal for most of us.`,
 
 "My burnout clients have MONEY. They're executives. They'll pay $300/session if you can help them feel human again." - Carol, 56`,
             systemStyle: 'income-hook',
+        },
+
+        // VISUAL - HPA Axis
+        {
+            id: 52,
+            type: 'image',
+            imageUrl: 'https://assets.accredipro.academy/images/lessons/functional-medicine/lesson-5-doodle.png',
+            imageAlt: 'HPA axis - stress and burnout',
+            content: 'Understanding hormones and stress',
         },
 
         // OBJECTION CRUSHER: "I'm too old to start something new"

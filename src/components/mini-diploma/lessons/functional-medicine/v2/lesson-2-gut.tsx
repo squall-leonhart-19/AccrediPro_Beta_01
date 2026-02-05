@@ -24,6 +24,15 @@ export function Lesson2Gut({
     const [score, setScore] = useState(0);
 
     const messages: Message[] = [
+        // AUDIO NARRATION
+        {
+            id: 0,
+            type: 'pre-recorded-audio',
+            audioUrl: 'https://assets.accredipro.academy/audio/functional-medicine/lesson-2.mp3',
+            audioDuration: '3:42',
+            content: '🎧 Listen to Sarah explain this lesson',
+        },
+
         // HOOK - Personal Story
         {
             id: 1,
@@ -75,6 +84,15 @@ export function Lesson2Gut({
 
 "I work 18 hours a week and have an 8-week waitlist. All gut health." - Rachel, 44`,
             systemStyle: 'income-hook',
+        },
+
+        // VISUAL - Gut Health Concept
+        {
+            id: 65,
+            type: 'image',
+            imageUrl: 'https://assets.accredipro.academy/images/lessons/functional-medicine/lesson-2-doodle.png',
+            imageAlt: 'Gut health - your second brain',
+            content: 'Understanding the gut connection',
         },
 
         // THE GUT REVELATION

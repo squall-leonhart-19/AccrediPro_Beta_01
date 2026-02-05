@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
 
                 // 2. Send Sarah DM
                 const sarah = await prisma.user.findFirst({
-                    where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+                    where: { email: "sarah@accredipro-certificate.com" },
                 });
 
                 if (sarah) {

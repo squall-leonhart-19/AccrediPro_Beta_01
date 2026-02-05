@@ -18,6 +18,7 @@ const SARAH_AVATAR = "/coaches/sarah-coach.webp";
 export type MessageType =
     | 'coach'
     | 'system'
+    | 'image'
     | 'user-choice'
     | 'pre-recorded-audio'
     | 'self-assessment'
@@ -36,6 +37,8 @@ export interface Message {
     delay?: number;
     audioUrl?: string;
     audioDuration?: string;
+    imageUrl?: string;
+    imageAlt?: string;
     systemStyle?: 'info' | 'quote' | 'comparison' | 'stats' | 'takeaway' | 'exercise' | 'income-hook' | 'career-tip';
     showReaction?: boolean;
     // For interactive components
@@ -381,6 +384,24 @@ export function LessonBaseV2({
         switch (msg.type) {
             case 'system':
                 return renderSystemCard(msg);
+
+            case 'image':
+                return (
+                    <div className="mx-2 my-4 rounded-2xl overflow-hidden shadow-lg border border-slate-200">
+                        <Image
+                            src={msg.imageUrl || ''}
+                            alt={msg.imageAlt || 'Lesson illustration'}
+                            width={800}
+                            height={600}
+                            className="w-full h-auto"
+                        />
+                        {msg.content && (
+                            <p className="text-center text-sm text-slate-500 py-2 px-4 bg-slate-50">
+                                {msg.content}
+                            </p>
+                        )}
+                    </div>
+                );
 
             case 'user-choice':
                 return (

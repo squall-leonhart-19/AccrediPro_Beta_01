@@ -180,7 +180,7 @@ tmux kill-session -t ralph 2>/dev/null
 - [ ] Update next.config.ts
 
 ### Step 2: Landing Page (COPY EXACTLY FROM TEMPLATE)
-- [ ] Create landing page (COPY spiritual-healing page.tsx, 841 lines)
+- [ ] Create landing page (COPY functional-medicine-mini-diploma page.tsx)
 - [ ] Set correct Meta Pixel ID (lookup from `docs/mini-diploma/mini_diploma_planning.csv`)
 - [ ] Add to diploma-configs.ts (for portal)
 - [ ] Add to DIPLOMA_TAG_PREFIX in lead layout
@@ -216,6 +216,31 @@ tmux kill-session -t ralph 2>/dev/null
 - [ ] Test portal access (/portal/{portal_slug})
 - [ ] Verify sequence email cron works
 - [ ] Update `docs/mini-diploma/mini_diploma_planning.csv` status to "done"
+
+### Step 7: Media Generation (MANDATORY for production quality)
+
+#### 7a: Doodle Images (Fast - ~2 min each)
+- [ ] Generate 9 doodle images using `generate_image` tool with doodle prompts
+- [ ] Copy images to `public/images/lessons/{portal_slug}/lesson-{1-9}-doodle.png`
+- [ ] Add `type: 'image'` messages to each lesson TSX (after income-hook card)
+
+#### 7b: Audio Scripts (Create plain text for TTS)
+- [ ] Create 9 audio scripts: `voice-engine/scripts/lesson-{1-9}.txt`
+- [ ] Scripts should be plain text (no markdown), conversational Sarah voice
+
+#### 7c: Audio Generation (Long - ~10 min per lesson, run in background)
+- [ ] Start batch generation: `cd voice-engine && python3.12 generate_all_lessons.py`
+- [ ] Monitor progress: audio appears in `voice-engine/output/lessons/`
+- [ ] Total time: ~90 min for all 9 lessons (M3 Max)
+
+#### 7d: Upload to R2 (after audio complete)
+- [ ] Upload images: `for i in {1..9}; do wrangler r2 object put accredipro/images/lessons/{portal_slug}/lesson-$i-doodle.png --file=public/images/lessons/{portal_slug}/lesson-$i-doodle.png; done`
+- [ ] Upload audio: `for i in {1..9}; do wrangler r2 object put accredipro/audio/{portal_slug}/lesson-$i.mp3 --file=voice-engine/output/lessons/lesson-$i.mp3; done`
+
+#### 7e: Integration (update lesson content)
+- [ ] Add `imageUrl` to each lesson's image message (R2 URL or local path)
+- [ ] Add `audioUrl` to each lesson's pre-recorded-audio message
+- [ ] Verify build passes with media integrated
 
 ## Completed
 (move items here when done)
@@ -1101,6 +1126,8 @@ This tracks what's been created vs. still pending.
 
 ---
 
+---
+
 ## Step 9: Send EXIT_SIGNAL
 
 **CRITICAL**: When ALL tasks are complete, output this EXACT block:
@@ -1111,6 +1138,203 @@ EXIT_SIGNAL: true
 REASON: project_complete
 SUMMARY: Created {Topic Name} mini diploma - landing page, registry, API, auth, config, pixel, 60-day nurture sequence, DM sequence, cron registration all updated. Build passes. Planning CSV updated.
 ```
+
+---
+
+## 🖼️ Step 10: Generate Lesson Images (Doodle Style) - FAST, DO FIRST
+
+**RECOMMENDED** - Adds educational sketch images to lessons.
+
+### Two Methods Available:
+
+| Method | Speed | Best For |
+|--------|-------|----------|
+| **WaveSpeed API** | ~30 sec total (parallel) | Production, batch generation |
+| **generate_image tool** | ~2 min each | Quick prototypes, single images |
+
+### Optimal Ralph Loop Order:
+1. **Step 10 (Images)** - Generate while planning audio scripts  
+2. **Step 11 (Audio)** - Start in background, takes ~90 min for all 9 lessons
+
+### Brand Standard: Whiteboard Doodle Aesthetic
+- Style: Hand-drawn whiteboard sketch
+- Colors: Black marker on cream/off-white paper
+- Feel: Student notebook, authentic, not polished
+- Purpose: Visual breaks, concept illustration, engagement
+
+---
+
+### 🚀 Option A: WaveSpeed API (RECOMMENDED - Fastest)
+
+Uses 20 parallel API keys with nano-banana-pro model for 4K images.
+
+// turbo
+```bash
+cd /Users/pochitino/Desktop/accredipro-lms/scripts/wavespeed-image-gen && \
+python3 generate_lesson_images.py --niche {portal_slug}
+```
+
+**Output:** `public/images/lessons/{portal_slug}/lesson-{1-9}-doodle.png`
+**Time:** ~30 seconds for all 9 images (parallel generation)
+
+**Custom prompts:** Create `prompts.json` with lesson-specific prompts:
+```json
+{
+  "lesson_1": "Hand-drawn whiteboard sketch about {niche concept}...",
+  "lesson_2": "..."
+}
+```
+
+Then run: `python3 generate_lesson_images.py --niche {slug} --prompts prompts.json`
+
+---
+
+### 🎨 Option B: generate_image Tool (Manual/Prototype)
+
+### Step 10.1: Generate Images
+
+Use `generate_image` tool with this prompt pattern:
+
+```
+Hand-drawn whiteboard sketch style, black marker on cream paper background, 
+educational doodle about {LESSON CORE CONCEPT}. Shows: {VISUAL ELEMENTS}.
+Bottom text in sketchy handwriting: "{KEY TAKEAWAY}". 
+Authentic student notebook doodle aesthetic, not polished, messy arrows and circles, 
+health coach teaching concept.
+```
+
+### Lesson Image Prompts (Customize per niche):
+
+**Lesson 1 - Root Cause/Foundations:**
+```
+Root cause thinking - stick figure with symptoms (tired, bloated, anxious) with red X marks, 
+arrow pointing to "ROOT CAUSE" with magnifying glass, then happy stick figure with checkmarks.
+Bottom text: "Fix the cause, not the symptom"
+```
+
+**Lesson 2-7 - Core Systems:** Use same pattern for each system being taught.
+
+**Lesson 8 - Client Acquisition:**
+```
+Client funnel - top shows "YOUR NETWORK" with stick figures, middle shows "FREE VALUE" 
+with heart, bottom shows "PAYING CLIENTS $$" with money symbols.
+Bottom text: "Help first, sell second"
+```
+
+**Lesson 9 - Vision/Income:**
+```
+Day in the life - clock times with stick figure at laptop, at school pickup, relaxing. 
+Income numbers: "$200/session", "$5K/month", "15 hrs/week".
+Bottom text: "Your new life awaits"
+```
+
+### Step 10.2: Save Images
+
+Images generate to artifacts folder. Copy to permanent location:
+```bash
+mkdir -p public/images/lessons/{portal_slug}
+for i in 1 2 3 4 5 6 7 8 9; do
+  cp ~/.gemini/antigravity/brain/*/lesson_${i}_doodle*.png public/images/lessons/{portal_slug}/lesson-${i}-doodle.png 2>/dev/null
+done
+```
+
+### Step 10.3: Add to Lesson TSX
+
+Add `type: 'image'` message to each lesson (after income-hook card):
+```tsx
+{
+    id: 55,
+    type: 'image',
+    imageUrl: '/images/lessons/{portal_slug}/lesson-1-doodle.png',
+    imageAlt: 'Visual illustration of lesson concept',
+    content: 'Understanding the key concept',
+},
+```
+
+### Step 10.4: Upload to R2 (Optional, images work locally)
+
+// turbo
+```bash
+for i in {1..9}; do 
+  wrangler r2 object put accredipro/images/lessons/{portal_slug}/lesson-$i-doodle.png \
+    --file=public/images/lessons/{portal_slug}/lesson-$i-doodle.png
+done
+```
+
+**After completing: Update fix_plan.md - mark "Generate lesson images" as [x]**
+
+---
+
+## 🎤 Step 11: Generate Lesson Audio (F5-TTS) - LONG, RUN IN BACKGROUND
+
+**OPTIONAL BUT RECOMMENDED** - Adds Sarah's voice narration to each lesson.
+**Time:** ~10 min per lesson (~90 min total for all 9 on M3 Max)
+
+### Setup (One-time)
+- **Voice Engine:** `/Users/pochitino/Desktop/ralph-claude-code-main/voice-engine/`
+- **Reference Voice:** `sarah-voice.mp3` (Sarah's voice sample)
+- **Python:** `/Library/Frameworks/Python.framework/Versions/3.12/bin/python3.12`
+
+### Step 11.1: Create Audio Scripts
+
+**Directory:** `voice-engine/scripts/`
+
+For each lesson, create a plain-text script (NO markdown):
+- File: `lesson-{N}.txt`
+- Length: 400-600 words (~3 min audio)
+- Tone: Conversational, warm, inspiring
+- Voice: Sarah speaking directly to the learner
+
+**Script Structure:**
+```
+1. Hook (grab attention)
+2. Personal story or relatable example
+3. Core teaching (simplified concepts)
+4. Practical application
+5. Bridge to next lesson
+```
+
+**Reference:** See existing FM scripts at `voice-engine/scripts/lesson-*.txt`
+
+### Step 11.2: Generate Audio (Batch All Lessons)
+
+// turbo
+```bash
+cd /Users/pochitino/Desktop/ralph-claude-code-main/voice-engine && \
+/Library/Frameworks/Python.framework/Versions/3.12/bin/python3.12 generate_all_lessons.py
+```
+
+**Output:** `output/lessons/lesson-{N}.mp3` (~3MB each, 3 min each)
+
+> [!TIP]
+> Start this in background while doing other work - it takes ~90 min total.
+
+### Step 11.3: Upload to R2
+
+// turbo
+```bash
+for i in {1..9}; do
+  wrangler r2 object put accredipro/audio/{portal_slug}/lesson-$i.mp3 \
+    --file=/Users/pochitino/Desktop/ralph-claude-code-main/voice-engine/output/lessons/lesson-$i.mp3
+done
+```
+
+**Public URL:** `https://media.accredipro.academy/audio/{portal_slug}/lesson-{N}.mp3`
+
+### Step 11.4: Add to Lesson TSX
+
+Add `pre-recorded-audio` message or update `audioUrl`:
+```tsx
+{
+    id: 100,
+    type: 'pre-recorded-audio',
+    audioUrl: 'https://media.accredipro.academy/audio/{portal_slug}/lesson-1.mp3',
+    audioDuration: 180,
+    content: 'Listen to Sarah explain this lesson',
+},
+```
+
+**After completing: Update fix_plan.md - mark "Generate lesson audio" as [x]**
 
 ---
 
@@ -1140,6 +1364,10 @@ When complete, verify all files were created/modified:
 21. ✅ SMS template generated
 22. ✅ Build passes
 23. ✅ **Planning CSV status updated to "done"**
+24. ✅ **Audio scripts created** (9 lessons)
+25. ✅ **Audio generated via F5-TTS** (9 MP3s)
+26. ✅ **Doodle images generated** (9 images)
+27. ✅ **Media uploaded to R2**
 
 **Circle Pod System (Auto-runs after creation):**
 - ✅ Sarah AI replies (15-60 min delay, Claude Haiku)
@@ -1166,5 +1394,7 @@ When complete, verify all files were created/modified:
 - Test lessons at `/portal/{portal_slug}/lesson/1`
 - Test Circle Pod at `/portal/{portal_slug}` (sidebar)
 - (Optional) Create custom Stripe checkout link
+
+
 
 

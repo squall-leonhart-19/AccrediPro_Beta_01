@@ -29,21 +29,21 @@ const COURSE_SLUGS: Record<string, string> = {
 
 // Coach emails by mini diploma type
 const COACH_EMAILS: Record<string, string> = {
-    "womens-health": "sarah_womenhealth@accredipro-certificate.com",
-    "womens-hormone-health": "sarah_womenhealth@accredipro-certificate.com",
-    "functional-medicine": "sarah_womenhealth@accredipro-certificate.com",
-    "fm-healthcare": "sarah_womenhealth@accredipro-certificate.com", // Healthcare workers variant
-    "gut-health": "sarah_womenhealth@accredipro-certificate.com",
-    "hormone-health": "sarah_womenhealth@accredipro-certificate.com",
-    "holistic-nutrition": "sarah_womenhealth@accredipro-certificate.com",
-    "nurse-coach": "sarah_womenhealth@accredipro-certificate.com",
-    "health-coach": "sarah_womenhealth@accredipro-certificate.com",
-    "spiritual-healing": "sarah_womenhealth@accredipro-certificate.com",
-    "energy-healing": "sarah_womenhealth@accredipro-certificate.com",
-    "christian-coaching": "sarah_womenhealth@accredipro-certificate.com",
-    "reiki-healing": "sarah_womenhealth@accredipro-certificate.com",
-    "adhd-coaching": "sarah_womenhealth@accredipro-certificate.com",
-    "pet-nutrition": "sarah_womenhealth@accredipro-certificate.com",
+    "womens-health": "sarah@accredipro-certificate.com",
+    "womens-hormone-health": "sarah@accredipro-certificate.com",
+    "functional-medicine": "sarah@accredipro-certificate.com",
+    "fm-healthcare": "sarah@accredipro-certificate.com", // Healthcare workers variant
+    "gut-health": "sarah@accredipro-certificate.com",
+    "hormone-health": "sarah@accredipro-certificate.com",
+    "holistic-nutrition": "sarah@accredipro-certificate.com",
+    "nurse-coach": "sarah@accredipro-certificate.com",
+    "health-coach": "sarah@accredipro-certificate.com",
+    "spiritual-healing": "sarah@accredipro-certificate.com",
+    "energy-healing": "sarah@accredipro-certificate.com",
+    "christian-coaching": "sarah@accredipro-certificate.com",
+    "reiki-healing": "sarah@accredipro-certificate.com",
+    "adhd-coaching": "sarah@accredipro-certificate.com",
+    "pet-nutrition": "sarah@accredipro-certificate.com",
 };
 
 // Welcome messages by mini diploma type

@@ -24,6 +24,15 @@ export function Lesson3Inflammation({
     const [score, setScore] = useState(0);
 
     const messages: Message[] = [
+        // AUDIO NARRATION
+        {
+            id: 0,
+            type: 'pre-recorded-audio',
+            audioUrl: 'https://assets.accredipro.academy/audio/functional-medicine/lesson-3.mp3',
+            audioDuration: '3:31',
+            content: '🎧 Listen to Sarah explain this lesson',
+        },
+
         // HOOK - Shocking Stat
         {
             id: 1,
@@ -84,6 +93,15 @@ This is why anti-inflammatory coaching is a $2.3 BILLION market - and growing.`,
 
 "I specialize in autoimmune. My 12-week program is $2,400. I have 7 clients right now." - Jennifer, 49`,
             systemStyle: 'income-hook',
+        },
+
+        // VISUAL - Inflammation Concept
+        {
+            id: 55,
+            type: 'image',
+            imageUrl: 'https://assets.accredipro.academy/images/lessons/functional-medicine/lesson-3-doodle.png',
+            imageAlt: 'Inflammation - the silent fire',
+            content: 'Understanding the fire within',
         },
 
         // OBJECTION CRUSHER: "I don't have science background"

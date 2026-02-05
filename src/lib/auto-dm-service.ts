@@ -80,7 +80,7 @@ export async function sendPurchaseDMs(options: SendPurchaseDMsOptions): Promise<
         const coachInfo = COACH_INFO[niche.coach];
 
         // Find coach for MAIN COURSE purchases - use sarah@accredipro-certificate.com
-        // Mini diploma uses sarah_womenhealth@ (handled in auto-messages.ts for wh_* triggers)
+        // Mini diploma uses sarah@ (handled in auto-messages.ts for wh_* triggers)
         const coachUser = await prisma.user.findFirst({
             where: {
                 OR: [

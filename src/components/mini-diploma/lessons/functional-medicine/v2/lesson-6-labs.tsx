@@ -24,6 +24,15 @@ export function Lesson6Labs({
     const [score, setScore] = useState(0);
 
     const messages: Message[] = [
+        // AUDIO NARRATION
+        {
+            id: 0,
+            type: 'pre-recorded-audio',
+            audioUrl: 'https://assets.accredipro.academy/audio/functional-medicine/lesson-6.mp3',
+            audioDuration: '3:45',
+            content: '🎧 Listen to Sarah explain this lesson',
+        },
+
         // HOOK - Personal Story
         {
             id: 1,
@@ -91,6 +100,15 @@ Functional ranges catch issues 5-10 years earlier. This is why clients will PAY 
 
 "I do 8-10 lab reviews per month at $225. That's $1,800-2,250 BEFORE coaching." - Teresa, 53`,
             systemStyle: 'income-hook',
+        },
+
+        // VISUAL - Lab Ranges
+        {
+            id: 62,
+            type: 'image',
+            imageUrl: 'https://assets.accredipro.academy/images/lessons/functional-medicine/lesson-6-doodle.png',
+            imageAlt: 'Normal vs optimal lab ranges',
+            content: 'Understanding the difference',
         },
 
         // OBJECTION CRUSHER: "I'm not a doctor - can I interpret labs?"
