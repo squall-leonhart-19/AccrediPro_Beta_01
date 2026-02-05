@@ -149,6 +149,12 @@ export default function ScholarshipsClient() {
   const [showQuickReplies, setShowQuickReplies] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const selectedVisitorIdRef = useRef<string | null>(null);
+
+  // Keep ref in sync with selected app
+  useEffect(() => {
+    selectedVisitorIdRef.current = selectedApp?.visitorId || null;
+  }, [selectedApp?.visitorId]);
 
   const fetchApplications = async () => {
     try {
@@ -160,13 +166,12 @@ export default function ScholarshipsClient() {
       }));
       setApplications(newApps);
 
-      if (selectedApp) {
-        const updated = newApps.find(a => a.visitorId === selectedApp.visitorId);
+      // Use ref to get current selected visitor ID (avoids stale closure)
+      const currentVisitorId = selectedVisitorIdRef.current;
+      if (currentVisitorId) {
+        const updated = newApps.find(a => a.visitorId === currentVisitorId);
         if (updated) {
           setSelectedApp(updated);
-          if (!visitorNotes && updated.notes) {
-            setVisitorNotes(updated.notes);
-          }
         }
       }
     } catch (err) {
