@@ -133,7 +133,7 @@ async function schedulePreCompletionWelcome(
         },
     });
 
-    // Zombie messages - also retroactive
+    // Zombie messages - retroactive backstory + real-time welcome
     for (let i = 0; i < welcomeMsg.zombies.length; i++) {
         const zombieGroup = welcomeMsg.zombies[i];
         const randomIdx = Math.floor(Math.random() * zombieGroup.options.length);
@@ -143,9 +143,15 @@ async function schedulePreCompletionWelcome(
             .replace(/{zombieName}/g, zombieName)
             .replace(/{zombieFirstName}/g, zombieFirstName);
 
-        // Parse delay: "retroactive-1h" -> 1 hour ago, "retroactive-30min" -> 30 min ago
+        // Parse delay: 
+        // "retroactive-1h" -> 1 hour ago
+        // "retroactive-30min" -> 30 min ago  
+        // "now+2min" -> 2 minutes from now (real-time)
         let zombieTime: Date;
+        let isRetroactive = false;
+
         if (zombieGroup.delay.startsWith("retroactive-")) {
+            isRetroactive = true;
             const delayPart = zombieGroup.delay.replace("retroactive-", "");
             if (delayPart.endsWith("h")) {
                 const hours = parseInt(delayPart.replace("h", ""));
@@ -156,8 +162,21 @@ async function schedulePreCompletionWelcome(
             } else {
                 zombieTime = new Date(now.getTime() - (60 - i * 15) * 60 * 1000);
             }
+        } else if (zombieGroup.delay.startsWith("now+")) {
+            // Real-time message: "now+2min" -> send 2 minutes from now
+            const delayPart = zombieGroup.delay.replace("now+", "");
+            if (delayPart.endsWith("min")) {
+                const mins = parseInt(delayPart.replace("min", ""));
+                zombieTime = new Date(now.getTime() + mins * 60 * 1000);
+            } else if (delayPart.endsWith("sec")) {
+                const secs = parseInt(delayPart.replace("sec", ""));
+                zombieTime = new Date(now.getTime() + secs * 1000);
+            } else {
+                zombieTime = new Date(now.getTime() + 2 * 60 * 1000); // default 2 min
+            }
         } else {
             // Default: stagger retroactively (1h, 45min, 30min ago, etc.)
+            isRetroactive = true;
             zombieTime = new Date(now.getTime() - (60 - i * 15) * 60 * 1000);
         }
 
@@ -170,7 +189,7 @@ async function schedulePreCompletionWelcome(
                 senderAvatar: zombieAvatar,
                 content,
                 scheduledFor: zombieTime,
-                sentAt: zombieTime, // Already "sent" (retroactive)
+                sentAt: isRetroactive ? zombieTime : null, // Only retroactive messages are "already sent"
             },
         });
     }

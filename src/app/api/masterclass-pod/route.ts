@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
                         OR: [
                             { sentAt: { not: null } },
                             { senderType: "user" },
+                            { scheduledFor: { lte: new Date() } }, // Include scheduled messages whose time has passed
                         ],
                         ...(cursor ? { createdAt: { lt: (await prisma.masterclassMessage.findUnique({ where: { id: cursor } }))?.createdAt } } : {}),
                     },
@@ -90,6 +91,7 @@ export async function GET(request: NextRequest) {
                             OR: [
                                 { sentAt: { not: null } },
                                 { senderType: "user" },
+                                { scheduledFor: { lte: new Date() } },
                             ],
                         },
                         orderBy: { createdAt: "asc" },

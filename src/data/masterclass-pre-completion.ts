@@ -18,7 +18,7 @@ export interface PreCompletionMessage {
 }
 
 export const preCompletionMessages: PreCompletionMessage[] = [
-    // ============ WELCOME (On Opt-in) - RETROACTIVE ============
+    // ============ WELCOME (On Opt-in) - RETROACTIVE + REAL-TIME ============
     {
         trigger: "optin",
         lesson: 0,
@@ -43,6 +43,7 @@ Sarah
 
 P.S. - You have 48 hours to complete all 9 lessons + the exam. It's designed to be done in one focused sitting, but take breaks when you need them!`,
         zombies: [
+            // RETROACTIVE - zombie's backstory (appears as if posted earlier)
             {
                 delay: "retroactive-1h", options: [
                     "omg just joined too!! 🎉 I'm {zombieFirstName}, 48, from Ohio. Former ER nurse - 18 years. Burnt out so bad I collapsed at work. Found functional medicine when I was trying to fix my own thyroid issues. SO excited to be here!! who else is new?? 💕",
@@ -53,8 +54,17 @@ P.S. - You have 48 hours to complete all 9 lessons + the exam. It's designed to 
                     "Hi Sarah!! I'm so nervous but excited too 🥹 Cant believe were actually doing this. Ive been thinking about getting certified for 2 years and finally just went for it. Anyone else feeling the same way??",
                 ]
             },
+            // REAL-TIME - zombie welcomes the NEW student personally
+            {
+                delay: "now+2min", options: [
+                    "omg @{firstName} welcome!! 🎉💕 so glad you're here!! we're all in this together 🙌",
+                    "hey @{firstName}!! yay another one joined!! 🥳 were gonna crush this together 💪",
+                    "@{firstName} welcome welcome!! 🎉 so excited to have you in our cohort!! lets do this 💕",
+                ]
+            },
         ]
     },
+
 
     // ============ LESSON 3 COMPLETE (33% MILESTONE) ============
     {
