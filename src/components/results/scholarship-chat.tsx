@@ -46,6 +46,32 @@ interface ChatMessage {
   audioUrl?: string; // For audio messages
 }
 
+// Helper to render message with clickable links
+function renderMessageWithLinks(text: string, isFromUser: boolean) {
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlPattern);
+
+  return parts.map((part, index) => {
+    if (part.match(urlPattern)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`underline hover:opacity-80 break-all ${
+            isFromUser ? "text-blue-200" : "text-blue-600"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+        </a>
+      );
+    }
+    return <span key={index}>{part}</span>;
+  });
+}
+
 interface StoredChat {
   visitorId: string;
   messages: ChatMessage[];
@@ -397,6 +423,11 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
   // ─── Start scholarship chat ──────────────────────────────────────
   const startScholarshipChat = useCallback(async () => {
     if (hasStarted) return;
+    if (!visitorId) {
+      console.error("[Scholarship Chat] No visitorId - cannot start chat");
+      return;
+    }
+    console.log("[Scholarship Chat] Starting chat for visitor:", visitorId);
     setHasStarted(true);
 
     // 1. Register optin
@@ -458,6 +489,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           visitorId,
           userName: `${firstName} ${lastName}`.trim(),
           userEmail: email,
+          isFromVisitor: true, // This is visitor's application data
         }),
       });
     } catch {}
@@ -470,18 +502,25 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     // Helper to save Sarah's message to database (so admin can see it)
     const saveSarahMessage = async (content: string) => {
       try {
-        await fetch("/api/chat/sales", {
+        const res = await fetch("/api/chat/sales", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             message: content,
             page: `scholarship-${page}`,
             visitorId,
+            userName: `${firstName} ${lastName}`.trim(),
+            userEmail: email,
             isFromVisitor: false, // This is Sarah's message
             repliedBy: "Sarah M. (Auto)",
           }),
         });
-      } catch {}
+        if (!res.ok) {
+          console.error("[Scholarship Chat] Failed to save Sarah message:", await res.text());
+        }
+      } catch (err) {
+        console.error("[Scholarship Chat] Error saving Sarah message:", err);
+      }
     };
 
     // NEW WELCOME SEQUENCE - Clear "Name Your Price" Scholarship Model
@@ -652,10 +691,12 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
               message: autoResponse.content,
               page: `scholarship-${page}`,
               visitorId,
+              userName: `${firstName} ${lastName}`.trim(),
+              userEmail: email,
               isFromVisitor: false,
               repliedBy: "Sarah M. (Auto)",
             }),
-          }).catch(() => {});
+          }).catch((err) => console.error("[Scholarship Chat] Auto-response save error:", err));
         }, 2000);
       }, 1000);
     }
@@ -819,10 +860,16 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
               {msg.audioUrl ? (
                 <div className="min-w-[200px]">
                   <AudioMessage url={msg.audioUrl} isFromUser={msg.role === "user"} />
-                  {msg.content && <p className="whitespace-pre-wrap mt-2 text-xs opacity-80">{msg.content}</p>}
+                  {msg.content && (
+                    <p className="whitespace-pre-wrap mt-2 text-xs opacity-80">
+                      {renderMessageWithLinks(msg.content, msg.role === "user")}
+                    </p>
+                  )}
                 </div>
               ) : (
-                <p className="whitespace-pre-wrap">{msg.content}</p>
+                <p className="whitespace-pre-wrap">
+                  {renderMessageWithLinks(msg.content, msg.role === "user")}
+                </p>
               )}
               {/* Voice message player for first welcome message */}
               {msg.id === "sarah-1" && welcomeAudioUrl && (

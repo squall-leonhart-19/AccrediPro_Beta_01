@@ -24,6 +24,7 @@ import {
   Mail,
   User,
   TrendingUp,
+  Volume2,
 } from "lucide-react";
 
 // ─── Brand ─────────────────────────────────────────────────────────
@@ -582,7 +583,13 @@ export default function DEPTHMethodQuiz() {
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [reaction, setReaction] = useState<string | null>(null);
+  const [isTyping, setIsTyping] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showExitPopup, setShowExitPopup] = useState(false);
+  const exitPopupShown = useRef(false);
+  const [welcomeAudio, setWelcomeAudio] = useState<string | null>(null);
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [direction, setDirection] = useState(1);
   const [reviewStep, setReviewStep] = useState(0);
   const [optinTimer, setOptinTimer] = useState(900);
@@ -629,6 +636,32 @@ export default function DEPTHMethodQuiz() {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [stage]);
 
+  // Exit-intent detection (desktop: mouse leaves top, mobile: visibility change)
+  useEffect(() => {
+    if (stage === "result" || stage === "qualified" || stage === "reviewing") return;
+
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !exitPopupShown.current && stage !== "intro") {
+        exitPopupShown.current = true;
+        setShowExitPopup(true);
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden && !exitPopupShown.current && stage !== "intro") {
+        exitPopupShown.current = true;
+        setShowExitPopup(true);
+      }
+    };
+
+    document.addEventListener("mouseleave", handleMouseLeave);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("mouseleave", handleMouseLeave);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [stage]);
+
   const formatTimer = (s: number) => {
     const m = Math.floor(s / 60);
     const sec = s % 60;
@@ -654,6 +687,16 @@ export default function DEPTHMethodQuiz() {
     return () => clearInterval(interval);
   }, [stage, fireConfetti, reviewSteps.length]);
 
+  // Auto-redirect after qualified stage (2 seconds)
+  useEffect(() => {
+    if (stage !== "qualified") return;
+    const redirectTimer = setTimeout(() => {
+      handleSeeResults();
+    }, 2000);
+    return () => clearTimeout(redirectTimer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
+
   const getStepNumber = (): number => {
     if (stage === "intro") return 0;
     if (stage === "optin" || stage === "reviewing" || stage === "qualified" || stage === "result") return TOTAL_STEPS;
@@ -664,19 +707,57 @@ export default function DEPTHMethodQuiz() {
 
   const selectAnswer = (value: string, _reactionText: string) => {
     setAnswers((prev) => ({ ...prev, [currentQ]: value }));
-    // Use dynamic persona-aware reaction (skip for Q1 since persona not set yet)
-    if (currentQ === 0) {
-      const opt = QUESTIONS[0].options.find((o) => o.value === value);
-      setReaction(opt?.reaction || "");
-    } else {
-      setReaction(getReaction(currentQ, value));
+    // Show "Sarah is typing..." for 1.2 seconds before showing reaction
+    setReaction(null);
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+      // Use dynamic persona-aware reaction (skip for Q1 since persona not set yet)
+      if (currentQ === 0) {
+        const opt = QUESTIONS[0].options.find((o) => o.value === value);
+        setReaction(opt?.reaction || "");
+      } else {
+        setReaction(getReaction(currentQ, value));
+      }
+    }, 1200);
+  };
+
+  // Fetch and play welcome audio when transitioning from intro to quiz
+  const playWelcomeAudio = async (firstName: string) => {
+    try {
+      const res = await fetch("/api/scholarship/welcome-audio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.audio) {
+          setWelcomeAudio(data.audio);
+          // Auto-play after a short delay
+          setTimeout(() => {
+            if (audioRef.current) {
+              audioRef.current.play().catch(() => {});
+              setAudioPlaying(true);
+            }
+          }, 2000);
+        }
+      }
+    } catch {
+      // Silently fail - audio is a nice-to-have
     }
   };
 
   const handleNext = () => {
     setDirection(1);
     setReaction(null);
-    if (stage === "intro") { if (!name.trim()) return; setStage("quiz"); return; }
+    if (stage === "intro") {
+      if (!name.trim()) return;
+      setStage("quiz");
+      // Fetch personalized welcome audio in background
+      playWelcomeAudio(name.trim());
+      return;
+    }
     if (stage === "testimonial") {
       if (currentQ < QUESTIONS.length - 1) { setCurrentQ(currentQ + 1); setStage("quiz"); }
       else { setStage("optin"); }
@@ -790,18 +871,25 @@ export default function DEPTHMethodQuiz() {
           </div>
 
           {/* Welcome Message */}
-          <div className="space-y-4 text-center">
+          <div className="space-y-3 text-center">
             <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-              <em>&quot;Hey there! 👋 I&apos;m Sarah — a former burned-out ER nurse and single mum who was missing my kids&apos; school plays just to survive another double shift.</em>
+              <em>&quot;Hey! 👋 I&apos;m Sarah — I went from burned-out ER nurse and single mom to earning $15K/month as a <strong style={{ color: BRAND.burgundy }}>Functional Medicine Practitioner</strong>. Working from home. My own hours.</em>
             </p>
             <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-              <em>I built a 6-figure practice using the DEPTH Method... and I&apos;ve helped 2,847+ women do the same.</em>
+              <em>I&apos;ve helped 2,847+ women do the same — even with <strong>ZERO medical background</strong>.</em>
             </p>
-            <p className="text-sm sm:text-base font-medium leading-relaxed" style={{ color: BRAND.burgundy }}>
-              <em>This clinical assessment will reveal your Practitioner Type and earning potential. Not everyone qualifies — but let&apos;s see if YOU do.</em>
-            </p>
+            <div className="py-2 px-3 rounded-lg mx-auto max-w-sm" style={{ backgroundColor: `${BRAND.gold}10` }}>
+              <p className="text-xs sm:text-sm font-medium" style={{ color: BRAND.burgundy }}>
+                This 3-minute quiz reveals:
+              </p>
+              <div className="flex flex-col items-start gap-1 mt-2 text-xs sm:text-sm text-gray-700">
+                <span>✅ Your best-fit specialty</span>
+                <span>✅ Your realistic earning potential</span>
+                <span>✅ If you qualify for a scholarship</span>
+              </div>
+            </div>
             <p className="text-sm sm:text-base text-gray-700">
-              <em>First, what&apos;s your name?&quot;</em>
+              <em>What&apos;s your first name?&quot;</em>
             </p>
           </div>
 
@@ -1019,71 +1107,38 @@ export default function DEPTHMethodQuiz() {
     if (stage === "qualified") {
       const PractIcon = practitionerType.icon;
       return (
-        <div className="space-y-5 text-center">
-          <div className="flex justify-center">
-            <Image src={ASI_LOGO} alt="ASI" width={56} height={56} />
-          </div>
+        <div className="space-y-5 text-center py-4">
           <div className="relative inline-block">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-lg" style={{ background: BRAND.goldMetallic }}>
-              <PractIcon className="w-10 h-10" style={{ color: BRAND.burgundyDark }} />
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto shadow-lg" style={{ background: BRAND.goldMetallic }}>
+              <PractIcon className="w-8 h-8" style={{ color: BRAND.burgundyDark }} />
             </div>
-            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-md whitespace-nowrap" style={{ background: BRAND.burgundy, color: "white" }}>You Qualify</div>
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-md whitespace-nowrap" style={{ background: BRAND.burgundy, color: "white" }}>You Qualify!</div>
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold" style={{ color: BRAND.burgundy }}>{name}, You Qualify!</h2>
-          <p className="text-gray-600 text-sm">Based on your assessment, ASI has identified you as a</p>
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-lg" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-            <PractIcon className="w-5 h-5" /> {practitionerType.label}
+          <h2 className="text-xl md:text-2xl font-bold" style={{ color: BRAND.burgundy }}>{name}, You Qualify!</h2>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+            <PractIcon className="w-4 h-4" /> {practitionerType.label}
           </div>
-          <p className="text-sm text-gray-600">{practitionerType.description}</p>
 
-          {/* DYNAMIC qualification framing */}
-          <div className="p-4 rounded-xl" style={{ backgroundColor: `${BRAND.gold}08`, border: `1px solid ${BRAND.gold}40` }}>
-            <div className="flex items-center justify-between mb-2">
+          {/* Qualification Score - compact */}
+          <div className="p-3 rounded-xl" style={{ backgroundColor: `${BRAND.gold}08`, border: `1px solid ${BRAND.gold}40` }}>
+            <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-semibold" style={{ color: BRAND.burgundy }}>Qualification Score</span>
-              <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                {qualScore}%
-              </span>
+              <span className="text-xs font-bold" style={{ color: BRAND.burgundy }}>{qualScore}%</span>
             </div>
             <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
               <motion.div className="h-full rounded-full" style={{ background: BRAND.burgundyGold }}
                 initial={{ width: 0 }} animate={{ width: `${qualScore}%` }}
                 transition={{ duration: 1, ease: "easeOut" }} />
             </div>
-            <p className="text-[10px] text-gray-500 mt-1.5">
-              <span className="font-bold" style={{ color: BRAND.burgundy }}>{qualFraming.percentile}</span> of all applicants. {qualFraming.reason}
+            <p className="text-[10px] text-gray-500 mt-1">
+              <span className="font-bold" style={{ color: BRAND.burgundy }}>{qualFraming.percentile}</span> of applicants
             </p>
           </div>
 
-          {/* Certificate preview + DYNAMIC subtitle */}
-          <div className="flex justify-center">
-            <div className="relative w-full max-w-[220px]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={CERTIFICATE_IMG} alt="Your ASI Certificate" className="w-full rounded-lg shadow-lg border border-gray-200" />
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-md whitespace-nowrap" style={{ background: BRAND.burgundy, color: "white" }}>
-                {practitionerType.label}
-              </div>
-            </div>
-          </div>
-          <p className="text-xs text-gray-500 italic">{certSubtitle}</p>
-
-          {/* Bundle Preview */}
-          <div className="flex justify-center">
-            <div className="relative w-full max-w-[280px]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={BUNDLE_IMG} alt="FM Certification Bundle" className="w-full rounded-lg shadow-lg" />
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-md whitespace-nowrap" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                Everything Included
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-3 text-center">
-            {[{ val: "$5-10K+", label: "Monthly Income" }, { val: "30 Days", label: "To Certify" }, { val: "73%", label: "Clients in 30d" }].map((s) => (
-              <div key={s.label} className="p-2 rounded-lg" style={{ backgroundColor: `${BRAND.gold}08` }}>
-                <div className="text-lg font-bold" style={{ color: BRAND.burgundy }}>{s.val}</div>
-                <div className="text-[10px] text-gray-500">{s.label}</div>
-              </div>
-            ))}
+          {/* Loading indicator */}
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+            <Loader2 className="w-4 h-4 animate-spin" style={{ color: BRAND.burgundy }} />
+            <span>Preparing your scholarship page...</span>
           </div>
         </div>
       );
@@ -1104,7 +1159,68 @@ export default function DEPTHMethodQuiz() {
     const dynamicSubtitle = getSubtitle(currentQ);
     return (
       <div className="space-y-5">
-        {reaction && (
+        {/* Welcome audio player - shows on Q1 if audio is loaded */}
+        {welcomeAudio && currentQ === 0 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="rounded-xl p-3 border flex items-center justify-between gap-3"
+            style={{ backgroundColor: `${BRAND.burgundy}08`, borderColor: `${BRAND.burgundy}30` }}
+          >
+            <div className="flex items-center gap-2">
+              <Volume2 className="w-4 h-4" style={{ color: BRAND.burgundy }} />
+              <span className="text-xs font-medium" style={{ color: BRAND.burgundy }}>
+                {audioPlaying ? "🎧 Listening to Sarah..." : "🎧 Hear Sarah's welcome message"}
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                if (audioRef.current) {
+                  if (audioPlaying) {
+                    audioRef.current.pause();
+                    setAudioPlaying(false);
+                  } else {
+                    audioRef.current.play().catch(() => {});
+                    setAudioPlaying(true);
+                  }
+                }
+              }}
+              className="text-xs font-bold px-3 py-1.5 rounded-full transition-colors"
+              style={{
+                backgroundColor: audioPlaying ? `${BRAND.burgundy}20` : BRAND.burgundy,
+                color: audioPlaying ? BRAND.burgundy : "white",
+              }}
+            >
+              {audioPlaying ? "Pause" : "Play"}
+            </button>
+            <audio
+              ref={audioRef}
+              src={welcomeAudio}
+              onEnded={() => setAudioPlaying(false)}
+              className="hidden"
+            />
+          </motion.div>
+        )}
+
+        {/* Sarah is typing indicator */}
+        {isTyping && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl p-4 border flex items-start gap-3" style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}30` }}
+          >
+            <Image src={SARAH_AVATAR} alt="Sarah" width={36} height={36} className="rounded-full border-2 object-cover flex-shrink-0" style={{ borderColor: BRAND.gold }} />
+            <div className="flex items-center gap-1.5 pt-1">
+              <span className="text-sm font-medium" style={{ color: BRAND.burgundy }}>Sarah is typing</span>
+              <span className="flex gap-0.5">
+                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: BRAND.burgundy, animationDelay: "0ms" }} />
+                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: BRAND.burgundy, animationDelay: "150ms" }} />
+                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: BRAND.burgundy, animationDelay: "300ms" }} />
+              </span>
+            </div>
+          </motion.div>
+        )}
+        {reaction && !isTyping && (
           <motion.div
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1196,21 +1312,8 @@ export default function DEPTHMethodQuiz() {
               <div className="px-5 py-3" style={{ background: BRAND.goldMetallic }}>
                 <span className="text-sm font-bold" style={{ color: BRAND.burgundyDark }}>Assessment Complete - You Qualify!</span>
               </div>
-              <div className="p-6 md:p-10">
+              <div className="p-6 md:p-8">
                 {renderContent()}
-                <div className="pt-6 mt-4 border-t border-gray-100">
-                  <Button onClick={handleSeeResults} size="lg"
-                    className="group w-full h-14 text-base font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 relative overflow-hidden"
-                    style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                    <span className="relative flex items-center justify-center">
-                      See My Personalized Certification Path <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </Button>
-                  <p className="text-center text-[10px] text-gray-400 mt-2">
-                    Only {cohort.spots} spots remaining in the {cohort.name}
-                  </p>
-                </div>
               </div>
             </div>
           </div>
@@ -1222,6 +1325,56 @@ export default function DEPTHMethodQuiz() {
   // ─── Main Layout ────────────────────────────────────────────────
   return (
     <div className="min-h-screen" style={{ background: `linear-gradient(to bottom right, ${BRAND.cream}, #f5f0e8)` }}>
+      {/* Exit-Intent Popup */}
+      <AnimatePresence>
+        {showExitPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            onClick={() => setShowExitPopup(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+              style={{ border: `3px solid ${BRAND.gold}` }}
+            >
+              <div className="text-center space-y-4">
+                <div className="text-5xl">⏰</div>
+                <h3 className="text-xl font-bold" style={{ color: BRAND.burgundy }}>
+                  Wait! Don&apos;t lose your progress!
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  You&apos;re <strong>{progress}% done</strong> with your assessment. Just a few more questions to see if you qualify for a scholarship!
+                </p>
+                <div className="pt-2 space-y-3">
+                  <Button
+                    onClick={() => setShowExitPopup(false)}
+                    className="w-full h-12 text-base font-bold rounded-xl"
+                    style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
+                  >
+                    Continue My Assessment
+                  </Button>
+                  <button
+                    onClick={() => setShowExitPopup(false)}
+                    className="text-xs text-gray-400 hover:text-gray-600"
+                  >
+                    I&apos;ll come back later
+                  </button>
+                </div>
+                <p className="text-[10px] text-gray-400">
+                  ⚠️ Your answers will NOT be saved if you leave
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="py-6 md:py-10 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ background: "#fff", boxShadow: `0 0 0 3px ${BRAND.gold}40, 0 25px 50px -12px rgba(114, 47, 55, 0.25)` }}>

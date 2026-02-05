@@ -75,6 +75,33 @@ interface ScholarshipApplication {
   };
 }
 
+// Helper to render message with clickable links
+function renderMessageWithLinks(text: string, isFromVisitor: boolean) {
+  // URL regex pattern
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlPattern);
+
+  return parts.map((part, index) => {
+    if (part.match(urlPattern)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`underline hover:opacity-80 break-all ${
+            isFromVisitor ? "text-blue-600" : "text-blue-200"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+        </a>
+      );
+    }
+    return <span key={index}>{part}</span>;
+  });
+}
+
 // Scholarship quick reply templates
 const SCHOLARSHIP_REPLIES = [
   {
@@ -983,7 +1010,9 @@ export default function ScholarshipsClient() {
                               )}
                             </div>
                           ) : (
-                            <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.message}</p>
+                            <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                              {renderMessageWithLinks(msg.message, msg.isFromVisitor)}
+                            </p>
                           )}
                           <div className={`flex items-center gap-1.5 mt-1 ${msg.isFromVisitor ? "text-gray-400" : "text-white/60"}`}>
                             <span className="text-xs">{formatTime(msg.createdAt)}</span>

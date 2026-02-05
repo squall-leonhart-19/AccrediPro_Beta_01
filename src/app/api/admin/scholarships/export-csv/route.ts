@@ -2,15 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
-import { existsSync } from "fs";
 
 /**
  * POST /api/admin/scholarships/export-csv
  *
- * Export scholarship applications to CSV and save to server folder.
- * Also returns the CSV for browser download.
+ * Export scholarship applications to CSV.
+ * Returns the CSV for browser download.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -124,20 +121,10 @@ export async function POST(request: NextRequest) {
 
     const csv = rows.join("\n");
 
-    // Save to server folder
-    const exportDir = join(process.cwd(), "exports", "scholarship-csvs");
-    if (!existsSync(exportDir)) {
-      await mkdir(exportDir, { recursive: true });
-    }
-
     const timestamp = new Date().toISOString().split("T")[0];
-    const timeStr = new Date().toISOString().replace(/[:.]/g, "-");
-    const filename = `scholarship-applications-${timestamp}-${timeStr}.csv`;
-    const filepath = join(exportDir, filename);
+    const filename = `scholarship-applications-${timestamp}.csv`;
 
-    await writeFile(filepath, csv, "utf-8");
-
-    console.log(`[CSV Export] Saved ${grouped.size} applications to ${filepath}`);
+    console.log(`[CSV Export] Exporting ${grouped.size} applications`);
 
     // Return CSV for browser download
     return new NextResponse(csv, {
@@ -145,7 +132,6 @@ export async function POST(request: NextRequest) {
       headers: {
         "Content-Type": "text/csv; charset=utf-8",
         "Content-Disposition": `attachment; filename="${filename}"`,
-        "X-Server-Path": filepath,
       },
     });
   } catch (error) {
