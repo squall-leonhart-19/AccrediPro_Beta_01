@@ -35,6 +35,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the reply message
+    // Note: repliedBy is a foreign key to User, so we use the session user's ID
+    // The display name "Sarah M." is shown on the frontend
     const reply = await prisma.salesChat.create({
       data: {
         visitorId,
@@ -44,7 +46,7 @@ export async function POST(request: NextRequest) {
         isRead: true,
         visitorName: existingMessage.visitorName,
         visitorEmail: existingMessage.visitorEmail,
-        repliedBy: "Sarah M. (Scholarship)",
+        repliedBy: session.user.id, // Use actual user ID for foreign key
       },
     });
 
