@@ -665,8 +665,8 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           const t2b = setTimeout(async () => {
             setIsTyping(false);
 
-            // Message 2: Full value recap - what they get
-            const msg2Content = `Here's exactly what you're getting with the ASI Scholarship:\n\n🎓 Practitioner + Advanced + Master Certifications\n📚 All 9 Specializations (Hormone, Gut, Metabolic, etc.)\n👨‍🏫 1:1 Mentorship from ASI Faculty\n💼 Client Acquisition System\n📝 Done-For-You Offer Templates\n🌐 Website & Marketing Materials\n♾️ LIFETIME Access\n\n💰 Total Value: $4,997\n\nOther programs like IIN charge $5,000+ and leave you without clients. ASI builds CAREERS — our practitioners earn $5K-$10K+/month.`;
+            // Message 2: Full value recap - what they get - $14,365 VALUE STACK
+            const msg2Content = `Here's what you're getting with the ASI FM Certification:\n\n🎓 CORE CERTIFICATIONS ($2,991)\n   • Practitioner + Advanced + Master Levels\n\n📚 ALL 9 SPECIALIZATIONS ($2,673)\n   • Hormone, Gut, Metabolic, Burnout, Autoimmune, Thyroid, Brain, Sleep, Anti-Inflammatory\n\n💼 BUSINESS SYSTEM ($1,582)\n   • Client Acquisition, Social Calendar, Email Sequences, Scripts, Sales Pages\n\n🖥️ COACH WORKSPACE ($1,085)\n   • Client Portal, Session Notes, Progress Tracker, Protocol Library, Intake Forms\n\n⚖️ LEGAL PROTECTION ($685)\n   • Contracts, Waivers, HIPAA Guide, Consent Forms, Scope Guidelines\n\n👥 COMMUNITY ACCESS ($1,988)\n   • Practitioner Network, Weekly Q&A, Case Studies, Accountability Groups\n\n👩‍🏫 1:1 MENTORSHIP WITH SARAH ($1,688)\n   • Welcome Call, Weekly Check-ins, Business Launch, 90-Day Review\n\n📦 DONE-FOR-YOU ASSETS ($685)\n   • Bio Templates, Website Copy, Marketing Swipe Files\n\n🎁 BONUSES ($988)\n   • Lab Cheat Sheets, Supplement Database, Meal Plans, Client Automation\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 TOTAL VALUE: $14,365\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nThis is EVERYTHING you need to go from where you are now to earning $10K+/month as a certified practitioner.`;
 
             const msg2: ChatMessage = {
               id: "sarah-2",
@@ -685,10 +685,11 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
 
                 // Get their pre-stated budget from quiz (if available)
                 const budgetFromQuiz = quizData.investmentBudget || "";
-                const budgetLabel = budgetFromQuiz ? ` (You indicated $${budgetFromQuiz} in your application)` : "";
+                const budgetLabel = budgetFromQuiz ? ` (You mentioned $${budgetFromQuiz} in your application)` : "";
 
-                // Message 3: Open investment ask (NO tier list - scares people off)
-                const msg3Content = `The Institute offers limited scholarships, but spots are VERY limited. Other students need help too, so we ask for a minimum commitment.\n\n${firstName}, what amount can you realistically invest in yourself TODAY?${budgetLabel}\n\nType ANY number — there's no wrong answer. I'll call the Institute right now and see if they can cover the rest for you! 📞`;
+                // Message 3: Softer investment ask - reference $14,365 value, no tiers
+                const msg3Content = `${firstName}, the Institute is offering to cover most of this $14,365 value through a one-time scholarship.\n\nScholarship recipients typically invest a fraction of the value — whatever feels right for their situation. There's no judgment here.\n\nI just need to know one thing:${budgetLabel}\n\n💬 What amount can you realistically invest in yourself TODAY?\n\nType any number — I'll call the Institute right now and see if they can cover the rest! 📞`;
+
 
 
                 const msg3: ChatMessage = {

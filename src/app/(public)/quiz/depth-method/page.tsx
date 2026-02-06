@@ -585,16 +585,27 @@ const QUESTIONS: QuizStep[] = [
     ],
   },
   {
-    id: 15, pillar: "Investment",
-    question: "The ASI Certification includes: Practitioner + Advanced + Master levels, 9 specializations, 1:1 mentorship, client acquisition system, offer templates, marketing materials, and lifetime access. Total value: $4,997.",
-    subtitle: "⚠️ Other programs like IIN charge $5,000+ and leave you without clients. ASI builds CAREERS — practitioners earning $5K-$10K+/month. The Institute offers scholarships, but spots are LIMITED. If you're not serious about transforming your life, please leave this page now. What amount between $500-$1,000 could you invest TODAY?",
+    id: 15, pillar: "Commitment",
+    question: "The ASI FM Certification includes EVERYTHING you need to launch a $10K+/month practice. Here's what you're getting:",
+    subtitle: `🎓 CORE: Practitioner + Advanced + Master Certification ($2,991)
+📚 9 SPECIALIZATIONS: Hormone, Gut, Metabolic, Burnout, Autoimmune, Thyroid, Brain, Sleep, Anti-Inflammatory ($2,673)
+💼 BUSINESS SYSTEM: Client Acquisition, Social Calendar, Email Sequences, Scripts, Sales Pages ($1,582)
+🖥️ COACH WORKSPACE: Client Portal, Session Notes, Progress Tracker, Protocol Library, Intake Forms ($1,085)
+⚖️ LEGAL: Contracts, Waivers, HIPAA Guide, Consent Forms, Scope Guidelines ($685)
+👥 COMMUNITY: Practitioner Network, Weekly Q&A, Case Studies, Accountability Groups ($1,988)
+👩‍🏫 MENTORSHIP: Welcome Call, Weekly Check-ins, Business Launch, 90-Day Review ($1,688)
+📦 DONE-FOR-YOU: Bio Templates, Website Copy, Marketing Swipe Files, Testimonial Templates ($685)
+🎁 BONUSES: Lab Cheat Sheets, Supplement Database, Meal Plans, Client Automation ($988)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOTAL VALUE: $14,365 → One-Time Investment
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Would you like to apply for a scholarship?`,
     options: [
-      { label: "$500 (Minimum to qualify)", value: "500", reaction: "That's the minimum scholarship qualification. Let me check if we have a spot available for you...", strength: "good" },
-      { label: "$600", value: "600", reaction: "Good commitment level. This qualifies you for our Standard Scholarship track.", strength: "good" },
-      { label: "$700", value: "700", reaction: "Solid investment in yourself. You're in the Priority Scholarship tier now.", strength: "strong" },
-      { label: "$800", value: "800", reaction: "Excellent! This puts you in our top scholarship tier with maximum Institute support.", strength: "strong" },
-      { label: "$900", value: "900", reaction: "Very impressive commitment. VIP Scholarship track — only 3 spots remaining this month.", strength: "strong" },
-      { label: "$1,000+", value: "1000-plus", reaction: "Maximum commitment! Elite Scholarship with the best Institute coverage available. You're clearly serious.", strength: "strong" },
+      { label: "YES - I want to apply for the scholarship", value: "apply-scholarship", reaction: "AMAZING! Let me check if you qualify for one of our limited scholarship spots right now...", strength: "strong" },
+      { label: "I need more information first", value: "need-info", reaction: "Totally understand. Let's get you connected with Sarah who can answer all your questions and see if you qualify...", strength: "good" },
+      { label: "Not ready to invest in myself right now", value: "not-ready", reaction: "I understand timing matters. Let me show you what you'd be getting so you can decide if this is right for you...", strength: "developing" },
     ],
   },
 ];
