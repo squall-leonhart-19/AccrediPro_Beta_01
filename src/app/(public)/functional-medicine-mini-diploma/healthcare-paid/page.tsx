@@ -143,7 +143,7 @@ function HealthcareWorkersPaidContent() {
                                 <Award className="w-5 h-5" style={{ color: BRAND.gold }} />
                             </div>
                             <div className="text-left">
-                                <p className="font-bold text-white">9 Lessons</p>
+                                <p className="font-bold text-white">3 Lessons</p>
                                 <p className="text-xs text-white/60">1 hour total</p>
                             </div>
                         </div>
@@ -289,7 +289,7 @@ function HealthcareWorkersPaidContent() {
                             </h2>
 
                             <p className="text-gray-600 mb-6 leading-relaxed">
-                                Complete all 9 lessons and receive your <strong>ASI-Verified Foundation Certificate</strong>.
+                                Complete all 3 lessons and receive your <strong>ASI-Verified Foundation Certificate</strong>.
                                 Add it to your LinkedIn, resume, or office wall. Show clients and employers you understand
                                 root-cause medicine — not just symptom management.
                             </p>
@@ -303,7 +303,7 @@ function HealthcareWorkersPaidContent() {
                                     <div>
                                         <p className="font-bold text-gray-900 mb-1">⏰ Complete Between Shifts</p>
                                         <p className="text-sm text-gray-600">
-                                            9 lessons, 5-7 minutes each. Do one on your lunch break. Finish the rest after your shift.
+                                            3 lessons, 5-7 minutes each. Do one on your lunch break. Finish the rest after your shift.
                                             <strong> Your future practice doesn't need to wait.</strong>
                                         </p>
                                     </div>
@@ -381,7 +381,7 @@ function HealthcareWorkersPaidContent() {
                     <div className="text-center mb-12">
                         <p className="font-bold text-sm uppercase mb-3" style={{ color: BRAND.gold }}>Inside Your Mini-Diploma</p>
                         <h2 className="text-3xl md:text-4xl font-black">
-                            9 Lessons That Fill The Gaps<br />
+                            3 Lessons That Fill The Gaps<br />
                             <span style={{ color: BRAND.gold }}>Medical School Never Covered</span>
                         </h2>
                     </div>
@@ -416,7 +416,7 @@ function HealthcareWorkersPaidContent() {
                             className="h-14 px-10 text-lg font-bold"
                             style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                         >
-                            Get All 9 Lessons — ${PRICE}
+                            Get All 3 Lessons — ${PRICE}
                             <ArrowRight className="ml-2 w-5 h-5" />
                         </Button>
                     </div>
@@ -435,7 +435,7 @@ function HealthcareWorkersPaidContent() {
 
                     <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
                         {[
-                            { item: "9-Lesson Functional Medicine Mini-Diploma", value: "$97" },
+                            { item: "3-Lesson Functional Medicine Mini-Diploma", value: "$97" },
                             { item: "ASI-Verified Certificate of Completion", value: "$47" },
                             { item: "Healthcare-to-Coaching Transition Guide", value: "$197" },
                             { item: "Scope of Practice Clarity Module", value: "$47" },

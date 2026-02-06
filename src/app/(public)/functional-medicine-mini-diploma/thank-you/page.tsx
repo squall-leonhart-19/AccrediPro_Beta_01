@@ -269,7 +269,7 @@ function ThankYouContent() {
                                     <div>
                                         <p className="font-semibold text-red-800 text-sm">⏰ 48-Hour Access Window</p>
                                         <p className="text-xs text-red-700">
-                                            Complete all 9 lessons within 48 hours to earn your certificate! Most finish in one sitting.
+                                            Complete all 3 lessons within 48 hours to earn your certificate! Most finish in one sitting.
                                         </p>
                                     </div>
                                 </div>

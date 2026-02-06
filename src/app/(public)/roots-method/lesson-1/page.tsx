@@ -147,7 +147,7 @@ export default function Lesson1Page() {
       content: (
         <>
           <h3 className="text-xl text-gray-900 mb-4 font-semibold">Your R.O.O.T.S. Training Journey</h3>
-          <p className="text-gray-600 mb-6">Over these 9 lessons, you'll master:</p>
+          <p className="text-gray-600 mb-6">Over these 3 lessons, you'll master:</p>
           <div className="bg-gray-50 rounded-xl p-5 mb-6">
             {[
               'From Burnout to Purpose',

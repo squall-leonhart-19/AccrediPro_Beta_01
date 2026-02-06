@@ -181,7 +181,7 @@ function FMDipContent() {
 
                             <p className="text-lg md:text-xl text-white/80 mb-6 max-w-lg leading-relaxed">
                                 This is the <strong className="text-white">last cohort</strong> at the launch price.
-                                Complete the 9-lesson mini diploma, earn your ASI-verified certificate,
+                                Complete the 3-lesson mini diploma, earn your ASI-verified certificate,
                                 and discover how women like you are building <strong className="text-white">$3K-$8K/month</strong> practices.
                             </p>
 
@@ -203,7 +203,7 @@ function FMDipContent() {
                                         <Award className="w-5 h-5" style={{ color: BRAND.gold }} />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-white">9 Lessons</p>
+                                        <p className="font-bold text-white">3 Lessons</p>
                                         <p className="text-xs text-white/60">~60 min total</p>
                                     </div>
                                 </div>
@@ -353,7 +353,7 @@ function FMDipContent() {
                     <div className="bg-gray-50 rounded-2xl border-2 border-gray-200 overflow-hidden">
                         {/* Value Items */}
                         {[
-                            { item: "Complete 9-Lesson FM Foundations Training", value: "$97", icon: "📚" },
+                            { item: "Complete 3-Lesson FM Foundations Training", value: "$97", icon: "📚" },
                             { item: "ASI-Verified Certificate of Completion", value: "$47", icon: "🎓" },
                             { item: "Coach Sarah — Personal Mentorship Access", value: "$197", icon: "👩‍🏫" },
                             { item: "Career Roadmap & Income Blueprint", value: "$27", icon: "🗺️" },
@@ -447,7 +447,7 @@ function FMDipContent() {
                             </h2>
 
                             <p className="text-gray-600 mb-6 leading-relaxed">
-                                Complete all 9 lessons and receive your <strong>ASI-Verified Foundation Certificate</strong> —
+                                Complete all 3 lessons and receive your <strong>ASI-Verified Foundation Certificate</strong> —
                                 recognized by clients and employers worldwide.
                             </p>
 
@@ -484,7 +484,7 @@ function FMDipContent() {
                     <div className="text-center mb-12">
                         <p className="font-bold text-sm uppercase mb-3" style={{ color: BRAND.gold }}>Inside Your Mini-Diploma</p>
                         <h2 className="text-3xl md:text-4xl font-black">
-                            9 Lessons That Could Change<br />
+                            3 Lessons That Could Change<br />
                             <span style={{ color: BRAND.gold }}>Your Entire Career Path</span>
                         </h2>
                     </div>
@@ -565,7 +565,7 @@ function FMDipContent() {
                             },
                             {
                                 q: "How long does it take to complete?",
-                                a: "About 60 minutes total for all 9 lessons. Most people finish in one sitting, but you can spread it out over a week if you prefer."
+                                a: "About 60 minutes total for all 3 lessons. Most people finish in one sitting, but you can spread it out over a week if you prefer."
                             },
                             {
                                 q: "Do I need any prior health or medical experience?",

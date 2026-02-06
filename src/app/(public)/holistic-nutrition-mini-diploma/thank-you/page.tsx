@@ -115,7 +115,7 @@ export default function WomensHealthThankYouPage() {
                             <div>
                                 <p className="font-semibold text-amber-800 text-sm">7-Day Access</p>
                                 <p className="text-xs text-amber-700">
-                                    Complete 9 lessons to get your certificate!
+                                    Complete 3 lessons to get your certificate!
                                 </p>
                             </div>
                         </div>

@@ -71,7 +71,7 @@ const FAQS = [
     },
     {
         question: "Will I get a certificate?",
-        answer: "Yes! Complete all 9 lessons and download your ASI Mini-Diploma certificate.",
+        answer: "Yes! Complete all 3 lessons and download your ASI Mini-Diploma certificate.",
     },
     {
         question: "What happens after the mini-diploma?",

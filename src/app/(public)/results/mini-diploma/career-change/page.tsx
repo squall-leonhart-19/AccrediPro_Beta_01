@@ -156,12 +156,12 @@ function MiniDiplomaCareerChangeResultsInner() {
     "dont-know-start": "You said you didn't know where to start. The FM Foundations Mini Diploma is EXACTLY that starting point — step 1 of a proven path.",
     "scared-income": "You mentioned being scared of losing income. That's why we designed this as a side-project that builds while you keep your current job.",
     "no-credentials": "You said you don't have credentials. That ends TODAY. This mini diploma is your first recognized credential in functional medicine.",
-    "no-time": "You said time is your barrier. The Mini Diploma is just 9 lessons — completable in a weekend. No excuses, just results.",
+    "no-time": "You said time is your barrier. The Mini Diploma is just 3 lessons — completable in a weekend. No excuses, just results.",
   };
 
   // FAQs
   const faqs = [
-    { q: "What exactly is the FM Foundations Mini Diploma?", a: "It's a 9-lesson introductory program that gives you the foundational knowledge of functional medicine. You'll receive a digital certificate upon completion and access to our private community. It's the same starting point our highest-earning practitioners used." },
+    { q: "What exactly is the FM Foundations Mini Diploma?", a: "It's a 3-lesson introductory program that gives you the foundational knowledge of functional medicine. You'll receive a digital certificate upon completion and access to our private community. It's the same starting point our highest-earning practitioners used." },
     { q: "How long does it take to complete?", a: "Most students complete it in a weekend (5-7 hours total). It's self-paced, so you can go faster or slower depending on your schedule." },
     { q: "Is this recognized/accredited?", a: "Yes. The FM Foundations Mini Diploma is issued by the AccrediPro Standards Institute (ASI). It's Level 0 of our certification pathway — the foundation for the full DEPTH Method certification." },
     { q: "What happens after I complete the Mini Diploma?", a: "You'll have the option to continue to the full DEPTH Method Certification (Level 1-3) at a discounted rate. Many of our top practitioners started exactly where you are now." },
@@ -350,7 +350,7 @@ function MiniDiplomaCareerChangeResultsInner() {
 
             <div className="space-y-3">
               {[
-                { step: "Level 0", title: "FM Foundations Mini Diploma", desc: "Where you start. 9 lessons, digital certificate, community access.", status: "You are here", highlight: true },
+                { step: "Level 0", title: "FM Foundations Mini Diploma", desc: "Where you start. 3 lessons, digital certificate, community access.", status: "You are here", highlight: true },
                 { step: "Level 1-3", title: "DEPTH Method Full Certification", desc: "20 modules, clinical protocols, lab interpretation, business system.", status: "Optional upgrade", highlight: false },
                 { step: "Result", title: `Earning ${incomeGoal.label}`, desc: `Working with clients in ${niche.label}, setting your own schedule.`, status: "Your goal", highlight: false },
               ].map((s, i) => (

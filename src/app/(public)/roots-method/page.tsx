@@ -331,7 +331,7 @@ export default function ROOTSMethodPage() {
                     <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6 text-sm">
                         <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-slate-200">
                             <BookOpen className="h-4 w-4 text-burgundy-600" />
-                            <span className="text-slate-700">9 lessons</span>
+                            <span className="text-slate-700">3 lessons</span>
                         </div>
                         <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-slate-200">
                             <Clock className="h-4 w-4 text-burgundy-600" />
@@ -677,7 +677,7 @@ export default function ROOTSMethodPage() {
                             <div className="mb-8">
                                 <h3 className="text-sm font-bold text-burgundy-600 uppercase tracking-wide mb-4 flex items-center gap-2">
                                     <BookOpen className="h-4 w-4" />
-                                    Complete R.O.O.T.S. Training (9 Lessons)
+                                    Complete R.O.O.T.S. Training (3 Lessons)
                                 </h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     {[
@@ -779,7 +779,7 @@ export default function ROOTSMethodPage() {
                         <p className="text-gold-400 font-semibold mb-4">Everything you get for $27:</p>
                         <div className="grid grid-cols-2 gap-3 text-left text-sm">
                             {[
-                                "Complete R.O.O.T.S. Method™ Training (9 Lessons)",
+                                "Complete R.O.O.T.S. Method™ Training (3 Lessons)",
                                 "Official Practitioner Certificate (Internationally Accredited)",
                                 "Private Nurse Community Access",
                                 "Lesson 8: Scale Your Practice (The Money Lesson)",

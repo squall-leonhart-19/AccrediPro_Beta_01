@@ -44,12 +44,19 @@ export async function POST(req: NextRequest) {
         const args = body.args || body;
         const callData = body.call || {};
 
-        // Try multiple sources for phone: query params, args, call metadata
-        const phone = queryPhone || args.phone || callData.to_number || callData.from_number || "";
-        const first_name = args.first_name || callData.retell_llm_dynamic_variables?.first_name || "";
-        const amount = args.amount || "";
-        const email = args.email || callData.retell_llm_dynamic_variables?.email || "";
-        const last_name = args.last_name || callData.retell_llm_dynamic_variables?.last_name || "";
+        // Helper: detect unresolved template variables like "{{phone}}"
+        const isResolved = (val: string | undefined): string => {
+            if (!val) return "";
+            if (val.includes("{{") && val.includes("}}")) return ""; // unresolved template var
+            return val;
+        };
+
+        // Try multiple sources for phone: query params, args (if resolved), call metadata
+        const phone = isResolved(queryPhone || "") || isResolved(args.phone) || callData.to_number || callData.from_number || "";
+        const first_name = isResolved(args.first_name) || callData.retell_llm_dynamic_variables?.first_name || "";
+        const amount = isResolved(args.amount) || "";
+        const email = isResolved(args.email) || callData.retell_llm_dynamic_variables?.email || "";
+        const last_name = isResolved(args.last_name) || callData.retell_llm_dynamic_variables?.last_name || "";
         const call_id = callData.call_id || "";
 
         console.log("[SMS API] Extracted values:", { phone, first_name, amount });

@@ -499,7 +499,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                             <div>
                                 <h3 className="text-xl font-black text-gray-900 mb-2">🛡️ The "This Actually Works" Guarantee</h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Complete all 9 lessons. If you don't feel 100% confident you understand how to start your practice,
+                                    Complete all 3 lessons. If you don't feel 100% confident you understand how to start your practice,
                                     email me personally. I'll coach you until you do — <strong>no limits, no extra cost, no fine print.</strong>
                                 </p>
                                 <p className="text-sm text-gray-500 mt-3 italic">— Sarah Mitchell, Your Coach</p>
@@ -657,7 +657,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                             </h2>
 
                             <p className="text-gray-600 mb-6 leading-relaxed">
-                                Complete all 9 foundational competencies and receive your <strong>ASI Level 0 Certificate</strong>.
+                                Complete all 3 foundational competencies and receive your <strong>ASI Level 0 Certificate</strong>.
                                 Add it to LinkedIn today. Show employers you understand root-cause medicine.
                             </p>
 
@@ -670,7 +670,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                                     <div>
                                         <p className="font-bold text-red-700 mb-1">⏰ 48-Hour Completion Window</p>
                                         <p className="text-sm text-gray-600">
-                                            Your access expires in <strong className="text-red-600">48 hours</strong>. Complete all 9 lessons to claim your certificate.
+                                            Your access expires in <strong className="text-red-600">48 hours</strong>. Complete all 3 lessons to claim your certificate.
                                             <strong> Most finish in one sitting.</strong>
                                         </p>
                                     </div>
@@ -748,7 +748,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                     <div className="text-center mb-12">
                         <p className="font-bold text-xs uppercase mb-3 tracking-wide" style={{ color: BRAND.gold }}>ASI Level 0 – Foundational Competencies</p>
                         <h2 className="text-3xl md:text-4xl font-black">
-                            9 Core Competencies That Fill The Gaps<br />
+                            3 Core Lessons That Fill The Gaps<br />
                             <span style={{ color: BRAND.gold }}>Medical School Never Covered</span>
                         </h2>
                         <p className="text-white/60 text-sm mt-4 max-w-xl mx-auto">
@@ -831,7 +831,7 @@ function HealthcareWorkersMiniDiplomaContent() {
 
                     <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
                         {[
-                            { item: "9-Lesson Functional Medicine Mini-Diploma", value: "$97" },
+                            { item: "3-Lesson Functional Medicine Mini-Diploma", value: "$97" },
                             { item: "ASI-Verified Certificate of Completion", value: "$47" },
                             { item: "Healthcare-to-Coaching Transition Guide", value: "$197" },
                             { item: "Scope of Practice Clarity Module", value: "$47" },

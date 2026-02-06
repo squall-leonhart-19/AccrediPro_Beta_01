@@ -516,7 +516,7 @@ export default function FMApplicationQuiz() {
           >
             <p className="font-semibold mb-2" style={{ color: BRAND.burgundy }}>What you&apos;ve unlocked:</p>
             <ul className="space-y-2 text-sm text-gray-700">
-              {["9-lesson Functional Medicine Mini-Diploma", "Verified Digital Certificate", "\"Your First Client\" Blueprint", "Private Community Access"].map((item) => (
+              {["3-lesson Functional Medicine Mini-Diploma", "Verified Digital Certificate", "\"Your First Client\" Blueprint", "Private Community Access"].map((item) => (
                 <li key={item} className="flex items-start gap-2">
                   <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: BRAND.gold }} />
                   {item}
@@ -621,7 +621,7 @@ export default function FMApplicationQuiz() {
               Ready to Start Right Now?
             </h3>
             <p className="text-sm text-gray-600 mb-4">
-              Begin your 9-lesson Functional Medicine Mini-Diploma today. Completely free — no credit card required.
+              Begin your 3-lesson Functional Medicine Mini-Diploma today. Completely free — no credit card required.
             </p>
             <a
               href="/functional-medicine-mini-diploma"

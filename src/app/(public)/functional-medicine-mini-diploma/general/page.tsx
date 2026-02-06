@@ -228,7 +228,7 @@ function FunctionalMedicineMiniDiplomaContent() {
                                         <Award className="w-5 h-5" style={{ color: BRAND.gold }} />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-white">9 Lessons</p>
+                                        <p className="font-bold text-white">3 Lessons</p>
                                         <p className="text-xs text-white/60">1 hour total</p>
                                     </div>
                                 </div>
@@ -352,7 +352,7 @@ function FunctionalMedicineMiniDiplomaContent() {
                             </h2>
 
                             <p className="text-gray-600 mb-6 leading-relaxed">
-                                Complete all 9 lessons and receive your <strong>ASI-Verified Foundation Certificate</strong> —
+                                Complete all 3 lessons and receive your <strong>ASI-Verified Foundation Certificate</strong> —
                                 recognized by clients and employers worldwide. This isn't a participation trophy.
                                 It's proof you've mastered the fundamentals.
                             </p>
@@ -444,7 +444,7 @@ function FunctionalMedicineMiniDiplomaContent() {
                     <div className="text-center mb-12">
                         <p className="font-bold text-sm uppercase mb-3" style={{ color: BRAND.gold }}>Inside Your Free Mini-Diploma</p>
                         <h2 className="text-3xl md:text-4xl font-black">
-                            9 Lessons That Could Change<br />
+                            3 Lessons That Could Change<br />
                             <span style={{ color: BRAND.gold }}>Your Entire Career Path</span>
                         </h2>
                     </div>
@@ -499,7 +499,7 @@ function FunctionalMedicineMiniDiplomaContent() {
 
                     <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
                         {[
-                            { item: "9-Lesson Functional Medicine Mini-Diploma", value: "$97" },
+                            { item: "3-Lesson Functional Medicine Mini-Diploma", value: "$97" },
                             { item: "ASI-Verified Certificate of Completion", value: "$47" },
                             { item: "Personal Guidance from Coach Sarah", value: "$197" },
                             { item: "Career Roadmap & Income Blueprint", value: "$27" },
@@ -543,7 +543,7 @@ function FunctionalMedicineMiniDiplomaContent() {
                     <div className="space-y-3">
                         {[
                             { q: "Is this really free, Sarah?", a: "100% free! No credit card, no hidden fees. I created this to help women like you discover what's possible in functional medicine." },
-                            { q: "How long does it take?", a: "About 60 minutes total for all 9 lessons. You can do them all at once or spread them out — whatever works for your schedule!" },
+                            { q: "How long does it take?", a: "About 60 minutes total for all 3 lessons. You can do them all at once or spread them out — whatever works for your schedule!" },
                             { q: "Do I need any prior experience?", a: "Not at all! I designed this specifically for beginners. If you're curious about health and helping others, you're exactly who this is for." },
                             { q: "Is the certificate legitimate?", a: "Yes! It's issued by AccrediPro Standards Institute (ASI) and recognized by employers and clients worldwide." },
                             { q: "What happens after I finish?", a: "You'll get your certificate and unlock your personalized career roadmap. If you want to go deeper, I'll show you how — but there's no obligation." }

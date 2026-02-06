@@ -257,7 +257,7 @@ export default function Lesson1Page() {
             content: (
                 <>
                     <h3 style={{ fontSize: 20, color: '#1a1a1a', marginBottom: 16, fontWeight: 600 }}>Your Mini-Diploma Journey</h3>
-                    <p>Over the next 9 lessons, you'll discover:</p>
+                    <p>Over the next 3 lessons, you'll discover:</p>
                     <div style={{ margin: '20px 0' }}>
                         {[
                             'Why conventional medicine struggles with chronic disease',
