@@ -687,8 +687,8 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
                 const budgetFromQuiz = quizData.investmentBudget || "";
                 const budgetLabel = budgetFromQuiz ? ` (You indicated $${budgetFromQuiz} in your application)` : "";
 
-                // Message 3: Coupon-based options ($500-$1000) - NO free text
-                const msg3Content = `The Institute offers limited scholarships, but spots are VERY limited. Other students need help too, so we ask for a minimum commitment.\n\n${firstName}, which scholarship tier works for you TODAY?${budgetLabel}\n\n✨ $500 — Starter Scholarship\n⭐ $600 — Standard Scholarship\n🌟 $700 — Priority Scholarship\n💎 $800 — Premium Scholarship\n👑 $900 — VIP Scholarship\n🏆 $1,000+ — Elite Scholarship\n\nJust reply with your amount — I'll call the Institute right now and lock in your scholarship! Bear with me 1 minute while I get them on the line 📞`;
+                // Message 3: Open investment ask (NO tier list - scares people off)
+                const msg3Content = `The Institute offers limited scholarships, but spots are VERY limited. Other students need help too, so we ask for a minimum commitment.\n\n${firstName}, what amount can you realistically invest in yourself TODAY?${budgetLabel}\n\nType ANY number — there's no wrong answer. I'll call the Institute right now and see if they can cover the rest for you! 📞`;
 
 
                 const msg3: ChatMessage = {
