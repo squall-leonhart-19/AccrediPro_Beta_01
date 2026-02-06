@@ -9,7 +9,7 @@ import { DynamicLessonRouter } from "@/components/mini-diploma/lessons/shared/dy
 import { getConfigByPortalSlug } from "@/lib/mini-diploma-registry";
 
 // Niches that have dynamic JSON content (no chat widget)
-const DYNAMIC_CONTENT_NICHES = ["spiritual-healing", "energy-healing", "christian-coaching", "gut-health", "reiki-healing", "adhd-coaching", "pet-nutrition"];
+const DYNAMIC_CONTENT_NICHES = ["spiritual-healing", "energy-healing", "christian-coaching", "gut-health", "reiki-healing", "adhd-coaching", "pet-nutrition", "hormone-health", "holistic-nutrition", "nurse-coach", "health-coach", "womens-hormone-health"];
 
 export default function LessonPage() {
     const params = useParams();

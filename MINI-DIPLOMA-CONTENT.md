@@ -13,13 +13,13 @@ User visits /portal/{slug}/lesson/{id}
     v
 Lesson Page Route: src/app/(lead)/portal/[slug]/lesson/[id]/page.tsx
     |
-    +-- FM + fallback niches --> ClassicFunctionalMedicineLessonRouter (TSX)
-    |       Files: src/components/mini-diploma/lessons/functional-medicine/classic/
-    |       lesson-1-foundation.tsx, lesson-2-depth-method.tsx, lesson-3-first-clients.tsx
+    +-- 12 dynamic niches --> DynamicLessonRouter (JSON)
+    |       Files: src/components/mini-diploma/lessons/content/{slug}.json
+    |       Router: src/components/mini-diploma/lessons/shared/dynamic-lesson-router.tsx
     |
-    +-- 7 dynamic niches --> DynamicLessonRouter (JSON)
-            Files: src/components/mini-diploma/lessons/content/{slug}.json
-            Router: src/components/mini-diploma/lessons/shared/dynamic-lesson-router.tsx
+    +-- FM only --> ClassicFunctionalMedicineLessonRouter (TSX)
+            Files: src/components/mini-diploma/lessons/functional-medicine/classic/
+            lesson-1-foundation.tsx, lesson-2-depth-method.tsx, lesson-3-first-clients.tsx
 
 Both paths feed into:
     ClassicLessonBase (src/components/mini-diploma/lessons/shared/classic-lesson-base.tsx)
@@ -36,9 +36,27 @@ Exam Page Route: src/app/(lead)/portal/[slug]/exam/page.tsx
     |
     +-- Loads exam config from JSON: src/components/mini-diploma/exams/content/{slug}.json
     +-- Renders: DynamicExamComponent (src/components/mini-diploma/dynamic-exam-component.tsx)
-    |
-    +-- FM also has: src/lib/fm-exam-questions.ts (used by fm-exam-component.tsx)
 ```
+
+---
+
+## All 14 Niches
+
+| # | Portal Slug | Display Name | Lesson Type | Status |
+|---|-------------|-------------|-------------|--------|
+| 1 | functional-medicine | Functional Medicine Foundation | TSX (classic) | ✅ |
+| 2 | spiritual-healing | Spiritual Healing | JSON (dynamic) | ✅ |
+| 3 | energy-healing | Certified Energy Healing Practitioner | JSON (dynamic) | ✅ |
+| 4 | christian-coaching | Certified Christian Life Coach | JSON (dynamic) | ✅ |
+| 5 | gut-health | Gut Health Specialist | JSON (dynamic) | ✅ |
+| 6 | reiki-healing | Certified Reiki Practitioner | JSON (dynamic) | ✅ |
+| 7 | adhd-coaching | Certified ADHD Coach | JSON (dynamic) | ✅ |
+| 8 | pet-nutrition | Certified Pet Nutrition Specialist | JSON (dynamic) | ✅ |
+| 9 | hormone-health | Hormone Health Specialist | JSON (dynamic) | ✅ |
+| 10 | holistic-nutrition | Holistic Nutrition Specialist | JSON (dynamic) | ✅ |
+| 11 | nurse-coach | Certified Nurse Life Coach | JSON (dynamic) | ✅ |
+| 12 | health-coach | Certified Health Coach | JSON (dynamic) | ✅ |
+| 13 | womens-hormone-health | Women's Hormone Health Foundation | JSON (dynamic) | ✅ |
 
 ---
 
@@ -49,20 +67,13 @@ Exam Page Route: src/app/(lead)/portal/[slug]/exam/page.tsx
 | Niche | Type | File |
 |-------|------|------|
 | functional-medicine | TSX (classic) | `lessons/functional-medicine/classic/lesson-{1,2,3}-*.tsx` |
-| spiritual-healing | JSON | `lessons/content/spiritual-healing.json` |
-| energy-healing | JSON | `lessons/content/energy-healing.json` |
-| christian-coaching | JSON | `lessons/content/christian-coaching.json` |
-| gut-health | JSON | `lessons/content/gut-health.json` |
-| reiki-healing | JSON | `lessons/content/reiki-healing.json` |
-| adhd-coaching | JSON | `lessons/content/adhd-coaching.json` |
-| pet-nutrition | JSON | `lessons/content/pet-nutrition.json` |
+| All other 12 niches | JSON (dynamic) | `lessons/content/{slug}.json` |
 
 ### Exam Content
 
 | Niche | File |
 |-------|------|
 | All 13 niches | `exams/content/{slug}.json` |
-| FM (TypeScript) | `src/lib/fm-exam-questions.ts` |
 
 > All paths relative to `src/components/mini-diploma/`
 
@@ -74,10 +85,12 @@ Every mini diploma has exactly **3 lessons** + **1 final exam (5 questions)**:
 
 | Lesson | Topic | Purpose |
 |--------|-------|---------|
-| 1 | Foundation | What is this field, why it matters, scope of practice, 5 root causes |
-| 2 | The Method/Framework | D.E.P.T.H. Method (or niche-specific framework), how to apply it |
-| 3 | Getting First Clients | Warm Market Strategy, pricing packages, scope reminders |
+| 1 | Foundation | What is this field, why it matters, scope of practice, root causes |
+| 2 | The D.E.P.T.H. Method™ | Framework for client sessions (Discover, Evaluate, Plan, Transform, Heal) |
+| 3 | Getting First Clients | Warm Market Strategy, pricing packages ($297 starter), scope reminders |
 | Exam | 5 multiple-choice questions | 1 per core concept, everyone passes (score 95-100) |
+
+**Total time: ~25 minutes for lessons + ~5 minutes for exam**
 
 ---
 
@@ -124,133 +137,7 @@ Use these when building lesson content:
 
 ---
 
-## How to Write a Lesson (TSX — FM Style)
-
-### File Template
-
-```typescript
-"use client";
-
-import { ClassicLessonBase, LessonSection } from "../../shared/classic-lesson-base";
-
-interface LessonProps {
-    lessonNumber: number;
-    totalLessons?: number;
-    firstName?: string;
-    onComplete?: () => void;
-    onNext?: () => void;
-    isCompleted?: boolean;
-}
-
-export function ClassicLesson{PascalName}({
-    lessonNumber,
-    totalLessons = 3,
-    firstName = "friend",
-    onComplete,
-    onNext,
-    isCompleted,
-}: LessonProps) {
-    const sections: LessonSection[] = [
-        // --- SARAH'S INTRO ---
-        {
-            type: 'intro',
-            content: `Hey {name}, welcome to lesson ${lessonNumber}...`,
-        },
-
-        // --- SECTION: (heading triggers new progressive reveal step) ---
-        {
-            type: 'heading',
-            content: 'Section Title Here',
-        },
-        {
-            type: 'text',
-            content: `Body text here. Use **bold keywords** for yellow highlights and $5,000 for green money highlights.`,
-        },
-        {
-            type: 'list',
-            content: '',
-            items: [
-                'First point with **key term** highlighted',
-                'Second point',
-                'Third point',
-            ],
-        },
-
-        // --- CHECKPOINT (after teaching a concept) ---
-        {
-            type: 'checkpoint',
-            content: '',
-            checkpoint: {
-                question: 'What does X primarily focus on?',
-                options: [
-                    { label: 'Wrong answer A', isCorrect: false },
-                    { label: 'Correct answer', isCorrect: true },
-                    { label: 'Wrong answer C', isCorrect: false },
-                ],
-                successMessage: 'Yes! Brief reinforcement here.',
-            },
-        },
-
-        // --- REVEAL CARD (case study / success story) ---
-        {
-            type: 'reveal-card',
-            content: '',
-            revealCard: {
-                teaser: 'See how Maria transformed her practice →',
-                content: 'Maria was a nurse making $52K/year. After getting certified, she signed 4 clients in her first month...',
-            },
-        },
-
-        // --- MICRO COMMITMENT ---
-        {
-            type: 'micro-commitment',
-            content: 'Can you see yourself doing this?',
-            commitmentOptions: {
-                positive: 'Yes, I can see it',
-                neutral: 'Show me how',
-            },
-        },
-
-        // --- INCOME CALCULATOR (lesson 3 only) ---
-        {
-            type: 'income-calculator',
-            content: 'See what your monthly income could look like:',
-            calculator: {
-                avgPackagePrice: 350,
-                maxClients: 30,
-            },
-        },
-    ];
-
-    const keyTakeaways = [
-        'First key takeaway',
-        'Second key takeaway',
-        'Third key takeaway',
-    ];
-
-    return (
-        <ClassicLessonBase
-            lessonNumber={lessonNumber}
-            lessonTitle="Lesson Title"
-            lessonSubtitle="One-line subtitle"
-            totalLessons={totalLessons}
-            sections={sections}
-            keyTakeaways={keyTakeaways}
-            onComplete={onComplete}
-            onNext={onNext}
-            isCompleted={isCompleted}
-            firstName={firstName}
-            niche="niche-slug"
-            nicheLabel="Niche Display Name"
-            baseUrl="/portal/niche-slug"
-        />
-    );
-}
-```
-
----
-
-## How to Write a Lesson (JSON — Dynamic Niches)
+## How to Write a Lesson (JSON — All Dynamic Niches)
 
 ### File Template
 
@@ -259,30 +146,47 @@ export function ClassicLesson{PascalName}({
     "niche": "niche-slug",
     "nicheLabel": "Niche Display Name Certification",
     "baseUrl": "/portal/niche-slug",
-    "courseSlug": "niche-slug-complete-certification",
+    "courseSlug": "niche-slug-mini-diploma",
     "lessons": [
         {
             "id": 1,
-            "title": "Lesson 1 Title",
+            "title": "Lesson 1 Title (Foundation)",
             "subtitle": "One-line subtitle",
             "readingTime": "8 min",
             "sections": [
-                { "type": "intro", "content": "Hey {name}! Welcome..." },
-                { "type": "heading", "content": "Section Title" },
-                { "type": "text", "content": "Body text with **bold** and $amounts." },
-                { "type": "list", "content": "", "items": ["Item 1", "Item 2"] },
-                { "type": "callout", "content": "Important note here.", "style": "info" },
+                { "type": "intro", "content": "Hey {name}! Welcome to your journey..." },
+                { "type": "heading", "content": "What Is [Niche]?" },
+                { "type": "text", "content": "Body text with **bold keywords** and $amounts." },
+                { "type": "list", "content": "The 5 root causes:", "items": ["Item 1", "Item 2", "Item 3"] },
+                { "type": "callout", "content": "Important scope reminder.", "style": "warning" },
+                { "type": "key-point", "content": "Key takeaway for this section." },
                 {
                     "type": "checkpoint",
                     "content": "",
                     "checkpoint": {
-                        "question": "Question text?",
+                        "question": "What does [niche] primarily focus on?",
                         "options": [
-                            { "label": "Wrong", "isCorrect": false },
-                            { "label": "Correct", "isCorrect": true },
-                            { "label": "Wrong", "isCorrect": false }
+                            { "label": "Wrong answer A", "isCorrect": false },
+                            { "label": "Correct answer", "isCorrect": true },
+                            { "label": "Wrong answer C", "isCorrect": false }
                         ],
-                        "successMessage": "Reinforcement text."
+                        "successMessage": "Yes! Brief reinforcement."
+                    }
+                },
+                {
+                    "type": "reveal-card",
+                    "content": "",
+                    "revealCard": {
+                        "teaser": "See how Maria transformed her practice →",
+                        "content": "Maria was a nurse making $52K/year. After getting certified..."
+                    }
+                },
+                {
+                    "type": "micro-commitment",
+                    "content": "Can you see yourself helping people this way?",
+                    "commitmentOptions": {
+                        "positive": "Yes, I can see it!",
+                        "neutral": "Tell me more"
                     }
                 }
             ],
@@ -294,19 +198,45 @@ export function ClassicLesson{PascalName}({
         },
         {
             "id": 2,
-            "title": "Lesson 2 Title",
-            "subtitle": "...",
+            "title": "The D.E.P.T.H. Method™",
+            "subtitle": "Your signature framework for client sessions",
             "readingTime": "10 min",
-            "sections": [],
-            "keyTakeaways": []
+            "sections": [
+                { "type": "intro", "content": "Hey {name}! Ready for the method that changes everything?" },
+                {
+                    "type": "framework",
+                    "content": "",
+                    "framework": {
+                        "name": "The D.E.P.T.H. Method™",
+                        "steps": [
+                            { "letter": "D", "title": "Discover", "description": "Uncover root causes through deep conversation" },
+                            { "letter": "E", "title": "Evaluate", "description": "Assess the full picture of their health" },
+                            { "letter": "P", "title": "Plan", "description": "Create a personalized action plan" },
+                            { "letter": "T", "title": "Transform", "description": "Guide implementation and behavior change" },
+                            { "letter": "H", "title": "Heal", "description": "Support long-term wellness and growth" }
+                        ]
+                    }
+                }
+            ],
+            "keyTakeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3"]
         },
         {
             "id": 3,
-            "title": "Lesson 3 Title",
-            "subtitle": "...",
+            "title": "How To Get Your First Clients",
+            "subtitle": "From certification to your first paying client",
             "readingTime": "8 min",
-            "sections": [],
-            "keyTakeaways": []
+            "sections": [
+                { "type": "intro", "content": "Hey {name}! This is where it gets REAL..." },
+                {
+                    "type": "income-calculator",
+                    "content": "See what your monthly income could look like:",
+                    "calculator": {
+                        "avgPackagePrice": 297,
+                        "maxClients": 30
+                    }
+                }
+            ],
+            "keyTakeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3"]
         }
     ]
 }
@@ -314,6 +244,7 @@ export function ClassicLesson{PascalName}({
 
 > JSON files go in: `src/components/mini-diploma/lessons/content/{slug}.json`
 > Then register the import in `dynamic-lesson-router.tsx` in the `LESSON_CONTENT` map.
+> And add the slug to `DYNAMIC_CONTENT_NICHES` array in `lesson/[id]/page.tsx`.
 
 ---
 
@@ -329,7 +260,9 @@ export function ClassicLesson{PascalName}({
     "examCategory": "niche-slug",
     "passScore": 80,
     "scholarshipScore": 95,
-    "hasMasterclass": true,
+    "hasMasterclass": false,
+    "postExamFlow": "trustpilot",
+    "trustpilotUrl": "https://www.trustpilot.com/review/accredipro.academy",
     "testimonials": [
         {
             "quote": "Short testimonial about the exam experience.",
@@ -367,12 +300,13 @@ export function ClassicLesson{PascalName}({
 - `correctAnswer` is always the option `id` (a/b/c/d)
 - **Everyone passes** — score is always calculated as 95-100 in the functions
 - Questions should be **easy** — the goal is the certificate, not gatekeeping
+- **Always include** `"postExamFlow": "trustpilot"` and `"trustpilotUrl"`
 - Cover these 5 concepts:
   1. L1: Core definition of the field (root causes / what it is)
   2. L1: Scope of practice (educate & support, not diagnose)
-  3. L2: The method/framework (first letter or key step)
-  4. L3: First clients strategy (warm market = list 20 people)
-  5. L3: Pricing (starter package recommendation)
+  3. L2: The D.E.P.T.H. Method™ (first letter D = Discover)
+  4. L3: First clients strategy (warm market = list 20 people you know)
+  5. L3: Pricing (starter package ~$297)
 
 ---
 
@@ -402,6 +336,7 @@ Step progress saves to localStorage.
 | `reveal-card` | After a success story setup / case study | 1 per lesson |
 | `micro-commitment` | After an inspiring moment | 1 per lesson |
 | `income-calculator` | Lesson 3 only, after pricing discussion | 1 total |
+| `framework` | Lesson 2 only, for D.E.P.T.H. Method™ | 1 total |
 
 ### Tone & Style
 
@@ -420,10 +355,12 @@ When adding a new niche to the mini diploma system:
 
 1. **Lesson content**: Create `lessons/content/{slug}.json` with 3 lessons
 2. **Register in router**: Add import + entry in `dynamic-lesson-router.tsx` → `LESSON_CONTENT`
-3. **Register in registry**: Add entry in `src/lib/mini-diploma-registry.ts` → `MINI_DIPLOMA_REGISTRY`
-4. **Exam content**: Create `exams/content/{slug}.json` with 5 questions
-5. **Register exam**: Add import + entry in exam page → `EXAM_CONFIGS` map
-6. **Build**: Run `npm run build` to verify no TypeScript errors
+3. **Register in DYNAMIC_CONTENT_NICHES**: Add slug to array in `lesson/[id]/page.tsx`
+4. **Register in registry**: Add entry in `src/lib/mini-diploma-registry.ts` → `MINI_DIPLOMA_REGISTRY`
+5. **Exam content**: Create `exams/content/{slug}.json` with 5 questions + `postExamFlow: "trustpilot"`
+6. **Register exam**: Add import + entry in exam page → `EXAM_CONFIGS` map
+7. **Nudge cron**: AUTOMATIC — reads from `MINI_DIPLOMA_REGISTRY`, no code change needed
+8. **Build**: Run `npm run build` to verify no TypeScript errors
 
 ---
 
@@ -435,30 +372,61 @@ src/
 │   ├── lessons/
 │   │   ├── shared/
 │   │   │   ├── classic-lesson-base.tsx    ← RENDER ENGINE (don't edit for content)
-│   │   │   └── dynamic-lesson-router.tsx  ← JSON lesson router
+│   │   │   └── dynamic-lesson-router.tsx  ← JSON lesson router (12 niches)
 │   │   ├── functional-medicine/classic/
-│   │   │   ├── lesson-1-foundation.tsx    ← FM lesson 1 content
-│   │   │   ├── lesson-2-depth-method.tsx  ← FM lesson 2 content
-│   │   │   ├── lesson-3-first-clients.tsx ← FM lesson 3 content
+│   │   │   ├── lesson-1-foundation.tsx    ← FM lesson 1 content (TSX)
+│   │   │   ├── lesson-2-depth-method.tsx  ← FM lesson 2 content (TSX)
+│   │   │   ├── lesson-3-first-clients.tsx ← FM lesson 3 content (TSX)
 │   │   │   └── lesson-router.tsx          ← FM lesson switcher
 │   │   └── content/
-│   │       ├── spiritual-healing.json     ← JSON lessons (7 niches)
+│   │       ├── spiritual-healing.json     ← JSON lessons (12 niches)
 │   │       ├── energy-healing.json
-│   │       └── ...
+│   │       ├── christian-coaching.json
+│   │       ├── gut-health.json
+│   │       ├── reiki-healing.json
+│   │       ├── adhd-coaching.json
+│   │       ├── pet-nutrition.json
+│   │       ├── hormone-health.json
+│   │       ├── holistic-nutrition.json
+│   │       ├── nurse-coach.json
+│   │       ├── health-coach.json
+│   │       └── womens-hormone-health.json
 │   ├── exams/content/
-│   │   ├── functional-medicine.json       ← Exam configs (13 niches)
+│   │   ├── functional-medicine.json       ← Exam configs (13 niches, 5 Qs each)
 │   │   ├── spiritual-healing.json
-│   │   └── ...
+│   │   └── ... (all 13 niches)
 │   ├── dynamic-exam-component.tsx         ← Exam UI renderer
-│   ├── fm-exam-component.tsx              ← FM-specific exam (legacy)
 │   ├── welcome-audio.tsx                  ← Spotify-style audio player
 │   ├── certificate-preview.tsx            ← Blurred certificate teaser
-│   ├── gamification-bar.tsx               ← Confetti-only (no visible UI)
-│   └── commitment-checkpoint.tsx          ← Post-L2 modal
+│   └── gamification-bar.tsx               ← Confetti-only (no visible UI)
 ├── lib/
-│   ├── fm-exam-questions.ts               ← FM exam questions (TypeScript)
-│   └── mini-diploma-registry.ts           ← Niche registry + config
+│   ├── mini-diploma-registry.ts           ← Niche registry + config (14 niches)
+│   └── mini-diploma/completion-emails.ts  ← Milestone email templates
 └── app/(lead)/portal/[slug]/
     ├── lesson/[id]/page.tsx               ← Lesson page route
-    └── exam/page.tsx                      ← Exam page route
+    ├── exam/page.tsx                      ← Exam page route
+    └── certificate/page.tsx               ← Certificate page
 ```
+
+---
+
+## Email & Nudge System
+
+### Nudge Cron (Automatic for ALL niches)
+
+The nudge cron at `src/app/api/cron/mini-diploma-nudges/route.ts` runs hourly and:
+- Reads ALL niches from `MINI_DIPLOMA_REGISTRY` automatically
+- Sends 6 emails over 72 hours to leads who haven't started
+- Email content is dynamic: uses `config.displayName` and `config.portalSlug` for each niche
+- No code changes needed when adding new niches
+
+### Email Timeline
+
+| Hour | Email | Content |
+|------|-------|---------|
+| 3 | Social proof | "847 women started this week" + what's inside |
+| 12 | Game plan | Step 1-2-Done table, ~30 min total |
+| 24 | Urgency | "24 hours left" + what you'll miss |
+| 36 | Final warning | "ONLY 12 HOURS LEFT" |
+| 48 | Recovery | "Access expired — 24h extension" |
+| 72 | Final goodbye | "Reply to come back" |

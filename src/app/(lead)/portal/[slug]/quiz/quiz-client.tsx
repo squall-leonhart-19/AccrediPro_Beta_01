@@ -20,13 +20,46 @@ import {
     Sparkles,
     LucideIcon,
     CheckCircle2,
+    // New icons for Hormozi 11-question quiz
+    Zap,
+    Compass,
+    UserCheck,
+    Brain,
+    Dumbbell,
+    BookOpen,
+    Home,
+    Flame,
+    LogOut,
+    Plus,
+    Clock,
+    HelpCircle,
+    Star,
+    AlertTriangle,
+    Award,
+    Calendar,
+    Search,
+    TrendingUp,
+    Rocket,
+    Hourglass,
+    AlertCircle,
+    TrendingDown,
+    Minus,
+    Wallet,
+    Unlock,
+    CheckCircle,
 } from "lucide-react";
 import { QuizConfig, QuizOption } from "@/lib/quiz-configs";
 
-// Icon name to component mapping
+// Icon name to component mapping (expanded for Hormozi quiz)
 const ICON_MAP: Record<string, LucideIcon> = {
+    // Original icons
     Activity, Heart, Scale, Shield, Leaf, Briefcase,
     Stethoscope, GraduationCap, Users, DollarSign, Target, Sparkles,
+    // New icons for Hormozi quiz
+    Zap, Compass, UserCheck, Brain, Dumbbell, BookOpen, Home, Flame,
+    LogOut, Plus, Clock, HelpCircle, Star, AlertTriangle, Award,
+    Calendar, Search, TrendingUp, Rocket, Hourglass, AlertCircle,
+    TrendingDown, Minus, Wallet, Unlock, CheckCircle,
 };
 
 // ============================================
@@ -39,12 +72,25 @@ const BURGUNDY_DARK = "#4e1f24";
 const GOLD = "#D4AF37";
 const GOLD_DARK = "#B8860B";
 
-// Sarah's warm question intros
+// Sarah's warm question intros - aligned with Hormozi emotional arc
 const SARAH_INTROS: Record<string, string> = {
-    interest: "I'd love to know what excites you most about functional medicine...",
-    goal: "Everyone's journey is unique — what's calling you to learn?",
+    // Phase 1: EXCITEMENT (Q1-Q4)
+    specialization: "Let's start with something fun — what excites you most?",
+    background: "Tell me a bit about yourself...",
+    experience: "No judgment here — where are you starting from?",
     motivation: "Understanding your 'why' helps me support you better...",
-    experience: "No judgment here! Where are you starting from?",
+    // Phase 2: PAIN (Q5)
+    pain_point: "This one's important — be honest with yourself...",
+    // Phase 3: DESIRE (Q6-Q7)
+    start_timeline: "When do you see yourself starting this journey?",
+    income_goal: "Dream big here — what would change everything for you?",
+    // Phase 4: URGENCY (Q8)
+    time_stuck: "This is a reality check moment...",
+    // Phase 5: REALITY (Q9-Q10)
+    current_income: "Just so I can understand where you're at right now...",
+    dream_life: "Close your eyes for a second and picture it...",
+    // Phase 6: COMMITMENT (Q11)
+    commitment: "Last question — and this one matters...",
 };
 
 interface NicheQuizClientProps {
@@ -80,19 +126,47 @@ export function NicheQuizClient({ config, firstName }: NicheQuizClientProps) {
         if (Object.keys(answers).length !== config.questions.length) return;
         setIsSubmitting(true);
         try {
+            // Calculate qualification score (82-94 per Hormozi spec)
+            let score = 85;
+            if (answers.commitment === '100-percent') score += 6;
+            else if (answers.commitment === 'very-committed') score += 4;
+            else if (answers.commitment === 'interested') score += 1;
+            if (answers.start_timeline === 'immediately') score += 3;
+            else if (answers.start_timeline === '30-days') score += 2;
+            score = Math.min(94, Math.max(82, score));
+
+            // Save all quiz answers
             const response = await fetch("/api/mini-diploma/save-quiz", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    healthInterest: answers.interest,
-                    goal: answers.goal,
+                    // Original fields (for backwards compatibility)
+                    healthInterest: answers.specialization,
+                    goal: answers.motivation,
                     motivation: answers.motivation,
                     experience: answers.experience,
                     nicheSlug: slug,
+                    // New Hormozi fields
+                    specialization: answers.specialization,
+                    background: answers.background,
+                    pain_point: answers.pain_point,
+                    start_timeline: answers.start_timeline,
+                    income_goal: answers.income_goal,
+                    time_stuck: answers.time_stuck,
+                    current_income: answers.current_income,
+                    dream_life: answers.dream_life,
+                    commitment: answers.commitment,
+                    qualification_score: score,
                 }),
             });
             if (response.ok) {
-                router.push(`/portal/${slug}/profile?quiz=complete`);
+                // Redirect to results page with all variables for RetellAI
+                const params = new URLSearchParams({
+                    quiz: 'complete',
+                    score: score.toString(),
+                    ...answers,
+                });
+                router.push(`/portal/${slug}/profile?${params.toString()}`);
             }
         } catch (error) {
             console.error("Error submitting quiz:", error);

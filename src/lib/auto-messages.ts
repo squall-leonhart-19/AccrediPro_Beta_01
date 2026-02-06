@@ -397,7 +397,7 @@ Whatever lessons you have left, you can do this today. Each one is just 6 minute
 
 YOUR CERTIFICATE IS READY!!!
 
-I am SO proud of you! You completed all 9 lessons and your official Women's Health & Hormones Mini Diploma certificate has been issued!
+I am SO proud of you! You completed all the lessons and your official Women's Health & Hormones Mini Diploma certificate has been issued!
 
 Check your email - I sent you a link to download it. You can also find it in your dashboard under Certificates.
 
@@ -414,7 +414,7 @@ With so much pride,
 Sarah 💚`,
     voiceScript: `{{firstName}}! Your certificate is ready! I am SO proud of you!
 
-You completed all 9 lessons and your official Women's Health and Hormones Mini Diploma certificate has been issued!
+You completed all the lessons and your official Women's Health and Hormones Mini Diploma certificate has been issued!
 
 Check your email for the download link. As a graduate, you now have 30 days of continued access and 20% off our full certification.
 

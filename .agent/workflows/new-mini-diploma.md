@@ -14,7 +14,7 @@ description: Create a new mini diploma from a spec
 
 ---
 
-## 🚨 CRITICAL: Make EXACTLY The Same But For New Title
+## CRITICAL: Make EXACTLY The Same But For New Title
 
 **THE GOLDEN RULE**: The Functional Medicine landing page at `src/app/(public)/functional-medicine-mini-diploma/page.tsx` is the PRODUCTION TEMPLATE.
 
@@ -30,7 +30,7 @@ description: Create a new mini diploma from a spec
 3. **CHANGE** these niche-specific elements:
    - Hero title/subtitle text
    - Testimonial names and stories
-   - Lesson titles in the "9 Lessons" section
+   - Lesson titles in the "3 Lessons" section
    - Certificate image path
    - Primary color (if different niche feeling)
 4. **KEEP EVERYTHING ELSE IDENTICAL**:
@@ -74,7 +74,7 @@ description: Create a new mini diploma from a spec
 │  CHANGE (niche-specific):              │
 │  - Hero title/subtitle                 │
 │  - 3 testimonial cards                 │
-│  - 9 lesson titles                     │
+│  - 3 lesson titles                     │
 │  - Color scheme (BRAND object)         │
 │  - CertificatePreview component props: │
 │      diplomaTitle="{New Title}"        │
@@ -97,7 +97,7 @@ import { CertificatePreview } from "@/components/certificates/certificate-previe
 
 ---
 
-## 🔄 AI Fallback Chain (If Capped)
+## AI Fallback Chain (If Capped)
 
 If Claude Code hits spending cap, use this fallback chain:
 
@@ -124,11 +124,11 @@ Use HEALTH_COACH fallback sequences ─── Functional, just not niche-specifi
 
 ---
 
-## ⚠️ CRITICAL: Task Tracking (MANDATORY)
+## CRITICAL: Task Tracking (MANDATORY)
 
 **After completing EACH step, you MUST update `.ralph/fix_plan.md`**
 
-⚠️ **Ralph checks this file to know when to exit. If you don't update checkmarks, Ralph will loop forever!**
+**Ralph checks this file to know when to exit. If you don't update checkmarks, Ralph will loop forever!**
 
 Mark completed items with `[x]`:
 ```markdown
@@ -144,7 +144,7 @@ Mark completed items with `[x]`:
 ## Step 0: Create Task-Specific Fix Plan
 
 > [!CAUTION]
-> **🚨 ALWAYS reset the Ralph session before starting a new mini diploma!**
+> **ALWAYS reset the Ralph session before starting a new mini diploma!**
 > Without this, Ralph will continue working on the PREVIOUS mini diploma's session.
 
 **FIRST**, reset Ralph's session and create the fix plan:
@@ -164,7 +164,7 @@ tmux kill-session -t ralph 2>/dev/null
 
 ## Tasks
 
-### 🚨 STEP 0: DATABASE COURSE (MANDATORY FIRST!)
+### STEP 0: DATABASE COURSE (MANDATORY FIRST!)
 - [ ] Create database course: `npx ts-node scripts/create-mini-diploma-course.ts --slug {slug} --name "{Name}"`
 
 ### Step 1: Core Files
@@ -186,7 +186,7 @@ tmux kill-session -t ralph 2>/dev/null
 - [ ] Add to DIPLOMA_TAG_PREFIX in lead layout
 
 ### Step 3: Lesson Content
-- [ ] Create lesson content JSON (9 lessons)
+- [ ] Create lesson content JSON (3 lessons)
 - [ ] Add to dynamic-lesson-router.tsx
 
 ### Step 3.5: Exam Questions (MANDATORY!)
@@ -208,7 +208,6 @@ tmux kill-session -t ralph 2>/dev/null
 
 ### Step 5: Cron & GHL
 - [ ] Generate SMS template file for GHL
-- [ ] Add to nudge cron (48-hour non-starter)
 
 ### Step 6: Verification
 - [ ] Verify build passes
@@ -220,22 +219,22 @@ tmux kill-session -t ralph 2>/dev/null
 ### Step 7: Media Generation (MANDATORY for production quality)
 
 #### 7a: Doodle Images (Fast - ~2 min each)
-- [ ] Generate 9 doodle images using `generate_image` tool with doodle prompts
-- [ ] Copy images to `public/images/lessons/{portal_slug}/lesson-{1-9}-doodle.png`
+- [ ] Generate 3 doodle images using `generate_image` tool with doodle prompts
+- [ ] Copy images to `public/images/lessons/{portal_slug}/lesson-{1-3}-doodle.png`
 - [ ] Add `type: 'image'` messages to each lesson TSX (after income-hook card)
 
 #### 7b: Audio Scripts (Create plain text for TTS)
-- [ ] Create 9 audio scripts: `voice-engine/scripts/lesson-{1-9}.txt`
+- [ ] Create 3 audio scripts: `voice-engine/scripts/lesson-{1-3}.txt`
 - [ ] Scripts should be plain text (no markdown), conversational Sarah voice
 
 #### 7c: Audio Generation (Long - ~10 min per lesson, run in background)
 - [ ] Start batch generation: `cd voice-engine && python3.12 generate_all_lessons.py`
 - [ ] Monitor progress: audio appears in `voice-engine/output/lessons/`
-- [ ] Total time: ~90 min for all 9 lessons (M3 Max)
+- [ ] Total time: ~30 min for all 3 lessons (M3 Max)
 
 #### 7d: Upload to R2 (after audio complete)
-- [ ] Upload images: `for i in {1..9}; do wrangler r2 object put accredipro/images/lessons/{portal_slug}/lesson-$i-doodle.png --file=public/images/lessons/{portal_slug}/lesson-$i-doodle.png; done`
-- [ ] Upload audio: `for i in {1..9}; do wrangler r2 object put accredipro/audio/{portal_slug}/lesson-$i.mp3 --file=voice-engine/output/lessons/lesson-$i.mp3; done`
+- [ ] Upload images: `for i in {1..3}; do wrangler r2 object put accredipro/images/lessons/{portal_slug}/lesson-$i-doodle.png --file=public/images/lessons/{portal_slug}/lesson-$i-doodle.png; done`
+- [ ] Upload audio: `for i in {1..3}; do wrangler r2 object put accredipro/audio/{portal_slug}/lesson-$i.mp3 --file=voice-engine/output/lessons/lesson-$i.mp3; done`
 
 #### 7e: Integration (update lesson content)
 - [ ] Add `imageUrl` to each lesson's image message (R2 URL or local path)
@@ -248,7 +247,7 @@ tmux kill-session -t ralph 2>/dev/null
 
 ---
 
-## 🚨 Step 0: Create Database Course (MANDATORY FIRST!)
+## Step 0: Create Database Course (MANDATORY FIRST!)
 
 **THIS MUST BE DONE FIRST before any other steps!**
 
@@ -266,7 +265,7 @@ npx ts-node scripts/create-mini-diploma-course.ts --slug reiki-healing-mini-dipl
 
 **After completing: Update fix_plan.md - mark "Create database course" as [x]**
 
-⚠️ **DO NOT SKIP THIS STEP - enrollment will break!**
+**DO NOT SKIP THIS STEP - enrollment will break!**
 
 ---
 
@@ -283,14 +282,8 @@ If user provides just a topic name, **automatically generate** the spec file:
       "topic": "{Topic Name}",
       "lessons": [
         "{Topic} Foundations",
-        "Core Principles of {Topic}",
-        "Understanding {Topic} Systems",
-        "Practical {Topic} Techniques",
-        "Advanced {Topic} Methods",
-        "{Topic} Assessment & Evaluation",
-        "Client Sessions & {Topic} Practice",
-        "Ethics & Building Your {Topic} Practice",
-        "Your Next Step"
+        "The D.E.P.T.H. Method\u2122 for {Topic}",
+        "How To Get Your First Clients"
       ],
       "checkoutUrl": null,
       "colorScheme": "{auto-select based on topic}",
@@ -343,7 +336,7 @@ From the diploma topic, derive:
 ```typescript
 const {NAME_UPPER}_LESSONS: DiplomaLesson[] = [
     { id: 1, title: "Lesson 1", module: 1 },
-    // ... 9 lessons from spec
+    // ... 3 lessons from spec
 ];
 ```
 
@@ -395,7 +388,7 @@ Add to `miniDiplomaMap`:
 ```
 
 > [!NOTE]
-> The redirect query uses `orderBy: { enrolledAt: 'desc' }` (NOT `createdAt`). 
+> The redirect query uses `orderBy: { enrolledAt: 'desc' }` (NOT `createdAt`).
 > The Enrollment table uses `enrolledAt` for the timestamp field.
 
 **After completing: Update fix_plan.md - mark "Update auth get-redirect" as [x]**
@@ -434,7 +427,7 @@ Use the `CertificatePreview` component instead of static image:
 import { CertificatePreview } from "@/components/certificates/certificate-preview";
 
 // In the certificate section:
-<CertificatePreview 
+<CertificatePreview
     diplomaTitle="{Topic Name}"
     primaryColor={BRAND.primary}
 />
@@ -507,16 +500,15 @@ Add a new entry for the portal dashboard. Copy structure from existing entries:
     modules: [
         {
             id: 1,
-            title: "Module 1 Title",
-            description: "Module description",
+            title: "{Topic Name} Certification",
+            description: "Complete certification program",
             icon: "BookOpen",
             lessons: [
-                { id: 1, title: "Lesson 1 Title", duration: "7 min" },
-                { id: 2, title: "Lesson 2 Title", duration: "7 min" },
-                { id: 3, title: "Lesson 3 Title", duration: "7 min" },
+                { id: 1, title: "{Topic} Foundations", duration: "10 min" },
+                { id: 2, title: "The D.E.P.T.H. Method\u2122 for {Topic}", duration: "10 min" },
+                { id: 3, title: "How To Get Your First Clients", duration: "10 min" },
             ],
         },
-        // ... 2 more modules with 3 lessons each (total 9 lessons)
     ],
 },
 ```
@@ -529,7 +521,7 @@ Add a new entry for the portal dashboard. Copy structure from existing entries:
 
 **File:** `src/components/mini-diploma/lessons/content/{portal_slug}.json`
 
-Create a JSON file with all 9 lessons. Follow this structure:
+Create a JSON file with all 3 lessons. Follow this structure:
 
 ```json
 {
@@ -540,9 +532,9 @@ Create a JSON file with all 9 lessons. Follow this structure:
   "lessons": [
     {
       "id": 1,
-      "title": "Lesson 1 Title from spec",
+      "title": "{Topic} Foundations",
       "subtitle": "Engaging subtitle",
-      "readingTime": "7 min",
+      "readingTime": "10 min",
       "sections": [
         { "type": "intro", "content": "Hey {name}! Welcome message..." },
         { "type": "heading", "content": "Section Heading" },
@@ -550,11 +542,18 @@ Create a JSON file with all 9 lessons. Follow this structure:
         { "type": "list", "content": "List title:", "items": ["Item 1", "Item 2"] },
         { "type": "key-point", "content": "Important takeaway..." },
         { "type": "quote", "content": "Graduate testimonial..." },
-        { "type": "callout", "content": "Tip or warning", "style": "tip" }
+        { "type": "callout", "content": "Tip or warning", "style": "tip" },
+        { "type": "checkpoint", "content": "Quick check — what did you learn?" },
+        { "type": "reveal-card", "content": "Click to reveal the answer..." },
+        { "type": "micro-commitment", "content": "Are you ready to take the next step?" },
+        { "type": "income-calculator", "content": "Calculate your potential earnings" },
+        { "type": "framework", "content": "The D.E.P.T.H. Method\u2122 framework" },
+        { "type": "before-after", "content": "Before vs. after transformation" },
+        { "type": "definition", "content": "Key term definition" }
       ],
       "keyTakeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3"]
     }
-    // ... 9 lessons total
+    // ... 3 lessons total
   ]
 }
 ```
@@ -567,6 +566,13 @@ Create a JSON file with all 9 lessons. Follow this structure:
 - `key-point` - Highlighted key insight
 - `quote` - Graduate testimonial
 - `callout` - Info/tip/warning box with `style`: "info" | "warning" | "success" | "tip"
+- `checkpoint` - Interactive knowledge check mid-lesson
+- `reveal-card` - Click-to-reveal hidden content card
+- `micro-commitment` - Yes/no commitment prompt to boost engagement
+- `income-calculator` - Interactive income projection calculator
+- `framework` - Visual framework/method display (e.g., D.E.P.T.H. Method)
+- `before-after` - Before vs. after transformation comparison
+- `definition` - Key term definition with highlight styling
 
 **Reference:** See `spiritual-healing.json` for a complete example.
 
@@ -589,7 +595,7 @@ import {portalSlugCamelCase}Content from "../content/{portal_slug}.json";
 ```
 
 > [!CAUTION]
-> **🚨 CRITICAL: Without step 3, the portal will show FUNCTIONAL MEDICINE CONTENT instead of your new niche content!**
+> **CRITICAL: Without step 3, the portal will show FUNCTIONAL MEDICINE CONTENT instead of your new niche content!**
 > This bug is SILENT - no errors, just wrong content displayed to users.
 
 3. **File:** `src/app/(lead)/portal/[slug]/lesson/[id]/page.tsx`
@@ -619,6 +625,8 @@ Each mini diploma MUST have its own niche-specific exam questions. Do NOT reuse 
     "passScore": 80,
     "scholarshipScore": 95,
     "hasMasterclass": false,
+    "postExamFlow": "trustpilot",
+    "trustpilotUrl": "https://www.trustpilot.com/review/accredipro.academy",
     "testimonials": [
         {
             "quote": "Exam testimonial 1",
@@ -644,14 +652,14 @@ Each mini diploma MUST have its own niche-specific exam questions. Do NOT reuse 
             ],
             "correctAnswer": "b"
         }
-        // ... 10 questions total (1-2 per lesson)
+        // ... 5 questions total (1-2 per lesson, lessonRefs 1-3)
     ]
 }
 ```
 
 ### Question Guidelines:
-- **10 questions total** - covering all 9 lessons
-- **lessonRef** must match the lesson number the question covers
+- **5 questions total** - covering all 3 lessons
+- **lessonRef** must be 1, 2, or 3 matching the lesson the question covers
 - **Correct answer is ALWAYS "b"** - makes grading predictable
 - **Wrong answers should be plausible but clearly wrong**
 - **Questions should test practical knowledge, not trivia**
@@ -692,20 +700,20 @@ Each mini diploma needs a unique zombie persona with a detailed backstory:
         "avatar": "/zombies/{firstname}.webp",
         "niche": "{portal_slug}",
         "backstory": "Dramatic personal story that makes them relatable... Struggles, pain, what they overcame...",
-        "dramaticMoment": "The breaking point when everything changed - emotional, use 😭 emoji...",
+        "dramaticMoment": "The breaking point when everything changed - emotional, use emoji...",
         "transformation": "From [before state] → To [after state with income]",
         "incomeStory": "$X,XXX/month working XX hours/week. Started with $0. Now have a waitlist.",
         "writingStyle": {
             "capitalization": "mostly lowercase",
-            "emojis": ["😭", "💕", "🙌", "🥹", "😅", "💪", "🔥"],
+            "emojis": ["...", "..."],
             "punctuation": "multiple exclamation marks, ellipses...",
             "typos": "occasional (dont, youre, wont)",
             "tone": "warm, supportive, emotional"
         },
         "exampleMessages": [
-            "omg this hit so hard 😭 my {niche} journey is literally why clients trust me now",
+            "omg this hit so hard my {niche} journey is literally why clients trust me now",
             "when I was struggling I would have PAID anything for someone who understood",
-            "just closed my 6th client this month... still cant believe this is my life 💕"
+            "just closed my 6th client this month... still cant believe this is my life"
         ],
         "videoTestimonialScript": "Hi, I'm {Name}. [Describe struggle]... [Describe transformation]... If I can do this, you absolutely can too."
     }
@@ -734,7 +742,7 @@ Sarah stays the SAME person but adapts her KNOWLEDGE per niche:
     "lessonTopics": [
         "Lesson 1: {Title} - Core concepts covered",
         "Lesson 2: {Title} - Core concepts covered",
-        "..."
+        "Lesson 3: {Title} - Core concepts covered"
     ],
     "painPoints": [
         "Common struggle 1 for this niche",
@@ -777,16 +785,16 @@ Sarah stays the SAME person but adapts her KNOWLEDGE per niche:
 {
     day: 9,
     gap: "topic-keyword",
-    sarah: `Morning {firstName}! ☀️
+    sarah: `Morning {firstName}!
 
 TODAY'S LESSON: {Niche-specific lesson title}
 
 {Niche-specific content explaining a concept or giving advice}
 
-🎯 TODAY'S ACTION:
+TODAY'S ACTION:
 {Specific action step for this niche}
 
-Sarah 💛`,
+Sarah`,
     zombies: [
         {
             minHour: 1, maxHour: 3, options: [
@@ -873,7 +881,7 @@ Generate a complete SMS sequence file for GoHighLevel with these messages:
 2. **Nudge** (3h, no start): "47 others started" social proof
 3. **First Lesson Done** (L1 complete): Celebration + L2 link
 4. **Stalled** (24h no progress): "You left off at Lesson X"
-5. **Almost Done** (L7 complete): "Just 2 lessons left!"
+5. **Almost Done** (L2 complete): "Just 1 lesson left!"
 6. **Final Urgency** (6h before expiry): "Only 6 hours left!"
 
 ### POST-COMPLETION (CRO Sequence):
@@ -904,22 +912,22 @@ If build fails, fix errors and run again.
 ## Step 8.5: Create 60-Day Nurture Sequence (NICHE-SPECIFIC COPY REQUIRED!)
 
 > [!CAUTION]
-> **🚨 DO NOT just use placeholder replacements! Every diploma MUST have UNIQUE, niche-specific email copy.**
+> **DO NOT just use placeholder replacements! Every diploma MUST have UNIQUE, niche-specific email copy.**
 > Generic placeholders like `{{nicheName}}` are NOT acceptable as final content.
 
 **File to create:** `src/lib/{portal_slug}-nurture-60-day.ts`
 
 ### What "Niche-Specific" Means:
 
-❌ **BAD (Generic Placeholder):**
+**BAD (Generic Placeholder):**
 ```
 "Congratulations on completing your {{nicheName}} Mini Diploma!"
 ```
 
-✅ **GOOD (Niche-Specific):**
+**GOOD (Niche-Specific):**
 ```
-"You did it! 🎉 You've just completed training that many doctors never receive. 
-Understanding chakras, energy meridians, and healing frequencies puts you 
+"You did it! You've just completed training that many doctors never receive.
+Understanding chakras, energy meridians, and healing frequencies puts you
 in the top 1% of spiritual practitioners."
 ```
 
@@ -947,7 +955,7 @@ in the top 1% of spiritual practitioners."
 - `docs/mini-diploma/EMAIL_SEQUENCES.md` - Template structures (use as SKELETON only)
 - `src/lib/fm-nurture-60-day.ts` - Example of niche-specific FM emails
 
-⚠️ **CRITICAL: Update .ralph/fix_plan.md - mark "Create nurture sequence" as [x]**
+**CRITICAL: Update .ralph/fix_plan.md - mark "Create nurture sequence" as [x]**
 
 ---
 
@@ -964,9 +972,9 @@ export const {TOPIC_UPPER}_DMS: SarahDM[] = [
     {
         day: 2,
         hour: 14,
-        message: "Hey {firstName}! 👋 Just saw you completed the {Topic Name} training. What made you decide to take the leap?",
+        message: "Hey {firstName}! Just saw you completed the {Topic Name} training. What made you decide to take the leap?",
         followUpHours: 24,
-        followUp: "Did you see my message? Just checking in! 💕"
+        followUp: "Did you see my message? Just checking in!"
     },
     // DM 2: Lesson 3 complete
     {
@@ -980,7 +988,7 @@ export const {TOPIC_UPPER}_DMS: SarahDM[] = [
 
 **Reference:** `docs/mini-diploma/EMAIL_SEQUENCES.md` - Part 3 (DM Nurturing Sequence)
 
-⚠️ **CRITICAL: Update .ralph/fix_plan.md - mark "Create DM sequence" as [x]**
+**CRITICAL: Update .ralph/fix_plan.md - mark "Create DM sequence" as [x]**
 
 ---
 
@@ -997,12 +1005,12 @@ Create SMS template doc for GoHighLevel with these messages:
 
 ### SMS 1: Welcome (Trigger: Signup)
 ```
-Hey {{firstName}}! Your {Topic Name} Mini Diploma is ready 🎓 Start now while it's fresh: {{lessonLink}} — Sarah
+Hey {{firstName}}! Your {Topic Name} Mini Diploma is ready Start now while it's fresh: {{lessonLink}} — Sarah
 ```
 
 ### SMS 2: Reminder (Trigger: +24h, not started)
 ```
-{{firstName}}, quick reminder: your training access expires in 24h! Takes about an hour total: {{lessonLink}}
+{{firstName}}, quick reminder: your training access expires in 24h! Takes about 25 minutes total: {{lessonLink}}
 ```
 
 ### SMS 3: Urgency (Trigger: +44h, not completed)
@@ -1014,7 +1022,7 @@ Hey {{firstName}}! Your {Topic Name} Mini Diploma is ready 🎓 Start now while 
 
 ### SMS 4: Celebration (Trigger: Exam passed)
 ```
-🎉 YOU DID IT! Your {Topic Name} certificate is ready. Check your email for the download link! — Sarah
+YOU DID IT! Your {Topic Name} certificate is ready. Check your email for the download link! — Sarah
 ```
 
 ### SMS 5: Scholarship (Trigger: +6h post-exam)
@@ -1025,7 +1033,7 @@ Hey {{firstName}}! Your {Topic Name} Mini Diploma is ready 🎓 Start now while 
 
 **Reference:** `docs/mini-diploma/EMAIL_SEQUENCES.md` - Part 4 (SMS Templates)
 
-⚠️ **CRITICAL: Update .ralph/fix_plan.md - mark "Generate SMS template" as [x]**
+**CRITICAL: Update .ralph/fix_plan.md - mark "Generate SMS template" as [x]**
 
 ---
 
@@ -1048,44 +1056,13 @@ import { {TOPIC_UPPER}_DMS } from "./{portal_slug}-dms";
 }
 ```
 
-⚠️ **CRITICAL: Update .ralph/fix_plan.md - mark "Register sequences" as [x]**
+**CRITICAL: Update .ralph/fix_plan.md - mark "Register sequences" as [x]**
 
 ---
 
-## Step 8.9: Add to Nudge Cron (48-hour non-starter sequence)
+## Step 8.9: Nudge Cron (48-hour non-starter sequence)
 
-**File:** `src/app/api/cron/mini-diploma-nudges/route.ts`
-
-1. **Find the lead tag query** (search for "lead:functional-medicine-mini-diploma")
-
-2. **Add new diploma to the OR clause:**
-```typescript
-OR: [
-    { tag: "lead:functional-medicine-mini-diploma" },
-    { tag: "lead:fm-healthcare-mini-diploma" },
-    { tag: "lead:spiritual-healing-mini-diploma" },
-    { tag: "lead:{portal_slug}-mini-diploma" },  // ← ADD THIS
-]
-```
-
-3. **Add to lesson complete check:**
-```typescript
-NOT: {
-    tags: {
-        some: { 
-            OR: [
-                { tag: { startsWith: "functional-medicine-lesson-complete:" } },
-                { tag: { startsWith: "spiritual-healing-lesson-complete:" } },
-                { tag: { startsWith: "{portal_slug}-lesson-complete:" } },  // ← ADD
-            ]
-        }
-    }
-}
-```
-
-**NOTE**: Nudge emails use universal templates from EMAIL_SEQUENCES.md Part 1. Dashboard links are auto-generated based on lead tag.
-
-⚠️ **CRITICAL: Update .ralph/fix_plan.md - mark "Add to nudge cron" as [x]**
+AUTOMATIC — nudge cron now reads from MINI_DIPLOMA_REGISTRY automatically, no code change needed.
 
 ---
 
@@ -1103,7 +1080,7 @@ Check that sequence crons read from registry correctly:
 
 **No code change needed** if registry is correct and crons iterate all diplomas.
 
-⚠️ **CRITICAL: Update .ralph/fix_plan.md - mark "Verify sequence cron" as [x]**
+**CRITICAL: Update .ralph/fix_plan.md - mark "Verify sequence cron" as [x]**
 
 ---
 
@@ -1122,7 +1099,7 @@ Find the row for this diploma and change `status` from "planned" to "done":
 
 This tracks what's been created vs. still pending.
 
-⚠️ **CRITICAL: Update .ralph/fix_plan.md - mark "Update planning CSV status" as [x]**
+**CRITICAL: Update .ralph/fix_plan.md - mark "Update planning CSV status" as [x]**
 
 ---
 
@@ -1141,7 +1118,7 @@ SUMMARY: Created {Topic Name} mini diploma - landing page, registry, API, auth, 
 
 ---
 
-## 🖼️ Step 10: Generate Lesson Images (Doodle Style) - FAST, DO FIRST
+## Step 10: Generate Lesson Images (Doodle Style) - FAST, DO FIRST
 
 **RECOMMENDED** - Adds educational sketch images to lessons.
 
@@ -1153,8 +1130,8 @@ SUMMARY: Created {Topic Name} mini diploma - landing page, registry, API, auth, 
 | **generate_image tool** | ~2 min each | Quick prototypes, single images |
 
 ### Optimal Ralph Loop Order:
-1. **Step 10 (Images)** - Generate while planning audio scripts  
-2. **Step 11 (Audio)** - Start in background, takes ~90 min for all 9 lessons
+1. **Step 10 (Images)** - Generate while planning audio scripts
+2. **Step 11 (Audio)** - Start in background, takes ~30 min for all 3 lessons
 
 ### Brand Standard: Whiteboard Doodle Aesthetic
 - Style: Hand-drawn whiteboard sketch
@@ -1164,7 +1141,7 @@ SUMMARY: Created {Topic Name} mini diploma - landing page, registry, API, auth, 
 
 ---
 
-### 🚀 Option A: WaveSpeed API (RECOMMENDED - Fastest)
+### Option A: WaveSpeed API (RECOMMENDED - Fastest)
 
 Uses 20 parallel API keys with nano-banana-pro model for 4K images.
 
@@ -1174,14 +1151,15 @@ cd /Users/pochitino/Desktop/accredipro-lms/scripts/wavespeed-image-gen && \
 python3 generate_lesson_images.py --niche {portal_slug}
 ```
 
-**Output:** `public/images/lessons/{portal_slug}/lesson-{1-9}-doodle.png`
-**Time:** ~30 seconds for all 9 images (parallel generation)
+**Output:** `public/images/lessons/{portal_slug}/lesson-{1-3}-doodle.png`
+**Time:** ~30 seconds for all 3 images (parallel generation)
 
 **Custom prompts:** Create `prompts.json` with lesson-specific prompts:
 ```json
 {
   "lesson_1": "Hand-drawn whiteboard sketch about {niche concept}...",
-  "lesson_2": "..."
+  "lesson_2": "...",
+  "lesson_3": "..."
 }
 ```
 
@@ -1189,43 +1167,41 @@ Then run: `python3 generate_lesson_images.py --niche {slug} --prompts prompts.js
 
 ---
 
-### 🎨 Option B: generate_image Tool (Manual/Prototype)
+### Option B: generate_image Tool (Manual/Prototype)
 
 ### Step 10.1: Generate Images
 
 Use `generate_image` tool with this prompt pattern:
 
 ```
-Hand-drawn whiteboard sketch style, black marker on cream paper background, 
+Hand-drawn whiteboard sketch style, black marker on cream paper background,
 educational doodle about {LESSON CORE CONCEPT}. Shows: {VISUAL ELEMENTS}.
-Bottom text in sketchy handwriting: "{KEY TAKEAWAY}". 
-Authentic student notebook doodle aesthetic, not polished, messy arrows and circles, 
+Bottom text in sketchy handwriting: "{KEY TAKEAWAY}".
+Authentic student notebook doodle aesthetic, not polished, messy arrows and circles,
 health coach teaching concept.
 ```
 
 ### Lesson Image Prompts (Customize per niche):
 
-**Lesson 1 - Root Cause/Foundations:**
+**Lesson 1 - Foundations:**
 ```
-Root cause thinking - stick figure with symptoms (tired, bloated, anxious) with red X marks, 
+Root cause thinking - stick figure with symptoms (tired, bloated, anxious) with red X marks,
 arrow pointing to "ROOT CAUSE" with magnifying glass, then happy stick figure with checkmarks.
 Bottom text: "Fix the cause, not the symptom"
 ```
 
-**Lesson 2-7 - Core Systems:** Use same pattern for each system being taught.
-
-**Lesson 8 - Client Acquisition:**
+**Lesson 2 - D.E.P.T.H. Method:**
 ```
-Client funnel - top shows "YOUR NETWORK" with stick figures, middle shows "FREE VALUE" 
+Framework diagram - D.E.P.T.H. acronym with each letter connected to a concept,
+arrows showing the flow from assessment to transformation.
+Bottom text: "The method that changes everything"
+```
+
+**Lesson 3 - Getting Clients:**
+```
+Client funnel - top shows "YOUR NETWORK" with stick figures, middle shows "FREE VALUE"
 with heart, bottom shows "PAYING CLIENTS $$" with money symbols.
 Bottom text: "Help first, sell second"
-```
-
-**Lesson 9 - Vision/Income:**
-```
-Day in the life - clock times with stick figure at laptop, at school pickup, relaxing. 
-Income numbers: "$200/session", "$5K/month", "15 hrs/week".
-Bottom text: "Your new life awaits"
 ```
 
 ### Step 10.2: Save Images
@@ -1233,7 +1209,7 @@ Bottom text: "Your new life awaits"
 Images generate to artifacts folder. Copy to permanent location:
 ```bash
 mkdir -p public/images/lessons/{portal_slug}
-for i in 1 2 3 4 5 6 7 8 9; do
+for i in 1 2 3; do
   cp ~/.gemini/antigravity/brain/*/lesson_${i}_doodle*.png public/images/lessons/{portal_slug}/lesson-${i}-doodle.png 2>/dev/null
 done
 ```
@@ -1255,7 +1231,7 @@ Add `type: 'image'` message to each lesson (after income-hook card):
 
 // turbo
 ```bash
-for i in {1..9}; do 
+for i in {1..3}; do
   wrangler r2 object put accredipro/images/lessons/{portal_slug}/lesson-$i-doodle.png \
     --file=public/images/lessons/{portal_slug}/lesson-$i-doodle.png
 done
@@ -1265,10 +1241,10 @@ done
 
 ---
 
-## 🎤 Step 11: Generate Lesson Audio (F5-TTS) - LONG, RUN IN BACKGROUND
+## Step 11: Generate Lesson Audio (F5-TTS) - LONG, RUN IN BACKGROUND
 
 **OPTIONAL BUT RECOMMENDED** - Adds Sarah's voice narration to each lesson.
-**Time:** ~10 min per lesson (~90 min total for all 9 on M3 Max)
+**Time:** ~10 min per lesson (~30 min total for all 3 on M3 Max)
 
 ### Setup (One-time)
 - **Voice Engine:** `/Users/pochitino/Desktop/ralph-claude-code-main/voice-engine/`
@@ -1307,13 +1283,13 @@ cd /Users/pochitino/Desktop/ralph-claude-code-main/voice-engine && \
 **Output:** `output/lessons/lesson-{N}.mp3` (~3MB each, 3 min each)
 
 > [!TIP]
-> Start this in background while doing other work - it takes ~90 min total.
+> Start this in background while doing other work - it takes ~30 min total.
 
 ### Step 11.3: Upload to R2
 
 // turbo
 ```bash
-for i in {1..9}; do
+for i in {1..3}; do
   wrangler r2 object put accredipro/audio/{portal_slug}/lesson-$i.mp3 \
     --file=/Users/pochitino/Desktop/ralph-claude-code-main/voice-engine/output/lessons/lesson-$i.mp3
 done
@@ -1341,50 +1317,49 @@ Add `pre-recorded-audio` message or update `audioUrl`:
 ## Summary
 
 When complete, verify all files were created/modified:
-1. ✅ Database course created (FIRST!)
-2. ✅ Lesson array in registry
-3. ✅ Config entry in registry  
-4. ✅ Optin API (5 locations)
-5. ✅ Auth redirect
-6. ✅ next.config.ts
-7. ✅ Landing page created (with CertificatePreview, correct Pixel)
-8. ✅ **Correct Meta Pixel ID set**
-9. ✅ diploma-configs.ts (portal dashboard)
-10. ✅ Lesson content JSON (9 lessons)
-11. ✅ dynamic-lesson-router.tsx updated
-12. ✅ Exam questions JSON
-13. ✅ **Zombie persona JSON** (backstory, income story, writing style)
-14. ✅ **Sarah knowledge JSON** (lesson topics, terminology)
-15. ✅ **45-day Circle Pod curriculum** (days 9-23 + 24-45)
-16. ✅ **Seeded templates** to database
-17. ✅ **60-day nurture sequence file**
-18. ✅ **DM sequence file**
-19. ✅ **Sequences registered in registry**
-20. ✅ **Nudge cron updated**
-21. ✅ SMS template generated
-22. ✅ Build passes
-23. ✅ **Planning CSV status updated to "done"**
-24. ✅ **Audio scripts created** (9 lessons)
-25. ✅ **Audio generated via F5-TTS** (9 MP3s)
-26. ✅ **Doodle images generated** (9 images)
-27. ✅ **Media uploaded to R2**
+1. Database course created (FIRST!)
+2. Lesson array in registry
+3. Config entry in registry
+4. Optin API (5 locations)
+5. Auth redirect
+6. next.config.ts
+7. Landing page created (with CertificatePreview, correct Pixel)
+8. **Correct Meta Pixel ID set**
+9. diploma-configs.ts (portal dashboard — 1 module, 3 lessons)
+10. Lesson content JSON (3 lessons)
+11. dynamic-lesson-router.tsx updated
+12. Exam questions JSON (5 questions, lessonRefs 1-3, postExamFlow: trustpilot)
+13. **Zombie persona JSON** (backstory, income story, writing style)
+14. **Sarah knowledge JSON** (lesson topics, terminology)
+15. **45-day Circle Pod curriculum** (days 9-23 + 24-45)
+16. **Seeded templates** to database
+17. **60-day nurture sequence file**
+18. **DM sequence file**
+19. **Sequences registered in registry**
+20. SMS template generated
+21. Build passes
+22. **Planning CSV status updated to "done"**
+23. **Audio scripts created** (3 lessons)
+24. **Audio generated via F5-TTS** (3 MP3s, ~25 minutes total)
+25. **Doodle images generated** (3 images)
+26. **Media uploaded to R2**
 
 **Circle Pod System (Auto-runs after creation):**
-- ✅ Sarah AI replies (15-60 min delay, Claude Haiku)
-- ✅ Zombie AI replies (60-180 min delay, with SKIP option)
-- ✅ **10 Resource tools unlock progressively** (30min → 72h)
-- ✅ Sarah gifts each tool with personalized message
-- ✅ 45-day daily messages (Sarah + Zombie)
+- Sarah AI replies (15-60 min delay, Claude Haiku)
+- Zombie AI replies (60-180 min delay, with SKIP option)
+- **10 Resource tools unlock progressively** (30min -> 72h)
+- Sarah gifts each tool with personalized message
+- 45-day daily messages (Sarah + Zombie)
 
 **Fully Automated After Creation (62+ message templates!):**
-- ✅ Pre-completion emails (6) + Milestone emails (8)
-- ✅ Post-completion nurture (8) + Hormozi warming (7)
-- ✅ Winback (4) + Downsell (3) + Long-term (7) + Revival (1)
-- ✅ DMs: Post-completion (7) + Milestone (7)
-- ✅ SMS (4)
-- ✅ Lesson completion tracking
-- ✅ Certificate generation
-- ✅ Meta Pixel tracking (leads, views, etc.)
+- Pre-completion emails (6) + Milestone emails (8)
+- Post-completion nurture (8) + Hormozi warming (7)
+- Winback (4) + Downsell (3) + Long-term (7) + Revival (1)
+- DMs: Post-completion (7) + Milestone (7)
+- SMS (4)
+- Lesson completion tracking
+- Certificate generation
+- Meta Pixel tracking (leads, views, etc.)
 
 **All emails use niche placeholders:** `{{nicheName}}`, `{{nicheDisplayName}}`
 
@@ -1394,7 +1369,3 @@ When complete, verify all files were created/modified:
 - Test lessons at `/portal/{portal_slug}/lesson/1`
 - Test Circle Pod at `/portal/{portal_slug}` (sidebar)
 - (Optional) Create custom Stripe checkout link
-
-
-
-

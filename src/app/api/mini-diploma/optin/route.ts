@@ -57,7 +57,7 @@ I'm SO excited you're here to learn about women's hormones and health! This is g
 
 Here's what's waiting for you:
 
-✨ 9 interactive lessons (about 60 minutes total)
+✨ 3 focused lessons (~25 minutes total)
 ✨ Everything from hormones to nutrition to life stages
 ✨ A certificate when you complete!
 
@@ -69,7 +69,7 @@ Ready to start? Head to Lesson 1 and let's dive in!
 
 Talk soon,
 Sarah 🌸`,
-        voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah! Welcome to your Women's Health Mini Diploma! I'm so excited you're here. Over the next 9 lessons, I'm going to teach you everything about women's hormones and health. Head to Lesson 1 when you're ready and let's get started! Talk soon!`,
+        voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah! Welcome to your Women's Health Mini Diploma! I'm so excited you're here. Over the next 3 lessons, I'm going to teach you everything about women's hormones and health. Head to Lesson 1 when you're ready and let's get started! Talk soon!`,
     },
     "functional-medicine": {
         text: (firstName: string) => `Hey ${firstName}! 💕
@@ -131,7 +131,7 @@ Welcome to your Christian Life Coaching Mini Diploma! This is the start of somet
 
 Inside your dashboard you'll find:
 
-✨ Your 9 faith-based coaching lessons ready to start
+✨ Your 3 faith-based coaching lessons ready to start
 ✨ Your Roadmap showing where you're headed
 ✨ Direct access to message me anytime
 
@@ -154,7 +154,7 @@ Welcome to your Spiritual Healing Mini Diploma! This is the start of something b
 
 Inside your dashboard you'll find:
 
-✨ Your 9 transformative lessons on spiritual healing ready to start
+✨ Your 3 transformative lessons on spiritual healing ready to start
 ✨ Your Roadmap showing where you're headed
 ✨ Direct access to message me anytime
 
@@ -177,7 +177,7 @@ Welcome to your Energy Healing Mini Diploma! This is the start of something trul
 
 Inside your dashboard you'll find:
 
-✨ Your 9 powerful lessons on energy healing ready to start
+✨ Your 3 powerful lessons on energy healing ready to start
 ✨ Your Roadmap showing where you're headed
 ✨ Direct access to message me anytime
 
@@ -200,7 +200,7 @@ Welcome to your Reiki Healing Mini Diploma! This is the start of something truly
 
 Inside your dashboard you'll find:
 
-✨ Your 9 transformative lessons on Reiki healing ready to start
+✨ Your 3 transformative lessons on Reiki healing ready to start
 ✨ Your Roadmap showing where you're headed
 ✨ Direct access to message me anytime
 
@@ -223,7 +223,7 @@ Welcome to your ADHD Coaching Mini Diploma! This is the start of something truly
 
 Inside your dashboard you'll find:
 
-✨ Your 9 transformative lessons on ADHD coaching ready to start
+✨ Your 3 transformative lessons on ADHD coaching ready to start
 ✨ Your Roadmap showing where you're headed
 ✨ Direct access to message me anytime
 
@@ -246,7 +246,7 @@ Welcome to your Pet Nutrition & Wellness Mini Diploma! This is the start of some
 
 Inside your dashboard you'll find:
 
-✨ Your 9 comprehensive lessons on pet nutrition ready to start
+✨ Your 3 comprehensive lessons on pet nutrition ready to start
 ✨ Your Roadmap showing where you're headed
 ✨ Direct access to message me anytime
 

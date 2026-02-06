@@ -223,7 +223,7 @@ You've got this! 💛
                             <div style="padding: 40px 30px;">
                                 <p style="font-size: 16px; color: #555;">Hey ${userName},</p>
 
-                                <p style="color: #555; font-size: 16px;">I'm SO proud of you! You've completed all 9 lessons of your <strong style="color: #722F37;">${categoryName} Mini Diploma</strong>!</p>
+                                <p style="color: #555; font-size: 16px;">I'm SO proud of you! You've completed all lessons of your <strong style="color: #722F37;">${categoryName} Mini Diploma</strong>!</p>
 
                                 <p style="color: #555; font-size: 16px;">Your ASI-verified Foundation Certificate is ready to download. This is your first official credential in ${categoryName}!</p>
 

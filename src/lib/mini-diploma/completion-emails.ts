@@ -5,18 +5,12 @@
 
 import { sendWelcomeEmail } from "@/lib/email";
 
-// Lesson titles for functional medicine (can be extended for other niches)
+// Lesson teasers per niche (3 lessons + final)
 const LESSON_TEASERS: Record<string, string[]> = {
     "functional-medicine": [
         "", // L0 placeholder
-        "The Gut Connection - How your gut controls everything", // L2 teaser
-        "The Stress-Hormone Axis - The hidden link to fatigue", // L3 teaser  
-        "Thyroid Mastery - What doctors miss", // L4 teaser
-        "Inflammation Deep Dive - The root of chronic disease", // L5 teaser
-        "Detox Pathways - Cellular cleansing protocols", // L6 teaser
-        "Mitochondrial Health - The energy crisis", // L7 teaser
-        "The 5R Protocol - Your signature framework", // L8 teaser
-        "Income Blueprint - From practitioner to profit", // L9 teaser
+        "The D.E.P.T.H. Method™ - Your signature framework", // L2 teaser
+        "How To Get Your First Clients - From zero to practice", // L3 teaser
         "Certificate unlocked! 🎓", // Final teaser
     ],
 };

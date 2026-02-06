@@ -12,6 +12,11 @@ import gutHealthContent from "../content/gut-health.json";
 import reikiHealingContent from "../content/reiki-healing.json";
 import adhdCoachingContent from "../content/adhd-coaching.json";
 import petNutritionContent from "../content/pet-nutrition.json";
+import hormoneHealthContent from "../content/hormone-health.json";
+import holisticNutritionContent from "../content/holistic-nutrition.json";
+import nurseCoachContent from "../content/nurse-coach.json";
+import healthCoachContent from "../content/health-coach.json";
+import womensHormoneHealthContent from "../content/womens-hormone-health.json";
 
 // Type for lesson content structure
 interface LessonData {
@@ -40,6 +45,11 @@ const LESSON_CONTENT: Record<string, NicheContent> = {
     "reiki-healing": reikiHealingContent as NicheContent,
     "adhd-coaching": adhdCoachingContent as NicheContent,
     "pet-nutrition": petNutritionContent as NicheContent,
+    "hormone-health": hormoneHealthContent as NicheContent,
+    "holistic-nutrition": holisticNutritionContent as NicheContent,
+    "nurse-coach": nurseCoachContent as NicheContent,
+    "health-coach": healthCoachContent as NicheContent,
+    "womens-hormone-health": womensHormoneHealthContent as NicheContent,
 };
 
 interface DynamicLessonRouterProps {
