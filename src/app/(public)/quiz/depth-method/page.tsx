@@ -586,18 +586,19 @@ const QUESTIONS: QuizStep[] = [
   },
   {
     id: 15, pillar: "Investment",
-    question: "If you qualify for a partial scholarship, what's the most you could invest in yourself TODAY?",
-    subtitle: "Be honest — this helps us match you with the right scholarship tier. The full program is valued at $2,997.",
+    question: "The ASI Certification includes: Practitioner + Advanced + Master levels, 9 specializations, 1:1 mentorship, client acquisition system, offer templates, marketing materials, and lifetime access. Total value: $4,997.",
+    subtitle: "⚠️ Other programs like IIN charge $5,000+ and leave you without clients. ASI builds CAREERS — practitioners earning $5K-$10K+/month. The Institute offers scholarships, but spots are LIMITED. If you're not serious about transforming your life, please leave this page now. What amount between $500-$1,000 could you invest TODAY?",
     options: [
-      { label: "Under $200", value: "under-200", reaction: "I appreciate your honesty. We may have a starter option that could work for you.", strength: "developing" },
-      { label: "$200 - $350", value: "200-350", reaction: "That's a start! Many of our practitioners began at this level. Let's see what we can do.", strength: "developing" },
-      { label: "$350 - $500", value: "350-500", reaction: "Perfect range! This is where most scholarship recipients land. You're showing serious commitment.", strength: "good" },
-      { label: "$500 - $750", value: "500-750", reaction: "Excellent! At this level, you qualify for our Priority Scholarship track. Very few spots available.", strength: "strong" },
-      { label: "$750 - $1,000", value: "750-1000", reaction: "Impressive commitment! You're in our top 10% of applicants. This unlocks our VIP Scholarship tier.", strength: "strong" },
-      { label: "$1,000+", value: "1000-plus", reaction: "Wow! You're clearly serious about your transformation. This qualifies you for our Elite Scholarship with maximum Institute coverage.", strength: "strong" },
+      { label: "$500 (Minimum to qualify)", value: "500", reaction: "That's the minimum scholarship qualification. Let me check if we have a spot available for you...", strength: "good" },
+      { label: "$600", value: "600", reaction: "Good commitment level. This qualifies you for our Standard Scholarship track.", strength: "good" },
+      { label: "$700", value: "700", reaction: "Solid investment in yourself. You're in the Priority Scholarship tier now.", strength: "strong" },
+      { label: "$800", value: "800", reaction: "Excellent! This puts you in our top scholarship tier with maximum Institute support.", strength: "strong" },
+      { label: "$900", value: "900", reaction: "Very impressive commitment. VIP Scholarship track — only 3 spots remaining this month.", strength: "strong" },
+      { label: "$1,000+", value: "1000-plus", reaction: "Maximum commitment! Elite Scholarship with the best Institute coverage available. You're clearly serious.", strength: "strong" },
     ],
   },
 ];
+
 
 
 
