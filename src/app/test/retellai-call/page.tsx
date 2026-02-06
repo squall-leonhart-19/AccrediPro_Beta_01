@@ -199,20 +199,6 @@ export default function RetellAITestPage() {
                         </div>
                     </div>
 
-                    {/* Martinez Investment Amount Section */}
-                    <div className="mb-6 p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/30">
-                        <h2 className="text-lg font-semibold text-emerald-300 mb-4">💰 For Dr. Martinez Call</h2>
-                        <div>
-                            <label className="block text-xs text-emerald-400 mb-1">Investment Amount (what they committed to Sarah)</label>
-                            <input
-                                type="text"
-                                value={investmentAmount}
-                                onChange={(e) => setInvestmentAmount(e.target.value)}
-                                placeholder="300"
-                                className="w-full px-3 py-2 bg-slate-700 border border-emerald-500/30 rounded-lg text-white text-sm"
-                            />
-                        </div>
-                    </div>
 
                     {/* Call Buttons */}
                     <div className="grid grid-cols-2 gap-4 mb-6">

@@ -501,7 +501,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                             <div>
                                 <h3 className="text-xl font-black text-gray-900 mb-2">🛡️ The "This Actually Works" Guarantee</h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Complete all 9 lessons. If you don't feel 100% confident you understand how to start your practice,
+                                    Complete all 3 lessons. If you don't feel 100% confident you understand how to start your practice,
                                     email me personally. I'll coach you until you do — <strong>no limits, no extra cost, no fine print.</strong>
                                 </p>
                                 <p className="text-sm text-gray-500 mt-3 italic">— Sarah Mitchell, Your Coach</p>
@@ -659,7 +659,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                             </h2>
 
                             <p className="text-gray-600 mb-6 leading-relaxed">
-                                Complete all 9 foundational competencies and receive your <strong>ASI Level 0 Certificate</strong>.
+                                Complete all 3 foundational lessons and receive your <strong>ASI Level 0 Certificate</strong>.
                                 Add it to LinkedIn today. Show employers you understand root-cause medicine.
                             </p>
 
@@ -672,7 +672,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                                     <div>
                                         <p className="font-bold text-red-700 mb-1">⏰ 48-Hour Completion Window</p>
                                         <p className="text-sm text-gray-600">
-                                            Your access expires in <strong className="text-red-600">48 hours</strong>. Complete all 9 lessons to claim your certificate.
+                                            Your access expires in <strong className="text-red-600">48 hours</strong>. Complete all 3 lessons to claim your certificate.
                                             <strong> Most finish in one sitting.</strong>
                                         </p>
                                     </div>
@@ -750,34 +750,28 @@ function HealthcareWorkersMiniDiplomaContent() {
                     <div className="text-center mb-12">
                         <p className="font-bold text-xs uppercase mb-3 tracking-wide" style={{ color: BRAND.gold }}>ASI Level 0 – Foundational Competencies</p>
                         <h2 className="text-3xl md:text-4xl font-black">
-                            9 Core Competencies That Fill The Gaps<br />
+                            3 Lessons That Fill The Gaps<br />
                             <span style={{ color: BRAND.gold }}>Medical School Never Covered</span>
                         </h2>
                         <p className="text-white/60 text-sm mt-4 max-w-xl mx-auto">
-                            These competencies align with ASI Level 0 (Foundations) standards within the AccrediPro professional framework.
+                            These lessons align with ASI Level 0 (Foundations) standards within the AccrediPro professional framework.
                         </p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-4">
                         {[
-                            { num: 1, title: "ASI Level 0 – Root-Cause Thinking", desc: "Beyond symptom suppression" },
-                            { num: 2, title: "ASI Level 0 – Gut Health Foundations", desc: "Where 80% of healing begins" },
-                            { num: 3, title: "ASI Level 0 – Systemic Inflammation", desc: "The hidden driver of disease" },
-                            { num: 4, title: "ASI Level 0 – Toxin Burden Assessment", desc: "Modern detox protocols" },
-                            { num: 5, title: "ASI Level 0 – HPA Axis Dysfunction", desc: "Stress & hormonal balance" },
-                            { num: 6, title: "ASI Level 0 – Nutrient Optimization", desc: "Functional testing & correction" },
-                            { num: 7, title: "ASI Level 0 – Functional Lab Interpretation", desc: "Optimal vs normal ranges" },
-                            { num: 8, title: "ASI Level 0 – Protocol Development", desc: "Client healing plans" },
-                            { num: 9, title: "ASI Level 0 – Practice Foundations", desc: "Scope & ethics transition" }
+                            { num: 1, title: "What Is Functional Medicine?", desc: "Root-cause thinking, the 5 root causes of chronic illness, and real client case studies that prove this works" },
+                            { num: 2, title: "The D.E.P.T.H. Method™", desc: "Your signature 5-step framework: Discover, Evaluate, Pinpoint, Transform & Heal — the system top practitioners use" },
+                            { num: 3, title: "Getting Your First Clients", desc: "Warm market strategy, pricing your packages, and a 30-day launch plan to start earning $4K-$8K/month" }
                         ].map((lesson) => (
-                            <div key={lesson.num} className="rounded-xl p-4 border" style={{ backgroundColor: `${BRAND.burgundy}80`, borderColor: `${BRAND.gold}30` }}>
-                                <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" style={{ backgroundColor: `${BRAND.gold}30`, color: BRAND.gold }}>
+                            <div key={lesson.num} className="rounded-xl p-5 border" style={{ backgroundColor: `${BRAND.burgundy}80`, borderColor: `${BRAND.gold}30` }}>
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg" style={{ backgroundColor: `${BRAND.gold}30`, color: BRAND.gold }}>
                                         {lesson.num}
                                     </div>
-                                    <h4 className="font-bold text-white">{lesson.title}</h4>
+                                    <h4 className="font-bold text-white text-lg">{lesson.title}</h4>
                                 </div>
-                                <p className="text-white/60 text-sm pl-11">{lesson.desc}</p>
+                                <p className="text-white/70 text-sm pl-13 leading-relaxed">{lesson.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -836,7 +830,7 @@ function HealthcareWorkersMiniDiplomaContent() {
 
                     <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
                         {[
-                            { item: "9-Lesson Functional Medicine Mini-Diploma", value: "$97" },
+                            { item: "3-Lesson Functional Medicine Mini-Diploma", value: "$97" },
                             { item: "ASI-Verified Certificate of Completion", value: "$47" },
                             { item: "Healthcare-to-Coaching Transition Guide", value: "$197" },
                             { item: "Scope of Practice Clarity Module", value: "$47" },
@@ -942,7 +936,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                         {[
                             { q: "Is this legitimate? I've been burned by fake certifications before.", a: "I get it — the wellness space is full of garbage weekend certificates. ASI (AccrediPro International Standards Institute) is a credentialing body specifically for functional medicine practitioners. Our curriculum was developed with practicing clinicians, and unlike most certifications, we teach you how to GET CLIENTS — not just theory. Our graduates are practicing and earning. That's the proof." },
                             { q: "Will this conflict with my nursing/medical license?", a: "No! Functional health coaching is a separate scope of practice. You're NOT diagnosing or treating disease — you're coaching clients on lifestyle, nutrition, and wellness. This is explicitly legal in all 50 states. Many RNs, PTs, and MAs do this alongside their clinical work or as a full career transition. We include a Scope of Practice Clarity Module that explains exactly where the lines are." },
-                            { q: "I'm exhausted after shifts. Do I have time for this?", a: "The entire mini-diploma is 60 minutes. That's one lunch break or one evening after the kids are asleep. The lessons are 5-7 minutes each — designed for busy professionals. 89% of our students complete it the same day they start. You can pause and resume anytime within your 48-hour window." },
+                            { q: "I'm exhausted after shifts. Do I have time for this?", a: "The entire mini-diploma is 60 minutes. That's one lunch break or one evening after the kids are asleep. It's just 3 focused lessons — designed for busy professionals. 89% of our students complete it the same day they start. You can pause and resume anytime within your 48-hour window." },
                             { q: "Can I really earn $4-8K/month doing this?", a: "Healthcare pros typically hit these numbers faster than career changers. Here's the math: $150/session × 3 sessions/client × 10 clients = $4,500/month. That's part-time hours. Your clinical credibility, patient rapport skills, and medical knowledge give you a major head start. Many of our graduates started while still working their clinical jobs." },
                             { q: "What if I can't finish?", a: "Work at your own pace! You have 48 hours of access, but most people finish in a single sitting (about 60 minutes). If something comes up, just pick up where you left off. The lessons save your progress automatically." },
                             { q: "What is ASI exactly? Is this accreditation real?", a: "ASI stands for AccrediPro International Standards Institute — our independent credentialing body for functional medicine practitioners. While we're not affiliated with traditional medical boards (which is intentional — they focus on disease treatment, not root-cause wellness), our certification is recognized in the coaching and wellness industry. 4,200+ practitioners carry our credential and are actively practicing." },
