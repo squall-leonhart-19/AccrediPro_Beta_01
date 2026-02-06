@@ -438,204 +438,150 @@ interface QuizOption { label: string; value: string; reaction: string; strength:
 interface QuizStep { id: number; pillar: string; question: string; subtitle?: string; options: QuizOption[] }
 
 const QUESTIONS: QuizStep[] = [
+  // ═══════════════════════════════════════════════════════════════════
+  // PHASE 1: EXCITEMENT (Q1-Q4) - "I'm excited about this"
+  // ═══════════════════════════════════════════════════════════════════
   {
-    id: 1, pillar: "Your Profile",
-    question: "What best describes you right now?",
-    subtitle: "This helps us determine if you're a fit for the program.",
+    id: 1, pillar: "Specialization",
+    question: "Which area of Functional Medicine excites you most?",
+    subtitle: "There's no wrong answer — what calls to you?",
     options: [
-      { label: "Healthcare professional (nurse, PA, medical assistant, etc.)", value: "healthcare-pro", reaction: "Excellent. Healthcare professionals have a 94% acceptance rate into our program. Your clinical background is a major advantage.", strength: "strong" },
-      { label: "Health coach, trainer, or wellness practitioner", value: "health-coach", reaction: "Great foundation. Coaches who upgrade to ASI clinical certification see an average 3x increase in income.", strength: "strong" },
-      { label: "Corporate professional ready for a career change", value: "corporate", reaction: "You'd be surprised - 31% of our highest earners came from corporate. Your professional skills are a MASSIVE advantage in building a practice.", strength: "good" },
-      { label: "Stay-at-home mom looking to build something meaningful", value: "stay-at-home-mom", reaction: "Some of our most successful practitioners are moms who started studying during nap time. Your empathy and life experience are clinical superpowers.", strength: "good" },
-      { label: "Other background - but passionate about health & wellness", value: "other-passionate", reaction: "Passion is the #1 predictor of success in our program. 38% of our top performers had non-traditional backgrounds.", strength: "good" },
+      { label: "Gut Health and Digestive Wellness", value: "gut-health", reaction: "Great choice! Gut health is the foundation of all wellness. Our gut specialists are in massive demand.", strength: "strong" },
+      { label: "Hormonal Health and Balance", value: "hormone-health", reaction: "Perfect! Women are desperate for qualified hormone practitioners. This is our #1 most in-demand specialty.", strength: "strong" },
+      { label: "Stress, Burnout and Adrenal Recovery", value: "burnout", reaction: "So needed right now! 1 in 3 professional women suffer from burnout. The demand is exploding.", strength: "strong" },
+      { label: "Autoimmune and Inflammation", value: "autoimmune", reaction: "Complex cases need clinical practitioners. This is advanced-level, premium-rate work.", strength: "strong" },
+      { label: "Weight Management and Metabolic Health", value: "metabolic", reaction: "Beyond basic diets — real metabolic transformation. One of the highest-paying specialties.", strength: "strong" },
+      { label: "Not sure yet — I want to explore", value: "explore", reaction: "That's perfect! We'll help you discover your ideal niche during the program.", strength: "good" },
     ],
   },
   {
-    id: 2, pillar: "Your Profile",
-    question: "How much are you currently earning per month from health and wellness work?",
-    subtitle: "Be honest. This helps us calculate your earning potential.",
+    id: 2, pillar: "Background",
+    question: "What best describes your current background?",
+    subtitle: "This helps us understand your starting point.",
     options: [
-      { label: "Nothing yet - I haven't started", value: "0", reaction: "That's actually the best place to start. No bad habits, no ceiling. Our top earners started from zero.", strength: "good" },
-      { label: "Under $2,000/month", value: "under-2k", reaction: "You're leaving serious money on the table. The average ASI practitioner earns 4-5x that within 6 months.", strength: "good" },
-      { label: "$2,000 - $5,000/month", value: "2k-5k", reaction: "Solid base. But you're ready for the next level. ASI practitioners at your stage typically double within 90 days.", strength: "strong" },
-      { label: "Over $5,000/month", value: "over-5k", reaction: "Impressive. You're already ahead of 90% of wellness professionals. FM Certification could take you to $15-25K/month.", strength: "strong" },
+      { label: "Nurse or Nursing Assistant", value: "nurse", reaction: "Excellent! Healthcare professionals have a 94% acceptance rate. Your clinical background is a major advantage.", strength: "strong" },
+      { label: "Doctor, PA, or NP", value: "doctor", reaction: "Your medical training is a massive advantage. FM certification adds a whole new dimension to your practice.", strength: "strong" },
+      { label: "Allied Health (PT, OT, Dietitian, etc.)", value: "allied-health", reaction: "Great foundation! Your healthcare experience translates directly to FM practice.", strength: "strong" },
+      { label: "Mental Health Professional", value: "mental-health", reaction: "The mind-body connection is central to FM. Your background is incredibly valuable.", strength: "strong" },
+      { label: "Wellness or Fitness Professional", value: "wellness", reaction: "Perfect base to build on! Coaches who upgrade to clinical certification see 3x income increases.", strength: "good" },
+      { label: "Other career — ready for a change", value: "career-change", reaction: "You'd be surprised — 31% of our highest earners came from other careers. Your professional skills are a massive advantage.", strength: "good" },
     ],
   },
   {
-    id: 3, pillar: "Dream Outcome",
-    question: "What's your income goal for the next 12 months?",
-    subtitle: "Think big. We'll tell you if it's realistic based on your profile.",
+    id: 3, pillar: "Experience",
+    question: "How would you describe your knowledge of Functional Medicine?",
+    subtitle: "No judgment here — every answer is valid.",
     options: [
-      { label: "$5,000/month - replace my current income", value: "5k", reaction: "Very achievable. 73% of our practitioners hit $5K/month within their first 90 days of certification.", strength: "strong" },
-      { label: "$10,000/month - real financial freedom", value: "10k", reaction: "That's our sweet spot. The average ASI FM practitioner earns $8-12K/month within 6 months.", strength: "strong" },
-      { label: "$20,000/month - build a serious practice", value: "20k", reaction: "Ambitious but proven. Practitioners who add group programs and courses hit $20K+ regularly.", strength: "strong" },
-      { label: "$50,000+/month - I want to build an empire", value: "50k-plus", reaction: "That's the mindset of a future clinical director. It requires leverage - and we'll show you exactly how.", strength: "strong" },
+      { label: "Brand new — I'm just discovering this field", value: "brand-new", reaction: "Perfect timing! You're starting with the gold standard. No bad habits to unlearn.", strength: "good" },
+      { label: "I've done some research and self-study", value: "self-study", reaction: "Great foundation! The program turns that curiosity into real clinical expertise.", strength: "good" },
+      { label: "I've taken courses or workshops before", value: "some-training", reaction: "Even better. We'll build on what you know and take it to clinical level.", strength: "strong" },
+      { label: "I already work with clients using some FM principles", value: "already-practicing", reaction: "Excellent! You can start applying ASI protocols with your existing clients immediately.", strength: "strong" },
     ],
   },
   {
-    id: 4, pillar: "Experience",
-    question: "Have you worked directly with clients on their health before?",
+    id: 4, pillar: "Motivation",
+    question: "What is the main reason you want to get certified?",
+    subtitle: "Understanding your 'why' helps me support you better...",
     options: [
-      { label: "Yes - I have active clients right now", value: "active-clients", reaction: "Perfect. You can start applying ASI protocols with your existing clients immediately after certification.", strength: "strong" },
-      { label: "Yes, but I stopped or took a break", value: "past-clients", reaction: "The skills don't disappear. The program will give you the framework and confidence to restart stronger.", strength: "good" },
-      { label: "Only informally - friends, family", value: "informal", reaction: "That counts more than you think. You already have the instinct. The program gives you the clinical structure.", strength: "good" },
-      { label: "No direct experience yet", value: "no-experience", reaction: "Don't worry - 38% of our top performers had zero experience. The the ASI clinical framework teaches everything from scratch.", strength: "developing" },
+      { label: "I want to help people heal naturally", value: "help-people", reaction: "That's what it's all about. You'll have the tools to actually transform lives.", strength: "strong" },
+      { label: "I want to leave my current job and work for myself", value: "leave-job", reaction: "Freedom. That's what 67% of our practitioners achieved within their first year.", strength: "strong" },
+      { label: "I want to add FM services to my existing practice", value: "add-services", reaction: "Smart move! Adding FM services typically doubles or triples practice revenue.", strength: "strong" },
+      { label: "I want the freedom to work from home on my own schedule", value: "work-from-home", reaction: "That's exactly what I wanted too. Now I set my own hours and never miss a moment with my daughter.", strength: "strong" },
+      { label: "I'm burned out and need a new path", value: "burned-out", reaction: "I was exactly where you are. 14 years as an ER nurse nearly broke me. FM gave me my life back.", strength: "strong" },
+    ],
+  },
+  // ═══════════════════════════════════════════════════════════════════
+  // PHASE 2: PAIN SURFACES (Q5) - "My situation actually sucks"
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: 5, pillar: "Pain Point",
+    question: "What frustrates you MOST about your current situation?",
+    subtitle: "Be honest with yourself...",
+    options: [
+      { label: "I'm trading time for money and it's not sustainable", value: "time-for-money", reaction: "That's the worst feeling. You're stuck on a treadmill that never stops. FM breaks that cycle.", strength: "strong" },
+      { label: "I feel stuck with no clear path forward", value: "stuck", reaction: "I know that feeling. You can see where you want to be but there's no roadmap. Until now.", strength: "strong" },
+      { label: "I know I'm meant for more but don't know how to get there", value: "meant-for-more", reaction: "That inner knowing is real. The gap between your potential and your reality — that's what we close.", strength: "strong" },
+      { label: "I'm exhausted and my health or relationships are suffering", value: "exhausted", reaction: "That was me too. The thing you're sacrificing is the thing you're supposed to be protecting. Let's fix that.", strength: "strong" },
+      { label: "I have the knowledge but no credential to back it up", value: "no-credential", reaction: "You KNOW you can help people. You just can't prove it. ASI certification gives you that credibility.", strength: "strong" },
+    ],
+  },
+  // ═══════════════════════════════════════════════════════════════════
+  // PHASE 3: DESIRE BUILDS (Q6-Q7) - "Here's what I want"
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: 6, pillar: "Timeline",
+    question: "When would you ideally want to start your certification?",
+    subtitle: "This helps us understand your urgency.",
+    options: [
+      { label: "Immediately — I'm ready now", value: "immediately", reaction: "I love that energy! Immediate starters have a 94% completion rate.", strength: "strong" },
+      { label: "Within the next 30 days", value: "30-days", reaction: "Perfect timing with our next intake. Strong qualifier.", strength: "strong" },
+      { label: "In 1 to 3 months", value: "1-3-months", reaction: "We can reserve a spot for qualified applicants. Let's continue...", strength: "good" },
+      { label: "Just exploring for now", value: "exploring", reaction: "That's okay! Let's see if you qualify so you know your options.", strength: "developing" },
     ],
   },
   {
-    id: 5, pillar: "Clinical Readiness",
-    question: "When a client presents with fatigue, brain fog, and weight gain - how confident are you identifying the root cause?",
-    subtitle: "Be honest. This is what separates coaches from clinical practitioners.",
+    id: 7, pillar: "Income Goal",
+    question: "What monthly income would make this certification worth it for you?",
+    subtitle: "Dream big — there's no low option here.",
     options: [
-      { label: "Very confident - I have a systematic approach", value: "very-confident", reaction: "That's rare. Let's see if FM Certification can add clinical expertise to what you already have.", strength: "strong" },
-      { label: "Somewhat - I can identify some causes", value: "somewhat", reaction: "Good instincts. The program turns that intuition into a repeatable 5-phase clinical framework.", strength: "good" },
-      { label: "Not very - I'd need to research", value: "not-very", reaction: "Honest answer. That's exactly the gap The program was designed to fill. This is learnable.", strength: "developing" },
-      { label: "I'd refer them to someone else", value: "refer-out", reaction: "What if YOU were the someone else? That's what ASI certification makes possible.", strength: "developing" },
+      { label: "$3,000 to $5,000 a month", value: "3k-5k", reaction: "Very achievable. 73% of our practitioners hit this within their first 90 days.", strength: "strong" },
+      { label: "$5,000 to $10,000 a month", value: "5k-10k", reaction: "That's our sweet spot. The average ASI practitioner earns $8-12K/month within 6 months.", strength: "strong" },
+      { label: "$10,000 to $15,000 a month", value: "10k-15k", reaction: "Ambitious and very doable. That's what Sarah earns working from home.", strength: "strong" },
+      { label: "$15,000+ a month", value: "15k-plus", reaction: "That's the mindset of a future clinical director. Practitioners who add group programs hit this regularly.", strength: "strong" },
+    ],
+  },
+  // ═══════════════════════════════════════════════════════════════════
+  // PHASE 4: URGENCY HITS (Q8) - "I've been stuck way too long"
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: 8, pillar: "Time Stuck",
+    question: "How long have you been thinking about making a change like this?",
+    subtitle: "This is a reality check moment...",
+    options: [
+      { label: "Less than a month", value: "less-than-month", reaction: "Fresh energy! You're acting fast. That's a great sign.", strength: "good" },
+      { label: "1 to 6 months", value: "1-6-months", reaction: "You've been circling this. Something brought you here today. Let's see if now is the time.", strength: "good" },
+      { label: "6 months to a year", value: "6-12-months", reaction: "Almost a year thinking about this... What's going to be different if you wait another year?", strength: "strong" },
+      { label: "Over a year — I keep putting it off", value: "over-year", reaction: "Over a year of wanting something different. How many more years are you going to let slip by?", strength: "strong" },
+    ],
+  },
+  // ═══════════════════════════════════════════════════════════════════
+  // PHASE 5: REALITY CHECK + DREAM (Q9-Q10) - Gap creation
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: 9, pillar: "Current Income",
+    question: "What is your current monthly income?",
+    subtitle: "Just so I can understand where you're at right now...",
+    options: [
+      { label: "Under $3,000 a month", value: "under-3k", reaction: "Noted. The gap between where you are and where you want to be — that's what we close.", strength: "good" },
+      { label: "$3,000 to $5,000 a month", value: "3k-5k", reaction: "Solid base. But you deserve more. Let's see what we can build.", strength: "good" },
+      { label: "$5,000 to $8,000 a month", value: "5k-8k", reaction: "Not bad — but imagine doubling that while working half the hours.", strength: "strong" },
+      { label: "Over $8,000 a month", value: "over-8k", reaction: "Impressive! You're already ahead. FM certification could take you to the next level.", strength: "strong" },
     ],
   },
   {
-    id: 6, pillar: "Clinical Readiness",
-    question: "Have you ever wanted to order and interpret functional lab panels for your clients?",
-    subtitle: "Lab interpretation is the #1 skill that separates $50/hr coaches from $200/hr practitioners.",
+    id: 10, pillar: "Dream Life",
+    question: "Imagine 12 months from now. You're certified, you have clients, and you're earning your goal income. What matters most to you about that life?",
+    subtitle: "Close your eyes for a second and picture it...",
     options: [
-      { label: "Yes - I already do this or I'm learning", value: "already-doing", reaction: "You're ahead of 95% of applicants. The program will systematize and elevate your lab skills.", strength: "strong" },
-      { label: "Yes, but I have no idea where to start", value: "want-to-learn", reaction: "Module 7-9 of The program is entirely focused on labs. Our practitioners go from zero to confidently ordering panels.", strength: "good" },
-      { label: "I hadn't considered it, but it sounds powerful", value: "open-to-it", reaction: "It IS powerful. Lab interpretation is the difference between guessing and knowing. The program teaches both.", strength: "good" },
-      { label: "I'm not sure that's for me", value: "not-sure", reaction: "Hmm. We'll need to see strong results on the remaining questions. Lab skills are central to the FM Certification.", strength: "developing" },
+      { label: "Financial freedom — no more living paycheck to paycheck", value: "financial-freedom", reaction: "Imagine never stressing about bills again. That peace of mind changes everything.", strength: "strong" },
+      { label: "Time freedom — setting my own schedule and being present for family", value: "time-freedom", reaction: "Being there for every school pickup, every soccer game. That's the practitioner life.", strength: "strong" },
+      { label: "Purpose — doing meaningful work that actually helps people heal", value: "purpose", reaction: "Waking up excited every morning, knowing you're genuinely transforming lives. That feeling is real.", strength: "strong" },
+      { label: "Independence — no more answering to a boss or broken system", value: "independence", reaction: "Building something that's YOURS. No one can take it away. That's true security.", strength: "strong" },
+      { label: "All of the above", value: "all-above", reaction: "That's exactly what ASI certification delivers. Not just income — a complete life transformation.", strength: "strong" },
     ],
   },
+  // ═══════════════════════════════════════════════════════════════════
+  // PHASE 6: COMMITMENT (Q11) - "I'm ready to do this"
+  // ═══════════════════════════════════════════════════════════════════
   {
-    id: 7, pillar: "Past Investment",
-    question: "Have you invested in health or wellness certifications before?",
+    id: 11, pillar: "Commitment",
+    question: "If you knew this could change your life — how committed are you to making it happen?",
+    subtitle: "Last question — and this one matters...",
     options: [
-      { label: "Yes, multiple - and they were disappointing", value: "multiple-disappointed", reaction: "You're not alone. Most programs sell theory without clinical application. That's exactly why ASI was created.", strength: "good" },
-      { label: "Yes, one or two - got some value", value: "some-value", reaction: "Good foundation. The program builds on everything you've already learned and takes it to clinical level.", strength: "good" },
-      { label: "Yes, spent $5K+ and still feel unprepared", value: "spent-5k-plus", reaction: "That's the industry's dirty secret. Expensive doesn't mean effective. The program delivers real clinical skills for a fraction of the cost.", strength: "good" },
-      { label: "No - this would be my first certification", value: "first-time", reaction: "Then you're starting with the gold standard. No bad habits to unlearn. Clean slate, best possible foundation.", strength: "strong" },
-    ],
-  },
-  {
-    id: 8, pillar: "Gap Analysis",
-    question: "What's the #1 thing missing from your current skill set?",
-    subtitle: "Understanding your gap helps us determine your readiness.",
-    options: [
-      { label: "A real clinical framework - not just theory", value: "framework", reaction: "That's the exact gap FM Certification fills. A 5-phase clinical system: Discover, Evaluate, Pinpoint, Transform, Heal.", strength: "strong" },
-      { label: "Confidence to charge premium prices", value: "confidence", reaction: "ASI certification IS that confidence. Our practitioners charge $150-250/hour without hesitation.", strength: "strong" },
-      { label: "A proven system to actually get clients", value: "client-system", reaction: "Our Business Setup System is included. 73% of graduates land their first paying clients within 30 days.", strength: "strong" },
-      { label: "Credibility and recognized credentials", value: "credibility", reaction: "That's what ASI accreditation provides. A nationally recognized certification that commands respect.", strength: "strong" },
-    ],
-  },
-  {
-    id: 9, pillar: "Commitment",
-    question: "Would you watch a 20-minute training video each day if it meant earning $10K+/month within 6 months?",
-    subtitle: "That's all the FM Certification requires. 20 minutes a day.",
-    options: [
-      { label: "Absolutely - that's a no-brainer", value: "absolutely", reaction: "That's the answer of someone who's going to succeed. 20 minutes a day. Life-changing results.", strength: "strong" },
-      { label: "Yes, I can make that work", value: "yes-work", reaction: "Great. The program is fully self-paced. You can watch during lunch, before bed, whenever works.", strength: "strong" },
-      { label: "I'd need to rearrange things, but yes", value: "rearrange", reaction: "That willingness to prioritize yourself is exactly what our top earners have in common.", strength: "good" },
-      { label: "I'm not sure about daily commitment", value: "not-sure", reaction: "It doesn't have to be daily. Even 3-4 times a week works. The program adapts to your pace.", strength: "developing" },
-    ],
-  },
-  {
-    id: 10, pillar: "Vision",
-    question: "If you were earning $10K+/month as a certified practitioner 6 months from now - what would that change for you?",
-    subtitle: "Close your eyes for a moment and really picture it.",
-    options: [
-      { label: "I'd finally leave my 9-to-5 and work for myself", value: "leave-job", reaction: "Freedom. That's what 67% of our practitioners achieved within their first year. It's real.", strength: "strong" },
-      { label: "Financial security and peace of mind for my family", value: "security", reaction: "That stability changes everything. No more stress about bills. No more saying no to what matters.", strength: "strong" },
-      { label: "I'd feel confident, fulfilled, and doing meaningful work", value: "fulfillment", reaction: "Imagine waking up excited every morning, knowing you're genuinely transforming lives. That's the FM practitioner life.", strength: "strong" },
-      { label: "All of the above - I want the complete transformation", value: "all-above", reaction: "That's exactly what ASI certification delivers. Not just income - a complete life and career transformation.", strength: "strong" },
-    ],
-  },
-  {
-    id: 11, pillar: "Specialization",
-    question: "Which area of functional medicine calls to you the most?",
-    subtitle: "This determines your Practitioner Type and specialization path.",
-    options: [
-      { label: "Hormone Health & Balance", value: "hormone-health", reaction: "The #1 most in-demand specialty. Women are desperate for qualified hormone practitioners.", strength: "strong" },
-      { label: "Gut Health & Restoration", value: "gut-restoration", reaction: "The foundation of all health. Gut specialists command premium rates and never lack clients.", strength: "strong" },
-      { label: "Metabolic & Weight Optimization", value: "metabolic-optimization", reaction: "Beyond basic diets - real metabolic transformation. One of the highest-paying specialties.", strength: "strong" },
-      { label: "Burnout & Stress Recovery", value: "burnout-recovery", reaction: "1 in 3 professional women suffer burnout. The demand for qualified burnout practitioners is exploding.", strength: "strong" },
-      { label: "Autoimmune & Immune Support", value: "autoimmune-support", reaction: "Complex cases need clinical practitioners. This is advanced-level, premium-rate work.", strength: "strong" },
-      { label: "Other specialty (tell us your passion)", value: "other-specialty", reaction: "Love it! We'll map your unique focus to our specialty tracks. Your personal passion becomes your competitive edge.", strength: "strong" },
-    ],
-  },
-  {
-    id: 12, pillar: "Career Path",
-    question: "Which ASI certification level interests you?",
-    subtitle: "The ASI Functional Medicine career path has 4 levels - each unlocks higher earning potential.",
-    options: [
-      { label: "⭐ Level 1: Certified Practitioner ($2K-$5K/month)", value: "level-1", reaction: "Perfect starting point. Level 1 Practitioners earn $2K-$5K/month working part-time. Foundation of everything.", strength: "strong" },
-      { label: "⭐⭐ Level 2: Advanced Practitioner ($5K-$8K/month)", value: "level-2", reaction: "Next tier. Advanced Practitioners add lab interpretation and specialized protocols. $5K-$8K/month is typical.", strength: "strong" },
-      { label: "⭐⭐⭐ Level 3: Master Practitioner ($8K-$15K/month)", value: "level-3", reaction: "Expert level. Masters run group programs, mentor others, and earn $8K-$15K/month consistently.", strength: "strong" },
-      { label: "⭐⭐⭐⭐ Level 4: Fellow / Clinical Director ($15K+/month)", value: "level-4", reaction: "Leadership tier. Fellows train practitioners, run clinics, and earn $15K-$30K+ monthly.", strength: "strong" },
-    ],
-  },
-  {
-    id: 13, pillar: "Client Acquisition",
-    question: "How do you currently get clients or plan to get them?",
-    subtitle: "Be honest — this helps us understand where we can help most.",
-    options: [
-      { label: "Referrals only (word of mouth)", value: "referrals", reaction: "That's the best kind! Our Business Setup System helps you 10x those referrals with proven frameworks.", strength: "strong" },
-      { label: "Social media marketing", value: "social-media", reaction: "Great start! We include advanced social strategies specifically for health practitioners.", strength: "strong" },
-      { label: "I have a website or funnel", value: "website-funnel", reaction: "You're ahead of 80%! We'll help you optimize and scale what's already working.", strength: "strong" },
-      { label: "I struggle to get clients consistently", value: "struggle", reaction: "That's EXACTLY why we include the Business Setup System. 73% of grads get clients in their first 30 days.", strength: "good" },
-      { label: "I don't have any clients yet", value: "no-clients", reaction: "Perfect starting point. You'll launch with our proven client acquisition framework from day one.", strength: "good" },
-    ],
-  },
-  {
-    id: 14, pillar: "Financial Qualification",
-    question: "How would you describe your current financial situation?",
-    subtitle: "This helps us determine what support options you may qualify for.",
-    options: [
-      { label: "Comfortable - I have savings set aside for personal development", value: "comfortable", reaction: "Excellent. Applicants with financial readiness qualify for our priority enrollment track.", strength: "strong" },
-      { label: "Stable - I could invest but would need to budget carefully", value: "stable", reaction: "That's responsible thinking. Most of our successful practitioners started with a careful budget plan.", strength: "strong" },
-      { label: "Tight - but I'm committed to making this work", value: "tight", reaction: "Commitment matters more than circumstances. We have options for determined applicants.", strength: "good" },
-      { label: "Struggling - I need the most affordable option possible", value: "struggling", reaction: "I appreciate your honesty. Let's see if you qualify for our hardship scholarship program...", strength: "developing" },
-    ],
-  },
-  {
-    id: 15, pillar: "Financial Qualification",
-    question: "If accepted, how would you approach the investment in your certification?",
-    subtitle: "Understanding your investment approach helps us match you with the right program tier.",
-    options: [
-      { label: "I already have funds set aside for professional development", value: "funds-ready", reaction: "Outstanding! Applicants with ready funds qualify for our VIP fast-track enrollment.", strength: "strong" },
-      { label: "I would use savings or credit for the right opportunity", value: "savings-credit", reaction: "That's the mindset of someone who takes their future seriously. Strong qualifier.", strength: "strong" },
-      { label: "I would need a payment plan to make it work", value: "payment-plan", reaction: "We offer flexible payment options for qualified applicants. Let's continue your assessment.", strength: "good" },
-      { label: "I'm not sure how I would fund it yet", value: "unsure-funding", reaction: "Hmm. Financial readiness is part of our qualification criteria. We'll factor this into your assessment.", strength: "developing" },
-    ],
-  },
-  {
-    id: 16, pillar: "Readiness",
-    question: "If accepted into the ASI Functional Medicine Practitioner Certification, how soon could you start?",
-    subtitle: "Limited spots per cohort to ensure quality mentorship. Current cohort: 47/50 filled.",
-    options: [
-      { label: "I could start this week", value: "this-week", reaction: "Excellent! Immediate starters have a 94% completion rate. Let me check availability...", strength: "strong" },
-      { label: "Within the next 2 weeks", value: "2-weeks", reaction: "Perfect timing with our next intake window. Strong qualifier.", strength: "strong" },
-      { label: "Within the next month", value: "1-month", reaction: "We can reserve a spot for qualified applicants. Let's continue your assessment...", strength: "good" },
-      { label: "I need to plan, but I'm committed", value: "planning", reaction: "Commitment noted. We'll factor timeline into your qualification score.", strength: "good" },
-      { label: "I need to save up first - maybe 3-6 months", value: "save-up", reaction: "I understand. We'll add you to our waitlist and reach out when you're ready.", strength: "developing" },
-    ],
-  },
-  {
-    id: 17, pillar: "Final Qualification",
-    question: "Based on your answers, we're evaluating your qualification status...",
-    subtitle: `📋 QUALIFICATION CRITERIA
-━━━━━━━━━━━━━━━━━━━━━━━━━
-✓ Background & Experience
-✓ Clinical Readiness Score
-✓ Commitment Level
-✓ Financial Qualification
-✓ Start Timeline
-
-⚡ Only 27% of applicants qualify
-━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Click below to reveal your qualification status:`,
-    options: [
-      { label: "🎯 REVEAL MY QUALIFICATION STATUS", value: "reveal-status", reaction: "Processing your qualification assessment... This could change everything.", strength: "strong" },
-      { label: "I want to speak with someone first", value: "speak-first", reaction: "Of course. Let's get you connected with Sarah who can answer your questions and review your qualification.", strength: "good" },
-      { label: "I'm not ready to find out yet", value: "not-ready", reaction: "I understand. When you're ready, your assessment will be here waiting.", strength: "developing" },
+      { label: "100% committed — I'm going all in", value: "100-percent", reaction: "That's the answer of someone who's going to succeed. Nothing will stop you.", strength: "strong" },
+      { label: "Very committed — I just need to see the path", value: "very-committed", reaction: "The commitment is there. Now I just need to show you the roadmap.", strength: "strong" },
+      { label: "Interested — but I have questions first", value: "interested", reaction: "Totally fair. That's what the scholarship call is for. All your questions answered.", strength: "good" },
+      { label: "Curious — but not sure if it's right for me", value: "curious", reaction: "Let's find out together. The call will help you decide if this is your path.", strength: "developing" },
     ],
   },
 ];
@@ -645,7 +591,7 @@ Click below to reveal your qualification status:`,
 
 // ─── Types ─────────────────────────────────────────────────────────
 type Stage = "intro" | "quiz" | "testimonial" | "optin" | "reviewing" | "qualified" | "result";
-const TOTAL_STEPS = 21; // Now 17 questions + intro + optin + reviewing + qualified
+const TOTAL_STEPS = 15; // 11 questions + intro + optin + reviewing + qualified
 
 // ─── Route mapping ─────────────────────────────────────────────────
 const ROLE_ROUTES: Record<string, string> = {
