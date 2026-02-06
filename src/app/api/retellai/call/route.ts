@@ -108,6 +108,8 @@ export async function POST(req: NextRequest) {
                 RETELL_MARTINEZ_AGENT_ID,
                 {
                     first_name: firstName,
+                    phone: formattedPhone, // Pass phone so SMS function can use it
+                    user_number: formattedPhone, // Also as user_number
                     investment_amount: investmentAmount || "your amount",
                     scholarship_code: `SCHOLARSHIP${investmentAmount || ""}`,
                 }
