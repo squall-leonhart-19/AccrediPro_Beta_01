@@ -2,20 +2,22 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import LeadsOverview from "./leads-overview";
+import NicheDeepDive from "./niche-deep-dive";
 
 export const metadata = {
-  title: "Lead Intelligence Dashboard | Admin",
-  description: "Mini diploma funnel analytics and lead performance",
+  title: "Niche Performance | Admin",
 };
 
-export default async function LeadsPage() {
+export default async function NicheDeepDivePage({
+  params,
+}: {
+  params: Promise<{ niche: string }>;
+}) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     redirect("/login");
   }
 
-  // Verify user has admin access
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { role: true },
@@ -25,5 +27,7 @@ export default async function LeadsPage() {
     redirect("/dashboard");
   }
 
-  return <LeadsOverview />;
+  const { niche } = await params;
+
+  return <NicheDeepDive niche={niche} />;
 }

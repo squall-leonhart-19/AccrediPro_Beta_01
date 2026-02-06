@@ -495,7 +495,7 @@ export async function GET(request: Request) {
         },
         dailySignups,
         overallDropoff,
-        leads: enrichedLeads,
+        // leads[] removed — use /api/admin/leads-dashboard/leads for paginated list
         // Weekly cohort analysis
         weeklyCohorts,
         weekOverWeek,
