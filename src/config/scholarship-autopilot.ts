@@ -203,55 +203,58 @@ export function generateApprovalMessage(
 ): string {
     const caseNumber = generateCaseNumber();
 
-    // Below minimum floor
-    if (offeredAmount < 50) {
-        return `I totally understand 💜 The absolute minimum the Institute allows for scholarship recipients is $50 — that still gets you FULL access to everything. 9 certifications, mentorship, lifetime access. Can you make $50 work?`;
-    }
-
     // Full price - no coupon needed
     if (!tier.couponCode) {
-        return `🎉 AMAZING NEWS ${firstName}!
+        return `🎉 ${firstName}!! I AM SO EXCITED FOR YOU!
 
-Case #${caseNumber} → APPROVED!
+You just made a decision that's going to change your life!
 
-You're getting the full certification at full value!
+Here's what happens next:
 
-👇 Here's your checkout link:
-${CHECKOUT_URL}
+1️⃣ Check your email in the next 5 minutes — you'll get your login credentials
+2️⃣ Log into your portal at learn.accredipro.academy  
+3️⃣ Start with Module 1 — it's already unlocked for you
+4️⃣ Join our private community — links are inside your portal
 
-This is ONE-TIME payment — includes:
-✅ Full FM Certification
-✅ 9 Specializations
-✅ Community + Mentorship
-✅ Business Setup System
-✅ Lifetime Access`;
+I'll personally check in on you in 24 hours to see how you're doing.
+
+Congratulations on investing in yourself. You're going to do AMAZING things! 💜
+
+SO PROUD OF YOU!`;
     }
 
-    // Standard approval with drop
-    return `🎉 AMAZING NEWS ${firstName}!
+    // Calculate if there's an actual drop (Institute covered more than minimum)
+    const hasDrop = tier.drop > 0;
 
-Case #${caseNumber} → APPROVED!
+    // Build drop-specific messaging
+    const dropMessage = hasDrop
+        ? `The Institute just agreed to cover an EXTRA ${formatCurrency(tier.drop)}!\n\nSo instead of ${formatCurrency(offeredAmount)}, your final investment is just ${formatCurrency(tier.theyPay)}! 🙌`
+        : `Your investment of ${formatCurrency(tier.theyPay)} is CONFIRMED! 🙌\nYou're saving ${formatCurrency(tier.savings)} off the full program value!`;
 
-The Institute is covering the difference!
+    return `🎉 ${firstName}!! AMAZING NEWS — I just got off the phone with the Institute!
 
-Instead of ${formatCurrency(offeredAmount)}, you'll only pay ${formatCurrency(tier.theyPay)}!
-You save ${formatCurrency(tier.savings)}! 🙌
+Case #${caseNumber} → APPROVED! You're IN! 💜
 
-👇 Here's your checkout link:
+${dropMessage}
+
+Here's your private checkout link:
 ${CHECKOUT_URL}
 
-At the bottom of checkout, apply code:
-${tier.couponCode}
+At checkout, enter your scholarship code:
+✨ ${tier.couponCode} ✨
 
-This is ONE-TIME payment — includes:
-✅ Full FM Certification
-✅ 9 Specializations
-✅ Community + Mentorship
-✅ Business Setup System
-✅ Lifetime Access
+This gets you EVERYTHING:
+✅ Full FM Certification (Practitioner + Advanced + Master)
+✅ All 9 Specializations 
+✅ 1:1 Mentorship
+✅ Client Acquisition System
+✅ Lifetime Access — no renewals ever
 
-This scholarship approval expires in 24 hours — grab your spot! 🔥`;
+I'm holding this spot for you for the next 24 hours. After that, I have to give it to the next person on the waitlist.
+
+You've got this, ${firstName}! I believe in you! 🔥`;
 }
+
 
 /**
  * Generate "calling Institute" delay message
