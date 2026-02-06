@@ -60,7 +60,9 @@ const navGroups: NavGroup[] = [
     title: "Sales & Leads",
     items: [
       { href: "/admin/purchases", label: "Purchases", icon: DollarSign, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-      { href: "/admin/leads", label: "Leads & Mini Diploma", icon: UserPlus, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/leads", label: "Leads Dashboard", icon: UserPlus, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/leads/sources", label: "Lead Sources", icon: Target, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/leads/sequences", label: "Lead Sequences", icon: Mail, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/dfy-orders", label: "DFY Orders", icon: Package, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/referrals", label: "Referrals", icon: Gift, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
     ],
@@ -156,8 +158,14 @@ export function AdminNav() {
                 </p>
                 <div className="space-y-1">
                   {groupItems.map((item) => {
-                    const isActive = pathname === item.href ||
-                      (item.href !== "/admin" && pathname.startsWith(item.href));
+                    // Exact match OR sub-route match, but avoid parent matching when a child is active
+                    const isExact = pathname === item.href;
+                    const isSubRoute = item.href !== "/admin" && pathname.startsWith(item.href + "/");
+                    // Don't highlight parent if a more specific sibling matches
+                    const hasSiblingMatch = groupItems.some(
+                      other => other.href !== item.href && other.href.startsWith(item.href) && pathname.startsWith(other.href)
+                    );
+                    const isActive = isExact || (isSubRoute && !hasSiblingMatch);
                     return (
                       <Link
                         key={item.href}
@@ -257,8 +265,12 @@ export function AdminNav() {
         <div className="lg:hidden fixed inset-0 z-40 bg-burgundy-900 pt-16 overflow-y-auto">
           <nav className="p-4 space-y-2 pb-20">
             {filteredNavItems.map((item) => {
-              const isActive = pathname === item.href ||
-                (item.href !== "/admin" && pathname.startsWith(item.href));
+              const isExact = pathname === item.href;
+              const isSubRoute = item.href !== "/admin" && pathname.startsWith(item.href + "/");
+              const hasSiblingMatch = filteredNavItems.some(
+                other => other.href !== item.href && other.href.startsWith(item.href) && pathname.startsWith(other.href)
+              );
+              const isActive = isExact || (isSubRoute && !hasSiblingMatch);
               return (
                 <Link
                   key={item.href}
