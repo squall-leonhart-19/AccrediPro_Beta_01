@@ -253,13 +253,13 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
   const [welcomeAudioUrl, setWelcomeAudioUrl] = useState<string | null>(null);
   const [isPlayingWelcomeAudio, setIsPlayingWelcomeAudio] = useState(false);
 
-  // 🎵 SCHOLARSHIP AUDIO - Personalized ElevenLabs audio for max CRO
-  const [callingAudioUrl, setCallingAudioUrl] = useState<string | null>(null);
-  const [approvalAudioUrl, setApprovalAudioUrl] = useState<string | null>(null);
-  const [waitingAudioUrl, setWaitingAudioUrl] = useState<string | null>(null);
-  const callingAudioRef = useRef<HTMLAudioElement | null>(null);
-  const approvalAudioRef = useRef<HTMLAudioElement | null>(null);
-  const waitingAudioRef = useRef<HTMLAudioElement | null>(null);
+  // 🤖 AI FOLLOW-UP STATE - Claude Sonnet 4.5 for post-approval questions
+  const [scholarshipContext, setScholarshipContext] = useState<{
+    amount?: string;
+    couponCode?: string;
+    checkoutUrl?: string;
+  } | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isNearBottom = useRef(true);
@@ -695,84 +695,69 @@ Type any amount — I'll get on the phone with them immediately and fight for th
   }, [hasStarted, firstName, lastName, email, quizData, visitorId, page]);
 
 
-  // ─── 🎵 SCHOLARSHIP AUDIO SCRIPTS (Personalized with firstName) ─────
-  const CALLING_SCRIPT = useCallback((name: string, caseNumber: string) =>
-    `Hi ${name}! This is Sarah from the Admissions team. I'm on the phone with the Institute RIGHT NOW reviewing your case... Case number ${caseNumber}... Based on your profile, this looks really promising. I'll stay on the call with the Institute because I need to confirm your scholarship eligibility... Give me just a minute...`,
-    []);
+  // ─── 🤖 AI Follow-up Handler (Claude Sonnet 4.5) ─────────────────
+  const handleAIResponse = useCallback(async (userMessage: string) => {
+    if (!scholarshipContext) return;
 
-  const APPROVAL_SCRIPT = useCallback((name: string) =>
-    `${name}! OH MY GOD... I have AMAZING news! You've been APPROVED for the ASI Institutional Scholarship! Based on your application, the Institute has agreed to cover a significant portion of your tuition. Let me walk you through exactly what you're getting and what this means for you...`,
-    []);
-
-  const WAITING_SCRIPT = useCallback((name: string) =>
-    `Perfect ${name}, I'm going to stay right here on the call with the Institute while you complete your enrollment. Once you're done, I'll confirm everything with them immediately and get your access set up right away. Take your time, but know that I'm here waiting for you... The Institute has your scholarship locked in, we just need to finalize it on our end. Go ahead and complete the payment, and I'll be right here when you're done...`,
-    []);
-
-  // Voice settings for excited/warm Sarah voice
-  const VOICE_SETTINGS = {
-    stability: 0.55,
-    similarityBoost: 0.90,
-    style: 0.40,
-    speed: 0.88,
-  };
-
-  // Generate audio with ElevenLabs
-  const generateScholarshipAudio = useCallback(async (
-    type: "calling" | "approval" | "waiting",
-    name: string,
-    caseNumber?: string
-  ): Promise<string | null> => {
-    const script = type === "calling"
-      ? CALLING_SCRIPT(name, caseNumber || "4892")
-      : type === "approval"
-        ? APPROVAL_SCRIPT(name)
-        : WAITING_SCRIPT(name);
+    setIsTyping(true);
 
     try {
-      console.log(`[Audio] 🎙️ Generating ${type} audio for ${name}...`);
-      const res = await fetch('/api/voice-test', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      // Build chat history from messages (last 20 max for context)
+      const chatHistory = messages.slice(-20).map(m => ({
+        role: m.role as "user" | "sarah",
+        content: m.content,
+      }));
+
+      const res = await fetch("/api/chat/sarah-ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          text: script,
-          settings: VOICE_SETTINGS,
+          message: userMessage,
+          chatHistory,
+          firstName,
+          amount: scholarshipContext.amount,
+          couponCode: scholarshipContext.couponCode,
+          checkoutUrl: scholarshipContext.checkoutUrl,
         }),
       });
 
       const data = await res.json();
-      if (data.success && data.audio) {
-        console.log(`[Audio] ✅ ${type} audio ready!`);
-        return data.audio;
+
+      if (data.success && data.response) {
+        // Natural typing delay: 2.5-4 seconds AFTER API returns
+        await new Promise(r => setTimeout(r, 2500 + Math.random() * 1500));
+        setIsTyping(false);
+
+        const aiMsg: ChatMessage = {
+          id: `sarah-ai-${Date.now()}`,
+          role: "sarah",
+          content: data.response,
+          timestamp: new Date().toISOString(),
+        };
+        setMessages(prev => [...prev, aiMsg]);
+
+        // Save to DB for admin visibility
+        fetch("/api/chat/sales", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: data.response,
+            page: `scholarship-${page}`,
+            visitorId,
+            userName: `${firstName} ${lastName}`.trim(),
+            userEmail: email,
+            isFromVisitor: false,
+            repliedBy: "Sarah M. (AI)",
+          }),
+        }).catch(() => { });
       } else {
-        console.error(`[Audio] ❌ ${type} failed:`, data.error);
-        return null;
+        setIsTyping(false);
       }
     } catch (err) {
-      console.error(`[Audio] ❌ ${type} error:`, err);
-      return null;
+      console.error("[Sarah AI] Error:", err);
+      setIsTyping(false);
     }
-  }, [CALLING_SCRIPT, APPROVAL_SCRIPT, WAITING_SCRIPT]);
-
-  // Play audio with autoplay (user interaction already occurred)
-  const playScholarshipAudio = useCallback((audioUrl: string, audioRef: React.MutableRefObject<HTMLAudioElement | null>) => {
-    if (!audioUrl) return;
-
-    const audio = new Audio(audioUrl);
-    audioRef.current = audio;
-    audio.volume = 1.0;
-
-    audio.play().then(() => {
-      console.log("[Audio] ▶️ Playing...");
-    }).catch((err) => {
-      console.log("[Audio] Autoplay blocked:", err.message);
-    });
-
-    audio.onended = () => {
-      console.log("[Audio] ⏹️ Finished");
-    };
-
-    return audio;
-  }, []);
+  }, [messages, scholarshipContext, firstName, lastName, email, visitorId, page]);
 
   // ─── Open chat ─────────────────────────────────────────────────
   const openChat = useCallback(() => {
@@ -878,36 +863,25 @@ Type any amount — I'll get on the phone with them immediately and fight for th
 
         if (autoReply.hasAmount && autoReply.callingMessage && autoReply.approvalMessage) {
 
-          // 🎵 GENERATE CALLING AUDIO IMMEDIATELY (while showing typing)
-          const caseNumber = String(Math.floor(1000 + Math.random() * 9000)); // Random 4-digit case number
-          const callingAudioPromise = generateScholarshipAudio("calling", firstName, caseNumber);
-
-          // 🎵 PRE-GENERATE APPROVAL + WAITING AUDIO (they'll be ready by the time we need them)
-          const approvalAudioPromise = generateScholarshipAudio("approval", firstName);
-          const waitingAudioPromise = generateScholarshipAudio("waiting", firstName);
+          // 💾 Save scholarship context for AI follow-up responses
+          setScholarshipContext({
+            amount: autoReply.fullContext.finalAmount ? `$${autoReply.fullContext.finalAmount}` : undefined,
+            couponCode: autoReply.fullContext.couponCode || undefined,
+            checkoutUrl: autoReply.checkoutUrl,
+          });
 
           // Step 1: Show "calling Institute" message after 1 second
           setTimeout(async () => {
             setIsTyping(true);
 
-            // Wait for calling audio to be ready
-            const callingAudio = await callingAudioPromise;
-            if (callingAudio) {
-              setCallingAudioUrl(callingAudio);
-            }
-
             setTimeout(() => {
               setIsTyping(false);
-
-              // 🔊 Audio attached to message - user clicks to play
-              // (No autoplay - browser blocks it anyway)
 
               const callingMsg: ChatMessage = {
                 id: `sarah-calling-${Date.now()}`,
                 role: "sarah",
                 content: autoReply.callingMessage,
                 timestamp: new Date().toISOString(),
-                audioUrl: callingAudio || undefined, // Attach audio to message
               };
               setMessages(prev => [...prev, callingMsg]);
 
@@ -926,11 +900,8 @@ Type any amount — I'll get on the phone with them immediately and fight for th
                 }),
               }).catch(() => { });
 
-              // Step 2: ANTICIPATION — 20 second delay with audio recording indicator
-              // Fixed 20 second delay as requested
+              // Step 2: ANTICIPATION — 20 second delay
               const approvalDelay = 20000;
-
-              // Show "recording audio" indicator during the wait
               const typingIntervals: NodeJS.Timeout[] = [];
 
               // Typing pulse 1: at 8s
@@ -940,11 +911,10 @@ Type any amount — I'll get on the phone with them immediately and fight for th
               }, 8000);
               typingIntervals.push(t1);
 
-              // 🔥 SOCIAL PROOF 1: at 12s - someone just enrolled!
+              // 🔥 SOCIAL PROOF 1: at 12s
               const sp1 = setTimeout(() => {
                 const proof = getRandomSocialProof();
                 setSocialProofNotification({ ...proof, visible: true });
-                // Hide after 4 seconds
                 setTimeout(() => setSocialProofNotification(null), 4000);
               }, 12000);
               typingIntervals.push(sp1);
@@ -956,51 +926,38 @@ Type any amount — I'll get on the phone with them immediately and fight for th
               }, 18000);
               typingIntervals.push(t2);
 
-              // 🔥 SOCIAL PROOF 2: at 24s - another enrollment!
+              // 🔥 SOCIAL PROOF 2: at 24s
               const sp2 = setTimeout(() => {
                 const proof = getRandomSocialProof();
                 setSocialProofNotification({ ...proof, visible: true });
-                // Hide after 4 seconds
                 setTimeout(() => setSocialProofNotification(null), 4000);
               }, 24000);
               typingIntervals.push(sp2);
 
-              // Typing pulse 3: at 30s (building to climax)
+              // Typing pulse 3: at 30s
               const t3 = setTimeout(() => {
                 setIsTyping(true);
                 setTimeout(() => setIsTyping(false), 3000);
               }, 30000);
               typingIntervals.push(t3);
 
-              // Final approval message
+              // Final approval message (TEXT ONLY — no audio while "on the phone")
               setTimeout(async () => {
-                // Clear any remaining typing intervals
                 typingIntervals.forEach(t => clearTimeout(t));
-
-                // Get the pre-generated audio
-                const approvalAudio = await approvalAudioPromise;
-                const waitingAudio = await waitingAudioPromise;
-
-                if (approvalAudio) setApprovalAudioUrl(approvalAudio);
-                if (waitingAudio) setWaitingAudioUrl(waitingAudio);
 
                 setIsTyping(true);
                 setTimeout(() => {
                   setIsTyping(false);
-
-                  // 🔊 Audio attached to message - user clicks to play
-                  // (No autoplay - browser blocks it anyway)
 
                   const approvalMsg: ChatMessage = {
                     id: `sarah-approval-${Date.now()}`,
                     role: "sarah",
                     content: autoReply.approvalMessage,
                     timestamp: new Date().toISOString(),
-                    audioUrl: approvalAudio || undefined, // Attach audio to message
                   };
                   setMessages(prev => [...prev, approvalMsg]);
 
-                  // Save approval message to DB (no context notes)
+                  // Save approval message to DB
                   fetch("/api/chat/sales", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -1015,7 +972,7 @@ Type any amount — I'll get on the phone with them immediately and fight for th
                     }),
                   }).catch(() => { });
 
-                  // 📧 SEND EMAIL #2: Scholarship Approved (plain text)
+                  // 📧 SEND EMAIL #2: Scholarship Approved
                   if (autoReply.tier && email) {
                     fetch("/api/scholarship/send-approval-email", {
                       method: "POST",
@@ -1031,21 +988,15 @@ Type any amount — I'll get on the phone with them immediately and fight for th
                     }).catch((err) => console.error("[Scholarship Email] Failed:", err));
                   }
 
-                  // 🔊 PLAY WAITING AUDIO after 3 seconds (during payment consideration)
+                  // Waiting message (TEXT ONLY — Sarah is "on the phone")
                   setTimeout(() => {
-                    // 🔊 Audio attached to message - user clicks to play
-                    if (waitingAudio) {
-
-                      // Add waiting message to chat
-                      const waitingMsg: ChatMessage = {
-                        id: `sarah-waiting-${Date.now()}`,
-                        role: "sarah",
-                        content: `I'll stay right here on the call with the Institute while you complete your enrollment, ${firstName}... Take your time, I'm not going anywhere! 📞`,
-                        timestamp: new Date().toISOString(),
-                        audioUrl: waitingAudio,
-                      };
-                      setMessages(prev => [...prev, waitingMsg]);
-                    }
+                    const waitingMsg: ChatMessage = {
+                      id: `sarah-waiting-${Date.now()}`,
+                      role: "sarah",
+                      content: `I'll stay right here on the call with the Institute while you complete your enrollment, ${firstName}... Take your time, I'm not going anywhere! 📞`,
+                      timestamp: new Date().toISOString(),
+                    };
+                    setMessages(prev => [...prev, waitingMsg]);
                   }, 3000);
 
                 }, 3500); // Typing duration for approval
@@ -1130,6 +1081,12 @@ SO PROUD OF YOU!`,
           }
         }, 2500);
       }, 1500);
+      return; // Don't trigger AI for paid messages
+    }
+
+    // ═══ 🤖 AI FOLLOW-UP — Claude Sonnet 4.5 handles any post-approval question ═══
+    if (scholarshipContext && autopilotTriggered.current && !hasNumber) {
+      handleAIResponse(userMessage);
     }
   };
 

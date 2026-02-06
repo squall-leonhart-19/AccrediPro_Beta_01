@@ -28,12 +28,12 @@ export interface CouponTier {
  * Get coupon tier based on what the user offered
  * Implements the "Institute covered MORE" psychology
  * 
- * UPDATED (Feb 2026): Accept any amount from $50+
- * Round numbers only: $50, $100, $150, $200, $250, $300, $350, $400, $500+
+ * UPDATED (Feb 2026): Accept any amount from $200+
+ * Round numbers only: $200, $250, $300, $350, $400, $500+
  */
 export function getCouponTier(offeredAmount: number): CouponTier | null {
-    // Accept anything $50 or more (minimum floor)
-    if (offeredAmount < 50) {
+    // Accept anything $200 or more (minimum floor)
+    if (offeredAmount < 200) {
         return null; // Below minimum - needs manual handling
     }
 

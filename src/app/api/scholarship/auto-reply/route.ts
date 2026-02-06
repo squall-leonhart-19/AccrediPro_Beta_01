@@ -103,11 +103,11 @@ export async function POST(req: NextRequest) {
         // Get coupon tier based on amount
         const tier = getCouponTier(detectedAmount);
 
-        // REJECTION: Amount below $500 minimum
+        // REJECTION: Amount below $200 minimum
         if (!tier) {
-            const rejectionMessage = `I totally understand 💜 Unfortunately, the Institute requires a minimum investment of $500 to qualify for the scholarship program.\n\nHere's why: the certification includes Practitioner + Advanced + Master levels, 9 specializations, 1:1 mentorship, client acquisition system, offer templates, and lifetime access — valued at $4,997. The Institute subsidizes most of this, but needs at least $500 to cover their costs.\n\nIs there any way you could make $500 work? Even splitting it into 2 payments of $250 might be possible. Let me know and I'll check with the Institute! 💪`;
+            const rejectionMessage = `I totally understand 💜 Unfortunately, the Institute requires a minimum investment of $200 to qualify for the scholarship program.\n\nHere's why: the certification includes Practitioner + Advanced + Master levels, 9 specializations, mentorship, client acquisition system, offer templates, and lifetime access — valued at $4,997. The Institute subsidizes most of this, but needs at least $200 to cover their costs.\n\nIs there any way you could make $200 work? Let me know and I'll check with the Institute! 💪`;
 
-            console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} → REJECTED (below $500 minimum)`);
+            console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} → REJECTED (below $200 minimum)`);
 
             return NextResponse.json({
                 hasAmount: true,

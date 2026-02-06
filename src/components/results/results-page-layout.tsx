@@ -403,55 +403,164 @@ export default function ResultsPageLayout({
           </div>
         </section>
 
-        {/* ═══ SECTION 7: What's Included ═══ */}
+        {/* ═══ SECTION 7: Complete 20-Module Curriculum ═══ */}
+        <section className="space-y-6">
+          <div className="text-center space-y-2">
+            <h2
+              className="text-2xl md:text-3xl font-bold"
+              style={{ color: BRAND.burgundyDark }}
+            >
+              Complete 20-Module Curriculum: The D.E.P.T.H. Method™
+            </h2>
+            <p className="text-sm text-gray-600 max-w-xl mx-auto">
+              Master the complete functional medicine framework through 20
+              comprehensive modules. Earn a certificate for each module
+              completed. 9 international accreditations included.
+            </p>
+          </div>
+
+          {/* Module List */}
+          <div className="space-y-2">
+            {[
+              { num: 1, name: "Functional Medicine Foundations", tag: "" },
+              { num: 2, name: "Health Coaching Mastery", tag: "" },
+              { num: 3, name: "Functional Assessment & Case Analysis", tag: "" },
+              { num: 4, name: "Ethics, Scope & Professional Practice", tag: "" },
+              { num: 5, name: "Functional Nutrition", tag: "HIGH DEMAND" },
+              { num: 6, name: "Gut Health & Microbiome", tag: "80% OF CASES" },
+              { num: 7, name: "Stress, Adrenals & Nervous System", tag: "" },
+              { num: 8, name: "Sleep & Circadian Health", tag: "" },
+              { num: 9, name: "Women's Hormone Health", tag: "$150+/SESSION" },
+              { num: 10, name: "Perimenopause & Menopause", tag: "MASSIVE MARKET" },
+              { num: 11, name: "Thyroid Health", tag: "MOST MISDIAGNOSED" },
+              { num: 12, name: "Metabolic Health & Weight", tag: "" },
+              { num: 13, name: "Autoimmunity & Inflammation", tag: "GROWING 15%/YR" },
+              { num: 14, name: "Mental Health & Brain Function", tag: "" },
+              { num: 15, name: "Cardiometabolic Health", tag: "" },
+              { num: 16, name: "Energy & Mitochondrial Health", tag: "" },
+              { num: 17, name: "Detox & Environmental Health", tag: "" },
+              { num: 18, name: "Functional Lab Interpretation", tag: "PREMIUM SKILL" },
+              { num: 19, name: "Protocol Building & Program Design", tag: "" },
+              { num: 20, name: "Building Your FM Practice", tag: "BUSINESS LAUNCH" },
+            ].map((mod) => (
+              <div
+                key={mod.num}
+                className="flex items-center justify-between p-3 rounded-xl bg-white border shadow-sm"
+                style={{ borderColor: `${BRAND.gold}20` }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    style={{
+                      background: mod.num <= 10 ? `${BRAND.burgundy}12` : mod.num <= 15 ? `${BRAND.gold}15` : `${BRAND.burgundy}08`,
+                      color: BRAND.burgundy,
+                    }}
+                  >
+                    {mod.num}
+                  </div>
+                  <span className="text-sm font-medium text-gray-800">
+                    {mod.name}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: BRAND.gold }}>
+                    <CheckCircle className="w-3.5 h-3.5" /> Certificate
+                  </span>
+                  {mod.tag && (
+                    <span
+                      className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full"
+                      style={{
+                        background: `${BRAND.burgundy}10`,
+                        color: BRAND.burgundy,
+                      }}
+                    >
+                      {mod.tag}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Summary bar */}
+          <div
+            className="text-center p-4 rounded-xl font-bold text-sm"
+            style={{
+              background: BRAND.goldMetallic,
+              color: BRAND.burgundyDark,
+            }}
+          >
+            20 Modules • 20 Certificates • 9 International Accreditations
+          </div>
+
+          {/* Accreditations */}
+          <p
+            className="text-center text-xs font-medium tracking-wider"
+            style={{ color: BRAND.burgundy }}
+          >
+            CMA • IPHM • CPD • IAOTH • ICAHP • IGCT • CTAA • IHTCP • IIOHT
+          </p>
+        </section>
+
+        {/* ═══ SECTION 7B: What's Included (Beyond Modules) ═══ */}
         <section className="space-y-5">
           <h2
             className="text-2xl md:text-3xl font-bold text-center"
             style={{ color: BRAND.burgundyDark }}
           >
-            Everything You Get Inside the DEPTH Method Certification
+            Everything Included In Your Certification
           </h2>
           <div className="grid gap-3 md:grid-cols-2">
             {[
               {
                 icon: "📚",
-                title: "20-Module Clinical Curriculum",
-                desc: "From foundations to advanced lab interpretation",
+                title: "All 4 Levels Included",
+                desc: "Practitioner, Advanced, Master & Practice Level",
               },
               {
                 icon: "🎓",
-                title: "ASI-Accredited Certification",
-                desc: "Nationally recognized practitioner credential",
+                title: "9 International Accreditations",
+                desc: "CMA, IPHM, CPD, IAOTH, ICAHP, IGCT, CTAA, IHTCP, IIOHT",
               },
               {
                 icon: "🧪",
-                title: "Functional Lab Training",
-                desc: "Learn to order and interpret real lab panels",
+                title: "Functional Lab Interpretation",
+                desc: "Learn to order and interpret real lab panels ($150+/session skill)",
+              },
+              {
+                icon: "📝",
+                title: "Done-For-You Legal Templates",
+                desc: "Consent forms, intake forms, disclaimers — ready to use",
               },
               {
                 icon: "💼",
-                title: "Business Setup System",
-                desc: "Client acquisition, pricing, and practice launch",
-              },
-              {
-                icon: "🤝",
-                title: "1-on-1 Mentorship Access",
-                desc: "Personal guidance from ASI clinical directors",
+                title: "Business Launch System",
+                desc: "Client acquisition, pricing, offers & practice launch blueprint",
               },
               {
                 icon: "📋",
-                title: "Done-For-You Protocols",
-                desc: "Ready-to-use clinical templates for every specialty",
+                title: "DFY Protocols & Templates",
+                desc: "Ready-to-use clinical protocols, marketing scripts & materials",
+              },
+              {
+                icon: "🤝",
+                title: "Private Practitioner Community",
+                desc: "Network with active practitioners, share cases, get support",
+              },
+              {
+                icon: "🔧",
+                title: "Tools, Resources & Guides",
+                desc: "Downloadable resources for every single module",
               },
               {
                 icon: "🏆",
-                title: "Physical Welcome Kit",
-                desc: "Certificate, badge, and branded materials mailed to you",
+                title: "Client Acquisition Secrets",
+                desc: "Exactly how to get your first paying clients fast",
               },
               {
                 icon: "♾️",
                 title: "Lifetime Access",
-                desc: "All future updates and community access included",
+                desc: "All future updates, new content & community access forever",
               },
             ].map((item, i) => (
               <div
