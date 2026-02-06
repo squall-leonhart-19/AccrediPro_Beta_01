@@ -33,9 +33,11 @@ interface ScholarshipChatProps {
     commitment: string;
     vision: string;
     startTimeline: string;
+    investmentBudget?: string; // From quiz Q15: 500, 600, 700, 800, 900, 1000-plus
   };
   page?: string;
 }
+
 
 interface ChatMessage {
   id: string;
@@ -663,8 +665,8 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           const t2b = setTimeout(async () => {
             setIsTyping(false);
 
-            // Message 2: Explain the scholarship model clearly (NO scary price!)
-            const msg2Content = `Here's how our scholarship works:\n\n✨ You tell us what you can invest\n🏛️ The Institute covers THE REST\n🎓 You get the FULL certification + 9 specializations\n\n👉 This is a ONE-TIME payment — not monthly, not recurring. Just one investment and you're in for LIFE.`;
+            // Message 2: Full value recap - what they get
+            const msg2Content = `Here's exactly what you're getting with the ASI Scholarship:\n\n🎓 Practitioner + Advanced + Master Certifications\n📚 All 9 Specializations (Hormone, Gut, Metabolic, etc.)\n👨‍🏫 1:1 Mentorship from ASI Faculty\n💼 Client Acquisition System\n📝 Done-For-You Offer Templates\n🌐 Website & Marketing Materials\n♾️ LIFETIME Access\n\n💰 Total Value: $4,997\n\nOther programs like IIN charge $5,000+ and leave you without clients. ASI builds CAREERS — our practitioners earn $5K-$10K+/month.`;
 
             const msg2: ChatMessage = {
               id: "sarah-2",
@@ -675,14 +677,18 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
             setMessages(prev => [...prev, msg2]);
             await saveSarahMessage(msg2Content); // Save to DB for admin (with retry)
 
-            // Delay message 3 by another 8-10 seconds (the scholarship ask)
+            // Delay message 3 by another 8-10 seconds (the scholarship ask with coupon options)
             const t3 = setTimeout(() => {
               setIsTyping(true);
               const t3b = setTimeout(async () => {
                 setIsTyping(false);
 
-                // Message 3: Ask for their number - NO example amounts, add "I'll call the Institute"
-                const msg3Content = `So ${firstName}, what amount can you realistically invest in yourself TODAY?\n\nType ANY number — there's no wrong answer. I'll call the Institute right now and see if they can cover the rest for you! 📞`;
+                // Get their pre-stated budget from quiz (if available)
+                const budgetFromQuiz = quizData.investmentBudget || "";
+                const budgetLabel = budgetFromQuiz ? ` (You indicated $${budgetFromQuiz} in your application)` : "";
+
+                // Message 3: Coupon-based options ($500-$1000) - NO free text
+                const msg3Content = `The Institute offers limited scholarships, but spots are VERY limited. Other students need help too, so we ask for a minimum commitment.\n\n${firstName}, which scholarship tier works for you TODAY?${budgetLabel}\n\n✨ $500 — Starter Scholarship\n⭐ $600 — Standard Scholarship\n🌟 $700 — Priority Scholarship\n💎 $800 — Premium Scholarship\n👑 $900 — VIP Scholarship\n🏆 $1,000+ — Elite Scholarship\n\nJust reply with your amount and I'll generate your personal coupon code! 🎟️`;
 
                 const msg3: ChatMessage = {
                   id: "sarah-3",
@@ -706,6 +712,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     }, 3000); // Initial delay
     welcomeTimers.current.push(t1);
   }, [hasStarted, firstName, lastName, email, quizData, visitorId, page]);
+
 
   // ─── Open chat ─────────────────────────────────────────────────
   const openChat = useCallback(() => {
