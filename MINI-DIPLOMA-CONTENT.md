@@ -410,6 +410,62 @@ src/
 
 ---
 
+## Audio Generation (ElevenLabs)
+
+Lesson audio is generated using ElevenLabs API with Sarah's cloned voice.
+
+### Script
+
+```bash
+# Generate audio for a niche (saves to public/audio/{niche}/)
+npx tsx scripts/generate-lesson-audio-elevenlabs.ts --niche {portal_slug}
+
+# Generate + upload to R2 in one command
+npx tsx scripts/generate-lesson-audio-elevenlabs.ts --niche {portal_slug} --upload
+
+# Single lesson only
+npx tsx scripts/generate-lesson-audio-elevenlabs.ts --niche {portal_slug} --lesson 2
+```
+
+### How It Works
+
+1. Reads lesson content from `lessons/content/{slug}.json`
+2. Generates a conversational audio script per lesson (~400-500 words)
+3. Calls ElevenLabs API with Sarah's voice (eleven_v3 model, ~10 sec per lesson)
+4. Saves MP3s to `public/audio/{niche}/lesson-{1-3}.mp3`
+5. Optionally uploads to R2 via `wrangler`
+6. Prints JSON snippets to paste into lesson content
+
+### R2 URLs
+
+After upload, audio is available at:
+```
+https://media.accredipro.academy/audio/{niche}/lesson-{1-3}.mp3
+```
+
+### Lesson JSON Integration
+
+Add a `pre-recorded-audio` section to each lesson:
+```json
+{
+    "type": "pre-recorded-audio",
+    "content": "Listen to Sarah explain this lesson",
+    "audioUrl": "https://media.accredipro.academy/audio/{niche}/lesson-1.mp3",
+    "audioDuration": 120
+}
+```
+
+### Voice Settings (Tested & Approved)
+
+- Voice: Sarah (ID: `uXRbZctVA9lTJBqMtWeE`)
+- Model: `eleven_v3`
+- Stability: 0.0 (Creative)
+- Similarity: 0.85
+- Style: 0.65 (Expressive)
+- Speed: 1.1x
+
+---
+
 ## Email & Nudge System
 
 ### Nudge Cron (Automatic for ALL niches)

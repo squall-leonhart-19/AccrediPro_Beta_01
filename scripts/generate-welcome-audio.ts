@@ -9,12 +9,12 @@ config({ path: ".env.local" });
 import { writeFileSync } from "fs";
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 
-const SARAH_VOICE_ID = process.env.SARAH_VOICE_ID || "Rn0vawuWHBy1e0yur4D8"; // Sarah's cloned voice
+const SARAH_VOICE_ID = process.env.SARAH_VOICE_ID || "uXRbZctVA9lTJBqMtWeE"; // Sarah's cloned voice
 
 const WELCOME_SCRIPT = `
 Hey there! It's Sarah, and I am SO happy you're here.
 Welcome to the Mini Diploma.
-Over the next 9 lessons, you're going to learn real frameworks that practitioners charge hundreds of dollars to teach.
+Over the next 3 lessons, you're going to learn real frameworks that practitioners charge hundreds of dollars to teach.
 This isn't fluff. This is what actually works.
 I'm going to be with you every step of the way.
 Now take a deep breath, and let's get started with your first lesson.
