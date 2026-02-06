@@ -35,14 +35,31 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
+        // Get query params
+        const searchParams = req.nextUrl.searchParams;
+        const queryPhone = searchParams.get("phone");
+
         const body = await req.json();
 
-        // RetellAI sends args in the body
-        const { phone, first_name, amount } = body.args || body;
+        // Log full request for debugging
+        console.log("[SMS API] Full request body:", JSON.stringify(body, null, 2));
+        console.log("[SMS API] Query params phone:", queryPhone);
+
+        // RetellAI sends args in the body, also check call metadata
+        const args = body.args || body;
+        const callData = body.call || {};
+
+        // Try multiple sources for phone: query params, args, call metadata
+        const phone = queryPhone || args.phone || callData.to_number || callData.from_number || "";
+        const first_name = args.first_name || callData.retell_llm_dynamic_variables?.first_name || "there";
+        const amount = args.amount || "";
+
+        console.log("[SMS API] Extracted values:", { phone, first_name, amount });
 
         if (!phone || !amount) {
+            console.error("[SMS API] Missing required fields:", { phone, amount });
             return NextResponse.json(
-                { error: "Missing phone or amount", success: false },
+                [{ error: "1", success: false }, "Missing phone or amount"],
                 { status: 400 }
             );
         }
