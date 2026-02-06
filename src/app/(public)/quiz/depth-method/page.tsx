@@ -383,30 +383,40 @@ const PERSONA_SUBTITLES: Record<Persona, Record<number, string>> = {
     3: "Your medical training is already a head start. This measures how much we can accelerate you.",
     5: "As a healthcare professional, you already have lab exposure. This is about functional interpretation.",
     8: "Between shifts? Days off? Many nurses complete FM Certification faster than expected.",
+    13: "Healthcare professionals typically have the financial stability for career investment. This helps us match you with the right tier.",
+    14: "Many nurses and PAs use continuing education budgets or savings. What's your approach?",
   },
   "health-coach": {
     1: "Be honest. This helps us show you the income gap between coaching and clinical practice.",
     3: "Your coaching skills are the foundation. This measures your readiness for clinical work.",
     5: "This is THE skill that separates $50/hr coaches from $200/hr clinical practitioners.",
     8: "That's one morning session before your first client. Our coaches love this format.",
+    13: "Most coaches invest in themselves regularly. This helps us understand your current capacity.",
+    14: "Coaches who invest in certification see 3x ROI. How would you approach this investment?",
   },
   "corporate": {
     1: "Most career changers start at zero - and that's actually the best place to start.",
     3: "Your corporate discipline will serve you well here. This is about clinical readiness, not corporate skills.",
     5: "Think of lab panels like financial statements for the body. Your analytical mind will love this.",
     8: "That's your lunch break, or your commute. Many corporate professionals study while still employed.",
+    13: "Career changers often have savings or severance. This helps us understand your investment readiness.",
+    14: "Think of this like any professional development investment. What's realistic for you?",
   },
   "stay-at-home-mom": {
     1: "No judgment here. Many of our most successful practitioners started earning $0.",
     3: "Your life experience with kids, family health, and empathy counts more than you think.",
     5: "Imagine actually understanding your kids' lab results. This skill changes everything - personally and professionally.",
     8: "That's one nap time session. Our mom practitioners love this bite-sized format.",
+    13: "Many moms use family budgets or personal savings. Be honest about your situation.",
+    14: "This is an investment in your family's future. How would you approach the financing?",
   },
   "other-passionate": {
     1: "Starting from zero with passion is actually our favorite starting point.",
     3: "No health background needed. This measures your instincts and willingness to learn.",
     5: "Lab interpretation sounds intimidating but it's completely learnable from scratch.",
     8: "20 minutes of focused learning. Many of our top performers studied in the evenings.",
+    13: "Passion-driven learners find a way. This helps us understand what options to offer you.",
+    14: "Consider this an investment in your new career. What approach feels right?",
   },
 };
 
@@ -574,35 +584,58 @@ const QUESTIONS: QuizStep[] = [
     ],
   },
   {
-    id: 14, pillar: "Readiness",
-    question: "If accepted into the ASI Functional Medicine Practitioner Certification, how soon could you start?",
-    subtitle: "Limited spots per cohort to ensure quality mentorship. Current cohort: 47/50 filled.",
+    id: 14, pillar: "Financial Qualification",
+    question: "How would you describe your current financial situation?",
+    subtitle: "This helps us determine what support options you may qualify for.",
     options: [
-      { label: "I could start this week", value: "this-week", reaction: "Excellent! Let me check availability in the current cohort for you...", strength: "strong" },
-      { label: "Within the next 2 weeks", value: "2-weeks", reaction: "That works perfectly with our next intake window. Let me verify your spot...", strength: "strong" },
-      { label: "Within the next month", value: "1-month", reaction: "We can reserve a spot for you. Let's get your details and secure your place...", strength: "good" },
-      { label: "I need to plan, but I'm committed", value: "planning", reaction: "Commitment is what matters. We'll work with your timeline. Let's lock in your qualification...", strength: "good" },
+      { label: "Comfortable - I have savings set aside for personal development", value: "comfortable", reaction: "Excellent. Applicants with financial readiness qualify for our priority enrollment track.", strength: "strong" },
+      { label: "Stable - I could invest but would need to budget carefully", value: "stable", reaction: "That's responsible thinking. Most of our successful practitioners started with a careful budget plan.", strength: "strong" },
+      { label: "Tight - but I'm committed to making this work", value: "tight", reaction: "Commitment matters more than circumstances. We have options for determined applicants.", strength: "good" },
+      { label: "Struggling - I need the most affordable option possible", value: "struggling", reaction: "I appreciate your honesty. Let's see if you qualify for our hardship scholarship program...", strength: "developing" },
     ],
   },
   {
-    id: 15, pillar: "Commitment",
-    question: "You qualify for the ASI FM Certification Package",
-    subtitle: `🎓 FM Certification Package (worth $14,365)
-━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ 3-Level Certification Track
-✅ 9 Specialty Tracks  
-✅ Business Launch System
-✅ Done-For-You Templates
-✅ 1-Year Mentorship Access
-
-💰 Scholarship covers up to 97% of tuition
-━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Would you like to apply for the scholarship?`,
+    id: 15, pillar: "Financial Qualification",
+    question: "If accepted, how would you approach the investment in your certification?",
+    subtitle: "Understanding your investment approach helps us match you with the right program tier.",
     options: [
-      { label: "YES - I want to apply for the scholarship", value: "apply-scholarship", reaction: "AMAZING! Let me check if you qualify for one of our limited scholarship spots right now...", strength: "strong" },
-      { label: "I need more information first", value: "need-info", reaction: "Totally understand. Let's get you connected with Sarah who can answer all your questions and see if you qualify...", strength: "good" },
-      { label: "Not ready right now", value: "not-ready", reaction: "I understand timing matters. Let me show you what you'd be getting so you can decide if this is right for you...", strength: "developing" },
+      { label: "I already have funds set aside for professional development", value: "funds-ready", reaction: "Outstanding! Applicants with ready funds qualify for our VIP fast-track enrollment.", strength: "strong" },
+      { label: "I would use savings or credit for the right opportunity", value: "savings-credit", reaction: "That's the mindset of someone who takes their future seriously. Strong qualifier.", strength: "strong" },
+      { label: "I would need a payment plan to make it work", value: "payment-plan", reaction: "We offer flexible payment options for qualified applicants. Let's continue your assessment.", strength: "good" },
+      { label: "I'm not sure how I would fund it yet", value: "unsure-funding", reaction: "Hmm. Financial readiness is part of our qualification criteria. We'll factor this into your assessment.", strength: "developing" },
+    ],
+  },
+  {
+    id: 16, pillar: "Readiness",
+    question: "If accepted into the ASI Functional Medicine Practitioner Certification, how soon could you start?",
+    subtitle: "Limited spots per cohort to ensure quality mentorship. Current cohort: 47/50 filled.",
+    options: [
+      { label: "I could start this week", value: "this-week", reaction: "Excellent! Immediate starters have a 94% completion rate. Let me check availability...", strength: "strong" },
+      { label: "Within the next 2 weeks", value: "2-weeks", reaction: "Perfect timing with our next intake window. Strong qualifier.", strength: "strong" },
+      { label: "Within the next month", value: "1-month", reaction: "We can reserve a spot for qualified applicants. Let's continue your assessment...", strength: "good" },
+      { label: "I need to plan, but I'm committed", value: "planning", reaction: "Commitment noted. We'll factor timeline into your qualification score.", strength: "good" },
+      { label: "I need to save up first - maybe 3-6 months", value: "save-up", reaction: "I understand. We'll add you to our waitlist and reach out when you're ready.", strength: "developing" },
+    ],
+  },
+  {
+    id: 17, pillar: "Final Qualification",
+    question: "Based on your answers, we're evaluating your qualification status...",
+    subtitle: `📋 QUALIFICATION CRITERIA
+━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Background & Experience
+✓ Clinical Readiness Score
+✓ Commitment Level
+✓ Financial Qualification
+✓ Start Timeline
+
+⚡ Only 27% of applicants qualify
+━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Click below to reveal your qualification status:`,
+    options: [
+      { label: "🎯 REVEAL MY QUALIFICATION STATUS", value: "reveal-status", reaction: "Processing your qualification assessment... This could change everything.", strength: "strong" },
+      { label: "I want to speak with someone first", value: "speak-first", reaction: "Of course. Let's get you connected with Sarah who can answer your questions and review your qualification.", strength: "good" },
+      { label: "I'm not ready to find out yet", value: "not-ready", reaction: "I understand. When you're ready, your assessment will be here waiting.", strength: "developing" },
     ],
   },
 ];
@@ -612,7 +645,7 @@ Would you like to apply for the scholarship?`,
 
 // ─── Types ─────────────────────────────────────────────────────────
 type Stage = "intro" | "quiz" | "testimonial" | "optin" | "reviewing" | "qualified" | "result";
-const TOTAL_STEPS = 19; // Now 15 questions + intro + optin + reviewing + qualified
+const TOTAL_STEPS = 21; // Now 17 questions + intro + optin + reviewing + qualified
 
 // ─── Route mapping ─────────────────────────────────────────────────
 const ROLE_ROUTES: Record<string, string> = {
@@ -845,10 +878,12 @@ export default function FMCertificationQuiz() {
       missingSkill: answers[7] || "",          // Q8: missing skill
       commitment: answers[8] || "",            // Q9: commitment
       vision: answers[9] || "",                // Q10: vision
-      careerPathLevel: answers[11] || "",      // Q12: career path level ($2-5K, $5-8K, etc.)
+      careerPathLevel: answers[11] || "",      // Q12: career path level
       clientAcquisition: answers[12] || "",    // Q13: client acquisition
-      startTimeline: answers[13] || "",        // Q14: start timeline
-      investmentBudget: answers[14] || "",     // Q15: investment budget ($350-500, etc.)
+      financialSituation: answers[13] || "",   // Q14: financial situation (NEW)
+      investmentPriority: answers[14] || "",   // Q15: investment priority (NEW)
+      startTimeline: answers[15] || "",        // Q16: start timeline
+      qualificationChoice: answers[16] || "",  // Q17: final qualification choice
     });
 
     const route = ROLE_ROUTES[currentRole] || "/results/career-change";
@@ -878,13 +913,13 @@ export default function FMCertificationQuiz() {
     if (stage === "intro") {
       return (
         <div className="space-y-4">
-          {/* Institution-First Announcement */}
+          {/* Qualification-First Announcement */}
           <div
             className="text-center p-3 rounded-xl border-2"
             style={{ backgroundColor: `${BRAND.burgundy}08`, borderColor: `${BRAND.burgundy}30` }}
           >
             <p className="text-sm font-bold" style={{ color: BRAND.burgundy }}>
-              🏛️ AccrediPro International Standards Institute just opened <span className="underline">50 scholarship positions</span> for aspiring Functional Medicine Practitioners.
+              ⚡ Only <span className="underline">27% of applicants</span> qualify to become ASI-Certified Functional Medicine Practitioners.
             </p>
           </div>
 
@@ -975,12 +1010,12 @@ export default function FMCertificationQuiz() {
           {/* Assessment CTA */}
           <div className="text-center space-y-2 pt-2">
             <p className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>
-              This 3-minute assessment reveals:
+              This 3-minute assessment determines:
             </p>
             <div className="flex flex-col gap-0.5 text-sm text-gray-700">
-              <span>✅ Your best-fit specialty</span>
-              <span>✅ Your realistic earning potential</span>
-              <span>✅ If you qualify for the ASI Institutional Scholarship</span>
+              <span>🎯 If you have what it takes to become an FM Practitioner</span>
+              <span>📊 Your qualification score vs. other applicants</span>
+              <span>⚡ Your eligibility for priority enrollment</span>
             </div>
           </div>
 

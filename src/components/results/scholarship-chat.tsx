@@ -1398,7 +1398,7 @@ SO PROUD OF YOU!`,
               <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: B.gold, animationDuration: "0.6s" }} />
               <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: B.gold, animationDelay: "0.15s", animationDuration: "0.6s" }} />
               <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: B.gold, animationDelay: "0.3s", animationDuration: "0.6s" }} />
-              <span className="text-[10px] text-gray-400 ml-1">Sarah sta registrando audio...</span>
+              <span className="text-[10px] text-gray-400 ml-1">Sarah is recording audio...</span>
             </div>
           </div>
         )}

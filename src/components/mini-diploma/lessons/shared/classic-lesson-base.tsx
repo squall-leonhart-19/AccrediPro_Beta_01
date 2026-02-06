@@ -245,9 +245,9 @@ export function ClassicLessonBase({
     const [showCommitmentModal, setShowCommitmentModal] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
 
-    // Check if should show commitment checkpoint (after completing L3)
+    // Check if should show commitment checkpoint (after completing L2)
     useEffect(() => {
-        if (lessonNumber === 3 && justCompleted) {
+        if (lessonNumber === 2 && justCompleted) {
             const hasCommitted = localStorage.getItem("mini_diploma_committed");
             if (!hasCommitted) {
                 setTimeout(() => setShowCommitmentModal(true), 1500);
