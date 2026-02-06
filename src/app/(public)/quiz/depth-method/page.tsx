@@ -912,142 +912,94 @@ export default function FMCertificationQuiz() {
     // ── INTRO ──
     if (stage === "intro") {
       return (
-        <div className="space-y-4">
-          {/* Qualification-First Announcement */}
-          <div
-            className="text-center p-3 rounded-xl border-2"
-            style={{ backgroundColor: `${BRAND.burgundy}08`, borderColor: `${BRAND.burgundy}30` }}
-          >
-            <p className="text-sm font-bold" style={{ color: BRAND.burgundy }}>
-              ⚡ Only <span className="underline">27% of applicants</span> qualify to become ASI-Certified Functional Medicine Practitioners.
-            </p>
+        <div className="space-y-5">
+          {/* Progress Badge */}
+          <div className="text-center">
+            <span className="text-sm text-gray-400">0% complete</span>
           </div>
 
-          {/* ASI Logo + Institute Header */}
-          <div className="text-center space-y-2">
-            <Image
-              src="https://assets.accredipro.academy/fm-certification/ASI_LOGO-removebg-preview.png"
-              alt="AccrediPro International Standards Institute"
-              width={70}
-              height={70}
-              className="mx-auto"
-            />
-            <div>
-              <h2 className="text-base font-bold" style={{ color: BRAND.burgundy }}>
-                AccrediPro International Standards Institute
-              </h2>
-              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-medium mt-1">
-                9 International Accreditations
+          {/* Sarah Welcome Card - NEW COPY */}
+          <div
+            className="rounded-2xl p-5 border-2"
+            style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}40` }}
+          >
+            <div className="flex items-start gap-4">
+              <Image
+                src={SARAH_AVATAR}
+                alt="Sarah Mitchell"
+                width={72}
+                height={72}
+                className="rounded-full border-3 object-cover flex-shrink-0 shadow-lg"
+                style={{ borderColor: BRAND.gold }}
+              />
+              <div className="flex-1">
+                <p className="text-lg font-bold" style={{ color: BRAND.burgundy }}>
+                  👋 Hey! I&apos;m Sarah
+                </p>
+              </div>
+            </div>
+
+            {/* Sarah's Story - Larger Text */}
+            <div className="mt-4 space-y-4">
+              <p className="text-base leading-relaxed text-gray-800">
+                I went from <strong>burned-out ER nurse</strong> and single mom to earning <strong style={{ color: BRAND.burgundy }}>$15K/month</strong> as a Functional Medicine Practitioner. Working from home. My own hours.
+              </p>
+              <p className="text-base leading-relaxed text-gray-700">
+                I&apos;ve helped <strong>2,847+ women</strong> do the same — even with <em>ZERO medical background</em>.
               </p>
             </div>
           </div>
 
-          {/* Accreditation Logos */}
-          <div className="flex justify-center">
-            <Image
-              src="https://assets.accredipro.academy/fm-certification/All_Logos.png"
-              alt="CMA, CTAA, IPHM, IIOHT, CPD, IGCT, IHTCP, ICAHP, IAOTH"
-              width={300}
-              height={55}
-              className="opacity-85"
-            />
-          </div>
-
-          {/* Accreditation Text List */}
-          <div className="text-center">
-            <p className="text-[9px] text-gray-400 leading-relaxed">
-              CMA • CTAA • IPHM • IIOHT • CPD • IGCT • IHTCP • ICAHP • IAOTH
-            </p>
-          </div>
-
-          {/* Sarah Card */}
-          <div
-            className="rounded-2xl p-4 border-2"
-            style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}40` }}
-          >
-            <div className="flex items-start gap-3">
-              <Image
-                src={SARAH_AVATAR}
-                alt="Sarah Mitchell"
-                width={56}
-                height={56}
-                className="rounded-full border-2 object-cover flex-shrink-0 shadow-lg"
-                style={{ borderColor: BRAND.gold }}
-              />
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-wide mb-0.5" style={{ color: BRAND.burgundy }}>
-                  SENIOR ADMISSIONS ADVISOR
-                </p>
-                <p className="text-gray-900 font-bold text-sm">Hi! I&apos;m Sarah Mitchell 👋</p>
-                <p className="text-gray-600 text-xs mt-1 leading-relaxed">
-                  Before joining the Institute, I was a burned-out ER nurse and single mom. Functional Medicine changed everything — I now help women build $10K-15K/month practices from home.
-                </p>
-                <p className="text-gray-500 text-[10px] mt-1.5 italic">
-                  I&apos;ve personally guided 2,800+ women through this exact process.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Certificate Preview */}
-          <div className="relative mx-auto" style={{ maxWidth: 240 }}>
-            <Image
-              src="https://learn.accredipro.academy/FUNCTIONAL_MEDICINE_CERTIFICATE.webp"
-              alt="Functional Medicine Certificate"
-              width={240}
-              height={170}
-              className="rounded-lg shadow-lg border"
-              style={{ borderColor: `${BRAND.gold}60` }}
-            />
-            <div
-              className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold shadow-md whitespace-nowrap"
-              style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
-            >
-              Verified Digital Credential
-            </div>
-          </div>
-
-          {/* Assessment CTA */}
-          <div className="text-center space-y-2 pt-2">
-            <p className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>
-              This 3-minute assessment determines:
-            </p>
-            <div className="flex flex-col gap-0.5 text-sm text-gray-700">
-              <span>🎯 If you have what it takes to become an FM Practitioner</span>
-              <span>📊 Your qualification score vs. other applicants</span>
-              <span>⚡ Your eligibility for priority enrollment</span>
-            </div>
-          </div>
-
-          {/* Name Input */}
+          {/* What This Quiz Reveals - Larger Text */}
           <div className="space-y-3">
+            <p className="text-lg font-semibold text-center" style={{ color: BRAND.burgundy }}>
+              This 3-minute quiz reveals:
+            </p>
+            <div className="flex flex-col gap-2 text-base text-gray-700">
+              <span className="flex items-center gap-2">✅ Your best-fit specialty</span>
+              <span className="flex items-center gap-2">✅ Your realistic earning potential</span>
+              <span className="flex items-center gap-2">✅ If you qualify for a scholarship</span>
+            </div>
+          </div>
+
+          {/* Name Input - Larger */}
+          <div className="space-y-4 pt-2">
+            <label className="text-lg font-medium text-center block" style={{ color: BRAND.burgundy }}>
+              What&apos;s your first name?
+            </label>
             <input
               type="text"
-              placeholder="What's your first name?"
+              placeholder="Enter your first name..."
               value={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && name.trim()) handleNext(); }}
-              className="w-full px-4 py-3 rounded-xl border-2 text-center text-lg focus:outline-none transition-colors"
+              className="w-full px-5 py-4 rounded-xl border-2 text-center text-lg focus:outline-none transition-colors"
               style={{ borderColor: name ? BRAND.gold : "#e5e7eb", background: name ? `${BRAND.gold}08` : "white" }}
             />
             <Button
               onClick={() => name.trim() && handleNext()}
               disabled={!name.trim()}
-              className="group w-full h-14 text-lg font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 relative overflow-hidden"
+              className="group w-full h-16 text-xl font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 relative overflow-hidden"
               style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               <span className="relative flex items-center justify-center">
-                See If I Qualify <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                Start My Assessment <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </span>
             </Button>
           </div>
 
-          {/* Trust Badges */}
-          <div className="flex items-center justify-center gap-3 text-[10px] text-gray-400">
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> 3 min</span>
-            <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> 100% private</span>
-            <span className="flex items-center gap-1"><Award className="w-3 h-3" /> 4,200+ certified</span>
+          {/* Social Proof - Larger */}
+          <div className="text-center py-2">
+            <p className="text-base text-gray-500">
+              🎯 <strong>2,847+ women</strong> have taken this assessment
+            </p>
+          </div>
+
+          {/* Trust Badges - Larger */}
+          <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
+            <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> 3 min</span>
+            <span className="flex items-center gap-1"><Shield className="w-4 h-4" /> 100% private</span>
           </div>
         </div>
       );
@@ -1325,23 +1277,23 @@ export default function FMCertificationQuiz() {
         )}
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-medium uppercase tracking-wider px-3 py-1 rounded-full" style={{ backgroundColor: `${BRAND.gold}15`, color: BRAND.burgundy }}>{q.pillar}</span>
+            <span className="text-sm font-medium uppercase tracking-wider px-3 py-1.5 rounded-full" style={{ backgroundColor: `${BRAND.gold}15`, color: BRAND.burgundy }}>{q.pillar}</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-bold leading-tight" style={{ color: BRAND.burgundyDark }}>{q.question}</h2>
-          {dynamicSubtitle && <p className="text-sm text-gray-500 mt-1">{dynamicSubtitle}</p>}
+          <h2 className="text-2xl md:text-3xl font-bold leading-tight" style={{ color: BRAND.burgundyDark }}>{q.question}</h2>
+          {dynamicSubtitle && <p className="text-base text-gray-500 mt-2">{dynamicSubtitle}</p>}
         </div>
         <div className="space-y-3">
           {q.options.map((opt) => {
             const isSelected = answers[currentQ] === opt.value;
             return (
               <button key={opt.value} onClick={() => selectAnswer(opt.value, opt.reaction)}
-                className="w-full p-4 rounded-xl border-2 transition-all text-left"
+                className="w-full p-5 rounded-xl border-2 transition-all text-left"
                 style={{ borderColor: isSelected ? BRAND.burgundy : "#e5e7eb", backgroundColor: isSelected ? `${BRAND.burgundy}08` : "white" }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: isSelected ? BRAND.burgundy : "#d1d5db" }}>
-                    {isSelected && <div className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND.burgundy }} />}
+                <div className="flex items-center gap-4">
+                  <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: isSelected ? BRAND.burgundy : "#d1d5db" }}>
+                    {isSelected && <div className="w-4 h-4 rounded-full" style={{ backgroundColor: BRAND.burgundy }} />}
                   </div>
-                  <span className="font-medium text-sm" style={{ color: BRAND.burgundy }}>{opt.label}</span>
+                  <span className="font-medium text-base" style={{ color: BRAND.burgundy }}>{opt.label}</span>
                 </div>
               </button>
             );
