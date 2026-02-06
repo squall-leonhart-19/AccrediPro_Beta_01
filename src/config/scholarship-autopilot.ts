@@ -28,82 +28,92 @@ export interface CouponTier {
  * Get coupon tier based on what the user offered
  * Implements the "Institute covered MORE" psychology
  * 
- * UPDATED (Feb 2026): Removed $500 minimum - accept ANY amount from $17+
- * Everyone gets approved with scholarship - no rejections!
+ * UPDATED (Feb 2026): Accept any amount from $50+
+ * Round numbers only: $50, $100, $150, $200, $250, $300, $350, $400, $500+
  */
 export function getCouponTier(offeredAmount: number): CouponTier | null {
-    // Accept anything $17 or more
-    if (offeredAmount < 17) {
-        return null; // Only reject if truly absurd
+    // Accept anything $50 or more (minimum floor)
+    if (offeredAmount < 50) {
+        return null; // Below minimum - needs manual handling
     }
 
-    // $17-46 → they pay $17 (Mini Diploma tier)
-    if (offeredAmount < 47) {
+    // $50-99 → they pay $50
+    if (offeredAmount < 100) {
         return {
-            theyPay: 17,
-            drop: Math.max(0, offeredAmount - 17),
-            couponCode: "SCHOLARSHIP17",
-            savings: BASE_PRICE - 17,
+            theyPay: 50,
+            drop: Math.max(0, offeredAmount - 50),
+            couponCode: "SCHOLARSHIP50",
+            savings: BASE_PRICE - 50,
         };
     }
 
-    // $47-96 → they pay $47
-    if (offeredAmount < 97) {
+    // $100-149 → they pay $100
+    if (offeredAmount < 150) {
         return {
-            theyPay: 47,
-            drop: offeredAmount - 47,
-            couponCode: "SCHOLARSHIP47",
-            savings: BASE_PRICE - 47,
+            theyPay: 100,
+            drop: offeredAmount - 100,
+            couponCode: "SCHOLARSHIP100",
+            savings: BASE_PRICE - 100,
         };
     }
 
-    // $97-146 → they pay $97
-    if (offeredAmount < 147) {
+    // $150-199 → they pay $150
+    if (offeredAmount < 200) {
         return {
-            theyPay: 97,
-            drop: offeredAmount - 97,
-            couponCode: "SCHOLARSHIP97",
-            savings: BASE_PRICE - 97,
+            theyPay: 150,
+            drop: offeredAmount - 150,
+            couponCode: "SCHOLARSHIP150",
+            savings: BASE_PRICE - 150,
         };
     }
 
-    // $147-196 → they pay $147
-    if (offeredAmount < 197) {
+    // $200-249 → they pay $200
+    if (offeredAmount < 250) {
         return {
-            theyPay: 147,
-            drop: offeredAmount - 147,
-            couponCode: "SCHOLARSHIP147",
-            savings: BASE_PRICE - 147,
+            theyPay: 200,
+            drop: offeredAmount - 200,
+            couponCode: "SCHOLARSHIP200",
+            savings: BASE_PRICE - 200,
         };
     }
 
-    // $197-296 → they pay $197
-    if (offeredAmount < 297) {
+    // $250-299 → they pay $250
+    if (offeredAmount < 300) {
         return {
-            theyPay: 197,
-            drop: offeredAmount - 197,
-            couponCode: "SCHOLARSHIP197",
-            savings: BASE_PRICE - 197,
+            theyPay: 250,
+            drop: offeredAmount - 250,
+            couponCode: "SCHOLARSHIP250",
+            savings: BASE_PRICE - 250,
         };
     }
 
-    // $297-396 → they pay $297
-    if (offeredAmount < 397) {
+    // $300-349 → they pay $300
+    if (offeredAmount < 350) {
         return {
-            theyPay: 297,
-            drop: offeredAmount - 297,
-            couponCode: "SCHOLARSHIP297",
-            savings: BASE_PRICE - 297,
+            theyPay: 300,
+            drop: offeredAmount - 300,
+            couponCode: "SCHOLARSHIP300",
+            savings: BASE_PRICE - 300,
         };
     }
 
-    // $397-499 → they pay $397
+    // $350-399 → they pay $350
+    if (offeredAmount < 400) {
+        return {
+            theyPay: 350,
+            drop: offeredAmount - 350,
+            couponCode: "SCHOLARSHIP350",
+            savings: BASE_PRICE - 350,
+        };
+    }
+
+    // $400-499 → they pay $400
     if (offeredAmount < 500) {
         return {
-            theyPay: 397,
-            drop: offeredAmount - 397,
-            couponCode: "SCHOLARSHIP397",
-            savings: BASE_PRICE - 397,
+            theyPay: 400,
+            drop: offeredAmount - 400,
+            couponCode: "SCHOLARSHIP400",
+            savings: BASE_PRICE - 400,
         };
     }
 
