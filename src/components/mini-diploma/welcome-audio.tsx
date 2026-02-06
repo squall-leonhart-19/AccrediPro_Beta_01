@@ -93,7 +93,7 @@ export function WelcomeAudio({
                         </span>
                     </div>
                     <p className="text-sm text-amber-800 mb-3">
-                        Hey {firstName}! 👋 Before you dive into the {nicheLabel} Mini Diploma,
+                        Hey {firstName}! 👋 Before you dive into the {nicheLabel},
                         I recorded a quick personal message just for you. Click play to hear it!
                     </p>
 

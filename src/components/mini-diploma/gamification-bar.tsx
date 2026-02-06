@@ -67,8 +67,8 @@ export function GamificationBar({
                 origin: { y: 0.7 }
             });
 
-            // Show badge for milestone lessons
-            if (lessonNumber === 3 || lessonNumber === 5 || lessonNumber === 7 || lessonNumber === totalLessons) {
+            // Show badge for every lesson completion (3-lesson curriculum)
+            if (lessonNumber >= 1 && lessonNumber <= totalLessons) {
                 setShowBadge(true);
                 setTimeout(() => setShowBadge(false), 4000);
             }
@@ -159,11 +159,9 @@ export function GamificationBar({
                                 <p className="text-sm text-amber-100">
                                     {lessonNumber === totalLessons
                                         ? "🏆 Mini Diploma Graduate"
-                                        : lessonNumber >= 7
-                                            ? "⭐ Expert Level"
-                                            : lessonNumber >= 5
-                                                ? "🎯 Halfway Hero"
-                                                : "🌟 Quick Learner"}
+                                        : lessonNumber === 2
+                                            ? "🎯 D.E.P.T.H. Master"
+                                            : "🌟 Foundation Complete"}
                                 </p>
                             </div>
                             <Sparkles className="w-6 h-6 text-amber-200 animate-pulse" />

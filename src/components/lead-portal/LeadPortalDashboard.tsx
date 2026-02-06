@@ -254,7 +254,7 @@ function WelcomeReviewOverlay({
                                 }}
                             >
                                 <Play className="w-6 h-6 mr-2" />
-                                Start Your First Lesson
+                                Start Your Journey to $5K+/Month Now!
                                 <ArrowRight className="w-6 h-6 ml-2" />
                             </Button>
 
@@ -384,7 +384,7 @@ export function LeadPortalDashboard({
                                             </div>
                                             <div>
                                                 <p className="font-black text-base sm:text-lg" style={{ color: '#4e1f24' }}>
-                                                    {lessonsCompleted === 0 ? 'Start Lesson 1' : `Continue — Lesson ${nextLessonId}`}
+                                                    {lessonsCompleted === 0 ? 'Start Your Journey to $5K+/Month Now!' : `Continue — Lesson ${nextLessonId}`}
                                                 </p>
                                                 <p className="text-sm font-medium" style={{ color: '#722f37' }}>
                                                     {allLessons.find(l => l.id === nextLessonId)?.title} — {allLessons.find(l => l.id === nextLessonId)?.duration}

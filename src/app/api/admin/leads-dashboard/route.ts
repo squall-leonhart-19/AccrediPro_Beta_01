@@ -190,7 +190,7 @@ export async function GET(request: Request) {
         // Count lesson completions from ANY tag prefix (handles legacy/inconsistent data)
         const lessonData = countLessonsFromTags(lead.tags);
         const lessonsCompleted = lessonData.lessonsCompleted;
-        const progress = Math.round((lessonsCompleted / 3) * 100);
+        const progress = Math.min(100, Math.round((lessonsCompleted / 3) * 100));
         const lastLessonDate = lessonData.lastActivity;
 
         // Calculate revenue from payments

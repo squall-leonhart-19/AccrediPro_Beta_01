@@ -23,7 +23,7 @@ export default function LessonPage() {
 
     // Get config for this portal
     const config = getConfigByPortalSlug(slug);
-    const totalLessons = config?.lessons.length || 9;
+    const totalLessons = config?.lessons.length || 3;
 
     useEffect(() => {
         if (!config) return;

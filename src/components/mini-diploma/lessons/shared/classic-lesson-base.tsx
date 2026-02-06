@@ -39,7 +39,7 @@ export interface LessonSection {
     style?: 'info' | 'warning' | 'success' | 'tip';
     // For definition type
     term?: string;
-    // For framework type - R.O.O.T method steps
+    // For framework type - D.E.P.T.H. Method steps
     framework?: {
         name: string;
         steps: { letter: string; title: string; description: string }[];
@@ -298,9 +298,10 @@ export function ClassicLessonBase({
     // Keywords to highlight throughout lessons
     const HIGHLIGHT_KEYWORDS = [
         'root cause', 'ROOT CAUSE', 'functional medicine', 'certified', 'certification',
-        '$', 'income', 'clients', 'transform', 'results', 'protocol', 'gut health',
+        'D.E.P.T.H.', 'DEPTH', 'Discover', 'Evaluate', 'Pinpoint', 'Transform', 'Heal',
+        '$', 'income', 'clients', 'results', 'protocol', 'gut health',
         'inflammation', 'toxins', 'stress', 'hormones', 'practitioner', 'waitlist',
-        '5R Protocol', 'HPA axis', 'cortisol', 'microbiome'
+        'HPA axis', 'cortisol', 'microbiome'
     ];
 
     // Highlight important keywords and parse markdown bold **text** in content
@@ -634,8 +635,8 @@ export function ClassicLessonBase({
                                     <GraduationCap className="w-7 h-7 text-amber-300" />
                                 </div>
                                 <div>
-                                    <h1 className="font-bold text-xl text-burgundy-900 drop-shadow-sm">Functional Medicine</h1>
-                                    <p className="text-burgundy-800/80 text-sm font-medium">Level 0 — Foundations</p>
+                                    <h1 className="font-bold text-xl text-burgundy-900 drop-shadow-sm">{nicheLabel || "Certification"}</h1>
+                                    <p className="text-burgundy-800/80 text-sm font-medium">Mini Diploma</p>
                                 </div>
                             </div>
                             <div className="text-right">

@@ -123,7 +123,7 @@ export async function GET(request: Request) {
         const category = lead.miniDiplomaCategory || "unknown";
         const lessonData = countLessonsFromTags(lead.tags);
         const lessonsCompleted = lessonData.lessonsCompleted;
-        const progress = Math.round((lessonsCompleted / 3) * 100);
+        const progress = Math.min(100, Math.round((lessonsCompleted / 3) * 100));
         const totalRevenue = lead.payments.reduce((sum, p) => (Number(p.amount) || 0) - (Number(p.refundAmount) || 0) + sum, 0);
         const hasRefund = lead.payments.some(p => p.refundedAt);
 
