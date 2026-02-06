@@ -856,6 +856,13 @@ Type any amount — I'll get on the phone with them immediately and fight for th
                   repliedBy: "Sarah M. (Auto-Rejection)",
                 }),
               }).catch(() => { });
+
+              // 🤖 Set minimal scholarshipContext so AI can handle follow-up messages
+              // This allows Sarah to continue the conversation and try to upsell to $200+
+              setScholarshipContext({
+                amount: `$${autoReply.fullContext?.requestedAmount || 'below minimum'}`,
+              });
+              autopilotTriggered.current = true;
             }, 2500);
           }, 1000);
           return;
