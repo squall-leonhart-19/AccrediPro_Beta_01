@@ -163,6 +163,7 @@ function MomResultsInner() {
   const careerPathLevel = sp.get("careerPathLevel") || "level-2";
   const decisionMaker = sp.get("decisionMaker") || "yes-mine";
   const startTimeline = sp.get("startTimeline") || "2-weeks";
+  const investmentBudget = sp.get("investmentBudget") || "500-1000";
 
   // Career Path Level config
   const CAREER_PATH_MAP: Record<string, { stars: string; title: string; range: string; badge: string }> = {
@@ -220,7 +221,7 @@ function MomResultsInner() {
   // Scholarship quiz data for chat widget
   const scholarshipQuizData = {
     type: typeKey, goal: goalKey, role, currentIncome, experience,
-    clinicalReady, labInterest, pastCerts, missingSkill, commitment, vision, startTimeline,
+    clinicalReady, labInterest, pastCerts, missingSkill, commitment, vision, startTimeline, investmentBudget,
   };
 
   const openScholarshipChat = () => {
