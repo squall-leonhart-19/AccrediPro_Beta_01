@@ -206,7 +206,7 @@ export default function ExamPage() {
                         📚 {portalConfig.displayName}
                     </span>
                     <h1 className="text-3xl font-bold text-gray-900 mt-4">Final Assessment</h1>
-                    <p className="text-gray-600 mt-2">Lesson 9 of 9 Complete - Now prove your knowledge!</p>
+                    <p className="text-gray-600 mt-2">All lessons complete — now prove your knowledge!</p>
                 </div>
 
                 <DynamicExamComponent

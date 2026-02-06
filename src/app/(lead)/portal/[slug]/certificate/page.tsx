@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 const CERTIFICATE_DELAY_MS = 24 * 60 * 60 * 1000;
 
 // Test accounts bypass the 24h delay
-const TEST_EMAILS = ["tortolialessio1997@gmail.com", "alessio@accredipro.academy"];
+const TEST_EMAILS = ["tortolialessio1997@gmail.com", "alessio@accredipro.academy", "alessiotortoli@gmail.com"];
 
 interface PageProps {
     params: Promise<{ slug: string }>;

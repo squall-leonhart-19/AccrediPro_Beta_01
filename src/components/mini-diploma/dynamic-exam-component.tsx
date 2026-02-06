@@ -107,7 +107,7 @@ export function DynamicExamComponent({
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    text: `Hey ${firstName}! It's Sarah here. I am SO proud of you for making it this far. You've completed all 9 lessons, and now it's time for your final assessment. Don't worry... this is your moment to shine. Just take your time, trust what you've learned, and remember... I believe in you. You've got this!`,
+                    text: `Hey ${firstName}! It's Sarah here. I am SO proud of you for making it this far. You've completed all lessons, and now it's time for your final assessment. Don't worry... this is your moment to shine. Just take your time, trust what you've learned, and remember... I believe in you. You've got this!`,
                     voice: "sarah",
                 }),
             });
@@ -223,7 +223,7 @@ export function DynamicExamComponent({
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    text: `Oh my gosh, ${firstName}! ${score} out of 100! I KNEW you could do it! You are officially in the top 5% of everyone who's ever taken this exam. I am SO incredibly proud of you right now. You've just unlocked access to my exclusive masterclass... this is huge! Click below to watch it now... but hurry, your access expires in 24 hours. You deserve this, ${firstName}. Let's make this happen!`,
+                    text: `Oh my gosh, ${firstName}! ${score} out of 100! I KNEW you could do it! I am SO incredibly proud of you right now. Just one more quick step and your official certificate will be on its way. You deserve this, ${firstName}!`,
                     voice: "sarah",
                 }),
             });
@@ -357,7 +357,7 @@ export function DynamicExamComponent({
                                 </button>
                             </div>
                             <p className="text-gray-700 leading-relaxed">
-                                {firstName}, I am SO proud of you for making it this far! You've completed all 9 lessons, and now it's time for your final assessment.
+                                {firstName}, I am SO proud of you for making it this far! You've completed all lessons, and now it's time for your final assessment.
                             </p>
                             <p className="text-gray-700 leading-relaxed mt-2">
                                 Don't worry - this is your moment to shine. Just take your time, trust what you've learned, and remember... <span className="text-amber-700 font-semibold">I believe in you</span>.
@@ -406,7 +406,7 @@ export function DynamicExamComponent({
                                 <div className="flex items-center justify-center gap-1 text-amber-600 mb-1">
                                     <FileText className="w-4 h-4" />
                                 </div>
-                                <p className="text-xl font-bold text-amber-700">All 9</p>
+                                <p className="text-xl font-bold text-amber-700">All</p>
                                 <p className="text-xs text-gray-500">Lessons</p>
                             </div>
                             <div className="p-3 bg-emerald-50 rounded-lg">
