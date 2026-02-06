@@ -103,6 +103,33 @@ export async function POST(req: NextRequest) {
         // Get coupon tier based on amount
         const tier = getCouponTier(detectedAmount);
 
+        // REJECTION: Amount below $500 minimum
+        if (!tier) {
+            const rejectionMessage = `I totally understand 💜 Unfortunately, the Institute requires a minimum investment of $500 to qualify for the scholarship program.\n\nHere's why: the certification includes Practitioner + Advanced + Master levels, 9 specializations, 1:1 mentorship, client acquisition system, offer templates, and lifetime access — valued at $4,997. The Institute subsidizes most of this, but needs at least $500 to cover their costs.\n\nIs there any way you could make $500 work? Even splitting it into 2 payments of $250 might be possible. Let me know and I'll check with the Institute! 💪`;
+
+            console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} → REJECTED (below $500 minimum)`);
+
+            return NextResponse.json({
+                hasAmount: true,
+                detectedAmount,
+                callingMessage: null,
+                approvalMessage: null,
+                rejectionMessage, // NEW: Signal rejection with message
+                tier: null,
+                checkoutUrl: CHECKOUT_URL,
+                fullContext: {
+                    firstName,
+                    lastName: lastName || "",
+                    email: email || "",
+                    visitorId: visitorId || "",
+                    offeredAmount: detectedAmount,
+                    finalAmount: null,
+                    couponCode: null,
+                    quizData,
+                },
+            });
+        }
+
         // Generate messages
         const callingMessage = generateCallingMessage();
         const approvalMessage = generateApprovalMessage(firstName, detectedAmount, tier);
@@ -127,6 +154,7 @@ export async function POST(req: NextRequest) {
                 quizData,
             },
         } satisfies AutoReplyResponse);
+
     } catch (error) {
         console.error("Scholarship auto-reply error:", error);
         return NextResponse.json(

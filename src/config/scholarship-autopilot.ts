@@ -27,80 +27,29 @@ export interface CouponTier {
 /**
  * Get coupon tier based on what the user offered
  * Implements the "Institute covered MORE" psychology
+ * 
+ * NEW SYSTEM (Feb 2026): Minimum $500 floor to filter tire-kickers
+ * - Below $500: REJECTED (returns null tier)
+ * - $500+: Gets coupon with "Institute covered extra" drop
  */
-export function getCouponTier(offeredAmount: number): CouponTier {
-    // Floor: minimum is $50
-    if (offeredAmount < 50) {
+export function getCouponTier(offeredAmount: number): CouponTier | null {
+    // HARD FLOOR: Reject anything below $500
+    if (offeredAmount < 500) {
+        return null; // Signal rejection - caller must handle
+    }
+
+    // Exact $500 - Starter tier (no drop)
+    if (offeredAmount < 550) {
         return {
-            theyPay: 50,
+            theyPay: 500,
             drop: 0,
-            couponCode: "SCHOLARSHIP50",
-            savings: BASE_PRICE - 50,
+            couponCode: "SCHOLARSHIP500",
+            savings: BASE_PRICE - 500,
         };
     }
 
-    // Exact $50 - no drop (floor)
-    if (offeredAmount === 50) {
-        return {
-            theyPay: 50,
-            drop: 0,
-            couponCode: "SCHOLARSHIP50",
-            savings: BASE_PRICE - 50,
-        };
-    }
-
-    // $51-100 → they pay $50 (drop $50)
-    if (offeredAmount <= 100) {
-        return {
-            theyPay: 50,
-            drop: offeredAmount - 50,
-            couponCode: "SCHOLARSHIP50",
-            savings: BASE_PRICE - 50,
-        };
-    }
-
-    // $101-200 → they pay $100 (drop $100)
-    if (offeredAmount <= 200) {
-        return {
-            theyPay: 100,
-            drop: offeredAmount - 100,
-            couponCode: "SCHOLARSHIP100",
-            savings: BASE_PRICE - 100,
-        };
-    }
-
-    // $201-300 → they pay $200 (drop $100)
-    if (offeredAmount <= 300) {
-        return {
-            theyPay: 200,
-            drop: offeredAmount - 200,
-            couponCode: "SCHOLARSHIP200",
-            savings: BASE_PRICE - 200,
-        };
-    }
-
-    // $301-400 → they pay $300 (drop $100)
-    if (offeredAmount <= 400) {
-        return {
-            theyPay: 300,
-            drop: offeredAmount - 300,
-            couponCode: "SCHOLARSHIP300",
-            savings: BASE_PRICE - 300,
-        };
-    }
-
-    // $401-500 → they pay $400 (drop $100)
-    if (offeredAmount <= 500) {
-        return {
-            theyPay: 400,
-            drop: offeredAmount - 400,
-            couponCode: "SCHOLARSHIP400",
-            savings: BASE_PRICE - 400,
-        };
-    }
-
-    // $501-600 → they pay $500 (drop $100)
-    if (offeredAmount <= 600) {
+    // $550-599 → they pay $500 (drop $50-99)
+    if (offeredAmount < 600) {
         return {
             theyPay: 500,
             drop: offeredAmount - 500,
@@ -109,18 +58,18 @@ export function getCouponTier(offeredAmount: number): CouponTier {
         };
     }
 
-    // $601-700 → they pay $500 (drop $200)
-    if (offeredAmount <= 700) {
+    // $600-699 → they pay $550 (drop $50-149)
+    if (offeredAmount < 700) {
         return {
-            theyPay: 500,
-            drop: offeredAmount - 500,
-            couponCode: "SCHOLARSHIP500",
-            savings: BASE_PRICE - 500,
+            theyPay: 550,
+            drop: offeredAmount - 550,
+            couponCode: "SCHOLARSHIP550",
+            savings: BASE_PRICE - 550,
         };
     }
 
-    // $701-800 → they pay $600 (drop $200)
-    if (offeredAmount <= 800) {
+    // $700-799 → they pay $600 (drop $100-199)
+    if (offeredAmount < 800) {
         return {
             theyPay: 600,
             drop: offeredAmount - 600,
@@ -129,8 +78,8 @@ export function getCouponTier(offeredAmount: number): CouponTier {
         };
     }
 
-    // $801-900 → they pay $700 (drop $200)
-    if (offeredAmount <= 900) {
+    // $800-899 → they pay $700 (drop $100-199)
+    if (offeredAmount < 900) {
         return {
             theyPay: 700,
             drop: offeredAmount - 700,
@@ -139,8 +88,8 @@ export function getCouponTier(offeredAmount: number): CouponTier {
         };
     }
 
-    // $901-1000 → they pay $800 (drop $200)
-    if (offeredAmount <= 1000) {
+    // $900-999 → they pay $800 (drop $100-199)
+    if (offeredAmount < 1000) {
         return {
             theyPay: 800,
             drop: offeredAmount - 800,
@@ -149,18 +98,18 @@ export function getCouponTier(offeredAmount: number): CouponTier {
         };
     }
 
-    // $1001-1200 → they pay $800 (drop $400)
-    if (offeredAmount <= 1200) {
+    // $1000-1199 → they pay $900 (drop $100-299)
+    if (offeredAmount < 1200) {
         return {
-            theyPay: 800,
-            drop: offeredAmount - 800,
-            couponCode: "SCHOLARSHIP800",
-            savings: BASE_PRICE - 800,
+            theyPay: 900,
+            drop: offeredAmount - 900,
+            couponCode: "SCHOLARSHIP900",
+            savings: BASE_PRICE - 900,
         };
     }
 
-    // $1201-1500 → they pay $1000 (drop $500)
-    if (offeredAmount <= 1500) {
+    // $1200-1499 → they pay $1000 (drop $200-499)
+    if (offeredAmount < 1500) {
         return {
             theyPay: 1000,
             drop: offeredAmount - 1000,
@@ -169,7 +118,7 @@ export function getCouponTier(offeredAmount: number): CouponTier {
         };
     }
 
-    // $1501-1999 → they pay $1200
+    // $1500-1999 → they pay $1200 (drop $300-799)
     if (offeredAmount < 2000) {
         return {
             theyPay: 1200,
@@ -187,6 +136,7 @@ export function getCouponTier(offeredAmount: number): CouponTier {
         savings: 0,
     };
 }
+
 
 /**
  * Extract dollar amount from user message

@@ -779,7 +779,42 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
 
         const autoReply = await autoReplyRes.json();
 
+        // REJECTION: Amount below $500 minimum
+        if (autoReply.hasAmount && autoReply.rejectionMessage) {
+          setTimeout(() => {
+            setIsTyping(true);
+            setTimeout(() => {
+              setIsTyping(false);
+              const rejectionMsg: ChatMessage = {
+                id: `sarah-rejection-${Date.now()}`,
+                role: "sarah",
+                content: autoReply.rejectionMessage,
+                timestamp: new Date().toISOString(),
+              };
+              setMessages(prev => [...prev, rejectionMsg]);
+
+              // Save rejection message to DB with context
+              const contextNote = `\n\n--- AUTOPILOT REJECTION ---\nOffered: $${autoReply.fullContext.offeredAmount}\nReason: Below $500 minimum`;
+              fetch("/api/chat/sales", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  message: autoReply.rejectionMessage + contextNote,
+                  page: `scholarship-${page}`,
+                  visitorId,
+                  userName: `${firstName} ${lastName}`.trim(),
+                  userEmail: email,
+                  isFromVisitor: false,
+                  repliedBy: "Sarah M. (Auto-Rejection)",
+                }),
+              }).catch(() => { });
+            }, 2500);
+          }, 1000);
+          return;
+        }
+
         if (autoReply.hasAmount && autoReply.callingMessage && autoReply.approvalMessage) {
+
           // Step 1: Show "calling Institute" message after 1 second
           setTimeout(() => {
             setIsTyping(true);
