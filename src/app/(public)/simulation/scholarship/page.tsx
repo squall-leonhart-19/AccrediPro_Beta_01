@@ -243,8 +243,8 @@ export default function ScholarshipSimulationPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1500, 2000].map((amt) => {
-                                    const tier = getCouponTier(amt);
+                                {[500, 600, 700, 800, 900, 1000, 1200, 1500, 2000].map((amt) => {
+                                    const tier = getCouponTier(amt)!;
                                     return (
                                         <tr key={amt} className="border-b border-gray-100 hover:bg-gray-50">
                                             <td className="py-2">{formatCurrency(amt)}</td>
