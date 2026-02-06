@@ -268,6 +268,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
   const urgencyIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const welcomeAudioRef = useRef<HTMLAudioElement | null>(null);
   const welcomeAudioPlayed = useRef(false); // Track if audio already played (prevent restart)
+  const autopilotTriggered = useRef(false); // CRITICAL: Prevent duplicate autopilot flows
 
   // Social proof notification state
   const [socialProofNotification, setSocialProofNotification] = useState<{
@@ -819,8 +820,11 @@ Type any amount — I'll get on the phone with them immediately and fight for th
 
     // ═══ FULL AUTOPILOT SCHOLARSHIP SYSTEM ═══
     // Detect if user typed a number and auto-generate approval with coupon
+    // CRITICAL: Only trigger ONCE per session to prevent duplicate flows!
     const hasNumber = /\$?\d+/.test(userMessage);
-    if (hasNumber && messages.length <= 8) { // Only for early messages (first number submission)
+    const shouldTriggerAutopilot = hasNumber && !autopilotTriggered.current && messages.length <= 10;
+    if (shouldTriggerAutopilot) { // Only trigger ONCE per session to prevent duplicate flows
+      autopilotTriggered.current = true; // Lock immediately to prevent re-entry
       try {
         // Call autopilot API to get coupon tier and messages
         const autoReplyRes = await fetch("/api/scholarship/auto-reply", {
@@ -853,12 +857,12 @@ Type any amount — I'll get on the phone with them immediately and fight for th
               setMessages(prev => [...prev, rejectionMsg]);
 
               // Save rejection message to DB with context
-              const contextNote = `\n\n--- AUTOPILOT REJECTION ---\nOffered: $${autoReply.fullContext.offeredAmount}\nReason: Below $500 minimum`;
+              // Save rejection message to DB (no context notes)
               fetch("/api/chat/sales", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  message: autoReply.rejectionMessage + contextNote,
+                  message: autoReply.rejectionMessage,
                   page: `scholarship-${page}`,
                   visitorId,
                   userName: `${firstName} ${lastName}`.trim(),
@@ -996,14 +1000,12 @@ Type any amount — I'll get on the phone with them immediately and fight for th
                   };
                   setMessages(prev => [...prev, approvalMsg]);
 
-                  // Save approval message to DB with full context
-                  const contextNote = `\n\n--- AUTOPILOT ---\nOffered: $${autoReply.fullContext.offeredAmount}\nFinal: $${autoReply.fullContext.finalAmount}\nCoupon: ${autoReply.fullContext.couponCode || "NONE"}\nCheckout: ${autoReply.checkoutUrl}`;
-
+                  // Save approval message to DB (no context notes)
                   fetch("/api/chat/sales", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                      message: autoReply.approvalMessage + contextNote,
+                      message: autoReply.approvalMessage,
                       page: `scholarship-${page}`,
                       visitorId,
                       userName: `${firstName} ${lastName}`.trim(),

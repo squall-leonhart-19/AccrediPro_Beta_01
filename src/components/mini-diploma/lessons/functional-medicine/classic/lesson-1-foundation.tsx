@@ -108,6 +108,19 @@ export function ClassicLessonFoundation({
             type: 'key-point',
             content: `Here's the insight that changed everything for me: Almost EVERY chronic health issue traces back to dysfunction in one of **five areas**. Master these five, and you can help 90% of the clients who walk through your door.`,
         },
+        {
+            type: 'checkpoint',
+            content: '',
+            checkpoint: {
+                question: 'What does functional medicine primarily focus on?',
+                options: [
+                    { label: 'Prescribing medications for symptoms', isCorrect: false },
+                    { label: 'Addressing root causes of disease', isCorrect: true },
+                    { label: 'Performing surgical procedures', isCorrect: false },
+                ],
+                successMessage: 'Exactly! Root causes, not symptoms.',
+            },
+        },
 
         // THE 5 ROOT CAUSES
         {
@@ -134,6 +147,19 @@ export function ClassicLessonFoundation({
             content: `The magic? These 5 causes are all CONNECTED. Fix one, and others start improving. This is why root cause practitioners get results that seem almost miraculous - they're not treating symptoms, they're restoring balance.`,
             style: 'success',
         },
+        {
+            type: 'checkpoint',
+            content: '',
+            checkpoint: {
+                question: 'Which of the following is NOT one of the 5 root causes?',
+                options: [
+                    { label: 'Gut Dysfunction', isCorrect: false },
+                    { label: 'Genetic Mutations', isCorrect: true },
+                    { label: 'HPA Axis Dysfunction', isCorrect: false },
+                ],
+                successMessage: 'Correct! The 5 root causes focus on modifiable factors like gut, inflammation, toxins, nutrients, and HPA axis.',
+            },
+        },
 
         // REAL CLIENT EXAMPLE
         {
@@ -159,8 +185,20 @@ export function ClassicLessonFoundation({
             content: `Her doctors said: "Labs are normal. Have you tried therapy and a gym membership?" She felt dismissed. Invisible. Broken.`,
         },
         {
-            type: 'key-point',
-            content: `Results after 90 days: Energy 8/10 (was 2/10). Brain fog GONE. Lost 18 lbs. She called me crying: "I made it to my daughter's dance recital. I was THERE. You gave me my life back."`,
+            type: 'reveal-card',
+            content: '',
+            revealCard: {
+                teaser: "Tap to see Maria's results after 90 days →",
+                content: "Results after 90 days: Energy 8/10 (was 2/10). Brain fog GONE. Lost 18 lbs. She called me crying: \"I made it to my daughter's dance recital. I was THERE. You gave me my life back.\"",
+            },
+        },
+        {
+            type: 'micro-commitment',
+            content: 'Could you see yourself helping someone like Maria?',
+            commitmentOptions: {
+                positive: 'Yes, absolutely',
+                neutral: 'Tell me more',
+            },
         },
 
         // SCOPE OF PRACTICE
@@ -199,41 +237,23 @@ export function ClassicLessonFoundation({
             content: `You're not replacing doctors - you're PARTNERING with them. As a certified health coach, you legally provide EDUCATION and SUPPORT, not medical advice. This is 100% legal in all 50 states. Your job is to help clients implement what doctors don't have time to teach.`,
             style: 'info',
         },
-
-        // QUIZ
         {
-            type: 'quiz',
+            type: 'checkpoint',
             content: '',
-            questions: [
-                {
-                    question: 'What is the primary focus of functional medicine?',
-                    options: [
-                        'Prescribing medication for immediate symptom relief',
-                        'Identifying and addressing root causes through nutrition and lifestyle',
-                        'Performing diagnostic surgeries',
-                        'Replacing all conventional medical treatments',
-                    ],
-                    correctIndex: 1,
-                    explanation: 'Functional medicine focuses on identifying and addressing root causes of disease through nutrition, lifestyle, and holistic approaches - rather than just treating symptoms.',
-                },
-                {
-                    question: 'As a certified health coach, what is your primary role?',
-                    options: [
-                        'Diagnose diseases and prescribe treatments',
-                        'Provide education and support for nutrition and lifestyle changes',
-                        'Interpret lab results and make medical recommendations',
-                        'Replace the client\'s relationship with their doctor',
-                    ],
-                    correctIndex: 1,
-                    explanation: 'Health coaches provide EDUCATION and SUPPORT, not medical advice. You help clients implement nutrition and lifestyle changes, partnering with their healthcare team.',
-                },
-            ],
+            checkpoint: {
+                question: 'As a certified health coach, what is your primary role?',
+                options: [
+                    { label: 'Diagnose diseases and prescribe treatments', isCorrect: false },
+                    { label: 'Educate and support lifestyle changes', isCorrect: true },
+                ],
+                successMessage: 'Right! Education and support — 100% legal in all 50 states.',
+            },
         },
 
         // BRIDGE TO L2
         {
             type: 'heading',
-            content: 'Coming Up: The D.E.P.T.H. Method\u2122',
+            content: 'Coming Up: The D.E.P.T.H. Method™',
         },
         {
             type: 'text',
@@ -241,7 +261,7 @@ export function ClassicLessonFoundation({
         },
         {
             type: 'callout',
-            content: `In the next lesson, you'll learn the exact step-by-step framework I use with every single client - the **D.E.P.T.H. Method\u2122**. This is what separates coaches who struggle from coaches who have waiting lists and earn $5,000+ monthly.`,
+            content: `In the next lesson, you'll learn the exact step-by-step framework I use with every single client - the **D.E.P.T.H. Method™**. This is what separates coaches who struggle from coaches who have waiting lists and earn $5,000+ monthly.`,
             style: 'tip',
         },
     ];

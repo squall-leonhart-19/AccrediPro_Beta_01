@@ -37,7 +37,7 @@ export function ClassicLessonFirstClients({
         },
         {
             type: 'text',
-            content: `Let me break down the math that changed my life \u2014 and the lives of hundreds of ASI graduates:`,
+            content: `Let me break down the math that changed my life — and the lives of hundreds of ASI graduates:`,
         },
         {
             type: 'list',
@@ -54,6 +54,14 @@ export function ClassicLessonFirstClients({
             type: 'callout',
             content: `Compare that to a 9-to-5 job at $52,000/year. That's $4,333/month BEFORE taxes, working 160+ hours. As a certified coach, you can match that income working PART-TIME, from HOME, doing work you LOVE.`,
             style: 'success',
+        },
+        {
+            type: 'income-calculator',
+            content: 'See what your monthly income could look like:',
+            calculator: {
+                avgPackagePrice: 350,
+                maxClients: 30,
+            },
         },
 
         // THE WARM MARKET STRATEGY
@@ -75,15 +83,36 @@ export function ClassicLessonFirstClients({
             items: [
                 '**Step 1: List 20 people** who\'ve mentioned health struggles (friends, family, coworkers, neighbors, church members)',
                 '**Step 2: Have a genuine conversation.** Not a pitch. Ask them about their health. Listen. Share what you\'re learning.',
-                '**Step 3: Offer a free "Health Discovery Session."** Just 30 minutes to use the D.E.P.T.H. Method\u2122 Discover phase.',
+                '**Step 3: Offer a free "Health Discovery Session."** Just 30 minutes to use the D.E.P.T.H. Method™ Discover phase.',
                 '**Step 4: Show them the gap.** After the session, they\'ll realize how much they don\'t know about their own health.',
                 '**Step 5: Present your coaching package.** "Based on what we discussed, here\'s how I can help you over the next 3 months."',
             ],
         },
         {
+            type: 'checkpoint',
+            content: '',
+            checkpoint: {
+                question: 'What is the first step of the Warm Market Strategy?',
+                options: [
+                    { label: 'Create a website and run ads', isCorrect: false },
+                    { label: 'List 20 people who have mentioned health struggles', isCorrect: true },
+                    { label: 'Post on social media every day', isCorrect: false },
+                ],
+                successMessage: 'Yes! Start with people you already know. No ads needed.',
+            },
+        },
+        {
             type: 'callout',
             content: `Graduate story: Amanda S., a former dental hygienist, used this exact strategy. She listed 25 people. Reached out to 10. Got 6 discovery sessions. Signed 3 paying clients in her FIRST WEEK. That's $1,500/month before she even finished her certification.`,
             style: 'success',
+        },
+        {
+            type: 'micro-commitment',
+            content: 'Amanda signed 3 paying clients in her first week. Can you picture yourself doing the same?',
+            commitmentOptions: {
+                positive: 'Yes, I can see it',
+                neutral: 'Show me how',
+            },
         },
 
         // YOUR CERTIFICATION AS YOUR CREDIBILITY
@@ -99,11 +128,11 @@ export function ClassicLessonFirstClients({
             type: 'list',
             content: '',
             items: [
-                '**Verified credential** \u2014 Your certificate has a unique verification number that clients can look up',
-                '**Recognized specialization** \u2014 Functional medicine is one of the fastest-growing fields in healthcare',
-                '**Professional framework** \u2014 The D.E.P.T.H. Method\u2122 gives you a structured, professional approach',
-                '**Scope of practice clarity** \u2014 You know exactly what you can and can\'t do (education & support)',
-                '**Ongoing support** \u2014 The ASI community of 2,400+ graduates supports each other',
+                '**Verified credential** — Your certificate has a unique verification number that clients can look up',
+                '**Recognized specialization** — Functional medicine is one of the fastest-growing fields in healthcare',
+                '**Professional framework** — The D.E.P.T.H. Method™ gives you a structured, professional approach',
+                '**Scope of practice clarity** — You know exactly what you can and can\'t do (education & support)',
+                '**Ongoing support** — The ASI community of 2,400+ graduates supports each other',
             ],
         },
 
@@ -133,7 +162,7 @@ export function ClassicLessonFirstClients({
                 items: [
                     'Personalized roadmap from Day 1',
                     'Targeted support (no wasted money)',
-                    'Faster results with D.E.P.T.H. Method\u2122',
+                    'Faster results with D.E.P.T.H. Method™',
                     'Improved energy, focus, and quality of life',
                 ],
             },
@@ -142,6 +171,19 @@ export function ClassicLessonFirstClients({
             type: 'callout',
             content: `Recommended starting packages:\n\u2022 **Discovery Package:** $297/month for 3 months ($891 total)\n\u2022 **Transformation Package:** $497/month for 6 months ($2,982 total)\n\u2022 **VIP Package:** $997/month for 3 months with weekly calls ($2,991 total)\n\nMost new coaches start with the Discovery Package and upgrade as they gain confidence.`,
             style: 'info',
+        },
+        {
+            type: 'checkpoint',
+            content: '',
+            checkpoint: {
+                question: 'What is the recommended starting package for new coaches?',
+                options: [
+                    { label: 'VIP Package at $997/month', isCorrect: false },
+                    { label: 'Discovery Package at $297/month', isCorrect: true },
+                    { label: 'Free sessions until you build confidence', isCorrect: false },
+                ],
+                successMessage: 'Right! Start with the Discovery Package and upgrade as you gain confidence.',
+            },
         },
 
         // SCOPE REMINDER
@@ -158,40 +200,10 @@ export function ClassicLessonFirstClients({
             content: '',
             items: [
                 '**\u2705 You CAN:** Educate on nutrition, support lifestyle changes, help with meal planning, teach stress management, provide accountability',
-                '**\u2705 You CAN:** Use the D.E.P.T.H. Method\u2122 to help clients understand their health patterns',
+                '**\u2705 You CAN:** Use the D.E.P.T.H. Method™ to help clients understand their health patterns',
                 '**\u274c You CANNOT:** Diagnose conditions, prescribe treatments, order lab tests, provide medical advice',
                 '**\u2705 You CAN:** Suggest clients talk to their doctor about specific concerns you notice',
                 '**\u2705 You CAN:** Work alongside a client\'s medical team as their education and support partner',
-            ],
-        },
-
-        // QUIZ
-        {
-            type: 'quiz',
-            content: '',
-            questions: [
-                {
-                    question: 'What is the most effective approach for getting your first clients?',
-                    options: [
-                        'Wait until you have every certification possible before talking to anyone',
-                        'Spend thousands on paid advertising immediately',
-                        'Start with your existing network, lead with value and education',
-                        'Cold call random people from the phone book',
-                    ],
-                    correctIndex: 2,
-                    explanation: 'The fastest path to your first clients is leveraging your existing network and community. Lead with value and education, build trust, and clients will naturally emerge from those relationships.',
-                },
-                {
-                    question: 'Which of the following is within a certified health coach\'s scope of practice?',
-                    options: [
-                        'Diagnosing medical conditions based on client symptoms',
-                        'Prescribing supplements and specific dosages to treat conditions',
-                        'Educating clients on nutrition and supporting healthy lifestyle changes',
-                        'Ordering and interpreting blood tests for clients',
-                    ],
-                    correctIndex: 2,
-                    explanation: 'Health coaches educate and support clients in making positive nutrition and lifestyle changes. Diagnosing, prescribing, and ordering medical tests are outside the scope of a health coach.',
-                },
             ],
         },
 
@@ -206,7 +218,7 @@ export function ClassicLessonFirstClients({
         },
         {
             type: 'callout',
-            content: `Click "Complete & Proceed to Final Exam" below. The exam covers what you've learned in these 3 lessons. Once you pass, you'll receive your official ASI certification \u2014 a verified credential that opens the door to your $5,000+/month future.`,
+            content: `Click "Complete & Proceed to Final Exam" below. The exam covers what you've learned in these 3 lessons. Once you pass, you'll receive your official ASI certification — a verified credential that opens the door to your $5,000+/month future.`,
             style: 'tip',
         },
     ];

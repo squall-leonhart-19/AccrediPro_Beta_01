@@ -83,7 +83,7 @@ const navGroups: NavGroup[] = [
       { href: "/messages", label: "Direct Messages", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/support", label: "Support Desk", icon: Ticket, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-      { href: "/admin/scholarships", label: "Scholarships", icon: GraduationCap, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/scholarship-leads", label: "Scholarship Leads", icon: GraduationCap, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
     ],
   },
   {

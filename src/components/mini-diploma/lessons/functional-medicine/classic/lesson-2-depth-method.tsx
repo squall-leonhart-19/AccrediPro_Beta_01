@@ -27,7 +27,7 @@ export function ClassicLessonDEPTHMethod({
         },
         {
             type: 'key-point',
-            content: `This is the D.E.P.T.H. Method\u2122 - the step-by-step system that over 200 ASI graduates use to get real, measurable results for their clients. When you master this, you'll never feel "lost" with a client again.`,
+            content: `This is the D.E.P.T.H. Method™ - the step-by-step system that over 200 ASI graduates use to get real, measurable results for their clients. When you master this, you'll never feel "lost" with a client again.`,
         },
 
         // WHY A FRAMEWORK MATTERS
@@ -45,13 +45,13 @@ export function ClassicLessonDEPTHMethod({
         },
         {
             type: 'text',
-            content: `With the D.E.P.T.H. Method\u2122, you have a proven roadmap for EVERY client, regardless of their health issue. Confidence replaces confusion. Results replace guesswork.`,
+            content: `With the D.E.P.T.H. Method™, you have a proven roadmap for EVERY client, regardless of their health issue. Confidence replaces confusion. Results replace guesswork.`,
         },
 
         // THE D.E.P.T.H. FRAMEWORK
         {
             type: 'heading',
-            content: 'The D.E.P.T.H. Method\u2122',
+            content: 'The D.E.P.T.H. Method™',
         },
         {
             type: 'text',
@@ -61,7 +61,7 @@ export function ClassicLessonDEPTHMethod({
             type: 'framework',
             content: '',
             framework: {
-                name: 'The D.E.P.T.H. Method\u2122',
+                name: 'The D.E.P.T.H. Method™',
                 steps: [
                     {
                         letter: 'D',
@@ -91,11 +91,24 @@ export function ClassicLessonDEPTHMethod({
                 ],
             },
         },
+        {
+            type: 'checkpoint',
+            content: '',
+            checkpoint: {
+                question: 'What is the first step of the D.E.P.T.H. Method™?',
+                options: [
+                    { label: 'Evaluate symptoms', isCorrect: false },
+                    { label: 'Discover the full health story', isCorrect: true },
+                    { label: 'Transform with a protocol', isCorrect: false },
+                ],
+                successMessage: 'Yes! Discovery comes first — understanding the full story before anything else.',
+            },
+        },
 
         // EACH STEP IN DEPTH
         {
             type: 'heading',
-            content: 'D \u2014 Discover: The Art of the Health Story',
+            content: 'D — Discover: The Art of the Health Story',
         },
         {
             type: 'text',
@@ -105,11 +118,11 @@ export function ClassicLessonDEPTHMethod({
             type: 'list',
             content: '',
             items: [
-                '**Health timeline** \u2014 When did symptoms start? What was happening in their life?',
-                '**Daily habits** \u2014 Sleep, meals, exercise, stress management (or lack of)',
-                '**Environmental factors** \u2014 Toxin exposure, mold, water quality, work stress',
-                '**Emotional history** \u2014 Trauma, grief, chronic stress (this is HUGE and often overlooked)',
-                '**What they\'ve already tried** \u2014 This tells you what hasn\'t worked and WHY',
+                '**Health timeline** — When did symptoms start? What was happening in their life?',
+                '**Daily habits** — Sleep, meals, exercise, stress management (or lack of)',
+                '**Environmental factors** — Toxin exposure, mold, water quality, work stress',
+                '**Emotional history** — Trauma, grief, chronic stress (this is HUGE and often overlooked)',
+                '**What they\'ve already tried** — This tells you what hasn\'t worked and WHY',
             ],
         },
         {
@@ -121,7 +134,7 @@ export function ClassicLessonDEPTHMethod({
         // E - EVALUATE
         {
             type: 'heading',
-            content: 'E \u2014 Evaluate: Connecting the Dots',
+            content: 'E — Evaluate: Connecting the Dots',
         },
         {
             type: 'text',
@@ -153,21 +166,33 @@ export function ClassicLessonDEPTHMethod({
         // P - PINPOINT
         {
             type: 'heading',
-            content: 'P \u2014 Pinpoint: Your Client\'s Unique Root Cause Map',
+            content: 'P — Pinpoint: Your Client\'s Unique Root Cause Map',
         },
         {
             type: 'text',
-            content: `This is where the D.E.P.T.H. Method\u2122 becomes PERSONAL. Two clients can have the same symptom (fatigue) but completely different root causes. Your job is to pinpoint what's driving THIS person's issues.`,
+            content: `This is where the D.E.P.T.H. Method™ becomes PERSONAL. Two clients can have the same symptom (fatigue) but completely different root causes. Your job is to pinpoint what's driving THIS person's issues.`,
         },
         {
             type: 'example',
             content: `**Example:** Both Jessica (34) and Karen (52) came to me exhausted.\n\n**Jessica's root causes:** Gut inflammation from food sensitivities + chronic stress from toxic work environment.\n\n**Karen's root causes:** Nutrient deficiencies (iron, B12, vitamin D) + HPA axis burnout from years of caregiving.\n\nSame symptom. Different root causes. Different protocols. BOTH transformed in 90 days.`,
         },
+        {
+            type: 'checkpoint',
+            content: '',
+            checkpoint: {
+                question: 'Two clients with the same symptom (fatigue) should get:',
+                options: [
+                    { label: 'The same standard protocol', isCorrect: false },
+                    { label: 'Different personalized protocols based on their root causes', isCorrect: true },
+                ],
+                successMessage: 'Exactly! Personalization is what makes the D.E.P.T.H. Method™ so effective.',
+            },
+        },
 
         // T - TRANSFORM
         {
             type: 'heading',
-            content: 'T \u2014 Transform: The Personalized Protocol',
+            content: 'T — Transform: The Personalized Protocol',
         },
         {
             type: 'text',
@@ -177,56 +202,38 @@ export function ClassicLessonDEPTHMethod({
             type: 'list',
             content: '',
             items: [
-                '**Nutrition shifts** \u2014 Not a diet. Targeted food swaps based on their root causes.',
-                '**Lifestyle changes** \u2014 Sleep hygiene, stress management, movement that fits THEIR life.',
-                '**Environmental adjustments** \u2014 Reducing toxin exposure in practical, achievable ways.',
-                '**Targeted support** \u2014 Evidence-based recommendations within your scope of practice.',
+                '**Nutrition shifts** — Not a diet. Targeted food swaps based on their root causes.',
+                '**Lifestyle changes** — Sleep hygiene, stress management, movement that fits THEIR life.',
+                '**Environmental adjustments** — Reducing toxin exposure in practical, achievable ways.',
+                '**Targeted support** — Evidence-based recommendations within your scope of practice.',
             ],
         },
 
         // H - HEAL
         {
             type: 'heading',
-            content: 'H \u2014 Heal: Ongoing Support & Income Growth',
+            content: 'H — Heal: Ongoing Support & Income Growth',
         },
         {
             type: 'text',
-            content: `This final step is where the MAGIC happens \u2014 for your clients AND your income. Healing takes time, and your clients need ongoing guidance. This is why functional health coaching creates RECURRING revenue.`,
+            content: `This final step is where the MAGIC happens — for your clients AND your income. Healing takes time, and your clients need ongoing guidance. This is why functional health coaching creates RECURRING revenue.`,
         },
         {
             type: 'callout',
             content: `Most clients work with you for 3-6 months at $200-500/month. That means each client is worth $600-$3,000 to your business. Just 10 active clients = $2,000-$5,000+/month. And they refer their friends.`,
             style: 'success',
         },
-
-        // QUIZ
         {
-            type: 'quiz',
+            type: 'checkpoint',
             content: '',
-            questions: [
-                {
-                    question: 'What does D.E.P.T.H. stand for?',
-                    options: [
-                        'Diagnose, Examine, Prescribe, Treat, Heal',
-                        'Discover, Evaluate, Pinpoint, Transform, Heal',
-                        'Detect, Eliminate, Prevent, Test, Help',
-                        'Document, Explore, Plan, Track, Hypothesize',
-                    ],
-                    correctIndex: 1,
-                    explanation: 'The D.E.P.T.H. Method\u2122 stands for Discover, Evaluate, Pinpoint, Transform, Heal - a comprehensive framework for guiding clients through their health transformation journey.',
-                },
-                {
-                    question: 'In the D.E.P.T.H. Method, what happens during the "Pinpoint" phase?',
-                    options: [
-                        'You create a general wellness plan for all clients',
-                        'You identify the specific root causes unique to each client',
-                        'You prescribe medication based on symptoms',
-                        'You schedule follow-up appointments',
-                    ],
-                    correctIndex: 1,
-                    explanation: 'The Pinpoint phase is where you identify the specific root causes and imbalances that are unique to each individual client - this is what makes functional health coaching personalized and effective.',
-                },
-            ],
+            checkpoint: {
+                question: 'Why does the Heal phase create recurring income?',
+                options: [
+                    { label: 'Clients need ongoing support for 3-6 months', isCorrect: true },
+                    { label: 'Clients pay upfront for a year', isCorrect: false },
+                ],
+                successMessage: 'Right! Ongoing healing support means months of recurring revenue per client.',
+            },
         },
 
         // BRIDGE TO L3
@@ -236,7 +243,7 @@ export function ClassicLessonDEPTHMethod({
         },
         {
             type: 'text',
-            content: `You now have the complete D.E.P.T.H. Method\u2122 framework. But knowledge without clients is just a hobby. In the next lesson, I'll show you exactly how to get your first paying clients - without spending a dime on advertising.`,
+            content: `You now have the complete D.E.P.T.H. Method™ framework. But knowledge without clients is just a hobby. In the next lesson, I'll show you exactly how to get your first paying clients - without spending a dime on advertising.`,
         },
         {
             type: 'callout',
@@ -246,9 +253,9 @@ export function ClassicLessonDEPTHMethod({
     ];
 
     const keyTakeaways = [
-        'The D.E.P.T.H. Method\u2122: **Discover \u2192 Evaluate \u2192 Pinpoint \u2192 Transform \u2192 Heal**',
+        'The D.E.P.T.H. Method™: **Discover \u2192 Evaluate \u2192 Pinpoint \u2192 Transform \u2192 Heal**',
         'A proven framework eliminates guesswork and builds client confidence',
-        'Each client is unique \u2014 same symptoms can have different root causes',
+        'Each client is unique — same symptoms can have different root causes',
         'Sustainable changes beat extreme protocols every time',
         'The Heal phase creates recurring revenue: 3-6 months per client at $200-500/month',
     ];
@@ -256,7 +263,7 @@ export function ClassicLessonDEPTHMethod({
     return (
         <ClassicLessonBase
             lessonNumber={lessonNumber}
-            lessonTitle="The D.E.P.T.H. Method\u2122"
+            lessonTitle="The D.E.P.T.H. Method™"
             lessonSubtitle="The exact 5-step framework that creates $5K+/month coaches"
             totalLessons={totalLessons}
             sections={sections}

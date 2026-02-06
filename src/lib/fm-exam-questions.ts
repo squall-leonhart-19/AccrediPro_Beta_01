@@ -1,18 +1,19 @@
 /**
- * FM Mini Diploma Final Exam Questions
+ * FM Mini Diploma Final Exam — 5 Questions
  *
- * 6 questions covering all 3 lessons (2 per lesson):
- * 1. Foundation (What is FM / Scope of Practice)
- * 2. The D.E.P.T.H. Method™ (Discover, Evaluate, Pinpoint, Transform, Heal)
- * 3. How To Get Your First Clients
+ * 1 per core concept across 3 lessons:
+ *   L1 → Root causes vs symptoms
+ *   L1 → Scope of practice (educate & support)
+ *   L2 → D.E.P.T.H. Method™ — what "D" stands for
+ *   L3 → Warm market strategy (first step)
+ *   L3 → Recommended starter package
  *
- * Each question has 4 options with 1 correct answer.
- * Pass score for scholarship: 95+ (max 1 wrong)
+ * Everyone passes (score always 95-100).
  */
 
 export interface ExamQuestion {
     id: number;
-    lessonRef: number; // Which lesson this covers
+    lessonRef: number;
     question: string;
     options: {
         id: string;
@@ -23,94 +24,79 @@ export interface ExamQuestion {
 }
 
 export const FM_EXAM_QUESTIONS: ExamQuestion[] = [
-    // Lesson 1: Foundation — What is Functional Medicine
+    // L1 — Root causes
     {
         id: 1,
         lessonRef: 1,
-        question: "What is the primary focus of functional medicine compared to conventional medicine?",
+        question: "What does functional medicine primarily focus on?",
         options: [
-            { id: "a", text: "Prescribing medication for immediate symptom relief" },
-            { id: "b", text: "Identifying and addressing the root causes of disease through nutrition and lifestyle" },
-            { id: "c", text: "Performing diagnostic surgeries" },
-            { id: "d", text: "Replacing all conventional medical treatments" },
+            { id: "a", text: "Masking symptoms with medication" },
+            { id: "b", text: "Identifying root causes through nutrition and lifestyle" },
+            { id: "c", text: "Replacing conventional medicine entirely" },
+            { id: "d", text: "Performing clinical lab diagnostics" },
         ],
         correctAnswer: "b",
-        explanation: "Functional medicine focuses on identifying and addressing root causes of disease through nutrition, lifestyle, and holistic approaches — rather than just treating symptoms.",
+        explanation: "Functional medicine looks beyond symptoms to identify and address root causes — using nutrition, lifestyle changes, and a whole-person approach.",
     },
 
-    // Lesson 1: Foundation — Scope of Practice
+    // L1 — Scope of practice
     {
         id: 2,
         lessonRef: 1,
-        question: "As a certified functional health coach, what is your primary role with clients?",
+        question: "As a certified health coach, your role is to:",
         options: [
-            { id: "a", text: "Diagnose diseases and prescribe treatments" },
-            { id: "b", text: "Provide education and support for nutrition and lifestyle changes" },
-            { id: "c", text: "Interpret lab results and make medical recommendations" },
-            { id: "d", text: "Replace the client's relationship with their doctor" },
+            { id: "a", text: "Diagnose conditions and recommend supplements" },
+            { id: "b", text: "Educate and support clients on nutrition and lifestyle changes" },
+            { id: "c", text: "Interpret blood tests and prescribe protocols" },
+            { id: "d", text: "Replace the client's doctor" },
         ],
         correctAnswer: "b",
-        explanation: "Health coaches provide EDUCATION and SUPPORT, not medical advice. You help clients implement nutrition and lifestyle changes, partnering with their healthcare team.",
+        explanation: "Health coaches educate and support — they don't diagnose, prescribe, or interpret medical tests. You partner with the client's healthcare team.",
     },
 
-    // Lesson 2: D.E.P.T.H. Method™ — What it stands for
+    // L2 — D.E.P.T.H. Method™
     {
         id: 3,
         lessonRef: 2,
-        question: "What does the D.E.P.T.H. Method™ stand for?",
+        question: "In the D.E.P.T.H. Method™, what does the \"D\" stand for?",
         options: [
-            { id: "a", text: "Diagnose, Examine, Prescribe, Treat, Heal" },
-            { id: "b", text: "Discover, Evaluate, Pinpoint, Transform, Heal" },
-            { id: "c", text: "Detect, Eliminate, Prevent, Test, Help" },
-            { id: "d", text: "Document, Explore, Plan, Track, Hypothesize" },
+            { id: "a", text: "Diagnose" },
+            { id: "b", text: "Discover" },
+            { id: "c", text: "Document" },
+            { id: "d", text: "Detect" },
         ],
         correctAnswer: "b",
-        explanation: "The D.E.P.T.H. Method™ stands for Discover, Evaluate, Pinpoint, Transform, Heal — a comprehensive framework for guiding clients through their health transformation journey.",
+        explanation: "D stands for Discover — the first step where you explore the client's full health history, environment, and personal goals before anything else.",
     },
 
-    // Lesson 2: D.E.P.T.H. Method™ — Application
+    // L3 — Warm market strategy
     {
         id: 4,
-        lessonRef: 2,
-        question: "In the D.E.P.T.H. Method™, what happens during the 'Pinpoint' phase?",
+        lessonRef: 3,
+        question: "What is the first step of the Warm Market Strategy to find your initial clients?",
         options: [
-            { id: "a", text: "You create a general wellness plan for all clients" },
-            { id: "b", text: "You identify the specific root causes and imbalances unique to each client" },
-            { id: "c", text: "You prescribe medication based on symptoms" },
-            { id: "d", text: "You schedule follow-up appointments" },
+            { id: "a", text: "Run Facebook and Instagram ads" },
+            { id: "b", text: "Build a professional website first" },
+            { id: "c", text: "List 20 people who have mentioned health struggles" },
+            { id: "d", text: "Cold-message strangers on social media" },
         ],
-        correctAnswer: "b",
-        explanation: "The 'Pinpoint' phase is where you identify the specific root causes and imbalances that are unique to each individual client — this is what makes functional health coaching personalized and effective.",
+        correctAnswer: "c",
+        explanation: "Start with people you already know! List 20 people who've mentioned health struggles — no ads or website needed. Warm connections convert fastest.",
     },
 
-    // Lesson 3: Getting First Clients
+    // L3 — Starter package
     {
         id: 5,
         lessonRef: 3,
-        question: "What is the most effective approach for a new health coach to get their first clients?",
+        question: "What is the recommended starting package for new coaches?",
         options: [
-            { id: "a", text: "Wait until you have every certification possible before talking to anyone" },
-            { id: "b", text: "Spend thousands on paid advertising immediately" },
-            { id: "c", text: "Start with your existing network and community, lead with value and education" },
-            { id: "d", text: "Cold call random people from the phone book" },
+            { id: "a", text: "Free sessions until you feel confident" },
+            { id: "b", text: "VIP Package at $997/month" },
+            { id: "c", text: "Discovery Package at $297/month" },
+            { id: "d", text: "One-time consultation at $50" },
         ],
         correctAnswer: "c",
-        explanation: "The fastest path to your first clients is leveraging your existing network and community. Lead with value and education, build trust, and clients will naturally emerge from those relationships.",
-    },
-
-    // Lesson 3: Scope as Certified Coach
-    {
-        id: 6,
-        lessonRef: 3,
-        question: "Which of the following is within a certified health coach's scope of practice?",
-        options: [
-            { id: "a", text: "Diagnosing medical conditions based on client symptoms" },
-            { id: "b", text: "Prescribing supplements and specific dosages to treat conditions" },
-            { id: "c", text: "Educating clients on nutrition and supporting healthy lifestyle changes" },
-            { id: "d", text: "Ordering and interpreting blood tests for clients" },
-        ],
-        correctAnswer: "c",
-        explanation: "Health coaches educate and support clients in making positive nutrition and lifestyle changes. Diagnosing, prescribing, and ordering medical tests are outside the scope of a health coach.",
+        explanation: "The Discovery Package at $297/month is the perfect starting point — it's accessible for clients and valuable enough to build your confidence and income.",
     },
 ];
 

@@ -273,7 +273,7 @@ export function formatCurrency(amount: number): string {
 }
 
 /**
- * Generate the full approval response message
+ * Generate the full approval response message - SHORT VERSION
  */
 export function generateApprovalMessage(
     firstName: string,
@@ -284,64 +284,34 @@ export function generateApprovalMessage(
 
     // Full price - no coupon needed
     if (!tier.couponCode) {
-        return `🎉 ${firstName}!! I AM SO EXCITED FOR YOU!
+        return `🎉 ${firstName}!! YOU'RE IN!
 
-You just made a decision that's going to change your life!
+Check your email in 5 min for login credentials.
+Start with Module 1 → learn.accredipro.academy
 
-Here's what happens next:
-
-1️⃣ Check your email in the next 5 minutes — you'll get your login credentials
-2️⃣ Log into your portal at learn.accredipro.academy  
-3️⃣ Start with Module 1 — it's already unlocked for you
-4️⃣ Join our private community — links are inside your portal
-
-I'll personally check in on you in 24 hours to see how you're doing.
-
-Congratulations on investing in yourself. You're going to do AMAZING things! 💜
-
-SO PROUD OF YOU!`;
+SO PROUD OF YOU! 💜`;
     }
 
-    // Calculate if there's an actual drop (Institute covered more than minimum)
+    // Scholarship approved
     const hasDrop = tier.drop > 0;
+    const investmentLine = hasDrop
+        ? `${formatCurrency(tier.theyPay)} (Institute covered extra ${formatCurrency(tier.drop)}!)`
+        : `${formatCurrency(tier.theyPay)} CONFIRMED!`;
 
-    // Build drop-specific messaging
-    const dropMessage = hasDrop
-        ? `The Institute just agreed to cover an EXTRA ${formatCurrency(tier.drop)}!\n\nSo instead of ${formatCurrency(offeredAmount)}, your final investment is just ${formatCurrency(tier.theyPay)}! 🙌`
-        : `Your investment of ${formatCurrency(tier.theyPay)} is CONFIRMED! 🙌\nYou're saving ${formatCurrency(tier.savings)} off the full program value!`;
+    return `🎉 ${firstName}! Case #${caseNumber} → APPROVED! 💜
 
-    return `🎉 ${firstName}!! AMAZING NEWS — I just got off the phone with the Institute!
+Investment: ${investmentLine}
 
-Case #${caseNumber} → APPROVED! You're IN! 💜
+Checkout: ${CHECKOUT_URL}
+Code: ✨ ${tier.couponCode} ✨
 
-${dropMessage}
-
-Here's your private checkout link:
-${CHECKOUT_URL}
-
-At checkout, enter your scholarship code:
-✨ ${tier.couponCode} ✨
-
-This gets you EVERYTHING:
-✅ Full FM Certification (Practitioner + Advanced + Master)
-✅ All 9 Specializations 
-✅ 1:1 Mentorship
-✅ Client Acquisition System
-✅ Lifetime Access — no renewals ever
-
-I'm holding this spot for you for the next 24 hours. After that, I have to give it to the next person on the waitlist.
-
-You've got this, ${firstName}! I believe in you! 🔥`;
+Link expires in 24h. You've got this! 🔥`;
 }
 
 
 /**
- * Generate "calling Institute" delay message
+ * Generate "calling Institute" delay message - SHORT VERSION
  */
 export function generateCallingMessage(): string {
-    return `I'm calling the Institute right now... 📞
-
-I'll stay on the line until I get YOUR account pulled up and see what they can do specifically for YOU.
-
-⏳ Give me a couple minutes — this could change everything!`;
+    return `Calling the Institute now... 📞 Hold tight!`;
 }
