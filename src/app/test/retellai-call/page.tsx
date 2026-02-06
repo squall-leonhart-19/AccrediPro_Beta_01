@@ -68,9 +68,9 @@ export default function RetellAITestPage() {
                     agent, // "sarah" or "martinez"
                     specialization,
                     investmentAmount: agent === "martinez" ? investmentAmount : undefined,
-                    incomeGoal: incomeGoal === "5k" ? "5000 per month" :
-                        incomeGoal === "10k" ? "10000 per month" :
-                            incomeGoal === "20k" ? "20000 per month" : "50000 plus per month",
+                    incomeGoal: incomeGoal === "5k" ? "five thousand dollars per month" :
+                        incomeGoal === "10k" ? "ten thousand dollars per month" :
+                            incomeGoal === "20k" ? "twenty thousand dollars per month" : "fifty thousand dollars or more per month",
                     currentIncome: currentIncome === "0" ? "nothing yet" :
                         currentIncome === "under-2k" ? "under 2000 per month" :
                             currentIncome === "2k-5k" ? "2000 to 5000 per month" : "over 5000 per month",
