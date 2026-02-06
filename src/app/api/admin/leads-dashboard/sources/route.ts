@@ -54,7 +54,7 @@ function computeGroupStats(leads: {
 }[]): GroupStats {
     const s = leads.length;
     const st = leads.filter(l => l.lessonsCompleted > 0).length;
-    const c = leads.filter(l => l.lessonsCompleted >= 9).length;
+    const c = leads.filter(l => l.lessonsCompleted >= 3).length;
     const p = leads.filter(l => l.hasPaid).length;
     const rev = leads.reduce((sum, l) => sum + l.revenue, 0);
     return {

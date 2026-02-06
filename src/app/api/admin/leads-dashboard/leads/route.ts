@@ -91,7 +91,7 @@ export async function GET(request: Request) {
     const enriched = leads.map(lead => {
         const category = lead.miniDiplomaCategory || "unknown";
         const { lessonsCompleted, lastActivity } = countLessonsFromTags(lead.tags);
-        const progress = Math.round((lessonsCompleted / 9) * 100);
+        const progress = Math.round((lessonsCompleted / 3) * 100);
         const revenue = lead.payments.reduce((sum, p) => sum + (Number(p.amount) || 0) - (Number(p.refundAmount) || 0), 0);
         const hasRefund = lead.payments.some(p => p.refundedAt);
         const hasPaid = lead.enrollments.length > 0;
@@ -99,7 +99,7 @@ export async function GET(request: Request) {
         let status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "PAID" | "REFUNDED";
         if (hasRefund && revenue <= 0) status = "REFUNDED";
         else if (hasPaid) status = "PAID";
-        else if (lessonsCompleted >= 9) status = "COMPLETED";
+        else if (lessonsCompleted >= 3) status = "COMPLETED";
         else if (lessonsCompleted > 0) status = "IN_PROGRESS";
         else status = "NOT_STARTED";
 
@@ -115,7 +115,7 @@ export async function GET(request: Request) {
             lessonsCompleted, progress, status, hasPaid, revenue, hasRefund,
             lastActivity: lastActivity?.toISOString() || null,
             daysSinceOptin, daysSinceActivity,
-            isStuck: lessonsCompleted > 0 && lessonsCompleted < 9 && daysSinceActivity > 7,
+            isStuck: lessonsCompleted > 0 && lessonsCompleted < 3 && daysSinceActivity > 7,
             enrolledCourses: lead.enrollments.map(e => e.course?.title || "Unknown"),
         };
     });

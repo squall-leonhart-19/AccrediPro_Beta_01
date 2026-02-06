@@ -18,21 +18,9 @@ import {
     Shield,
     DollarSign,
     GraduationCap,
-    Calculator,
-    Map,
-    Lock,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useSidebar } from "@/contexts/sidebar-context";
-
-interface ResourceItem {
-    id: string;
-    name: string;
-    icon: string;
-    description: string;
-    isUnlocked: boolean;
-    minutesUntilUnlock: number;
-}
 
 interface LeadSidebarProps {
     firstName: string;
@@ -41,7 +29,6 @@ interface LeadSidebarProps {
     avatar?: string | null;
     diplomaCompleted: boolean;
     certificateClaimed: boolean;
-    resources?: ResourceItem[];
 }
 
 // Brand colors
@@ -71,7 +58,6 @@ export function LeadSidebar({
     avatar,
     diplomaCompleted,
     certificateClaimed,
-    resources = [],
 }: LeadSidebarProps) {
     const pathname = usePathname();
     const { isCollapsed: sidebarCollapsed, setIsCollapsed: setSidebarCollapsed, setIsLessonPage } = useSidebar();
@@ -423,75 +409,6 @@ export function LeadSidebar({
                             LIVE
                         </span>
                     </Link>
-
-                    {/* FREE RESOURCES Section */}
-                    {resources.length > 0 && (
-                        <>
-                            <p className="text-[10px] font-bold tracking-widest px-3 mt-4 mb-2" style={{ color: `${BRAND.gold}80` }}>
-                                📦 FREE RESOURCES
-                            </p>
-                            {resources.map((resource) => {
-                                const IconMap: Record<string, typeof DollarSign> = {
-                                    DollarSign, Target, Calculator, Map,
-                                };
-                                const Icon = IconMap[resource.icon] || Target;
-                                const formatTime = (mins: number) => {
-                                    if (mins <= 0) return "";
-                                    if (mins < 60) return `${mins}m`;
-                                    const h = Math.floor(mins / 60);
-                                    const m = mins % 60;
-                                    return m > 0 ? `${h}h ${m}m` : `${h}h`;
-                                };
-
-                                if (resource.isUnlocked) {
-                                    return (
-                                        <Link
-                                            key={resource.id}
-                                            href={`${basePath}/tools/${resource.id}`}
-                                            className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${isActive(`${basePath}/tools/${resource.id}`)
-                                                ? "shadow-lg"
-                                                : "hover:bg-white/5"
-                                                }`}
-                                            style={isActive(`${basePath}/tools/${resource.id}`) ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
-                                        >
-                                            <div
-                                                className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                                                style={{ background: isActive(`${basePath}/tools/${resource.id}`) ? `${BRAND.burgundy}30` : `${BRAND.gold}20` }}
-                                            >
-                                                <Icon className="w-3.5 h-3.5" style={{ color: isActive(`${basePath}/tools/${resource.id}`) ? BRAND.burgundyDark : BRAND.gold }} />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <span className="text-sm font-medium" style={{ color: isActive(`${basePath}/tools/${resource.id}`) ? BRAND.burgundyDark : 'white' }}>
-                                                    {resource.name}
-                                                </span>
-                                            </div>
-                                            <span className="text-[9px] px-1.5 py-0.5 rounded-full" style={{ background: `${BRAND.gold}30`, color: BRAND.gold }}>✓</span>
-                                        </Link>
-                                    );
-                                }
-
-                                return (
-                                    <div
-                                        key={resource.id}
-                                        className="flex items-center gap-3 px-3 py-2 rounded-xl opacity-50 cursor-not-allowed"
-                                    >
-                                        <div
-                                            className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                                            style={{ background: `${BRAND.burgundy}40` }}
-                                        >
-                                            <Lock className="w-3 h-3 text-white/50" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <span className="text-sm text-white/50">{resource.name}</span>
-                                            <p className="text-[9px] text-white/30">Unlocks in {formatTime(resource.minutesUntilUnlock)}</p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </>
-                    )}
-
-                    {/* Private DMs removed - all messaging now in Circle Pod */}
 
                     {/* Certificate Section - Always visible with locked/unlocked states */}
                     <p className="text-[10px] font-bold tracking-widest px-3 mt-4 mb-2" style={{ color: `${BRAND.gold}80` }}>

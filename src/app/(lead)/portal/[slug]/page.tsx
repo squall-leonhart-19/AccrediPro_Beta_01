@@ -96,34 +96,28 @@ export default async function PortalPage({ params }: PageProps) {
     const { user, watchedVideo, completedQuestions, completedLessons, enrolledAt, hasCompletedQuiz } = data;
     const firstName = user?.firstName || "there";
 
-    // Since we now collect qualification data in the opt-in funnel, 
-    // skip video and questions steps - go straight to lessons
-    const effectiveWatchedVideo = true;
-    const effectiveCompletedQuestions = true;
-
     const lessons = config.lessons;
     const totalLessons = lessons.length;
 
+    // 3-lesson structure: L1, L2, L3 + Final Exam/Certificate
     const steps = [
-        { id: 1, title: "Watch Welcome Video", completed: effectiveWatchedVideo },
-        { id: 2, title: "Tell Us About You", completed: effectiveCompletedQuestions },
         ...lessons.map((l, i) => ({
-            id: i + 3,
+            id: i + 1,
             title: `Lesson ${l.id}: ${l.title}`,
             completed: completedLessons.includes(l.id),
         })),
-        { id: totalLessons + 3, title: "Claim Certificate & Review", completed: completedLessons.length === totalLessons },
+        { id: totalLessons + 1, title: "Final Exam & Certificate", completed: completedLessons.length >= totalLessons },
     ];
 
-    // Start at Lesson 1 (step 3) since video/questions are now bypassed
-    let currentStep = 3;
+    // Start at the first incomplete lesson
+    let currentStep = 1;
     for (let i = 1; i <= totalLessons; i++) {
         if (!completedLessons.includes(i)) {
-            currentStep = i + 2;
+            currentStep = i;
             break;
         }
     }
-    if (completedLessons.length === totalLessons) currentStep = totalLessons + 3;
+    if (completedLessons.length >= totalLessons) currentStep = totalLessons + 1;
 
     const stepsCompleted = steps.filter((s) => s.completed).length;
     const totalSteps = steps.length;

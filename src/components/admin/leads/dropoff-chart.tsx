@@ -21,7 +21,7 @@ export function DropoffChart({ lessons, title = "Lesson Drop-off Analysis", desc
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                     {lessons.map((lesson) => (
                         <div key={lesson.lesson} className="text-center">
                             <div

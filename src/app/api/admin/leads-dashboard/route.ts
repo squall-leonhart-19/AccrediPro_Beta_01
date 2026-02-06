@@ -190,7 +190,7 @@ export async function GET(request: Request) {
         // Count lesson completions from ANY tag prefix (handles legacy/inconsistent data)
         const lessonData = countLessonsFromTags(lead.tags);
         const lessonsCompleted = lessonData.lessonsCompleted;
-        const progress = Math.round((lessonsCompleted / 9) * 100);
+        const progress = Math.round((lessonsCompleted / 3) * 100);
         const lastLessonDate = lessonData.lastActivity;
 
         // Calculate revenue from payments
@@ -208,7 +208,7 @@ export async function GET(request: Request) {
             status = "REFUNDED";
         } else if (lead.enrollments.length > 0) {
             status = "PAID";
-        } else if (lessonsCompleted >= 9) {
+        } else if (lessonsCompleted >= 3) {
             status = "COMPLETED";
         } else if (lessonsCompleted > 0) {
             status = "IN_PROGRESS";
@@ -245,7 +245,7 @@ export async function GET(request: Request) {
             lastActivity: lastLessonDate?.toISOString() || null,
             daysSinceOptin,
             daysSinceActivity,
-            isStuck: lessonsCompleted > 0 && lessonsCompleted < 9 && daysSinceActivity > 7,
+            isStuck: lessonsCompleted > 0 && lessonsCompleted < 3 && daysSinceActivity > 7,
             enrolledCourses: lead.enrollments.map(e => e.course?.title || "Unknown"),
         };
     });
@@ -262,7 +262,7 @@ export async function GET(request: Request) {
     const funnel = {
         signups: enrichedLeads.length,
         started: enrichedLeads.filter(l => l.lessonsCompleted > 0).length,
-        completed: enrichedLeads.filter(l => l.lessonsCompleted >= 9).length,
+        completed: enrichedLeads.filter(l => l.lessonsCompleted >= 3).length,
         paid: enrichedLeads.filter(l => l.hasPaid).length,
         refunded: enrichedLeads.filter(l => l.hasRefund && l.revenue <= 0).length,
         stuck: enrichedLeads.filter(l => l.isStuck).length,
@@ -295,22 +295,22 @@ export async function GET(request: Request) {
         const nicheLeads = enrichedLeads.filter(l => l.category === category);
         const signups = nicheLeads.length;
         const started = nicheLeads.filter(l => l.lessonsCompleted > 0).length;
-        const completed = nicheLeads.filter(l => l.lessonsCompleted >= 9).length;
+        const completed = nicheLeads.filter(l => l.lessonsCompleted >= 3).length;
         const paid = nicheLeads.filter(l => l.hasPaid).length;
         const totalRevenue = nicheLeads.reduce((sum, l) => sum + l.revenue, 0);
 
         // Calculate lesson-by-lesson drop-off for this niche
         const lessonCounts: Record<number, number> = {};
-        for (let i = 1; i <= 9; i++) lessonCounts[i] = 0;
+        for (let i = 1; i <= 3; i++) lessonCounts[i] = 0;
         nicheLeads.forEach(l => {
-            for (let i = 1; i <= l.lessonsCompleted; i++) {
+            for (let i = 1; i <= Math.min(l.lessonsCompleted, 3); i++) {
                 lessonCounts[i]++;
             }
         });
 
         const dropoffPoints = [];
         let biggestDropoff = { lesson: 0, rate: 0 };
-        for (let i = 1; i <= 9; i++) {
+        for (let i = 1; i <= 3; i++) {
             const atThisLesson = lessonCounts[i] || 0;
             const atPreviousLesson = i === 1 ? started : (lessonCounts[i - 1] || 0);
             const dropRate = atPreviousLesson > 0
@@ -370,15 +370,15 @@ export async function GET(request: Request) {
 
     // Calculate overall drop-off points
     const overallLessonCounts: Record<number, number> = {};
-    for (let i = 1; i <= 9; i++) overallLessonCounts[i] = 0;
+    for (let i = 1; i <= 3; i++) overallLessonCounts[i] = 0;
     enrichedLeads.forEach(l => {
-        for (let i = 1; i <= l.lessonsCompleted; i++) {
+        for (let i = 1; i <= Math.min(l.lessonsCompleted, 3); i++) {
             overallLessonCounts[i]++;
         }
     });
 
     const overallDropoff = [];
-    for (let i = 1; i <= 9; i++) {
+    for (let i = 1; i <= 3; i++) {
         const atThisLesson = overallLessonCounts[i] || 0;
         const atPreviousLesson = i === 1 ? funnel.started : (overallLessonCounts[i - 1] || 0);
         const dropRate = atPreviousLesson > 0
@@ -412,7 +412,7 @@ export async function GET(request: Request) {
 
         const signups = cohortLeads.length;
         const started = cohortLeads.filter(l => l.lessonsCompleted > 0).length;
-        const completed = cohortLeads.filter(l => l.lessonsCompleted >= 9).length;
+        const completed = cohortLeads.filter(l => l.lessonsCompleted >= 3).length;
         const paid = cohortLeads.filter(l => l.hasPaid).length;
         const cohortRevenue = cohortLeads.reduce((sum, l) => sum + l.revenue, 0);
 

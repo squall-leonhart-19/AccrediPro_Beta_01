@@ -123,14 +123,14 @@ export async function GET(request: Request) {
         const category = lead.miniDiplomaCategory || "unknown";
         const lessonData = countLessonsFromTags(lead.tags);
         const lessonsCompleted = lessonData.lessonsCompleted;
-        const progress = Math.round((lessonsCompleted / 9) * 100);
+        const progress = Math.round((lessonsCompleted / 3) * 100);
         const totalRevenue = lead.payments.reduce((sum, p) => (Number(p.amount) || 0) - (Number(p.refundAmount) || 0) + sum, 0);
         const hasRefund = lead.payments.some(p => p.refundedAt);
 
         let status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "PAID" | "REFUNDED";
         if (hasRefund && totalRevenue <= 0) status = "REFUNDED";
         else if (lead.enrollments.length > 0) status = "PAID";
-        else if (lessonsCompleted >= 9) status = "COMPLETED";
+        else if (lessonsCompleted >= 3) status = "COMPLETED";
         else if (lessonsCompleted > 0) status = "IN_PROGRESS";
         else status = "NOT_STARTED";
 
@@ -154,7 +154,7 @@ export async function GET(request: Request) {
             revenue: totalRevenue, hasRefund,
             lastActivity: lessonData.lastActivity?.toISOString() || null,
             daysSinceOptin, daysSinceActivity,
-            isStuck: lessonsCompleted > 0 && lessonsCompleted < 9 && daysSinceActivity > 7,
+            isStuck: lessonsCompleted > 0 && lessonsCompleted < 3 && daysSinceActivity > 7,
             enrolledCourses: lead.enrollments.map(e => e.course?.title || "Unknown"),
             // Source attribution
             leadSource: lead.leadSource || "unknown",
@@ -168,18 +168,18 @@ export async function GET(request: Request) {
     // Niche summary stats
     const signups = enrichedLeads.length;
     const started = enrichedLeads.filter(l => l.lessonsCompleted > 0).length;
-    const completed = enrichedLeads.filter(l => l.lessonsCompleted >= 9).length;
+    const completed = enrichedLeads.filter(l => l.lessonsCompleted >= 3).length;
     const paid = enrichedLeads.filter(l => l.hasPaid).length;
     const totalRevenue = enrichedLeads.reduce((sum, l) => sum + l.revenue, 0);
 
     // Lesson-by-lesson dropoff
     const lessonCounts: Record<number, number> = {};
-    for (let i = 1; i <= 9; i++) lessonCounts[i] = 0;
-    enrichedLeads.forEach(l => { for (let i = 1; i <= l.lessonsCompleted; i++) lessonCounts[i]++; });
+    for (let i = 1; i <= 3; i++) lessonCounts[i] = 0;
+    enrichedLeads.forEach(l => { for (let i = 1; i <= Math.min(l.lessonsCompleted, 3); i++) lessonCounts[i]++; });
 
     const dropoffPoints = [];
     let biggestDropoff = { lesson: 0, rate: 0 };
-    for (let i = 1; i <= 9; i++) {
+    for (let i = 1; i <= 3; i++) {
         const at = lessonCounts[i] || 0;
         const prev = i === 1 ? started : (lessonCounts[i - 1] || 0);
         const dropRate = prev > 0 ? Math.round(((prev - at) / prev) * 100) : 0;
@@ -199,7 +199,7 @@ export async function GET(request: Request) {
         const parts = key.split("|");
         const s = leads.length;
         const st = leads.filter(l => l.lessonsCompleted > 0).length;
-        const c = leads.filter(l => l.lessonsCompleted >= 9).length;
+        const c = leads.filter(l => l.lessonsCompleted >= 3).length;
         const p = leads.filter(l => l.hasPaid).length;
         const rev = leads.reduce((sum, l) => sum + l.revenue, 0);
         return {
@@ -232,7 +232,7 @@ export async function GET(request: Request) {
         const ws = new Date(weekEnd); ws.setDate(ws.getDate() - 6); ws.setHours(0, 0, 0, 0);
         const cohort = enrichedLeads.filter(l => l.optinDate && new Date(l.optinDate) >= ws && new Date(l.optinDate) <= weekEnd);
         const cs = cohort.length, cst = cohort.filter(l => l.lessonsCompleted > 0).length;
-        const cc = cohort.filter(l => l.lessonsCompleted >= 9).length, cp = cohort.filter(l => l.hasPaid).length;
+        const cc = cohort.filter(l => l.lessonsCompleted >= 3).length, cp = cohort.filter(l => l.hasPaid).length;
         weeklyCohorts.push({
             weekStart: ws.toISOString(), weekEnd: weekEnd.toISOString(),
             label: ws.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + " - " + weekEnd.toLocaleDateString("en-US", { month: "short", day: "numeric" }),

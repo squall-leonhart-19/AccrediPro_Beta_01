@@ -17,7 +17,7 @@ import { GamificationBar } from "@/components/mini-diploma/gamification-bar";
 import { WelcomeAudio } from "@/components/mini-diploma/welcome-audio";
 import { CommitmentCheckpoint } from "@/components/mini-diploma/commitment-checkpoint";
 import { CertificatePreview } from "@/components/mini-diploma/certificate-preview";
-import { getResourcesForModule, getToolsForModule } from "@/components/lead-portal/diploma-configs";
+// Resources removed — simplified to 3-lesson structure
 
 // Premium ASI Color Palette
 const GOLD_GRADIENT = "linear-gradient(135deg, #D4AF37 0%, #F7E7A0 25%, #D4AF37 50%, #B8860B 75%, #D4AF37 100%)";
@@ -223,7 +223,7 @@ export function ClassicLessonBase({
     lessonNumber,
     lessonTitle,
     lessonSubtitle,
-    totalLessons = 9,
+    totalLessons = 3,
     readingTime = "5-7 min",
     sections,
     keyTakeaways,
@@ -776,97 +776,6 @@ export function ClassicLessonBase({
                                 <span className="text-sm font-bold text-burgundy-700">{Math.round(progressPercent)}%</span>
                             </div>
 
-                            {/* Inline Resources Unlocked - Shows on module-ending lessons */}
-                            {(lessonNumber === 3 || lessonNumber === 6 || lessonNumber === 9) && (
-                                <div className="mb-4 rounded-xl border-2 border-emerald-300 overflow-hidden shadow-lg">
-                                    {/* Sarah's Celebration Message */}
-                                    <div className="bg-gradient-to-r from-amber-50 to-amber-100 p-4 border-b border-amber-200">
-                                        <div className="flex items-start gap-3">
-                                            <Image
-                                                src={SARAH_AVATAR}
-                                                alt="Sarah"
-                                                width={48}
-                                                height={48}
-                                                className="rounded-full border-2 border-amber-300 shadow-md flex-shrink-0"
-                                            />
-                                            <div className="flex-1">
-                                                <p className="font-semibold text-burgundy-800 text-sm mb-1">Sarah says:</p>
-                                                <p className="text-sm text-slate-700 leading-relaxed">
-                                                    {lessonNumber === 3 && (
-                                                        <>🎉 <strong>{firstName}</strong>, you've just completed the Foundations module! I'm so proud of you. You now understand the core principles that most people never learn. These resources will help you apply what you've learned - grab them and keep them forever!</>
-                                                    )}
-                                                    {lessonNumber === 6 && (
-                                                        <>🌟 <strong>Incredible work, {firstName}!</strong> You're halfway through and understanding concepts that take others years to grasp. These tools will help you start applying this knowledge. Download them now - they're yours to keep!</>
-                                                    )}
-                                                    {lessonNumber === 9 && (
-                                                        <>🏆 <strong>{firstName}, you did it!</strong> You've completed the entire mini-diploma curriculum. These final resources complete your toolkit. I can't wait to see what you do with this knowledge. Download everything and let's keep going!</>
-                                                    )}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Resources Section */}
-                                    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-4">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center">
-                                                <Sparkles className="w-4 h-4 text-white" />
-                                            </div>
-                                            <div>
-                                                <p className="font-bold text-emerald-800">🎉 Module {lessonNumber / 3} Complete!</p>
-                                                <p className="text-xs text-emerald-600">
-                                                    {getResourcesForModule((lessonNumber / 3) as 1 | 2 | 3).length + getToolsForModule((lessonNumber / 3) as 1 | 2 | 3).length} items unlocked
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Interactive Tools (Module 1 only) */}
-                                        {getToolsForModule((lessonNumber / 3) as 1 | 2 | 3).length > 0 && (
-                                            <div className="space-y-2 mb-3">
-                                                <p className="text-xs font-medium text-purple-700 uppercase tracking-wide">✨ Interactive Tools</p>
-                                                {getToolsForModule((lessonNumber / 3) as 1 | 2 | 3).map((tool) => (
-                                                    <Link
-                                                        key={tool.id}
-                                                        href={`${baseUrl}/tools/${tool.url}`}
-                                                        className="flex items-center gap-3 p-3 bg-white rounded-lg border border-purple-200 hover:border-purple-400 hover:shadow-md transition-all group w-full text-left"
-                                                    >
-                                                        <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
-                                                            {tool.icon === 'Calculator' ? (
-                                                                <Calculator className="w-4 h-4 text-purple-600" />
-                                                            ) : (
-                                                                <Target className="w-4 h-4 text-purple-600" />
-                                                            )}
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <span className="text-sm font-medium text-slate-700 block truncate">
-                                                                {tool.title}
-                                                            </span>
-                                                            <span className="text-xs text-slate-500 block truncate">
-                                                                {tool.description}
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1 flex-shrink-0">
-                                                            <span className="text-xs text-purple-600 font-medium">Open</span>
-                                                            <ArrowRight className="w-4 h-4 text-purple-500 group-hover:translate-x-1 transition-transform" />
-                                                        </div>
-                                                    </Link>
-                                                ))}
-                                            </div>
-                                        )}
-
-                                        {/* PDF Resources */}
-                                        <div className="space-y-2">
-                                            <p className="text-xs font-medium text-emerald-700 uppercase tracking-wide">📄 PDF Resources</p>
-                                            {getResourcesForModule((lessonNumber / 3) as 1 | 2 | 3).map((resource) => (
-                                                <ResourceDownloadButton
-                                                    key={resource.id}
-                                                    resource={resource}
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
 
                             {lessonNumber < totalLessons ? (
                                 <button

@@ -49,161 +49,83 @@ export interface MiniDiplomaConfig {
     trustpilotUrl?: string; // default: https://www.trustpilot.com/review/accredipro.academy
 }
 
-// Standard 9-lesson curriculum template - most diplomas follow this pattern
+// 3-lesson curriculum — all diplomas follow this pattern
 const FM_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Root Cause Medicine", module: 1 },
-    { id: 2, title: "The Gut Foundation", module: 1 },
-    { id: 3, title: "The Inflammation Connection", module: 1 },
-    { id: 4, title: "The Toxin Burden", module: 2 },
-    { id: 5, title: "Stress & The HPA Axis", module: 2 },
-    { id: 6, title: "Nutrient Deficiencies", module: 2 },
-    { id: 7, title: "Functional Lab Interpretation", module: 3 },
-    { id: 8, title: "Building Protocols", module: 3 },
-    { id: 9, title: "Your Next Step", module: 3 },
+    { id: 1, title: "Functional Medicine Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const WH_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Hormonal Health Foundations", module: 1 },
-    { id: 2, title: "The Menstrual Cycle", module: 1 },
-    { id: 3, title: "Perimenopause & Menopause", module: 1 },
-    { id: 4, title: "Thyroid & Adrenal Connection", module: 2 },
-    { id: 5, title: "Fertility & Reproductive Health", module: 2 },
-    { id: 6, title: "PCOS & Endometriosis", module: 2 },
-    { id: 7, title: "Nutrition for Women", module: 3 },
-    { id: 8, title: "Stress & Emotional Wellness", module: 3 },
-    { id: 9, title: "Your Practice Blueprint", module: 3 },
+    { id: 1, title: "Women's Hormone Health Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const GUT_HEALTH_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "The Gut-Brain Connection", module: 1 },
-    { id: 2, title: "Microbiome Fundamentals", module: 1 },
-    { id: 3, title: "Digestive Dysfunction", module: 1 },
-    { id: 4, title: "Leaky Gut & Inflammation", module: 2 },
-    { id: 5, title: "Food Sensitivities", module: 2 },
-    { id: 6, title: "Gut Healing Protocols", module: 2 },
-    { id: 7, title: "Functional Testing", module: 3 },
-    { id: 8, title: "Nutrition & Supplementation", module: 3 },
-    { id: 9, title: "Building Your Practice", module: 3 },
+    { id: 1, title: "Gut Health Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const HORMONE_HEALTH_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Hormonal System Overview", module: 1 },
-    { id: 2, title: "Thyroid Mastery", module: 1 },
-    { id: 3, title: "Adrenal Health", module: 1 },
-    { id: 4, title: "Sex Hormones", module: 2 },
-    { id: 5, title: "Insulin & Metabolic Health", module: 2 },
-    { id: 6, title: "Hormone Testing", module: 2 },
-    { id: 7, title: "Bioidentical HRT Basics", module: 3 },
-    { id: 8, title: "Lifestyle Interventions", module: 3 },
-    { id: 9, title: "Practice Development", module: 3 },
+    { id: 1, title: "Hormone Health Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const HOLISTIC_NUTRITION_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Nutrition Science Foundations", module: 1 },
-    { id: 2, title: "Macronutrients Deep Dive", module: 1 },
-    { id: 3, title: "Micronutrient Essentials", module: 1 },
-    { id: 4, title: "Therapeutic Diets", module: 2 },
-    { id: 5, title: "Food as Medicine", module: 2 },
-    { id: 6, title: "Detox & Elimination", module: 2 },
-    { id: 7, title: "Meal Planning Mastery", module: 3 },
-    { id: 8, title: "Client Assessment", module: 3 },
-    { id: 9, title: "Growing Your Practice", module: 3 },
+    { id: 1, title: "Holistic Nutrition Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const NURSE_COACH_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Nurse Coaching Foundations", module: 1 },
-    { id: 2, title: "Holistic Assessment", module: 1 },
-    { id: 3, title: "Behavior Change Science", module: 1 },
-    { id: 4, title: "Motivational Interviewing", module: 2 },
-    { id: 5, title: "Wellness Planning", module: 2 },
-    { id: 6, title: "Chronic Disease Management", module: 2 },
-    { id: 7, title: "Documentation & Ethics", module: 3 },
-    { id: 8, title: "Business Development", module: 3 },
-    { id: 9, title: "Your Coaching Career", module: 3 },
+    { id: 1, title: "Nurse Coach Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const HEALTH_COACH_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Health Coaching Foundations", module: 1 },
-    { id: 2, title: "Client Psychology", module: 1 },
-    { id: 3, title: "Goal Setting Mastery", module: 1 },
-    { id: 4, title: "Nutrition Coaching Basics", module: 2 },
-    { id: 5, title: "Movement & Fitness", module: 2 },
-    { id: 6, title: "Stress & Sleep", module: 2 },
-    { id: 7, title: "Session Structure", module: 3 },
-    { id: 8, title: "Building Your Brand", module: 3 },
-    { id: 9, title: "Launching Your Business", module: 3 },
+    { id: 1, title: "Health Coaching Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const CHRISTIAN_COACHING_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Biblical Foundations of Coaching", module: 1 },
-    { id: 2, title: "Spirit-Led Listening", module: 1 },
-    { id: 3, title: "Identity in Christ", module: 1 },
-    { id: 4, title: "Transformational Questions", module: 2 },
-    { id: 5, title: "Overcoming Limiting Beliefs", module: 2 },
-    { id: 6, title: "Purpose & Calling Discovery", module: 2 },
-    { id: 7, title: "Faith-Based Goal Setting", module: 3 },
-    { id: 8, title: "Ministry & Business Ethics", module: 3 },
-    { id: 9, title: "Launching Your Ministry", module: 3 },
+    { id: 1, title: "Christian Coaching Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const SPIRITUAL_HEALING_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Foundations of Spiritual Healing", module: 1 },
-    { id: 2, title: "Energy Systems & Chakras", module: 1 },
-    { id: 3, title: "Mind-Body-Spirit Connection", module: 1 },
-    { id: 4, title: "Meditation & Breathwork Techniques", module: 2 },
-    { id: 5, title: "Healing Touch & Energy Transfer", module: 2 },
-    { id: 6, title: "Spiritual Assessment Methods", module: 2 },
-    { id: 7, title: "Client Sessions & Sacred Space", module: 3 },
-    { id: 8, title: "Ethics & Building Your Practice", module: 3 },
-    { id: 9, title: "Your Next Step", module: 3 },
+    { id: 1, title: "Spiritual Healing Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const ENERGY_HEALING_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Foundations of Energy Healing", module: 1 },
-    { id: 2, title: "The Human Energy Field", module: 1 },
-    { id: 3, title: "Chakra Systems & Energy Centers", module: 1 },
-    { id: 4, title: "Grounding & Protection Techniques", module: 2 },
-    { id: 5, title: "Energy Assessment & Scanning", module: 2 },
-    { id: 6, title: "Hands-On Healing Methods", module: 2 },
-    { id: 7, title: "Distance Healing Practices", module: 3 },
-    { id: 8, title: "Ethics & Client Boundaries", module: 3 },
-    { id: 9, title: "Your Next Step", module: 3 },
+    { id: 1, title: "Energy Healing Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const REIKI_HEALING_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Foundations of Reiki", module: 1 },
-    { id: 2, title: "The Human Energy System", module: 1 },
-    { id: 3, title: "Connecting to Universal Energy", module: 1 },
-    { id: 4, title: "Hand Positions & Techniques", module: 2 },
-    { id: 5, title: "Self-Healing Practice", module: 2 },
-    { id: 6, title: "Working with Clients", module: 2 },
-    { id: 7, title: "Distance Reiki", module: 3 },
-    { id: 8, title: "Ethics & Building Your Practice", module: 3 },
-    { id: 9, title: "Your Next Step", module: 3 },
+    { id: 1, title: "Reiki Healing Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const ADHD_COACHING_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Understanding ADHD", module: 1 },
-    { id: 2, title: "The ADHD Brain", module: 1 },
-    { id: 3, title: "Executive Function & Self-Regulation", module: 1 },
-    { id: 4, title: "Time Management & Organization", module: 2 },
-    { id: 5, title: "Emotional Regulation Strategies", module: 2 },
-    { id: 6, title: "Building Habits That Stick", module: 2 },
-    { id: 7, title: "Coaching Adults with ADHD", module: 3 },
-    { id: 8, title: "Working with Parents of ADHD Kids", module: 3 },
-    { id: 9, title: "Your Next Step", module: 3 },
+    { id: 1, title: "ADHD Coaching Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 const PET_NUTRITION_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Pet Nutrition Foundations", module: 1 },
-    { id: 2, title: "Understanding Pet Food Labels", module: 1 },
-    { id: 3, title: "Species-Appropriate Diets", module: 1 },
-    { id: 4, title: "Common Nutritional Deficiencies", module: 2 },
-    { id: 5, title: "Natural Supplements for Pets", module: 2 },
-    { id: 6, title: "Weight Management Strategies", module: 2 },
-    { id: 7, title: "Life Stage Nutrition", module: 3 },
-    { id: 8, title: "Treating Health Issues with Diet", module: 3 },
-    { id: 9, title: "Your Next Step", module: 3 },
+    { id: 1, title: "Pet Nutrition Foundation", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
+    { id: 3, title: "How To Get Your First Clients", module: 1 },
 ];
 
 // Default Stripe checkout URL (can be overridden per diploma)

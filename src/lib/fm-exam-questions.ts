@@ -1,16 +1,10 @@
 /**
  * FM Mini Diploma Final Exam Questions
  *
- * 10 questions covering all 9 lessons:
- * 1. Root Cause Thinking
- * 2. Gut Health
- * 3. Inflammation
- * 4. Toxins
- * 5. Stress & HPA Axis
- * 6. Nutrient Status
- * 7. Lab Interpretation
- * 8. Client Acquisition
- * 9. Income Potential / Next Steps
+ * 6 questions covering all 3 lessons (2 per lesson):
+ * 1. Foundation (What is FM / Scope of Practice)
+ * 2. The D.E.P.T.H. Method™ (Discover, Evaluate, Pinpoint, Transform, Heal)
+ * 3. How To Get Your First Clients
  *
  * Each question has 4 options with 1 correct answer.
  * Pass score for scholarship: 95+ (max 1 wrong)
@@ -29,130 +23,25 @@ export interface ExamQuestion {
 }
 
 export const FM_EXAM_QUESTIONS: ExamQuestion[] = [
-    // Lesson 1: Root Cause Thinking
+    // Lesson 1: Foundation — What is Functional Medicine
     {
         id: 1,
         lessonRef: 1,
-        question: "What does the 'O' in the R.O.O.T Method stand for?",
+        question: "What is the primary focus of functional medicine compared to conventional medicine?",
         options: [
-            { id: "a", text: "Optimize (create personalized protocols)" },
-            { id: "b", text: "Observe (watch and wait)" },
-            { id: "c", text: "Origins (trace to root causes) + Optimize (create protocols)" },
-            { id: "d", text: "Operate (perform procedures)" },
+            { id: "a", text: "Prescribing medication for immediate symptom relief" },
+            { id: "b", text: "Identifying and addressing the root causes of disease through nutrition and lifestyle" },
+            { id: "c", text: "Performing diagnostic surgeries" },
+            { id: "d", text: "Replacing all conventional medical treatments" },
         ],
-        correctAnswer: "c",
-        explanation: "The R.O.O.T Method has two 'O's: Origins (trace symptoms to root causes) and Optimize (create personalized protocols). This is the core of functional medicine - find the cause, then address it.",
+        correctAnswer: "b",
+        explanation: "Functional medicine focuses on identifying and addressing root causes of disease through nutrition, lifestyle, and holistic approaches — rather than just treating symptoms.",
     },
 
-    // Lesson 2: Gut Health
+    // Lesson 1: Foundation — Scope of Practice
     {
         id: 2,
-        lessonRef: 2,
-        question: "What percentage of the immune system is located in the gut?",
-        options: [
-            { id: "a", text: "About 30%" },
-            { id: "b", text: "About 50%" },
-            { id: "c", text: "About 70-80%" },
-            { id: "d", text: "About 95%" },
-        ],
-        correctAnswer: "c",
-        explanation: "Approximately 70-80% of the immune system resides in the gut, making gut health absolutely crucial for overall immune function and disease prevention.",
-    },
-
-    // Lesson 3: Inflammation
-    {
-        id: 3,
-        lessonRef: 3,
-        question: "Which of the following is TRUE about chronic inflammation?",
-        options: [
-            { id: "a", text: "Chronic inflammation is always visible with obvious symptoms like redness and swelling" },
-            { id: "b", text: "Chronic inflammation is often 'silent' and can persist for years without obvious symptoms" },
-            { id: "c", text: "Chronic inflammation only affects one organ system at a time" },
-            { id: "d", text: "Chronic inflammation always causes fever and acute pain" },
-        ],
-        correctAnswer: "b",
-        explanation: "Chronic inflammation is often called the 'silent killer' because it can persist for years without obvious symptoms, slowly contributing to conditions like heart disease, diabetes, and autoimmune disorders.",
-    },
-
-    // Lesson 4: Toxins
-    {
-        id: 4,
-        lessonRef: 4,
-        question: "What is the primary concern with the accumulation of environmental toxins in the body?",
-        options: [
-            { id: "a", text: "They only cause temporary discomfort" },
-            { id: "b", text: "They can disrupt hormones, damage cells, and contribute to chronic disease over time" },
-            { id: "c", text: "The body naturally eliminates all toxins within 24 hours" },
-            { id: "d", text: "Toxins only affect people with genetic predispositions" },
-        ],
-        correctAnswer: "b",
-        explanation: "Environmental toxins can accumulate in the body and disrupt hormonal balance, damage cellular function, and contribute to the development of chronic diseases over time.",
-    },
-
-    // Lesson 5: Stress & HPA Axis
-    {
-        id: 5,
-        lessonRef: 5,
-        question: "What is the HPA axis and why is it important in functional medicine?",
-        options: [
-            { id: "a", text: "It's a digestive system pathway that processes nutrients" },
-            { id: "b", text: "It's the Hypothalamic-Pituitary-Adrenal axis that regulates the body's stress response and affects hormones, energy, and immunity" },
-            { id: "c", text: "It's a measurement tool for blood pressure levels" },
-            { id: "d", text: "It's a type of exercise technique for stress relief" },
-        ],
-        correctAnswer: "b",
-        explanation: "The HPA (Hypothalamic-Pituitary-Adrenal) axis is the body's central stress response system. Chronic HPA axis dysfunction from prolonged stress can lead to hormonal imbalances, fatigue, weight gain, and weakened immunity.",
-    },
-
-    // Lesson 6: Nutrient Status
-    {
-        id: 6,
-        lessonRef: 6,
-        question: "Why are conventional 'normal' ranges for nutrient levels often insufficient for optimal health?",
-        options: [
-            { id: "a", text: "Conventional ranges are designed for elite athletes only" },
-            { id: "b", text: "Conventional ranges indicate absence of severe deficiency, not optimal function; functional ranges aim for optimal health" },
-            { id: "c", text: "Conventional ranges are always too strict and conservative" },
-            { id: "d", text: "There is no difference between conventional and functional ranges" },
-        ],
-        correctAnswer: "b",
-        explanation: "Conventional 'normal' ranges are based on avoiding severe deficiency disease, while functional ranges aim for optimal cellular function and health. Someone can be 'normal' conventionally but sub-optimal functionally.",
-    },
-
-    // Lesson 7: Lab Interpretation
-    {
-        id: 7,
-        lessonRef: 7,
-        question: "When interpreting lab results from a functional medicine perspective, which approach is most accurate?",
-        options: [
-            { id: "a", text: "Only look at values flagged as 'high' or 'low' by the lab" },
-            { id: "b", text: "Use optimal/functional ranges and look for patterns across multiple markers rather than isolated values" },
-            { id: "c", text: "Ignore all labs and rely solely on symptoms" },
-            { id: "d", text: "Only consider labs taken in a hospital setting" },
-        ],
-        correctAnswer: "b",
-        explanation: "Functional medicine practitioners use optimal ranges (narrower than conventional) and look for patterns across multiple markers to identify dysfunction before it becomes disease.",
-    },
-
-    // Lesson 8: Client Acquisition
-    {
-        id: 8,
-        lessonRef: 8,
-        question: "What is the most effective approach for a new functional medicine practitioner to get their first clients?",
-        options: [
-            { id: "a", text: "Wait until you have every certification possible before talking to anyone" },
-            { id: "b", text: "Spend thousands on paid advertising immediately" },
-            { id: "c", text: "Start with your existing network (friends, family, community) and offer value through education before pitching services" },
-            { id: "d", text: "Cold call random people from the phone book" },
-        ],
-        correctAnswer: "c",
-        explanation: "The fastest path to your first clients is leveraging your existing network and community. Lead with value and education, build trust, and clients will naturally emerge from those relationships.",
-    },
-
-    // Lesson 9: Scope of Practice
-    {
-        id: 9,
-        lessonRef: 9,
+        lessonRef: 1,
         question: "As a certified functional health coach, what is your primary role with clients?",
         options: [
             { id: "a", text: "Diagnose diseases and prescribe treatments" },
@@ -164,19 +53,64 @@ export const FM_EXAM_QUESTIONS: ExamQuestion[] = [
         explanation: "Health coaches provide EDUCATION and SUPPORT, not medical advice. You help clients implement nutrition and lifestyle changes, partnering with their healthcare team.",
     },
 
-    // Overall/Comprehensive Question - 5 Root Causes
+    // Lesson 2: D.E.P.T.H. Method™ — What it stands for
     {
-        id: 10,
-        lessonRef: 1,
-        question: "Which of these is NOT one of the 5 root causes of chronic disease?",
+        id: 3,
+        lessonRef: 2,
+        question: "What does the D.E.P.T.H. Method™ stand for?",
         options: [
-            { id: "a", text: "Gut dysfunction" },
-            { id: "b", text: "Genetic mutations" },
-            { id: "c", text: "Chronic inflammation" },
-            { id: "d", text: "HPA axis dysfunction" },
+            { id: "a", text: "Diagnose, Examine, Prescribe, Treat, Heal" },
+            { id: "b", text: "Discover, Evaluate, Pinpoint, Transform, Heal" },
+            { id: "c", text: "Detect, Eliminate, Prevent, Test, Help" },
+            { id: "d", text: "Document, Explore, Plan, Track, Hypothesize" },
         ],
         correctAnswer: "b",
-        explanation: "While genetics can play a role, they're not one of the 5 root causes. The 5 are: Gut, Inflammation, Toxins, Nutrients, and HPA Axis (stress). Most chronic disease is lifestyle-driven, not genetic.",
+        explanation: "The D.E.P.T.H. Method™ stands for Discover, Evaluate, Pinpoint, Transform, Heal — a comprehensive framework for guiding clients through their health transformation journey.",
+    },
+
+    // Lesson 2: D.E.P.T.H. Method™ — Application
+    {
+        id: 4,
+        lessonRef: 2,
+        question: "In the D.E.P.T.H. Method™, what happens during the 'Pinpoint' phase?",
+        options: [
+            { id: "a", text: "You create a general wellness plan for all clients" },
+            { id: "b", text: "You identify the specific root causes and imbalances unique to each client" },
+            { id: "c", text: "You prescribe medication based on symptoms" },
+            { id: "d", text: "You schedule follow-up appointments" },
+        ],
+        correctAnswer: "b",
+        explanation: "The 'Pinpoint' phase is where you identify the specific root causes and imbalances that are unique to each individual client — this is what makes functional health coaching personalized and effective.",
+    },
+
+    // Lesson 3: Getting First Clients
+    {
+        id: 5,
+        lessonRef: 3,
+        question: "What is the most effective approach for a new health coach to get their first clients?",
+        options: [
+            { id: "a", text: "Wait until you have every certification possible before talking to anyone" },
+            { id: "b", text: "Spend thousands on paid advertising immediately" },
+            { id: "c", text: "Start with your existing network and community, lead with value and education" },
+            { id: "d", text: "Cold call random people from the phone book" },
+        ],
+        correctAnswer: "c",
+        explanation: "The fastest path to your first clients is leveraging your existing network and community. Lead with value and education, build trust, and clients will naturally emerge from those relationships.",
+    },
+
+    // Lesson 3: Scope as Certified Coach
+    {
+        id: 6,
+        lessonRef: 3,
+        question: "Which of the following is within a certified health coach's scope of practice?",
+        options: [
+            { id: "a", text: "Diagnosing medical conditions based on client symptoms" },
+            { id: "b", text: "Prescribing supplements and specific dosages to treat conditions" },
+            { id: "c", text: "Educating clients on nutrition and supporting healthy lifestyle changes" },
+            { id: "d", text: "Ordering and interpreting blood tests for clients" },
+        ],
+        correctAnswer: "c",
+        explanation: "Health coaches educate and support clients in making positive nutrition and lifestyle changes. Diagnosing, prescribing, and ordering medical tests are outside the scope of a health coach.",
     },
 ];
 
