@@ -25,13 +25,13 @@ export interface VoiceSettings {
     speed?: number;            // 0.5-2.0, lower = slower speech
 }
 
-// Default voice settings - tested and approved parameters
-// Warm Medium: friendly, natural pace, minimal sigh at end
+// Default voice settings - TESTED AND APPROVED for Sarah (eleven_v3)
+// Warm, expressive, builds bond with leads
 const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
-    stability: 0.60,       // Balanced - reduces random breaths
-    similarityBoost: 0.80, // Good similarity to original voice
-    style: 0.25,           // Lower style = less breathy/sighing
-    speed: 0.90,           // Medium pace, natural
+    stability: 0.25,       // Creative mode - more expressive (maps to 0.0 in eleven_v3)
+    similarityBoost: 0.85, // High similarity to original Sarah voice
+    style: 0.65,           // More emotional/expressive delivery
+    speed: 1.1,            // Slightly faster, energetic
 };
 
 /**
@@ -54,20 +54,33 @@ export async function generateVoice(
     const finalSettings = { ...DEFAULT_VOICE_SETTINGS, ...settings };
 
     try {
-        console.log(`🎙️ Generating voice with ElevenLabs (voice: ${finalVoiceId}, speed: ${finalSettings.speed})...`);
+        console.log(`🎙️ Generating voice with ElevenLabs eleven_v3 (voice: ${finalVoiceId}, speed: ${finalSettings.speed})...`);
+
+        // eleven_v3 only accepts specific stability values: 0.0, 0.5, or 1.0
+        // Map our 0-1 slider to nearest valid value
+        const mapStabilityForV3 = (value: number): number => {
+            if (value <= 0.25) return 0.0;  // Creative
+            if (value <= 0.75) return 0.5;  // Natural
+            return 1.0;  // Robust
+        };
+
+        const v3Stability = mapStabilityForV3(finalSettings.stability || 0.5);
+        console.log(`   Stability mapped: ${finalSettings.stability} → ${v3Stability} (${v3Stability === 0 ? 'Creative' : v3Stability === 0.5 ? 'Natural' : 'Robust'})`);
 
         const audioStream = await client.textToSpeech.convert(finalVoiceId, {
             text,
-            modelId: "eleven_turbo_v2_5", // English-focused, fast, high quality
+            modelId: "eleven_v3", // NEW: Human-like and expressive speech, 70+ languages
             outputFormat: "mp3_44100_128",
             voiceSettings: {
-                stability: finalSettings.stability!,
+                stability: v3Stability,  // Must be 0.0, 0.5, or 1.0 for eleven_v3
                 similarityBoost: finalSettings.similarityBoost!,
                 style: finalSettings.style!,
                 useSpeakerBoost: true,
                 speed: finalSettings.speed,
             },
         });
+
+
 
         // Convert ReadableStream to buffer
         const reader = audioStream.getReader();

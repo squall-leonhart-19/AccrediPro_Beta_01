@@ -586,26 +586,23 @@ const QUESTIONS: QuizStep[] = [
   },
   {
     id: 15, pillar: "Commitment",
-    question: "The ASI FM Certification includes EVERYTHING you need to launch a $10K+/month practice. Here's what you're getting:",
-    subtitle: `🎓 CORE: Practitioner + Advanced + Master Certification ($2,991)
-📚 9 SPECIALIZATIONS: Hormone, Gut, Metabolic, Burnout, Autoimmune, Thyroid, Brain, Sleep, Anti-Inflammatory ($2,673)
-💼 BUSINESS SYSTEM: Client Acquisition, Social Calendar, Email Sequences, Scripts, Sales Pages ($1,582)
-🖥️ COACH WORKSPACE: Client Portal, Session Notes, Progress Tracker, Protocol Library, Intake Forms ($1,085)
-⚖️ LEGAL: Contracts, Waivers, HIPAA Guide, Consent Forms, Scope Guidelines ($685)
-👥 COMMUNITY: Practitioner Network, Weekly Q&A, Case Studies, Accountability Groups ($1,988)
-👩‍🏫 MENTORSHIP: Welcome Call, Weekly Check-ins, Business Launch, 90-Day Review ($1,688)
-📦 DONE-FOR-YOU: Bio Templates, Website Copy, Marketing Swipe Files, Testimonial Templates ($685)
-🎁 BONUSES: Lab Cheat Sheets, Supplement Database, Meal Plans, Client Automation ($988)
+    question: "You qualify for the ASI FM Certification Package",
+    subtitle: `🎓 FM Certification Package (worth $14,365)
+━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ 3-Level Certification Track
+✅ 9 Specialty Tracks  
+✅ Business Launch System
+✅ Done-For-You Templates
+✅ 1-Year Mentorship Access
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-TOTAL VALUE: $14,365 → One-Time Investment
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💰 Scholarship covers up to 97% of tuition
+━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Would you like to apply for a scholarship?`,
+Would you like to apply for the scholarship?`,
     options: [
       { label: "YES - I want to apply for the scholarship", value: "apply-scholarship", reaction: "AMAZING! Let me check if you qualify for one of our limited scholarship spots right now...", strength: "strong" },
       { label: "I need more information first", value: "need-info", reaction: "Totally understand. Let's get you connected with Sarah who can answer all your questions and see if you qualify...", strength: "good" },
-      { label: "Not ready to invest in myself right now", value: "not-ready", reaction: "I understand timing matters. Let me show you what you'd be getting so you can decide if this is right for you...", strength: "developing" },
+      { label: "Not ready right now", value: "not-ready", reaction: "I understand timing matters. Let me show you what you'd be getting so you can decide if this is right for you...", strength: "developing" },
     ],
   },
 ];
@@ -880,52 +877,118 @@ export default function FMCertificationQuiz() {
     // ── INTRO ──
     if (stage === "intro") {
       return (
-        <div className="space-y-6">
-          {/* Sarah's Photo */}
+        <div className="space-y-4">
+          {/* Institution-First Announcement */}
+          <div
+            className="text-center p-3 rounded-xl border-2"
+            style={{ backgroundColor: `${BRAND.burgundy}08`, borderColor: `${BRAND.burgundy}30` }}
+          >
+            <p className="text-sm font-bold" style={{ color: BRAND.burgundy }}>
+              🏛️ AccrediPro International Standards Institute just opened <span className="underline">50 scholarship positions</span> for aspiring Functional Medicine Practitioners.
+            </p>
+          </div>
+
+          {/* ASI Logo + Institute Header */}
+          <div className="text-center space-y-2">
+            <Image
+              src="https://assets.accredipro.academy/fm-certification/ASI_LOGO-removebg-preview.png"
+              alt="AccrediPro International Standards Institute"
+              width={70}
+              height={70}
+              className="mx-auto"
+            />
+            <div>
+              <h2 className="text-base font-bold" style={{ color: BRAND.burgundy }}>
+                AccrediPro International Standards Institute
+              </h2>
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-medium mt-1">
+                9 International Accreditations
+              </p>
+            </div>
+          </div>
+
+          {/* Accreditation Logos */}
           <div className="flex justify-center">
-            <div className="relative">
+            <Image
+              src="https://assets.accredipro.academy/fm-certification/All_Logos.png"
+              alt="CMA, CTAA, IPHM, IIOHT, CPD, IGCT, IHTCP, ICAHP, IAOTH"
+              width={300}
+              height={55}
+              className="opacity-85"
+            />
+          </div>
+
+          {/* Accreditation Text List */}
+          <div className="text-center">
+            <p className="text-[9px] text-gray-400 leading-relaxed">
+              CMA • CTAA • IPHM • IIOHT • CPD • IGCT • IHTCP • ICAHP • IAOTH
+            </p>
+          </div>
+
+          {/* Sarah Card */}
+          <div
+            className="rounded-2xl p-4 border-2"
+            style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}40` }}
+          >
+            <div className="flex items-start gap-3">
               <Image
                 src={SARAH_AVATAR}
-                alt="Sarah"
-                width={100}
-                height={100}
-                className="rounded-full border-4 shadow-lg object-cover"
+                alt="Sarah Mitchell"
+                width={56}
+                height={56}
+                className="rounded-full border-2 object-cover flex-shrink-0 shadow-lg"
                 style={{ borderColor: BRAND.gold }}
               />
-              <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center shadow-md" style={{ background: BRAND.goldMetallic }}>
-                <span className="text-sm">👋</span>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide mb-0.5" style={{ color: BRAND.burgundy }}>
+                  SENIOR ADMISSIONS ADVISOR
+                </p>
+                <p className="text-gray-900 font-bold text-sm">Hi! I&apos;m Sarah Mitchell 👋</p>
+                <p className="text-gray-600 text-xs mt-1 leading-relaxed">
+                  Before joining the Institute, I was a burned-out ER nurse and single mom. Functional Medicine changed everything — I now help women build $10K-15K/month practices from home.
+                </p>
+                <p className="text-gray-500 text-[10px] mt-1.5 italic">
+                  I&apos;ve personally guided 2,800+ women through this exact process.
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Welcome Message */}
-          <div className="space-y-3 text-center">
-            <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-              <em>&quot;Hey! 👋 I&apos;m Sarah — I went from burned-out ER nurse and single mom to earning $15K/month as a <strong style={{ color: BRAND.burgundy }}>Functional Medicine Practitioner</strong>. Working from home. My own hours.</em>
-            </p>
-            <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-              <em>I&apos;ve helped 2,847+ women do the same — even with <strong>ZERO medical background</strong>.</em>
-            </p>
-            <div className="py-2 px-3 rounded-lg mx-auto max-w-sm" style={{ backgroundColor: `${BRAND.gold}10` }}>
-              <p className="text-xs sm:text-sm font-medium" style={{ color: BRAND.burgundy }}>
-                This 3-minute quiz reveals:
-              </p>
-              <div className="flex flex-col items-start gap-1 mt-2 text-xs sm:text-sm text-gray-700">
-                <span>✅ Your best-fit specialty</span>
-                <span>✅ Your realistic earning potential</span>
-                <span>✅ If you qualify for a scholarship</span>
-              </div>
+          {/* Certificate Preview */}
+          <div className="relative mx-auto" style={{ maxWidth: 240 }}>
+            <Image
+              src="https://learn.accredipro.academy/FUNCTIONAL_MEDICINE_CERTIFICATE.webp"
+              alt="Functional Medicine Certificate"
+              width={240}
+              height={170}
+              className="rounded-lg shadow-lg border"
+              style={{ borderColor: `${BRAND.gold}60` }}
+            />
+            <div
+              className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold shadow-md whitespace-nowrap"
+              style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
+            >
+              Verified Digital Credential
             </div>
-            <p className="text-sm sm:text-base text-gray-700">
-              <em>What&apos;s your first name?&quot;</em>
+          </div>
+
+          {/* Assessment CTA */}
+          <div className="text-center space-y-2 pt-2">
+            <p className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>
+              This 3-minute assessment reveals:
             </p>
+            <div className="flex flex-col gap-0.5 text-sm text-gray-700">
+              <span>✅ Your best-fit specialty</span>
+              <span>✅ Your realistic earning potential</span>
+              <span>✅ If you qualify for the ASI Institutional Scholarship</span>
+            </div>
           </div>
 
           {/* Name Input */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             <input
               type="text"
-              placeholder="Enter your first name..."
+              placeholder="What's your first name?"
               value={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && name.trim()) handleNext(); }}
@@ -940,19 +1003,16 @@ export default function FMCertificationQuiz() {
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               <span className="relative flex items-center justify-center">
-                Start My Assessment <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                See If I Qualify <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </span>
             </Button>
           </div>
 
-          {/* Social Proof */}
-          <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-6 h-6 rounded-full border-2 border-white bg-gray-200" />
-              ))}
-            </div>
-            <span>2,847+ women have taken this assessment</span>
+          {/* Trust Badges */}
+          <div className="flex items-center justify-center gap-3 text-[10px] text-gray-400">
+            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> 3 min</span>
+            <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> 100% private</span>
+            <span className="flex items-center gap-1"><Award className="w-3 h-3" /> 4,200+ certified</span>
           </div>
         </div>
       );

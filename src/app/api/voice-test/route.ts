@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateVoice } from "@/lib/elevenlabs";
 
+/**
+ * Voice Test API using ElevenLabs eleven_v3 model
+ * Human-like and expressive speech generation, 70+ languages
+ */
+
 export async function POST(req: NextRequest) {
     try {
         const { text, settings } = await req.json();
@@ -9,9 +14,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Text is required" }, { status: 400 });
         }
 
-        if (text.length > 1000) {
+        if (text.length > 5000) {
             return NextResponse.json(
-                { error: "Text too long (max 1000 characters)" },
+                { error: "Text too long (max 5000 characters)" },
                 { status: 400 }
             );
         }
@@ -23,7 +28,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        console.log(`🎙️ Voice test with settings:`, settings);
+        console.log(`🎙️ Voice test with ElevenLabs eleven_v3:`, settings);
 
         const result = await generateVoice(text, undefined, settings);
 
@@ -38,6 +43,7 @@ export async function POST(req: NextRequest) {
             success: true,
             audio: `data:audio/mp3;base64,${result.audioBase64}`,
             duration: result.duration,
+            model: "eleven_v3",
             settings,
         });
     } catch (error) {

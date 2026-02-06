@@ -28,17 +28,86 @@ export interface CouponTier {
  * Get coupon tier based on what the user offered
  * Implements the "Institute covered MORE" psychology
  * 
- * NEW SYSTEM (Feb 2026): Minimum $500 floor to filter tire-kickers
- * - Below $500: REJECTED (returns null tier)
- * - $500+: Gets coupon with "Institute covered extra" drop
+ * UPDATED (Feb 2026): Removed $500 minimum - accept ANY amount from $17+
+ * Everyone gets approved with scholarship - no rejections!
  */
 export function getCouponTier(offeredAmount: number): CouponTier | null {
-    // HARD FLOOR: Reject anything below $500
-    if (offeredAmount < 500) {
-        return null; // Signal rejection - caller must handle
+    // Accept anything $17 or more
+    if (offeredAmount < 17) {
+        return null; // Only reject if truly absurd
     }
 
-    // Exact $500 - Starter tier (no drop)
+    // $17-46 → they pay $17 (Mini Diploma tier)
+    if (offeredAmount < 47) {
+        return {
+            theyPay: 17,
+            drop: Math.max(0, offeredAmount - 17),
+            couponCode: "SCHOLARSHIP17",
+            savings: BASE_PRICE - 17,
+        };
+    }
+
+    // $47-96 → they pay $47
+    if (offeredAmount < 97) {
+        return {
+            theyPay: 47,
+            drop: offeredAmount - 47,
+            couponCode: "SCHOLARSHIP47",
+            savings: BASE_PRICE - 47,
+        };
+    }
+
+    // $97-146 → they pay $97
+    if (offeredAmount < 147) {
+        return {
+            theyPay: 97,
+            drop: offeredAmount - 97,
+            couponCode: "SCHOLARSHIP97",
+            savings: BASE_PRICE - 97,
+        };
+    }
+
+    // $147-196 → they pay $147
+    if (offeredAmount < 197) {
+        return {
+            theyPay: 147,
+            drop: offeredAmount - 147,
+            couponCode: "SCHOLARSHIP147",
+            savings: BASE_PRICE - 147,
+        };
+    }
+
+    // $197-296 → they pay $197
+    if (offeredAmount < 297) {
+        return {
+            theyPay: 197,
+            drop: offeredAmount - 197,
+            couponCode: "SCHOLARSHIP197",
+            savings: BASE_PRICE - 197,
+        };
+    }
+
+    // $297-396 → they pay $297
+    if (offeredAmount < 397) {
+        return {
+            theyPay: 297,
+            drop: offeredAmount - 297,
+            couponCode: "SCHOLARSHIP297",
+            savings: BASE_PRICE - 297,
+        };
+    }
+
+    // $397-499 → they pay $397
+    if (offeredAmount < 500) {
+        return {
+            theyPay: 397,
+            drop: offeredAmount - 397,
+            couponCode: "SCHOLARSHIP397",
+            savings: BASE_PRICE - 397,
+        };
+    }
+
+    // $500-549 - Starter tier (no drop)
     if (offeredAmount < 550) {
         return {
             theyPay: 500,

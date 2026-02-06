@@ -331,54 +331,98 @@ export default function FMApplicationQuiz() {
     // ── INTRO ──────────────────────────────────────────────────
     if (stage === "intro") {
       return (
-        <div className="space-y-6">
-          {/* Badge */}
-          <div className="text-center">
-            <span
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold shadow-lg"
-              style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
-            >
-              Certification Assessment
-            </span>
+        <div className="space-y-5">
+          {/* ASI Logo + Institute Header */}
+          <div className="text-center space-y-3">
+            <Image
+              src="https://assets.accredipro.academy/fm-certification/ASI_LOGO-removebg-preview.png"
+              alt="AccrediPro International Standards Institute"
+              width={80}
+              height={80}
+              className="mx-auto"
+            />
+            <div>
+              <h2 className="text-lg font-bold" style={{ color: BRAND.burgundy }}>
+                AccrediPro International Standards Institute
+              </h2>
+              <p className="text-xs text-gray-500 uppercase tracking-wider font-medium">
+                Accredited by CMA, CTAA & IPHM
+              </p>
+            </div>
+          </div>
+
+          {/* Accreditation Logos */}
+          <div className="flex justify-center">
+            <Image
+              src="https://assets.accredipro.academy/fm-certification/All_Logos.png"
+              alt="CMA, CTAA, IPHM Accredited"
+              width={280}
+              height={50}
+              className="opacity-80"
+            />
           </div>
 
           {/* Sarah Card */}
           <div
-            className="rounded-2xl p-6 border-2"
+            className="rounded-2xl p-5 border-2"
             style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}40` }}
           >
             <div className="flex items-start gap-4">
               <Image
                 src={SARAH_AVATAR}
-                alt="Sarah M."
-                width={72}
-                height={72}
+                alt="Sarah Mitchell"
+                width={64}
+                height={64}
                 className="rounded-full border-3 object-cover flex-shrink-0 shadow-lg"
                 style={{ borderColor: BRAND.gold }}
               />
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: BRAND.burgundy }}>
-                  YOUR CERTIFICATION ADVISOR
+                <p className="text-xs font-bold uppercase tracking-wide mb-0.5" style={{ color: BRAND.burgundy }}>
+                  SENIOR ADMISSIONS ADVISOR
                 </p>
-                <p className="text-gray-900 text-lg font-bold">Hey! I&apos;m Sarah M.</p>
+                <p className="text-gray-900 font-bold">Hi! I&apos;m Sarah Mitchell 👋</p>
                 <p className="text-gray-600 text-sm mt-1">
-                  I went from burned-out ER nurse to earning $12K/month from home. Let me see if you qualify for the same path.
+                  Before joining the Institute, I was a burned-out ER nurse and single mom. Functional Medicine changed everything — I now help women build $10K-15K/month practices from home.
+                </p>
+                <p className="text-gray-500 text-xs mt-2 italic">
+                  I&apos;ve personally guided 2,800+ women through this exact process.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Headline */}
-          <div className="text-center space-y-3">
-            <h1 className="text-2xl md:text-3xl font-bold" style={{ color: BRAND.burgundyDark }}>
-              See If You Qualify to Start Earning $5-10K/Month as a Certified Functional Medicine Practitioner
-            </h1>
-            <p className="text-gray-600">
-              Answer 12 quick questions. Only 34% of applicants qualify — let&apos;s see if you&apos;re one of them.
+          {/* Certificate Preview */}
+          <div className="relative mx-auto" style={{ maxWidth: 280 }}>
+            <Image
+              src="https://learn.accredipro.academy/FUNCTIONAL_MEDICINE_CERTIFICATE.webp"
+              alt="Functional Medicine Certificate"
+              width={280}
+              height={200}
+              className="rounded-lg shadow-lg border"
+              style={{ borderColor: `${BRAND.gold}60` }}
+            />
+            <div
+              className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold shadow-md"
+              style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
+            >
+              Verified Digital Credential
+            </div>
+          </div>
+
+          {/* Assessment CTA */}
+          <div className="text-center space-y-2 pt-2">
+            <p className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>
+              This 3-minute assessment reveals:
             </p>
-            <p className="text-sm text-gray-400 italic">
-              No experience needed. No science degree. Just 90 seconds.
-            </p>
+            <div className="flex flex-col gap-1 text-sm text-gray-700">
+              {[
+                "✅ Your best-fit specialty",
+                "✅ Your realistic earning potential",
+                "✅ If you qualify for the ASI Institutional Scholarship",
+              ].map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
           </div>
 
           {/* Name Input */}
@@ -394,24 +438,9 @@ export default function FMApplicationQuiz() {
             />
           </div>
 
-          {/* Social Proof */}
-          <div className="space-y-2">
-            {[
-              "4,200+ women certified in the last 12 months",
-              "89% had zero health background",
-              "Average income: $4,800/month within 90 days",
-              "Takes just 1 hour/day for 7 days",
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2 text-gray-700">
-                <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: BRAND.gold }} />
-                <span className="text-sm">{item}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Trust */}
+          {/* Trust Badges */}
           <div className="text-center flex items-center justify-center gap-4 text-xs text-gray-400">
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> 90 seconds</span>
+            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> 3 min</span>
             <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> 100% private</span>
             <span className="flex items-center gap-1"><Users className="w-3 h-3" /> 4,200+ certified</span>
           </div>

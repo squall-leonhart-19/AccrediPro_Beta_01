@@ -158,8 +158,8 @@ const nextConfig: NextConfig = {
               "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.google-analytics.com https://api.stripe.com https://elevenlabs.io https://api.openai.com https://api.anthropic.com https://*.facebook.com https://*.facebook.net https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev https://*.accredipro.academy https://fonts.googleapis.com https://fonts.gstatic.com https://images.unsplash.com https://i.pravatar.cc https://api.dicebear.com https://randomuser.me https://widget.trustpilot.com https://*.wistia.com https://*.wistia.net",
               // Frames: Stripe + ... + Trustpilot + Wistia
               "frame-src 'self' https://js.stripe.com https://www.youtube.com https://player.vimeo.com https://*.facebook.com https://widget.trustpilot.com https://fast.wistia.net https://*.wistia.net https://*.wistia.com",
-              // Media: self + Supabase storage for audio/video + Wistia
-              "media-src 'self' blob: https://*.supabase.co https://*.wistia.com https://*.wistia.net https://embed-ssl.wistia.com",
+              // Media: self + Supabase storage for audio/video + Wistia + data: for ElevenLabs base64
+              "media-src 'self' blob: data: https://*.supabase.co https://*.wistia.com https://*.wistia.net https://embed-ssl.wistia.com",
               // Workers: allow blob for PWA and other workers
               "worker-src 'self' blob:",
               // Objects: none (no Flash, etc)
