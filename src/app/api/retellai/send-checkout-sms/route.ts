@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
         // Get scholarship code
         const scholarshipCode = SCHOLARSHIP_CODES[cleanAmount] || `SCHOLARSHIP${cleanAmount}`;
-        const checkoutUrl = "https://learn.accredipro.academy/checkout/scholarship";
+        const checkoutUrl = "https://sarah.accredipro.academy/checkout-fm-certification-program";
 
         // Call GHL Workflow Webhook
         const ghlResponse = await fetch(GHL_WEBHOOK_URL, {
