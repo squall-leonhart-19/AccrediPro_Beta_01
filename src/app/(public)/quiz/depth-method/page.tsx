@@ -613,8 +613,6 @@ export default function FMCertificationQuiz() {
   const [reaction, setReaction] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [showExitPopup, setShowExitPopup] = useState(false);
-  const exitPopupShown = useRef(false);
   // Audio removed from quiz - now plays only in scholarship chat
   const [direction, setDirection] = useState(1);
   const [reviewStep, setReviewStep] = useState(0);
@@ -662,31 +660,6 @@ export default function FMCertificationQuiz() {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [stage]);
 
-  // Exit-intent detection (desktop: mouse leaves top, mobile: visibility change)
-  useEffect(() => {
-    if (stage === "result" || stage === "qualified" || stage === "reviewing") return;
-
-    const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && !exitPopupShown.current && stage !== "intro") {
-        exitPopupShown.current = true;
-        setShowExitPopup(true);
-      }
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.hidden && !exitPopupShown.current && stage !== "intro") {
-        exitPopupShown.current = true;
-        setShowExitPopup(true);
-      }
-    };
-
-    document.addEventListener("mouseleave", handleMouseLeave);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      document.removeEventListener("mouseleave", handleMouseLeave);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [stage]);
 
   const formatTimer = (s: number) => {
     const m = Math.floor(s / 60);
@@ -1180,47 +1153,6 @@ export default function FMCertificationQuiz() {
     const dynamicSubtitle = getSubtitle(currentQ);
     return (
       <div className="space-y-5">
-        {/* Sarah is typing indicator */}
-        {isTyping && (
-          <motion.div
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl p-4 border flex items-start gap-3" style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}30` }}
-          >
-            <Image src={SARAH_AVATAR} alt="Sarah" width={36} height={36} className="rounded-full border-2 object-cover flex-shrink-0" style={{ borderColor: BRAND.gold }} />
-            <div className="flex items-center gap-1.5 pt-1">
-              <span className="text-sm font-medium" style={{ color: BRAND.burgundy }}>Sarah is typing</span>
-              <span className="flex gap-0.5">
-                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: BRAND.burgundy, animationDelay: "0ms" }} />
-                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: BRAND.burgundy, animationDelay: "150ms" }} />
-                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: BRAND.burgundy, animationDelay: "300ms" }} />
-              </span>
-            </div>
-          </motion.div>
-        )}
-        {reaction && !isTyping && (
-          <motion.div
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl p-4 border flex items-start gap-3" style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}30` }}
-          >
-            <Image src={SARAH_AVATAR} alt="Sarah" width={36} height={36} className="rounded-full border-2 object-cover flex-shrink-0" style={{ borderColor: BRAND.gold }} />
-            <div>
-              <p className="text-sm" style={{ color: BRAND.burgundy }}>{reaction}</p>
-              {answers[currentQ] && (() => {
-                const opt = q.options.find(o => o.value === answers[currentQ]);
-                if (!opt) return null;
-                return (
-                  <p className="text-[10px] mt-1 font-medium flex items-center gap-1" style={{ color: opt.strength === "strong" ? "#16a34a" : opt.strength === "good" ? BRAND.gold : "#9ca3af" }}>
-                    {opt.strength === "strong" && <><TrendingUp className="w-3 h-3" /> Strong match - top performer profile</>}
-                    {opt.strength === "good" && <><CheckCircle className="w-3 h-3" /> Good - matches qualified applicant profile</>}
-                    {opt.strength === "developing" && <><Sparkles className="w-3 h-3" /> Noted - we&apos;ll evaluate holistically</>}
-                  </p>
-                );
-              })()}
-            </div>
-          </motion.div>
-        )}
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-sm font-medium uppercase tracking-wider px-3 py-1.5 rounded-full" style={{ backgroundColor: `${BRAND.gold}15`, color: BRAND.burgundy }}>{q.pillar}</span>
@@ -1303,56 +1235,6 @@ export default function FMCertificationQuiz() {
   // ─── Main Layout ────────────────────────────────────────────────
   return (
     <div className="min-h-screen" style={{ background: `linear-gradient(to bottom right, ${BRAND.cream}, #f5f0e8)` }}>
-      {/* Exit-Intent Popup */}
-      <AnimatePresence>
-        {showExitPopup && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-            onClick={() => setShowExitPopup(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-              style={{ border: `3px solid ${BRAND.gold}` }}
-            >
-              <div className="text-center space-y-4">
-                <div className="text-5xl">⏰</div>
-                <h3 className="text-xl font-bold" style={{ color: BRAND.burgundy }}>
-                  Wait! Don&apos;t lose your progress!
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  You&apos;re <strong>{progress}% done</strong> with your assessment. Just a few more questions to see if you qualify for a scholarship!
-                </p>
-                <div className="pt-2 space-y-3">
-                  <Button
-                    onClick={() => setShowExitPopup(false)}
-                    className="w-full h-12 text-base font-bold rounded-xl"
-                    style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
-                  >
-                    Continue My Assessment
-                  </Button>
-                  <button
-                    onClick={() => setShowExitPopup(false)}
-                    className="text-xs text-gray-400 hover:text-gray-600"
-                  >
-                    I&apos;ll come back later
-                  </button>
-                </div>
-                <p className="text-[10px] text-gray-400">
-                  ⚠️ Your answers will NOT be saved if you leave
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <div className="py-6 md:py-10 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ background: "#fff", boxShadow: `0 0 0 3px ${BRAND.gold}40, 0 25px 50px -12px rgba(114, 47, 55, 0.25)` }}>
