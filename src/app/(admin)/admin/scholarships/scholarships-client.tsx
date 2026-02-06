@@ -275,8 +275,8 @@ function AudioMessageAdmin({ url, isFromVisitor }: { url: string; isFromVisitor:
             <div
               key={i}
               className={`w-1 rounded-full transition-all ${(i / 16) * 100 <= progress
-                  ? (isFromVisitor ? "bg-gray-600" : "bg-white")
-                  : (isFromVisitor ? "bg-gray-300" : "bg-white/30")
+                ? (isFromVisitor ? "bg-gray-600" : "bg-white")
+                : (isFromVisitor ? "bg-gray-300" : "bg-white/30")
                 }`}
               style={{ height: `${6 + Math.random() * 10}px` }}
             />
@@ -319,6 +319,7 @@ export default function ScholarshipsClient() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+  const isUserTypingRef = useRef<boolean>(false); // Prevent focus loss while typing
 
   // Initialize notification sound
   useEffect(() => {
@@ -393,12 +394,19 @@ export default function ScholarshipsClient() {
 
       setApplications(newApps);
 
-      // Update selected app
+      // Update selected app messages ONLY (don't replace entire object to avoid focus loss)
       const currentVisitorId = selectedVisitorIdRef.current;
-      if (currentVisitorId) {
+      if (currentVisitorId && !isUserTypingRef.current) {
         const updated = newApps.find(a => a.visitorId === currentVisitorId);
         if (updated) {
-          setSelectedApp(updated);
+          // Only update if messages changed (compare length to avoid unnecessary re-renders)
+          setSelectedApp(prev => {
+            if (!prev) return updated;
+            if (prev.messages.length !== updated.messages.length) {
+              return updated;
+            }
+            return prev; // Don't update if same message count
+          });
         }
       }
       setError(null);
@@ -410,11 +418,14 @@ export default function ScholarshipsClient() {
     }
   }, [loading, notifyNewMessage]);
 
-  // Poll every 2 seconds
+  // Poll every 2 seconds - but PAUSE when user is typing
   useEffect(() => {
     fetchApplications();
     const interval = setInterval(() => {
-      if (!document.hidden) fetchApplications();
+      // Skip fetching entirely if user is typing - prevents ANY re-render of input
+      if (!document.hidden && !isUserTypingRef.current) {
+        fetchApplications();
+      }
     }, 2000);
     return () => clearInterval(interval);
   }, [fetchApplications]);
@@ -796,8 +807,8 @@ export default function ScholarshipsClient() {
                     </Avatar>
                   )}
                   <div className={`max-w-[80%] rounded-2xl px-3 py-2 ${msg.isFromVisitor
-                      ? "bg-gray-100 text-gray-900 rounded-tl-sm"
-                      : "bg-gradient-to-br from-[#722f37] to-[#5a252c] text-white rounded-tr-sm"
+                    ? "bg-gray-100 text-gray-900 rounded-tl-sm"
+                    : "bg-gradient-to-br from-[#722f37] to-[#5a252c] text-white rounded-tr-sm"
                     }`}>
                     {msg.message.startsWith("[AUDIO:") ? (
                       <div className="min-w-[180px]">
@@ -845,6 +856,8 @@ export default function ScholarshipsClient() {
                   key={i}
                   variant="outline"
                   size="sm"
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()} // Prevent focus loss
                   onClick={() => {
                     if (qr.isAutoStep === "initiate") triggerAutoApprove("initiate");
                     else if (qr.isAutoStep === "approve") {
@@ -952,11 +965,13 @@ export default function ScholarshipsClient() {
             </span>
           </div>
           <div className="flex gap-2">
-            <Textarea
+            <textarea
               ref={textareaRef}
               placeholder="Type your response..."
               value={replyMessage}
               onChange={(e) => setReplyMessage(e.target.value)}
+              onFocus={() => { isUserTypingRef.current = true; }}
+              onBlur={() => { isUserTypingRef.current = false; }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -964,11 +979,13 @@ export default function ScholarshipsClient() {
                 }
               }}
               disabled={sending || isRecording}
-              className="flex-1 min-h-[44px] max-h-[100px] resize-none text-sm"
+              className="flex-1 min-h-[44px] max-h-[100px] resize-none text-sm px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#722f37]/20 focus:border-[#722f37]"
               style={{ fontSize: '16px' }} // Prevent zoom on iOS
             />
             <Button
+              type="button"
               onClick={() => sendReply()}
+              onMouseDown={(e) => e.preventDefault()} // Prevent focus loss
               disabled={sending || !replyMessage.trim() || isRecording}
               className="bg-[#722f37] hover:bg-[#5a252c] h-auto px-3"
             >
@@ -979,6 +996,7 @@ export default function ScholarshipsClient() {
       </div>
     );
   };
+
 
   return (
     <div className="h-[100dvh] flex flex-col bg-gray-50">
@@ -1062,8 +1080,8 @@ export default function ScholarshipsClient() {
                     key={app.visitorId}
                     onClick={() => handleSelectApp(app)}
                     className={`p-3 border-b cursor-pointer transition-all active:bg-gray-100 ${isSelected
-                        ? "bg-[#722f37]/5 border-l-4 border-l-[#722f37]"
-                        : "hover:bg-gray-50 border-l-4 border-l-transparent"
+                      ? "bg-[#722f37]/5 border-l-4 border-l-[#722f37]"
+                      : "hover:bg-gray-50 border-l-4 border-l-transparent"
                       }`}
                   >
                     <div className="flex items-start gap-2.5">

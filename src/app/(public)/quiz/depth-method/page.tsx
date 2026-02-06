@@ -574,17 +574,7 @@ const QUESTIONS: QuizStep[] = [
     ],
   },
   {
-    id: 14, pillar: "Decision",
-    question: "Is this investment decision 100% yours to make today?",
-    subtitle: "This helps us understand how to best support you.",
-    options: [
-      { label: "Yes - if this is right for me, I'm ready to commit", value: "yes-mine", reaction: "Perfect. That means we can move quickly once you're accepted. No delays.", strength: "strong" },
-      { label: "I'll want to discuss with my spouse/partner first", value: "discuss-spouse", reaction: "Totally understand. Many of our practitioners had that conversation. We'll prepare everything you need to share.", strength: "good" },
-      { label: "I need to review my finances first", value: "check-finances", reaction: "Makes sense. Good news - the Institute offers flexible scholarship options based on what you can invest.", strength: "good" },
-    ],
-  },
-  {
-    id: 15, pillar: "Readiness",
+    id: 14, pillar: "Readiness",
     question: "If accepted into the ASI Functional Medicine Practitioner Certification, how soon could you start?",
     subtitle: "Limited spots per cohort to ensure quality mentorship. Current cohort: 47/50 filled.",
     options: [
@@ -594,7 +584,22 @@ const QUESTIONS: QuizStep[] = [
       { label: "I need to plan, but I'm committed", value: "planning", reaction: "Commitment is what matters. We'll work with your timeline. Let's lock in your qualification...", strength: "good" },
     ],
   },
+  {
+    id: 15, pillar: "Investment",
+    question: "If you qualify for a partial scholarship, what's the most you could invest in yourself TODAY?",
+    subtitle: "Be honest — this helps us match you with the right scholarship tier. The full program is valued at $2,997.",
+    options: [
+      { label: "Under $200", value: "under-200", reaction: "I appreciate your honesty. We may have a starter option that could work for you.", strength: "developing" },
+      { label: "$200 - $350", value: "200-350", reaction: "That's a start! Many of our practitioners began at this level. Let's see what we can do.", strength: "developing" },
+      { label: "$350 - $500", value: "350-500", reaction: "Perfect range! This is where most scholarship recipients land. You're showing serious commitment.", strength: "good" },
+      { label: "$500 - $750", value: "500-750", reaction: "Excellent! At this level, you qualify for our Priority Scholarship track. Very few spots available.", strength: "strong" },
+      { label: "$750 - $1,000", value: "750-1000", reaction: "Impressive commitment! You're in our top 10% of applicants. This unlocks our VIP Scholarship tier.", strength: "strong" },
+      { label: "$1,000+", value: "1000-plus", reaction: "Wow! You're clearly serious about your transformation. This qualifies you for our Elite Scholarship with maximum Institute coverage.", strength: "strong" },
+    ],
+  },
 ];
+
+
 
 // ─── Types ─────────────────────────────────────────────────────────
 type Stage = "intro" | "quiz" | "testimonial" | "optin" | "reviewing" | "qualified" | "result";
@@ -832,9 +837,11 @@ export default function FMCertificationQuiz() {
       commitment: answers[8] || "",            // Q9: commitment
       vision: answers[9] || "",                // Q10: vision
       careerPathLevel: answers[11] || "",      // Q12: career path level ($2-5K, $5-8K, etc.)
-      decisionMaker: answers[12] || "",        // Q13: decision maker (yes-mine, spouse, finances)
+      clientAcquisition: answers[12] || "",    // Q13: client acquisition
       startTimeline: answers[13] || "",        // Q14: start timeline
+      investmentBudget: answers[14] || "",     // Q15: investment budget ($350-500, etc.)
     });
+
     const route = ROLE_ROUTES[currentRole] || "/results/career-change";
     setTimeout(() => { window.location.href = `${route}?${params.toString()}`; }, 1500);
   };
@@ -853,7 +860,7 @@ export default function FMCertificationQuiz() {
     const opt = q?.options.find((o) => o.value === val);
     return count + (opt?.strength === "strong" ? 1 : 0);
   }, 0);
-  const qualScore = Math.min(Math.round((strongCount / 12) * 100) + 15, 98);
+  const qualScore = Math.min(Math.round((strongCount / QUESTIONS.length) * 100) + 15, 98);
 
   // ─── Render ─────────────────────────────────────────────────────
   const renderContent = () => {

@@ -354,8 +354,10 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
   };
 
   // ─── Poll for admin replies (runs even when chat is closed!) ──
+  // IMPORTANT: Don't start polling until welcome sequence is done,
+  // otherwise polling can overwrite local Sarah messages before they're saved to DB
   useEffect(() => {
-    if (!visitorId || !hasStarted) return;
+    if (!visitorId || !hasStarted || !welcomeDone) return;
     let interval: NodeJS.Timeout | null = null;
 
     const fetchMessages = async () => {
@@ -440,7 +442,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       if (interval) clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, [visitorId, hasStarted, urgencyTimer]);
+  }, [visitorId, hasStarted, welcomeDone, urgencyTimer]);
 
   // ─── Urgency countdown timer ──────────────────────────────────────
   useEffect(() => {
@@ -541,27 +543,39 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     const typeLabel = TYPE_LABELS[quizData.type] || "your specialization";
 
     // Helper to save Sarah's message to database (so admin can see it)
-    const saveSarahMessage = async (content: string) => {
-      try {
-        const res = await fetch("/api/chat/sales", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: content,
-            page: `scholarship-${page}`,
-            visitorId,
-            userName: `${firstName} ${lastName}`.trim(),
-            userEmail: email,
-            isFromVisitor: false, // This is Sarah's message
-            repliedBy: "Sarah M. (Auto)",
-          }),
-        });
-        if (!res.ok) {
-          console.error("[Scholarship Chat] Failed to save Sarah message:", await res.text());
+    // Uses retry logic to ensure messages sync reliably
+    const saveSarahMessage = async (content: string, retries = 3) => {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          console.log(`[Scholarship Chat] Saving Sarah message (attempt ${attempt}/${retries}): "${content.substring(0, 50)}..." visitorId=${visitorId}`);
+          const res = await fetch("/api/chat/sales", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: content,
+              page: `scholarship-${page}`,
+              visitorId,
+              userName: `${firstName} ${lastName}`.trim(),
+              userEmail: email,
+              isFromVisitor: false, // This is Sarah's message
+              repliedBy: "Sarah M. (Auto)",
+            }),
+          });
+          if (res.ok) {
+            console.log(`[Scholarship Chat] ✅ Sarah message saved successfully`);
+            return; // Success — exit
+          }
+          const errorText = await res.text();
+          console.error(`[Scholarship Chat] ❌ Failed to save Sarah message (${res.status}):`, errorText);
+        } catch (err) {
+          console.error(`[Scholarship Chat] ❌ Error saving Sarah message (attempt ${attempt}):`, err);
         }
-      } catch (err) {
-        console.error("[Scholarship Chat] Error saving Sarah message:", err);
+        // Wait before retry (500ms, 1000ms, 1500ms)
+        if (attempt < retries) {
+          await new Promise(r => setTimeout(r, attempt * 500));
+        }
       }
+      console.error(`[Scholarship Chat] ❌ FAILED to save Sarah message after ${retries} attempts`);
     };
 
     // NEW WELCOME SEQUENCE - Clear "Name Your Price" Scholarship Model
@@ -612,10 +626,10 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     // Delay message 1 by 3 seconds (Sarah "reading" the application)
     const t1 = setTimeout(() => {
       setIsTyping(true);
-      const t1b = setTimeout(() => {
+      const t1b = setTimeout(async () => {
         setIsTyping(false);
         setMessages(prev => [...prev, msg1]);
-        saveSarahMessage(msg1Content); // Save to DB for admin
+        await saveSarahMessage(msg1Content); // Save to DB for admin (with retry)
 
         // 🎵 Play welcome audio 5 seconds after chat opens (before message 2)
         const audioTimer = setTimeout(() => {
@@ -646,7 +660,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
         // Delay message 2 by 6-8 more seconds
         const t2 = setTimeout(() => {
           setIsTyping(true);
-          const t2b = setTimeout(() => {
+          const t2b = setTimeout(async () => {
             setIsTyping(false);
 
             // Message 2: Explain the scholarship model clearly (NO scary price!)
@@ -659,12 +673,12 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
               timestamp: new Date().toISOString(),
             };
             setMessages(prev => [...prev, msg2]);
-            saveSarahMessage(msg2Content); // Save to DB for admin
+            await saveSarahMessage(msg2Content); // Save to DB for admin (with retry)
 
             // Delay message 3 by another 8-10 seconds (the scholarship ask)
             const t3 = setTimeout(() => {
               setIsTyping(true);
-              const t3b = setTimeout(() => {
+              const t3b = setTimeout(async () => {
                 setIsTyping(false);
 
                 // Message 3: Ask for their number - NO example amounts, add "I'll call the Institute"
@@ -677,7 +691,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
                   timestamp: new Date().toISOString(),
                 };
                 setMessages(prev => [...prev, msg3]);
-                saveSarahMessage(msg3Content); // Save to DB for admin
+                await saveSarahMessage(msg3Content); // Save to DB for admin (with retry)
                 setWelcomeDone(true);
               }, 4000); // Typing duration for msg3
               welcomeTimers.current.push(t3b);

@@ -49,7 +49,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the chat message for admin review
-    await prisma.salesChat.create({
+    // NOTE: repliedBy is a FK to User.id — only use valid user IDs or null.
+    // For auto-messages from "Sarah M. (Auto)", we set repliedBy to null
+    // since there's no real User record. The isFromVisitor=false flag is
+    // sufficient to identify it as a Sarah/admin message.
+    let finalRepliedBy: string | null = null;
+    if (!isMsgFromVisitor && repliedBy) {
+      // Check if repliedBy looks like a cuid (valid User ID) vs a display name
+      const looksLikeId = /^[a-z0-9]{20,}$/.test(repliedBy) || repliedBy.startsWith("cl");
+      finalRepliedBy = looksLikeId ? repliedBy : null;
+    }
+
+    const savedMsg = await prisma.salesChat.create({
       data: {
         visitorId: finalVisitorId,
         page: page || "fm-certification",
@@ -57,9 +68,14 @@ export async function POST(request: NextRequest) {
         isFromVisitor: isMsgFromVisitor,
         visitorName: userName || null,
         visitorEmail: userEmail || null,
-        repliedBy: isMsgFromVisitor ? null : (repliedBy || "Sarah M."),
+        repliedBy: finalRepliedBy,
       },
     });
+
+    // Debug logging
+    if (!isMsgFromVisitor) {
+      console.log(`[SalesChat] 💬 Saved SARAH message: visitorId=${finalVisitorId}, page=${page}, repliedBy=${repliedBy}`);
+    }
 
     // Return acknowledgment
     return NextResponse.json({
@@ -70,12 +86,14 @@ export async function POST(request: NextRequest) {
     }, { headers: corsHeaders });
   } catch (error) {
     console.error("Sales chat error:", error);
+    // Return 500 so callers know the save FAILED (don't mask with 200)
     return NextResponse.json(
       {
+        error: "Failed to save message",
         reply: "Thanks for reaching out! I got your message and will respond shortly.",
-        status: "received"
+        status: "error"
       },
-      { headers: corsHeaders }
+      { status: 500, headers: corsHeaders }
     );
   }
 }

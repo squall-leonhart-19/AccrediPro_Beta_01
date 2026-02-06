@@ -24,8 +24,8 @@ export async function GET() {
     const visitorIds = [...new Set(messages.map((m) => m.visitorId))];
     const optins = visitorIds.length > 0
       ? await prisma.chatOptin.findMany({
-          where: { visitorId: { in: visitorIds } },
-        })
+        where: { visitorId: { in: visitorIds } },
+      })
       : [];
     const optinMap = new Map(optins.map((o) => [o.visitorId, o]));
 
@@ -106,6 +106,15 @@ export async function GET() {
           })),
       }))
       .sort((a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime());
+
+    // Debug: Log message breakdown for each conversation
+    applications.forEach(app => {
+      const visitorMsgs = app.messages.filter((m: { isFromVisitor: boolean }) => m.isFromVisitor);
+      const sarahMsgs = app.messages.filter((m: { isFromVisitor: boolean }) => !m.isFromVisitor);
+      if (sarahMsgs.length === 0 && app.messages.length > 1) {
+        console.log(`[Scholarships] ⚠️ ${app.visitorEmail}: ${visitorMsgs.length} visitor msgs, ${sarahMsgs.length} Sarah msgs`);
+      }
+    });
 
     console.log(`[Scholarships] Returning ${applications.length} applications with messages`);
     return NextResponse.json({ applications });
