@@ -255,47 +255,27 @@ export default function ScholarshipLeadsClient() {
         } catch { /* fail */ } finally { setUpdatingStatus(false); }
     };
 
-    const exportCSV = () => {
-        const rows = [["Name", "Email", "Phone", "Status", "Specialization", "Income Goal", "Background", "Offered Amount", "Score", "Applied", "Messages"].join(",")];
-        filtered.forEach(l => {
-            rows.push([
-                `"${l.firstName} ${l.lastName || ""}"`, l.email, l.phone || "", l.status,
-                l.specializationLabel, l.incomeGoalLabel, l.roleLabel, l.offeredAmount || "",
-                `${l.qualificationScore}%`, new Date(l.applicationDate).toLocaleDateString(), `${l.messages.length}`,
-            ].join(","));
-        });
-        const blob = new Blob([rows.join("\n")], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url; a.download = `scholarship-leads-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
-        URL.revokeObjectURL(url);
-    };
+    const [exporting, setExporting] = useState<string | null>(null);
 
-    const exportConversations = () => {
-        const esc = (s: string) => `"${(s || "").replace(/"/g, '""').replace(/\n/g, " | ")}"`;
-        const rows = [["Lead Name", "Email", "Status", "Score", "Sender", "Message", "Timestamp", "Drop-off Stage"].join(",")];
-        filtered.forEach(l => {
-            const name = `${l.firstName} ${l.lastName || ""}`.trim();
-            if (l.messages.length === 0) {
-                // Still include leads with no messages to spot silent drop-offs
-                rows.push([esc(name), l.email, l.status, `${l.qualificationScore}%`, "", esc("(no messages)"), "", l.dropOffStage || ""].join(","));
+    const exportToServer = async (type: "leads" | "conversations") => {
+        setExporting(type);
+        try {
+            const res = await fetch("/api/admin/scholarship-leads/export", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ type, data: filtered }),
+            });
+            const result = await res.json();
+            if (result.success) {
+                alert(`Saved to exports/${result.filename} (${result.rows} rows)`);
             } else {
-                l.messages.forEach(msg => {
-                    rows.push([
-                        esc(name), l.email, l.status, `${l.qualificationScore}%`,
-                        msg.isFromVisitor ? "Lead" : "Sarah AI",
-                        esc(msg.message),
-                        new Date(msg.createdAt).toLocaleString(),
-                        l.dropOffStage || "",
-                    ].join(","));
-                });
+                alert("Export failed: " + (result.error || "Unknown error"));
             }
-        });
-        const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url; a.download = `scholarship-conversations-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
-        URL.revokeObjectURL(url);
+        } catch {
+            alert("Export failed — check console");
+        } finally {
+            setExporting(null);
+        }
     };
 
     // ─── Loading ─────────────────────────────────────────────
@@ -331,11 +311,11 @@ export default function ScholarshipLeadsClient() {
                                     <BarChart3 className="w-3.5 h-3.5" /> Analytics
                                 </Button>
                             </Link>
-                            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1.5 text-xs">
-                                <Download className="w-3.5 h-3.5" /> Export Leads
+                            <Button variant="outline" size="sm" onClick={() => exportToServer("leads")} disabled={!!exporting} className="gap-1.5 text-xs">
+                                {exporting === "leads" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />} Export Leads
                             </Button>
-                            <Button variant="outline" size="sm" onClick={exportConversations} className="gap-1.5 text-xs">
-                                <MessageCircle className="w-3.5 h-3.5" /> Export Chats
+                            <Button variant="outline" size="sm" onClick={() => exportToServer("conversations")} disabled={!!exporting} className="gap-1.5 text-xs">
+                                {exporting === "conversations" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <MessageCircle className="w-3.5 h-3.5" />} Export Chats
                             </Button>
                             <Button variant="outline" size="sm" onClick={fetchLeads} className="gap-1.5 text-xs">
                                 <RefreshCw className="w-3.5 h-3.5" />
