@@ -718,21 +718,18 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           const t2b = setTimeout(async () => {
             setIsTyping(false);
 
-            const msg2Content = `Here's what you're looking at, ${firstName}:
+            const msg2Content = `Institute Functional Medicine Private Path — the only program that takes you from zero to closing $3K-$5K clients in 6-12 months, ${firstName}:
 
-✅ Full BC-FMP™ Board Certification (20 Modules)
-✅ Done-For-You Client-Getting Website — LIVE in 48h
-✅ 6 Months 1:1 Mentorship with ME until you're certified + getting clients
-✅ Legal Templates, Offer Builder & Client Management System
-✅ 9 Board Accreditations + 20 Certificates
-✅ Private Community (1,200+ practitioners)
-✅ Lifetime Access — zero recurring fees, ever
+🎓 Main Certification + Advanced + Master + Practice (20 Modules — 4 Levels)
+🌐 Done-For-You Website to start attracting clients
+📦 Business Box — offer templates, pricing strategies, client acquisition system
+📋 Legal Templates — consent forms, intake forms, disclaimers
+🛠 Tools & Resources to manage clients professionally
+💻 Coach Workspace — your complete practitioner hub
 
-Other programs charge $8K-$15K for LESS than this.
+Type the amount you can cover and I'll call the Institute right now to see if they'll approve your scholarship and pay the rest.
 
-The Institute normally charges $4,997… but because you qualified through the scholarship program, you won't pay anywhere near that.
-
-How much can you realistically invest today? Even $200 could work — I'll call the Institute and fight for maximum coverage 💪📞`;
+Please be serious — this is a real path to ${incomeGoalLabel} monthly. Minimum is $200 💜`;
 
             const msg2: ChatMessage = {
               id: "sarah-2",
