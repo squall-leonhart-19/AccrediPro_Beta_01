@@ -374,6 +374,35 @@ export async function POST(request: NextRequest) {
 
         console.log(`[EXAM] ${user.email} completed exam: ${score}% (${correct}/${total}), passed: ${passed}, scholarship: ${scholarshipQualified}`);
 
+        // Fire CompleteMiniDiploma event to Meta Conversions API (server-side, non-blocking)
+        // This gives Meta the signal to optimize ad delivery toward completers
+        try {
+            const origin = request.headers.get("origin") || request.headers.get("referer")?.replace(/\/[^/]*$/, "") || "https://learn.accredipro.academy";
+            fetch(`${origin}/api/meta-conversions`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    event_name: "CompleteMiniDiploma",
+                    email: user.email,
+                    first_name: user.firstName,
+                    external_id: userId,
+                    content_name: examType,
+                    value: 0,
+                    currency: "USD",
+                    event_source_url: `https://learn.accredipro.academy/portal/${user.miniDiplomaCategory?.replace("-mini-diploma", "") || "functional-medicine"}/exam`,
+                    client_ip: request.headers.get("x-forwarded-for")?.split(",")[0] || "",
+                    user_agent: request.headers.get("user-agent") || "",
+                }),
+            }).then(async (res) => {
+                const result = await res.json();
+                console.log(`[EXAM] ✅ Meta CAPI CompleteMiniDiploma fired for ${user.email}:`, result.success ? "success" : result.error);
+            }).catch((err) => {
+                console.error(`[EXAM] Meta CAPI fire failed:`, err);
+            });
+        } catch (capiErr) {
+            console.error(`[EXAM] Meta CAPI setup error:`, capiErr);
+        }
+
         // NOTE: Email and DM are now sent 24h AFTER exam completion via cron job
         // This is to encourage Trustpilot reviews before certificate delivery
         // The cron checks for exam-passed-at tags older than 24h
