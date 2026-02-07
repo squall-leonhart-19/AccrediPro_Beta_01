@@ -1,109 +1,97 @@
 /**
  * Scholarship Autopilot Configuration
- * 
+ *
  * Full autopilot system for "Pay What You Can" scholarship model.
  * When user types a number, AI Sarah auto-responds with:
- * - "Institute covered more" drop logic
- * - Approved amount + savings
- * - Coupon code + checkout link
+ * - "Institute covered even more" psychology
+ * - Approved amount + savings breakdown
+ * - Direct Fanbasis checkout link (discount auto-applied, no coupon needed)
  */
 
-// ─── ClickFunnels Checkout URL ─────────────────────────────────────
-export const CHECKOUT_URL = "https://sarah.accredipro.academy/checkout-fm-certification-program";
+// ─── Fanbasis Checkout Links (discount auto-applied per tier) ────
+const FANBASIS_LINKS: Record<number, string> = {
+    100: "https://www.fanbasis.com/agency-checkout/AccrediPro/p8WmQ",
+    200: "https://www.fanbasis.com/agency-checkout/AccrediPro/wVDqR",
+    300: "https://www.fanbasis.com/agency-checkout/AccrediPro/xnEr9",
+    400: "https://www.fanbasis.com/agency-checkout/AccrediPro/zvJwY",
+    500: "https://www.fanbasis.com/agency-checkout/AccrediPro/lxyy1",
+};
 
-// ─── Base Product Price ────────────────────────────────────────────
+// Fallback checkout URL
+export const CHECKOUT_URL = "https://www.fanbasis.com/agency-checkout/AccrediPro/wVDqR";
+
+// ─── Program Full Price (for savings display) ────────────────────
+export const FULL_PRICE = 4997;
+
+// ─── Base Product Price (actual base for tier logic) ─────────────
 export const BASE_PRICE = 2000;
 
-// ─── Coupon Tier System ────────────────────────────────────────────
-// "Institute covered more" drop logic from SCHOLARSHIP-COUPON-SYSTEM.md
+// ─── Scholarship Tier System ─────────────────────────────────────
 
 export interface CouponTier {
     theyPay: number;
     drop: number;
-    couponCode: string;
-    savings: number; // vs base price
+    couponCode: string; // kept for compatibility but empty — no codes needed
+    savings: number;
+    checkoutUrl: string; // direct Fanbasis link with discount auto-applied
 }
 
 /**
- * Get coupon tier based on what the user offered
- * Implements the "Institute covered MORE" psychology
- * 
- * UPDATED (Feb 2026): Accept any amount from $200+
- * Round numbers only: $200, $250, $300, $350, $400, $500+
+ * Get the closest checkout link for a given amount
+ * Maps to the nearest Fanbasis tier: $100, $200, $300, $400, $500
+ */
+function getCheckoutLink(amount: number): string {
+    if (amount <= 100) return FANBASIS_LINKS[100];
+    if (amount <= 200) return FANBASIS_LINKS[200];
+    if (amount <= 300) return FANBASIS_LINKS[300];
+    if (amount <= 400) return FANBASIS_LINKS[400];
+    return FANBASIS_LINKS[500];
+}
+
+/**
+ * Get scholarship tier based on what the user offered
+ * Implements the "Institute covered EVEN MORE" psychology
+ *
+ * NEW (Feb 2026): Accept any amount from $100+
+ * Direct Fanbasis links — no coupon codes needed
+ * If they say more than $500, Institute "covered even more"
  */
 export function getCouponTier(offeredAmount: number): CouponTier | null {
-    // Accept anything $200 or more (minimum floor)
-    if (offeredAmount < 200) {
-        return null; // Below minimum - needs manual handling
-    }
-
-    // $50-99 → they pay $50
+    // Accept anything $100 or more
     if (offeredAmount < 100) {
-        return {
-            theyPay: 50,
-            drop: Math.max(0, offeredAmount - 50),
-            couponCode: "SCHOLARSHIP50",
-            savings: BASE_PRICE - 50,
-        };
+        return null; // Below minimum
     }
 
-    // $100-149 → they pay $100
-    if (offeredAmount < 150) {
+    // $100-199 → they pay $100
+    if (offeredAmount < 200) {
         return {
             theyPay: 100,
             drop: offeredAmount - 100,
-            couponCode: "SCHOLARSHIP100",
-            savings: BASE_PRICE - 100,
+            couponCode: "",
+            savings: FULL_PRICE - 100,
+            checkoutUrl: FANBASIS_LINKS[100],
         };
     }
 
-    // $150-199 → they pay $150
-    if (offeredAmount < 200) {
-        return {
-            theyPay: 150,
-            drop: offeredAmount - 150,
-            couponCode: "SCHOLARSHIP150",
-            savings: BASE_PRICE - 150,
-        };
-    }
-
-    // $200-249 → they pay $200
-    if (offeredAmount < 250) {
+    // $200-299 → they pay $200
+    if (offeredAmount < 300) {
         return {
             theyPay: 200,
             drop: offeredAmount - 200,
-            couponCode: "SCHOLARSHIP200",
-            savings: BASE_PRICE - 200,
+            couponCode: "",
+            savings: FULL_PRICE - 200,
+            checkoutUrl: FANBASIS_LINKS[200],
         };
     }
 
-    // $250-299 → they pay $250
-    if (offeredAmount < 300) {
-        return {
-            theyPay: 250,
-            drop: offeredAmount - 250,
-            couponCode: "SCHOLARSHIP250",
-            savings: BASE_PRICE - 250,
-        };
-    }
-
-    // $300-349 → they pay $300
-    if (offeredAmount < 350) {
+    // $300-399 → they pay $300
+    if (offeredAmount < 400) {
         return {
             theyPay: 300,
             drop: offeredAmount - 300,
-            couponCode: "SCHOLARSHIP300",
-            savings: BASE_PRICE - 300,
-        };
-    }
-
-    // $350-399 → they pay $350
-    if (offeredAmount < 400) {
-        return {
-            theyPay: 350,
-            drop: offeredAmount - 350,
-            couponCode: "SCHOLARSHIP350",
-            savings: BASE_PRICE - 350,
+            couponCode: "",
+            savings: FULL_PRICE - 300,
+            checkoutUrl: FANBASIS_LINKS[300],
         };
     }
 
@@ -112,107 +100,19 @@ export function getCouponTier(offeredAmount: number): CouponTier | null {
         return {
             theyPay: 400,
             drop: offeredAmount - 400,
-            couponCode: "SCHOLARSHIP400",
-            savings: BASE_PRICE - 400,
+            couponCode: "",
+            savings: FULL_PRICE - 400,
+            checkoutUrl: FANBASIS_LINKS[400],
         };
     }
 
-    // $500-549 - Starter tier (no drop)
-    if (offeredAmount < 550) {
-        return {
-            theyPay: 500,
-            drop: 0,
-            couponCode: "SCHOLARSHIP500",
-            savings: BASE_PRICE - 500,
-        };
-    }
-
-    // $550-599 → they pay $500 (drop $50-99)
-    if (offeredAmount < 600) {
-        return {
-            theyPay: 500,
-            drop: offeredAmount - 500,
-            couponCode: "SCHOLARSHIP500",
-            savings: BASE_PRICE - 500,
-        };
-    }
-
-    // $600-699 → they pay $550 (drop $50-149)
-    if (offeredAmount < 700) {
-        return {
-            theyPay: 550,
-            drop: offeredAmount - 550,
-            couponCode: "SCHOLARSHIP550",
-            savings: BASE_PRICE - 550,
-        };
-    }
-
-    // $700-799 → they pay $600 (drop $100-199)
-    if (offeredAmount < 800) {
-        return {
-            theyPay: 600,
-            drop: offeredAmount - 600,
-            couponCode: "SCHOLARSHIP600",
-            savings: BASE_PRICE - 600,
-        };
-    }
-
-    // $800-899 → they pay $700 (drop $100-199)
-    if (offeredAmount < 900) {
-        return {
-            theyPay: 700,
-            drop: offeredAmount - 700,
-            couponCode: "SCHOLARSHIP700",
-            savings: BASE_PRICE - 700,
-        };
-    }
-
-    // $900-999 → they pay $800 (drop $100-199)
-    if (offeredAmount < 1000) {
-        return {
-            theyPay: 800,
-            drop: offeredAmount - 800,
-            couponCode: "SCHOLARSHIP800",
-            savings: BASE_PRICE - 800,
-        };
-    }
-
-    // $1000-1199 → they pay $900 (drop $100-299)
-    if (offeredAmount < 1200) {
-        return {
-            theyPay: 900,
-            drop: offeredAmount - 900,
-            couponCode: "SCHOLARSHIP900",
-            savings: BASE_PRICE - 900,
-        };
-    }
-
-    // $1200-1499 → they pay $1000 (drop $200-499)
-    if (offeredAmount < 1500) {
-        return {
-            theyPay: 1000,
-            drop: offeredAmount - 1000,
-            couponCode: "SCHOLARSHIP1000",
-            savings: BASE_PRICE - 1000,
-        };
-    }
-
-    // $1500-1999 → they pay $1200 (drop $300-799)
-    if (offeredAmount < 2000) {
-        return {
-            theyPay: 1200,
-            drop: offeredAmount - 1200,
-            couponCode: "SCHOLARSHIP1200",
-            savings: BASE_PRICE - 1200,
-        };
-    }
-
-    // $2000+ → full price, no coupon
+    // $500+ → they pay $500 (Institute covered even more!)
     return {
-        theyPay: BASE_PRICE,
-        drop: 0,
+        theyPay: 500,
+        drop: Math.max(0, offeredAmount - 500),
         couponCode: "",
-        savings: 0,
+        savings: FULL_PRICE - 500,
+        checkoutUrl: FANBASIS_LINKS[500],
     };
 }
 
@@ -273,7 +173,8 @@ export function formatCurrency(amount: number): string {
 }
 
 /**
- * Generate the full approval response message - SHORT VERSION
+ * Generate the full approval response message
+ * Now uses direct Fanbasis links — no coupon codes needed!
  */
 export function generateApprovalMessage(
     firstName: string,
@@ -281,30 +182,21 @@ export function generateApprovalMessage(
     tier: CouponTier
 ): string {
     const caseNumber = generateCaseNumber();
-
-    // Full price - no coupon needed
-    if (!tier.couponCode) {
-        return `🎉 ${firstName}!! YOU'RE IN!
-
-Check your email in 5 min for login credentials.
-Start with Module 1 → learn.accredipro.academy
-
-SO PROUD OF YOU! 💜`;
-    }
-
-    // Scholarship approved
-    const savings = BASE_PRICE - tier.theyPay;
+    const savingsDisplay = formatCurrency(tier.savings);
+    const instituteCovered = tier.drop > 0
+        ? `\nThe Institute covered an extra ${formatCurrency(tier.drop)} on top of your scholarship!`
+        : "";
 
     return `🎉 ${firstName}! Case #${caseNumber} — APPROVED! 💜
+${instituteCovered}
+You pay: ${formatCurrency(tier.theyPay)} (instead of ${formatCurrency(FULL_PRICE)})
+You save: ${savingsDisplay}
 
-The Institute just covered ${formatCurrency(savings)} of your tuition!
+Scholarship discount auto-applied — just tap and enroll:
 
-You pay: ${formatCurrency(tier.theyPay)} (instead of ${formatCurrency(BASE_PRICE)})
+👉 ${tier.checkoutUrl}
 
-👉 ${CHECKOUT_URL}
-Use code: ${tier.couponCode}
-
-⏰ This scholarship expires in 10 minutes — tap the link, enter your code, and you're in!`;
+⏰ This scholarship expires in 10 minutes — tap the link and you're in!`;
 }
 
 

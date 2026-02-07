@@ -931,8 +931,7 @@ Type the amount you can cover and I'll call the Institute right now to see if th
           // 💾 Save scholarship context for AI follow-up responses
           const approvalCtx = {
             amount: autoReply.fullContext.finalAmount ? `$${autoReply.fullContext.finalAmount}` : undefined,
-            couponCode: autoReply.fullContext.couponCode || undefined,
-            checkoutUrl: autoReply.checkoutUrl,
+            checkoutUrl: autoReply.checkoutUrl || autoReply.tier?.checkoutUrl,
           };
           setScholarshipContext(approvalCtx);
           scholarshipContextRef.current = approvalCtx;

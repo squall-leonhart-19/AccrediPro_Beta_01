@@ -10,12 +10,12 @@ import {
 
 /**
  * Scholarship Auto-Reply API
- * 
+ *
  * Full autopilot system for handling scholarship price negotiations.
  * When a user messages with a dollar amount, this API:
  * 1. Extracts the amount
  * 2. Applies the "Institute covered more" drop logic
- * 3. Returns the approval message with coupon code + checkout link
+ * 3. Returns the approval message with direct Fanbasis checkout link
  */
 
 export interface AutoReplyRequest {
@@ -49,6 +49,7 @@ export interface AutoReplyResponse {
         drop: number;
         couponCode: string;
         savings: number;
+        checkoutUrl?: string;
     } | null;
     checkoutUrl: string;
     fullContext: {
@@ -100,34 +101,33 @@ export async function POST(req: NextRequest) {
             } satisfies AutoReplyResponse);
         }
 
-        // Get coupon tier based on amount
+        // Get tier based on amount
         const tier = getCouponTier(detectedAmount);
 
-        // REJECTION: Amount below $200 minimum
+        // REJECTION: Amount below $100 minimum
         if (!tier) {
-            const rejectionMessage = `I hear you \u{1F49C} The Institute needs minimum $200 to activate your scholarship \u2014 that's 96% OFF.
+            const rejectionMessage = `I hear you \u{1F49C} The Institute needs a bit more to activate your scholarship.
 
-${firstName}, for just $200 you get EVERYTHING:
+${firstName}, can you do $100? For just $100 you get the FULL program:
 
-\u2705 Full BC-FMP\u2122 Board Certification (20 Modules)
-\u2705 Done-For-You Website \u2014 LIVE in 48h
-\u2705 6 Months 1:1 Mentorship with me
-\u2705 9 Board Accreditations + 20 Certificates
-\u2705 Legal Templates + Client Management System
+\u2705 Full BC-FMP\u2122 Board Certification (20 Modules \u2014 4 Levels)
+\u2705 Done-For-You Website to attract clients
+\u2705 Business Box + Legal Templates
+\u2705 Coach Workspace + Client Management Tools
 \u2705 Lifetime Access \u2014 zero recurring fees
 
-That's $200 for a $4,997 program. Other programs charge $8K-$15K for less.
+That's $100 for a $4,997 program. The Institute covers the rest.
 
-Can you make $200 work? I'll call the Institute right now \u{1F4DE}`;
+Can you make $100 work? I'll call them right now \u{1F4DE}`;
 
-            console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} \u2192 REJECTED (below $200 minimum)`);
+            console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} \u2192 REJECTED (below $100 minimum)`);
 
             return NextResponse.json({
                 hasAmount: true,
                 detectedAmount,
                 callingMessage: null,
                 approvalMessage: null,
-                rejectionMessage, // NEW: Signal rejection with message
+                rejectionMessage,
                 tier: null,
                 checkoutUrl: CHECKOUT_URL,
                 fullContext: {
@@ -148,7 +148,7 @@ Can you make $200 work? I'll call the Institute right now \u{1F4DE}`;
         const callingMessage = generateCallingMessage();
         const approvalMessage = generateApprovalMessage(firstName, detectedAmount, tier);
 
-        console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} \u2192 pays ${formatCurrency(tier.theyPay)} (${tier.couponCode})`);
+        console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} \u2192 pays ${formatCurrency(tier.theyPay)} (Fanbasis link)`);
 
         return NextResponse.json({
             hasAmount: true,
@@ -156,7 +156,7 @@ Can you make $200 work? I'll call the Institute right now \u{1F4DE}`;
             callingMessage,
             approvalMessage,
             tier,
-            checkoutUrl: CHECKOUT_URL,
+            checkoutUrl: tier.checkoutUrl || CHECKOUT_URL,
             fullContext: {
                 firstName,
                 lastName: lastName || "",
@@ -164,7 +164,7 @@ Can you make $200 work? I'll call the Institute right now \u{1F4DE}`;
                 visitorId: visitorId || "",
                 offeredAmount: detectedAmount,
                 finalAmount: tier.theyPay,
-                couponCode: tier.couponCode || null,
+                couponCode: null,
                 quizData,
             },
         } satisfies AutoReplyResponse);
