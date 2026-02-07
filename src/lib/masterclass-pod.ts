@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { getPreCompletionMessage } from "@/data/masterclass-pre-completion";
+import { getZombieForNiche } from "@/data/niche-zombie-registry";
 
 /**
  * Create a Masterclass Pod for a user who just opted in.
@@ -22,20 +23,29 @@ export async function createMasterclassPod(
             return { success: true, podId: existingPod.id };
         }
 
-        // Select a zombie profile for this pod
-        const zombie = await prisma.zombieProfile.findFirst({
+        // Select the correct zombie profile for this niche
+        const nicheZombie = getZombieForNiche(nicheCategory);
+
+        // Find or create the zombie profile in the database
+        let zombie = await prisma.zombieProfile.findFirst({
             where: {
+                name: nicheZombie.zombieName,
                 isActive: true,
-                tier: 1, // Active chatter tier
-            },
-            orderBy: {
-                createdAt: "desc",
             },
         });
 
         if (!zombie) {
-            console.error(`[MASTERCLASS] No active zombie profiles found!`);
-            return { success: false, error: "No zombie profiles available" };
+            // Auto-create the zombie profile from the niche registry
+            zombie = await prisma.zombieProfile.create({
+                data: {
+                    name: nicheZombie.zombieName,
+                    avatar: nicheZombie.zombieAvatar,
+                    personalityType: nicheZombie.personalityType,
+                    tier: 1,
+                    isActive: true,
+                },
+            });
+            console.log(`[MASTERCLASS] Auto-created zombie profile: ${nicheZombie.zombieName} for niche ${nicheCategory}`);
         }
 
         // Get user's first name for personalization
@@ -509,5 +519,94 @@ export async function advanceToNextDay(podId: string): Promise<boolean> {
     } catch (error) {
         console.error(`[MASTERCLASS] Failed to advance pod ${podId}:`, error);
         return false;
+    }
+}
+
+/**
+ * Trigger Sarah's welcome message when the student sends their first message
+ * in the Circle Pod. This makes the pod feel alive and responsive.
+ *
+ * Called from the pod message API when it detects the student has 0 previous messages.
+ * Sarah responds ~30 seconds after the student's message to feel natural.
+ */
+export async function triggerStudentJoinedWelcome(
+    userId: string
+): Promise<void> {
+    try {
+        const pod = await prisma.masterclassPod.findUnique({
+            where: { userId },
+            include: { zombieProfile: true },
+        });
+
+        if (!pod) {
+            console.log(`[MASTERCLASS] No pod found for user ${userId}, skipping welcome`);
+            return;
+        }
+
+        // Check if Sarah has already sent a student-joined welcome
+        const existingWelcome = await prisma.masterclassMessage.findFirst({
+            where: {
+                podId: pod.id,
+                senderType: "sarah",
+                content: { contains: "just introduced" },
+            },
+        });
+
+        if (existingWelcome) {
+            console.log(`[MASTERCLASS] Student-joined welcome already sent for pod ${pod.id}`);
+            return;
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { firstName: true },
+        });
+        const firstName = user?.firstName || "friend";
+        const zombieName = pod.zombieProfile?.name?.split(" ")[0] || "your cohort mate";
+
+        // Sarah replies ~30 seconds from now (feels natural, not instant)
+        const sarahTime = new Date(Date.now() + 30 * 1000);
+
+        const sarahContent = `💛 ${firstName}!! You just introduced yourself — I love it!\n\nSo glad you're here. ${zombieName} and I have been waiting for you! 🎉\n\nYou're going to love this journey. Take it one lesson at a time, and don't hesitate to ask questions here.\n\nI'm right here with you the whole way. Let's do this! 💪`;
+
+        await prisma.masterclassMessage.create({
+            data: {
+                podId: pod.id,
+                dayNumber: 0,
+                senderType: "sarah",
+                senderName: "Sarah Mitchell",
+                senderAvatar: "/coaches/sarah-coach.webp",
+                content: sarahContent,
+                scheduledFor: sarahTime,
+                sentAt: null,
+            },
+        });
+
+        // Zombie also reacts ~2 minutes later
+        const zombieTime = new Date(Date.now() + 2 * 60 * 1000);
+
+        const zombieReactions = [
+            `yesss ${firstName}!! 🥳 so excited to have you here with us!! we're going to crush this together 💪💕`,
+            `omg ${firstName}!! 🎉 welcome welcome!! I'm so glad another one joined us. this is going to be amazing 💜`,
+            `hey ${firstName}!! yay!! 🥹 so glad you're here. trust me, if I can do this — YOU can do this. let's gooo 🙌`,
+        ];
+        const randomReaction = zombieReactions[Math.floor(Math.random() * zombieReactions.length)];
+
+        await prisma.masterclassMessage.create({
+            data: {
+                podId: pod.id,
+                dayNumber: 0,
+                senderType: "zombie",
+                senderName: pod.zombieProfile?.name || "Jennifer",
+                senderAvatar: pod.zombieProfile?.avatar,
+                content: randomReaction,
+                scheduledFor: zombieTime,
+                sentAt: null,
+            },
+        });
+
+        console.log(`[MASTERCLASS] Scheduled student-joined welcome for user ${userId} in pod ${pod.id}`);
+    } catch (error) {
+        console.error(`[MASTERCLASS] Failed to trigger student-joined welcome:`, error);
     }
 }

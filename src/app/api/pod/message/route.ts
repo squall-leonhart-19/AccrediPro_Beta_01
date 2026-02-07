@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { triggerStudentJoinedWelcome } from "@/lib/masterclass-pod";
 
 // GET /api/pod/message - Load user's messages from database
 export async function GET() {
@@ -56,6 +57,17 @@ export async function POST(request: NextRequest) {
                 aiResponse: aiResponse?.substring(0, 5000) || null,
             },
         });
+
+        // Check if this is the student's first message — trigger Sarah welcome
+        const previousCount = await prisma.podUserMessage.count({
+            where: { userId: session.user.id },
+        });
+        if (previousCount === 1) {
+            // First message ever — trigger the welcome
+            triggerStudentJoinedWelcome(session.user.id).catch(err =>
+                console.error("[Pod Message] Welcome trigger failed:", err)
+            );
+        }
 
         return NextResponse.json({ success: true, id: message.id });
     } catch (error) {
