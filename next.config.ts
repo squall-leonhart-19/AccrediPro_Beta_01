@@ -102,6 +102,8 @@ const nextConfig: NextConfig = {
       'reiki-healing',
       'adhd-coaching',
       'pet-nutrition',
+      'integrative-health',
+      'life-coaching',
     ];
 
     return diplomaSlugs.map(slug => ({

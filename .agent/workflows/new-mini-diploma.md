@@ -33,7 +33,14 @@ description: Create a new mini diploma from a spec
    - Lesson titles in the "3 Lessons" section
    - Certificate image path
    - Primary color (if different niche feeling)
-4. **KEEP EVERYTHING ELSE IDENTICAL**:
+   - **Quiz niche prop**: Add `niche="{new-slug}"` to `<SarahApplicationForm />` (see below)
+4. **ADD NICHE OVERRIDE** (if not already present):
+   - In `src/components/lead-portal/sarah-application-form.tsx`, add an entry to `NICHE_OVERRIDES` for the new niche slug with:
+     - `q2Title`: "Q2 — Why {New Title}"
+     - `q2Subtitle`: Niche-specific subtitle
+     - `q2Options`: 5 niche-specific motivation options
+     - `sarahCredentials`: "Clinical Director · 20+ Years in {Niche} & {Specialty}"
+5. **KEEP EVERYTHING ELSE IDENTICAL**:
    - All imports
    - All CSS
    - All component structure
@@ -80,7 +87,86 @@ description: Create a new mini diploma from a spec
 |      primaryColor={BRAND.primary}      |
 |  - Course slug in API call             |
 |  - Pixel ID if different               |
+|  - SarahApplicationForm niche prop:    |
+|      niche="{new-slug}"               |
 +----------------------------------------+
+
+### Quiz Niche Customization (REQUIRED — ALL QUESTIONS):
+The `SarahApplicationForm` component accepts a `niche` prop that customizes **ALL quiz questions** and Sarah's credentials per niche.
+
+**In the landing page:**
+```tsx
+<SarahApplicationForm
+    onSubmit={handleSubmit}
+    onAccepted={() => { /* redirect */ }}
+    isSubmitting={isSubmitting}
+    isVerifying={isVerifying}
+    niche="{new-slug}"  // ← ADD THIS
+/>
+```
+
+**In `src/components/lead-portal/sarah-application-form.tsx`**, add to `NICHE_OVERRIDES`:
+```tsx
+"{new-slug}": {
+    sarahCredentials: "Clinical Director · 20+ Years in {Niche} & {Specialty}",
+    // Q1 — Niche-specific backgrounds (NOT healthcare RN/LPN/NP for non-medical niches!)
+    q1Options: [
+        { value: "primary-role", label: "Niche-specific primary role", icon: "🔮" },
+        { value: "wellness", label: "Related wellness role", icon: "🧘" },
+        { value: "caregiver", label: "Caregiver or support role", icon: "💛" },
+        { value: "transition", label: "Career transition", icon: "🦋" },
+        { value: "other", label: "Other — called to this work", icon: "✨" },
+    ],
+    // Q2 — Niche-specific motivations
+    q2Title: "Q2 — Why {New Title}",
+    q2Subtitle: "What's drawing you toward this work?\nBe honest...",
+    q2Options: [
+        { value: "help-heal", label: "Niche-specific option 1", icon: "💜" },
+        { value: "own-journey", label: "Niche-specific option 2", icon: "🌱" },
+        { value: "burnout", label: "Niche-specific option 3", icon: "🔥" },
+        { value: "flexibility", label: "Niche-specific option 4", icon: "⏰" },
+        { value: "new-chapter", label: "Niche-specific option 5", icon: "✨" },
+    ],
+    // Q3 — Niche-specific pain points + testimonials
+    q3Title: "Q3 — What This Has Been Costing You",
+    q3Subtitle: "Niche-specific cost framing...",
+    q3Options: [
+        { value: "pain-1", label: "Niche-specific pain point 1", icon: "🙈" },
+        // ... 6 total
+    ],
+    q3Testimonials: {
+        "pain-1": { quote: "Relevant testimonial...", name: "Name, Age", location: "State" },
+        // ... one per q3 option
+    },
+    // Q4 — Niche-specific barriers
+    q4Options: [
+        { value: "unsure-where", label: "Niche-specific barrier 1", icon: "🤔" },
+        // ... 5 total
+    ],
+    // Q5 — Niche-specific success goals
+    q5Options: [
+        { value: "side-income", label: "Niche-specific side goal", icon: "🌱" },
+        { value: "replace-income", label: "Niche-specific growth goal", icon: "📈" },
+        { value: "full-practice", label: "Niche-specific full practice goal", icon: "🚀" },
+    ],
+    // Q7 — Niche-specific investment framing
+    q7Subtitle: "The Foundation Diploma gives you the {niche} fundamentals...",
+    // Q8 — Niche-specific readiness vision
+    q8Subtitle: "Imagine 8 weeks from now — certified in {niche}, working from home...",
+},
+```
+
+> **⚠️ Without this, ALL quiz questions default to Functional Medicine!**  
+> Q1 will show "Healthcare professional (RN, LPN, NP)" which is wrong for spiritual/energy/coaching niches.
+
+### Buyer Persona JSON (REQUIRED):
+Create a comprehensive buyer persona for the niche:
+
+**File:** `src/data/buyer-personas/{portal_slug}.json`
+
+Must include: `primaryBuyer`, `psychographics`, `segments` (5 buyer types with percentages), `emotionalDrivers`, `objections` (top 5 with reframes), `contentTriggers`, `adTargeting` (interests, behaviors, demographics), and `quizMapping`.
+
+**Reference:** See `src/data/buyer-personas/spiritual-healing.json` for gold-standard example.
 ```
 
 ### Certificate Section Uses HTML Component:

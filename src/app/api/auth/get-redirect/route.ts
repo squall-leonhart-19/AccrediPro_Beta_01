@@ -44,6 +44,8 @@ export async function GET() {
             "adhd-coaching-mini-diploma": "adhd-coaching",
             "pet-nutrition-mini-diploma": "pet-nutrition",
             "spiritual-healing-mini-diploma": "spiritual-healing",
+            "integrative-health-mini-diploma": "integrative-health",
+            "life-coaching-mini-diploma": "life-coaching",
         };
 
         const miniDiplomaSlugs = Object.keys(miniDiplomaMap);

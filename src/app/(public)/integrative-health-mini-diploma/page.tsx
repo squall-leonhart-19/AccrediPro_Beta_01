@@ -1,26 +1,12 @@
-'use client';
+import NicheMiniDiplomaPage from "@/components/mini-diploma/niche-landing-page";
+import { getNicheConfig } from "@/components/mini-diploma/landing-page-registry";
+import type { Metadata } from "next";
 
-import { useEffect } from 'react';
+export const metadata: Metadata = {
+    title: "Integrative Health Mini Diploma — Free 1-Hour Certification | AccrediPro",
+    description: "Get certified in Integrative Health in just 1 hour. Free ASI-verified mini diploma. Bridge conventional and holistic medicine. Start earning $4K-$8K/month.",
+};
 
-// Redirect to Lesson 1
 export default function IntegrativeHealthMiniDiplomaPage() {
-    useEffect(() => {
-        window.location.href = '/integrative-health-mini-diploma/lesson-1';
-    }, []);
-
-    return (
-        <div style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'Georgia, serif',
-            color: '#2D5A4A',
-        }}>
-            <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 32, marginBottom: 16 }}>🩺</div>
-                <div>Loading Integrative Health Mini-Diploma...</div>
-            </div>
-        </div>
-    );
+    return <NicheMiniDiplomaPage config={getNicheConfig("integrative-health")} />;
 }

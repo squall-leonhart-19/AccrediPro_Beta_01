@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { sendWomensHealthWelcomeEmail, sendFreebieWelcomeEmail } from "@/lib/email";
 import { leadRateLimiter } from "@/lib/redis";
+import { verifyEmail } from "@/lib/neverbounce";
 import { createMasterclassPod } from "@/lib/masterclass-pod";
 
 // Universal password for all mini diploma leads
@@ -25,6 +26,8 @@ const COURSE_SLUGS: Record<string, string> = {
     "adhd-coaching": "adhd-coaching-mini-diploma",
     "pet-nutrition": "pet-nutrition-mini-diploma",
     "spiritual-healing": "spiritual-healing-mini-diploma",
+    "integrative-health": "integrative-health-mini-diploma",
+    "life-coaching": "life-coaching-mini-diploma",
 };
 
 // Coach emails by mini diploma type
@@ -44,6 +47,8 @@ const COACH_EMAILS: Record<string, string> = {
     "adhd-coaching": "sarah@accredipro-certificate.com",
     "pet-nutrition": "sarah@accredipro-certificate.com",
     "spiritual-healing": "sarah@accredipro-certificate.com",
+    "integrative-health": "sarah@accredipro-certificate.com",
+    "life-coaching": "sarah@accredipro-certificate.com",
 };
 
 // Welcome messages by mini diploma type
@@ -260,6 +265,52 @@ With light,
 Sarah ✨`,
         voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up for the Spiritual Healing Mini Diploma and wanted to personally welcome you. I'm so excited you're here! You have a gift for healing, and I can't wait to help you develop it. Check your dashboard to get started, and message me anytime if you have questions. Talk soon ${firstName}!`,
     },
+    "integrative-health": {
+        text: (firstName: string) => `Hey ${firstName}! \ud83d\udc95
+
+I'm Sarah, your coach for this entire journey - and I just saw your name come through!
+
+Welcome to your Integrative Health Mini Diploma! This is the start of something truly special, and I'm SO excited you're here!
+
+Inside your dashboard you'll find:
+
+\u2728 Your 3 transformative lessons on integrative health ready to start
+\u2728 Your Roadmap showing where you're headed
+\u2728 Direct access to message me anytime
+
+You're joining a growing movement of practitioners who bridge conventional and holistic approaches. The world needs more integrative health professionals, and I know you're going to be amazing!
+
+Hit reply anytime - tell me a little about yourself! What drew you to integrative health?
+
+I'm here for you every step of the way!
+
+With warmth,
+Sarah \u2728`,
+        voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up for the Integrative Health Mini Diploma and wanted to personally welcome you. I'm so excited you're here! Bridging conventional and holistic health is such important work, and I can't wait to help you master it. Check your dashboard to get started, and message me anytime if you have questions. Talk soon ${firstName}!`,
+    },
+    "life-coaching": {
+        text: (firstName: string) => `Hey ${firstName}! \ud83d\udc95
+
+I'm Sarah, your coach for this entire journey - and I just saw your name come through!
+
+Welcome to your Life Coaching Mini Diploma! This is the start of something incredible, and I'm SO excited you're here!
+
+Inside your dashboard you'll find:
+
+\u2728 Your 3 transformative lessons on life coaching ready to start
+\u2728 Your Roadmap showing where you're headed
+\u2728 Direct access to message me anytime
+
+Life coaching is one of the most fulfilling careers you can choose. You get to help people transform their lives every day, and I can't wait to show you exactly how!
+
+Hit reply anytime - tell me a little about yourself! What inspired you to explore life coaching?
+
+I'm here for you every step of the way!
+
+With excitement,
+Sarah \u2728`,
+        voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up for the Life Coaching Mini Diploma and wanted to personally welcome you. I'm so excited you're here! Life coaching is such rewarding work, and I can't wait to help you develop your skills. Check your dashboard to get started, and message me anytime if you have questions. Talk soon ${firstName}!`,
+    },
 };
 
 // ============================================================
@@ -305,6 +356,8 @@ function getCertificationDisplayName(course: string): string {
         "adhd-coaching": "ADHD Coaching",
         "pet-nutrition": "Pet Nutrition & Wellness",
         "spiritual-healing": "Spiritual Healing",
+        "integrative-health": "Integrative Health",
+        "life-coaching": "Life Coaching",
     };
     return names[course] || "Health Certification";
 }
@@ -447,6 +500,20 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             );
         }
+
+        // Verify email with NeverBounce (rejects invalid/disposable, allows valid/catchall/unknown)
+        const emailVerification = await verifyEmail(email);
+        if (!emailVerification.isValid) {
+            console.log(`[OPTIN] ❌ NeverBounce rejected ${email}: ${emailVerification.result}`);
+            return NextResponse.json(
+                {
+                    error: emailVerification.reason || "Please enter a valid email address.",
+                    suggestedEmail: emailVerification.suggestedEmail,
+                },
+                { status: 400 }
+            );
+        }
+        console.log(`[OPTIN] ✅ NeverBounce: ${email} → ${emailVerification.result}`);
 
         // Validate phone format (Basic +1 check)
         // We strip non-digits and check length
@@ -718,12 +785,14 @@ export async function POST(request: NextRequest) {
                 "holistic-nutrition": "Holistic Nutrition",
                 "nurse-coach": "Nurse Life Coach",
                 "health-coach": "Health Coach",
-                        "energy-healing": "Energy Healing",
+                "energy-healing": "Energy Healing",
                 "christian-coaching": "Christian Coaching",
                 "reiki-healing": "Reiki Healing",
                 "adhd-coaching": "ADHD Coaching",
                 "pet-nutrition": "Pet Nutrition & Wellness",
                 "spiritual-healing": "Spiritual Healing",
+                "integrative-health": "Integrative Health",
+                "life-coaching": "Life Coaching",
             };
             const nicheName = nicheNames[course] || course;
 

@@ -449,7 +449,25 @@ export default function CirclePodPage() {
                                                 </p>
                                             )}
                                             <p className={`text-base leading-relaxed whitespace-pre-wrap ${isUser ? "text-white" : "text-gray-800"}`}>
-                                                {msg.content}
+                                                {msg.content.split(/\[image:(.*?)\]/).map((part, pIdx) => {
+                                                    // Odd indices are the captured image URLs
+                                                    if (pIdx % 2 === 1) {
+                                                        return (
+                                                            <span key={pIdx} className="block my-3">
+                                                                <Image
+                                                                    src={part}
+                                                                    alt="Shared image"
+                                                                    width={400}
+                                                                    height={300}
+                                                                    className="rounded-xl border shadow-sm max-w-full"
+                                                                    style={{ borderColor: `${BRAND.gold}40` }}
+                                                                    unoptimized
+                                                                />
+                                                            </span>
+                                                        );
+                                                    }
+                                                    return part ? <span key={pIdx}>{part}</span> : null;
+                                                })}
                                             </p>
                                             {msg.audioUrl && <AudioPlayer url={msg.audioUrl} />}
                                             <p className="text-xs mt-2 text-right" style={{ color: isUser ? "rgba(255,255,255,0.6)" : "#9ca3af" }}>

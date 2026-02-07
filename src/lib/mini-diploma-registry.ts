@@ -49,83 +49,95 @@ export interface MiniDiplomaConfig {
     trustpilotUrl?: string; // default: https://www.trustpilot.com/review/accredipro.academy
 }
 
-// 3-lesson curriculum — all diplomas follow this pattern
+// 3-lesson curriculum — niche-specific method names from blueprints
 const FM_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Functional Medicine Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "The Functional Medicine Revolution", module: 1 },
+    { id: 2, title: "The D.E.P.T.H. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Functional Medicine Practice", module: 1 },
 ];
 
 const WH_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Women's Hormone Health Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "The Female Hormonal Landscape", module: 1 },
+    { id: 2, title: "The B.L.O.O.M. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Women's Health Coaching Practice", module: 1 },
 ];
 
 const GUT_HEALTH_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Gut Health Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "The Gut Health Revolution", module: 1 },
+    { id: 2, title: "The R.E.S.E.T. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Gut Health Practice", module: 1 },
 ];
 
 const HORMONE_HEALTH_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Hormone Health Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "Understanding the Hormonal Symphony", module: 1 },
+    { id: 2, title: "The B.A.L.A.N.C.E. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Hormone Health Practice", module: 1 },
 ];
 
 const HOLISTIC_NUTRITION_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Holistic Nutrition Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "The Holistic Nutrition Revolution", module: 1 },
+    { id: 2, title: "The W.H.O.L.E. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Holistic Nutrition Practice", module: 1 },
 ];
 
 const NURSE_COACH_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Nurse Coach Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "From Bedside to Beyond", module: 1 },
+    { id: 2, title: "The C.A.R.E.S. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Nurse Coaching Business", module: 1 },
 ];
 
 const HEALTH_COACH_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Health Coaching Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "The Health Coaching Revolution", module: 1 },
+    { id: 2, title: "The T.H.R.I.V.E. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Health Coaching Practice", module: 1 },
 ];
 
 const CHRISTIAN_COACHING_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Christian Coaching Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "The Call to Christian Coaching", module: 1 },
+    { id: 2, title: "The G.R.A.C.E. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Faith-Based Coaching Practice", module: 1 },
 ];
 
 const SPIRITUAL_HEALING_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Spiritual Healing Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "The Spiritual Healing Awakening", module: 1 },
+    { id: 2, title: "The S.A.C.R.E.D. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Spiritual Healing Practice", module: 1 },
 ];
 
 const ENERGY_HEALING_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Energy Healing Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "The Science of Energy Healing", module: 1 },
+    { id: 2, title: "The F.L.O.W. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Energy Healing Practice", module: 1 },
 ];
 
 const REIKI_HEALING_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Reiki Healing Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "The Art of Reiki Healing", module: 1 },
+    { id: 2, title: "The L.I.G.H.T. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Reiki Healing Practice", module: 1 },
 ];
 
 const ADHD_COACHING_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "ADHD Coaching Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "Understanding ADHD Beyond the Label", module: 1 },
+    { id: 2, title: "The F.O.C.U.S. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your ADHD Coaching Practice", module: 1 },
 ];
 
 const PET_NUTRITION_LESSONS: DiplomaLesson[] = [
-    { id: 1, title: "Pet Nutrition Foundation", module: 1 },
-    { id: 2, title: "The D.E.P.T.H. Method\u2122", module: 1 },
-    { id: 3, title: "How To Get Your First Clients", module: 1 },
+    { id: 1, title: "The Pet Nutrition Crisis", module: 1 },
+    { id: 2, title: "The P.A.W.S. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Pet Nutrition Business", module: 1 },
+];
+
+const INTEGRATIVE_HEALTH_LESSONS: DiplomaLesson[] = [
+    { id: 1, title: "The Integrative Health Revolution", module: 1 },
+    { id: 2, title: "The B.R.I.D.G.E. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building Your Integrative Health Practice", module: 1 },
+];
+
+const LIFE_COACHING_LESSONS: DiplomaLesson[] = [
+    { id: 1, title: "The Art & Science of Life Coaching", module: 1 },
+    { id: 2, title: "The S.H.I.F.T. Method™ in Practice", module: 1 },
+    { id: 3, title: "Building a Profitable Coaching Business", module: 1 },
 ];
 
 // Default Stripe checkout URL (can be overridden per diploma)
@@ -341,6 +353,38 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         nudgePrefix: "pet-nutrition-nudge",
         nurturePrefix: "pet-nutrition-nurture",
         completionTag: "pet-nutrition-mini-diploma:completed"
+    },
+
+    "integrative-health-mini-diploma": {
+        name: "Integrative Health",
+        slug: "integrative-health-mini-diploma",
+        portalSlug: "integrative-health",
+        displayName: "Certified Integrative Health Practitioner",
+        lessons: INTEGRATIVE_HEALTH_LESSONS,
+        checkoutUrl: DEFAULT_CHECKOUT_URL,
+        examCategory: "integrative-health",
+        lessonTagPrefix: "integrative-health-lesson-complete",
+        nurtureSequence: HEALTH_COACH_NURTURE_SEQUENCE, // Fallback until niche-specific created
+        dmSequence: HEALTH_COACH_DMS,
+        nudgePrefix: "integrative-health-nudge",
+        nurturePrefix: "integrative-health-nurture",
+        completionTag: "integrative-health-mini-diploma:completed"
+    },
+
+    "life-coaching-mini-diploma": {
+        name: "Life Coaching",
+        slug: "life-coaching-mini-diploma",
+        portalSlug: "life-coaching",
+        displayName: "Certified Life Coach",
+        lessons: LIFE_COACHING_LESSONS,
+        checkoutUrl: DEFAULT_CHECKOUT_URL,
+        examCategory: "life-coaching",
+        lessonTagPrefix: "life-coaching-lesson-complete",
+        nurtureSequence: HEALTH_COACH_NURTURE_SEQUENCE, // Fallback until niche-specific created
+        dmSequence: HEALTH_COACH_DMS,
+        nudgePrefix: "life-coaching-nudge",
+        nurturePrefix: "life-coaching-nurture",
+        completionTag: "life-coaching-mini-diploma:completed"
     },
 };
 

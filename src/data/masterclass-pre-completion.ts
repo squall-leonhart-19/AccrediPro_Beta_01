@@ -4,7 +4,7 @@
 // NOTE: Only milestone triggers to avoid spam (opt-in, L3, L5, L9, exam_passed + nudges)
 
 export interface PreCompletionMessage {
-    trigger: "optin" | "lesson_complete" | "exam_passed" | "never_logged" | "never_started" | "stuck_progress" | "exam_waiting" | "deadline_24h" | "deadline_6h" | "deadline_1h";
+    trigger: "optin" | "lesson_complete" | "exam_passed" | "post_exam_scholarship" | "never_logged" | "never_started" | "stuck_progress" | "exam_waiting" | "deadline_24h" | "deadline_6h" | "deadline_1h";
     lesson?: number;
     hoursAfterOptin?: number;
     hoursNoProgress?: number;
@@ -222,6 +222,79 @@ Sarah 💛`,
             {
                 delay: "30min", options: [
                     "cant stop smiling... Cohort #47 forever!! @{firstName} we made it together 💕",
+                ]
+            },
+        ]
+    },
+
+    // ============ POST-EXAM SCHOLARSHIP CONVERSION (24h delayed) ============
+    // This entire sequence fires AFTER the celebration messages above.
+    // Hour ~3: Zombie plants the seed about "whats next"
+    // Hour 24: Sarah announces scholarship, zombie does live PWYW purchase
+    {
+        trigger: "post_exam_scholarship",
+        sarah: `Good morning {firstName} and {zombieFirstName}! ☀️
+
+I want to start by saying... I am SO incredibly proud of BOTH of you.
+
+You didn't just complete the Mini-Diploma. You PROVED something to yourselves. You showed up, you didn't quit, and you earned your certification.
+
+Now... I promised I'd share what comes next. 💛
+
+The Mini-Diploma gave you the foundation. But if you're serious about actually BUILDING a practice, seeing clients, and earning income from this...
+
+There's a full Certification Program through the Accredited Standards Institute.
+
+Here's what it includes:
+📚 Level 1 through Level 4 — Complete Training
+📖 300+ Advanced Courses & Specializations
+👩‍🏫 6-Month Mentorship with Industry Experts
+📋 Done-For-You Client Materials & Protocols
+🎓 Full ASI Board Certification
+💼 Business Launch Blueprint
+
+The program is normally $1,997.
+
+BUT — because you completed the Mini-Diploma and proved your commitment... the Institute has authorized me to offer you both a SCHOLARSHIP.
+
+Here's how it works: it's a "Pay What You Can" model. The Institute covers the difference. You contribute what feels comfortable for you.
+
+There's no minimum. No judgment. If this is the right path for you, I don't want money to be the thing that stops you.
+
+If you're interested, just tell me what amount feels comfortable and I'll reach out to the Institute on your behalf.
+
+With love,
+Sarah 💛`,
+        zombies: [
+            // +3h: Zombie plants the "next steps" seed (unanswered to build curiosity)
+            {
+                delay: "3h", options: [
+                    "hey @{firstName}... I keep thinking about whats next after this. Like we have the certification now but HOW do we actually start seeing clients?? do you know??",
+                    "so I cant sleep lol... just keep thinking... we have the mini diploma now but what do we actually DO with it?? like whats the next step to actually start a practice??",
+                ]
+            },
+            // +24h+15m: Zombie responds to Sarah's offer with PWYW contribution
+            {
+                delay: "24h+15min", options: [
+                    "Sarah omg... 🥹 this is exactly what I was asking about yesterday\n\nOk honestly... I've been saving up but money is tight right now. I'm a single mom and nursing doesn't pay what people think it does lol\n\nBut I KNOW this is what I'm supposed to do. I can feel it.\n\nCould I do $500? Is that even enough?? I don't want to be disrespectful to the program 😬",
+                ]
+            },
+            // +24h+35m: Zombie celebrates approval
+            {
+                delay: "24h+35min", options: [
+                    "OMG REALLY?? 😭😭😭\n\nSarah THANK YOU. Tell the Institute thank you SO much. I literally have tears right now.\n\n$500 I can do that right now. Send me the link!! 🙏💕",
+                ]
+            },
+            // +24h+42min: Zombie confirms payment with screenshot
+            {
+                delay: "24h+42min", options: [
+                    "DONE. PAID. IM IN. 😭🎉🎉🎉\n\nI literally just hit submit and my hands are shaking lol\n\nLook!!! \n\n[image:https://assets.accredipro.academy/fm-certification/Screenshot%202026-02-07%20at%2019.42.14.png]\n\n$500 for a $1,997 program... the Institute covered $1,497 for me. I cant even process this right now 🥹\n\n@{firstName} you HAVE to do this too!! were gonna be FULLY certified together!! 💕💕💕",
+                ]
+            },
+            // +24h+55min: Zombie encourages the real student
+            {
+                delay: "24h+55min", options: [
+                    "@{firstName} seriously dont sleep on this... we already proved we can do it with the mini diploma. This is the FULL thing. 300+ courses, mentorship, everything.\n\nJust tell Sarah what you can do. She literally got it approved for me in like 10 minutes 🙌",
                 ]
             },
         ]

@@ -20,11 +20,7 @@ import {
   Activity,
   Brain,
   Lock,
-  Phone,
   Mail,
-  User,
-  TrendingUp,
-  Volume2,
 } from "lucide-react";
 
 // ─── Brand ─────────────────────────────────────────────────────────
@@ -106,240 +102,91 @@ interface Testimonial { name: string; role: string; text: string; photo: string;
 const TESTIMONIALS_BY_PERSONA: Record<Persona, Testimonial[]> = {
   "healthcare-pro": [
     { name: "Dr. Karen L.", role: "Former Family Practice - Now FM Certified Practitioner", text: "As a nurse for 18 years, I thought I knew clinical medicine. The program showed me a whole new level. I left the hospital and now earn $11K/month running my own functional practice.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 3 },
-    { name: "Margaret S.", role: "PA to Clinical Practitioner", text: "I was exhausted from the hospital grind. Now I set my own hours, see clients I actually want to help, and earn MORE than my PA salary. The certification changed everything.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 6 },
-    { name: "Carolyn R.", role: "Former ICU Nurse, Age 54", text: "I used my nursing background to fast-track through the program. Within 60 days I had my first 5 paying clients. My hospital colleagues can't believe the transformation.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 9 },
+    { name: "Margaret S.", role: "PA to Clinical Practitioner", text: "I was exhausted from the hospital grind. Now I set my own hours, see clients I actually want to help, and earn MORE than my PA salary. The certification changed everything.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 8 },
+    { name: "Carolyn R.", role: "Former ICU Nurse, Age 54", text: "I used my nursing background to fast-track through the program. Within 60 days I had my first 5 paying clients. My hospital colleagues can't believe the transformation.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 13 },
   ],
   "health-coach": [
     { name: "Margaret S.", role: "Health Coach to Clinical Practitioner", text: "Before the certification I was a health coach charging $50/session and struggling to fill my calendar. Now: $9K/month with a waitlist. The ASI certification gave me the credibility I was missing.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 3 },
-    { name: "Dr. Karen L.", role: "Yoga Teacher to FM Certified Practitioner", text: "I had years of wellness experience but no clinical framework. The certification gave me the structure to charge $200/session instead of $40 for yoga classes. Total game-changer.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 6 },
-    { name: "Carolyn R.", role: "Nutritionist to Certified Specialist", text: "Every coach should upgrade to FM Certification. My nutrition coaching was good but limited. Now I can run labs, create clinical protocols, and clients see me as a real authority.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 9 },
+    { name: "Dr. Karen L.", role: "Yoga Teacher to FM Certified Practitioner", text: "I had years of wellness experience but no clinical framework. The certification gave me the structure to charge $200/session instead of $40 for yoga classes. Total game-changer.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 8 },
+    { name: "Carolyn R.", role: "Nutritionist to Certified Specialist", text: "Every coach should upgrade to FM Certification. My nutrition coaching was good but limited. Now I can run labs, create clinical protocols, and clients see me as a real authority.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 13 },
   ],
   "corporate": [
     { name: "Carolyn R.", role: "Former Marketing Director, Age 52", text: "I left my corporate job at 49 with zero health credentials. The certification gave me everything - the clinical skills, the business framework, the confidence. Now earning $7K/month and fully booked.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 3 },
-    { name: "Margaret S.", role: "Ex-Finance Manager to Practitioner", text: "My corporate project management skills turned out to be my secret weapon. I launched my practice like a business from day one. The certification gave me the clinical side - I brought the business acumen.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 6 },
-    { name: "Dr. Karen L.", role: "Former HR Executive to Clinical Director", text: "Everyone thought I was crazy leaving a 6-figure corporate salary. 8 months later, I matched it with my own practice and actually love Monday mornings again.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
+    { name: "Margaret S.", role: "Ex-Finance Manager to Practitioner", text: "My corporate project management skills turned out to be my secret weapon. I launched my practice like a business from day one. The certification gave me the clinical side - I brought the business acumen.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 8 },
+    { name: "Dr. Karen L.", role: "Former HR Executive to Clinical Director", text: "Everyone thought I was crazy leaving a 6-figure corporate salary. 8 months later, I matched it with my own practice and actually love Monday mornings again.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 13 },
   ],
   "stay-at-home-mom": [
     { name: "Margaret S.", role: "Stay-at-Home Mom to Certified Practitioner", text: "I studied during nap times and after bedtime. Within 4 months I was certified. Now I see clients 3 days a week while my kids are at school and earn $6K/month. Best decision I ever made.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 3 },
-    { name: "Carolyn R.", role: "Mom of 3 to FM Certified Practitioner", text: "I felt invisible for years - just 'someone's mom.' The certification gave me my identity back. I built my practice from my kitchen table and now my kids tell their friends 'my mom helps people heal.'", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 6 },
-    { name: "Dr. Karen L.", role: "Former SAHM, Now Earning $8K/Month", text: "My husband was skeptical. Then my first month I earned $3K working part-time. Now I contribute more to our family than I ever did before kids. The program fits around family life perfectly.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
+    { name: "Carolyn R.", role: "Mom of 3 to FM Certified Practitioner", text: "I felt invisible for years - just 'someone's mom.' The certification gave me my identity back. I built my practice from my kitchen table and now my kids tell their friends 'my mom helps people heal.'", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 8 },
+    { name: "Dr. Karen L.", role: "Former SAHM, Now Earning $8K/Month", text: "My husband was skeptical. Then my first month I earned $3K working part-time. Now I contribute more to our family than I ever did before kids. The program fits around family life perfectly.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 13 },
   ],
   "other-passionate": [
     { name: "Carolyn R.", role: "Career Changer, Age 52", text: "I was skeptical after wasting money on other programs. Now I'm earning $7K/month and fully booked. Started from zero at age 49. No health background needed - The program teaches everything.", photo: TESTIMONIAL_PHOTOS.carolyn, afterQ: 3 },
-    { name: "Margaret S.", role: "Teacher to Clinical Practitioner", text: "I had no medical background at all - I was a high school teacher. The program broke everything down so clearly. My teaching skills actually help me explain protocols to clients beautifully.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 6 },
-    { name: "Dr. Karen L.", role: "Complete Career Change at 47", text: "I proved everyone wrong. No degree in health, no clinical experience, nothing. Just passion and FM Certification. 6 months later: certified, confident, and earning more than my previous career.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 9 },
+    { name: "Margaret S.", role: "Teacher to Clinical Practitioner", text: "I had no medical background at all - I was a high school teacher. The program broke everything down so clearly. My teaching skills actually help me explain protocols to clients beautifully.", photo: TESTIMONIAL_PHOTOS.margaret, afterQ: 8 },
+    { name: "Dr. Karen L.", role: "Complete Career Change at 47", text: "I proved everyone wrong. No degree in health, no clinical experience, nothing. Just passion and FM Certification. 6 months later: certified, confident, and earning more than my previous career.", photo: TESTIMONIAL_PHOTOS.karen, afterQ: 13 },
   ],
 };
 
 // ═══════════════════════════════════════════════════════════════════
-// DYNAMIC LAYER 2: Persona-aware Sarah reactions for Q2-Q12
+// DYNAMIC LAYER 2: Persona-aware Sarah reactions
 // ═══════════════════════════════════════════════════════════════════
 // Key = "q{questionIndex}-{answerValue}", value = persona overrides
+// These override the base reaction when persona is known (after Q1-Q2)
 const PERSONA_REACTIONS: Record<Persona, Record<string, string>> = {
   "healthcare-pro": {
-    // Q2 - Income
-    "q1-0": "Most healthcare professionals start at zero in private practice - but your clinical training means you'll ramp up 2x faster than average.",
-    "q1-under-2k": "With your clinical background, you should be earning 5-6x that. FM Certification bridges that gap immediately.",
-    "q1-2k-5k": "Solid for a nurse or PA side-hustling. But with FM Certification, your clinical credibility means you can realistically double this within 60 days.",
-    "q1-over-5k": "Outstanding. Healthcare professionals at your level typically scale to $15-25K/month with FM Certification because you already have the clinical instincts.",
-    // Q3 - Income goal
-    "q2-5k": "Very achievable for someone with your clinical background. Most healthcare professionals hit $5K within their first 60 days.",
-    "q2-10k": "Perfect target. Nurses and PAs who add FM Certification typically earn 2-3x their hospital salary within 6 months.",
-    "q2-20k": "With your medical training plus FM Certification, $20K/month is realistic. You'd add group protocols and physician referral networks.",
-    "q2-50k-plus": "Clinical directors with your background build multi-practitioner clinics. The program gives you the framework to scale beyond just you.",
-    // Q4 - Experience
-    "q3-active-clients": "Having active patients/clients means you can start applying ASI protocols immediately. Your clinical experience is a massive accelerator.",
-    "q3-past-clients": "Your clinical experience doesn't expire. The program gives you a modern framework to re-enter with more confidence and higher rates.",
-    "q3-informal": "Even informal health guidance from a healthcare professional carries weight. The program formalizes what you already do naturally.",
-    "q3-no-experience": "Your healthcare training IS experience. You understand anatomy, physiology, and patient care. The program adds the functional medicine layer.",
-    // Q5 - Clinical readiness
-    "q4-very-confident": "Expected from someone with your clinical training. The program adds the functional medicine lens to your existing diagnostic skills.",
-    "q4-somewhat": "Your medical training gives you the foundation. The program adds the root-cause framework that conventional medicine often misses.",
-    "q4-not-very": "That's actually common in conventional healthcare. You were trained to treat symptoms, not root causes. FM Certification fills that exact gap.",
-    "q4-refer-out": "What if you WERE the specialist? With your clinical background, adding functional medicine skills makes you the complete practitioner.",
-    // Q6 - Labs
-    "q5-already-doing": "Excellent - most healthcare professionals have some lab experience. The program takes it to functional interpretation, which is a different skill entirely.",
-    "q5-want-to-learn": "You already understand lab values from your healthcare training. The program teaches you the functional ranges and clinical decision-making.",
-    "q5-open-to-it": "Your medical background means you'll pick this up faster than anyone. You already speak the language of labs.",
-    "q5-not-sure": "As a healthcare professional, lab skills will feel natural. It's the same data you've worked with, just interpreted through a functional lens.",
-    // Q9 - Commitment
-    "q8-absolutely": "With your clinical discipline and training, 20 minutes a day will feel easy. Healthcare professionals are built for this kind of focused learning.",
-    "q8-yes-work": "Many of our nurses and PAs study between shifts or on days off. The program is designed for healthcare schedules.",
-    "q8-rearrange": "Shift work actually helps - you can batch study on your days off. Many nurses complete the program faster than expected.",
-    "q8-not-sure": "Even 3-4 sessions per week works. Many of our healthcare professionals study on their days off and finish in under 8 weeks.",
-    // Q10 - Vision
-    "q9-leave-job": "67% of our healthcare graduates left hospital/clinic jobs within a year. No more 12-hour shifts, no more burnout, full autonomy.",
-    "q9-security": "Imagine earning MORE than your nursing/PA salary, but working half the hours and actually choosing your patients.",
-    "q9-fulfillment": "Remember why you went into healthcare? The program lets you practice medicine the way you always wanted - actually helping people heal.",
-    "q9-all-above": "Healthcare professionals who make this switch don't just change careers - they rediscover why they went into medicine in the first place.",
+    // Q6 (index 5) - Income Goal
+    "q5-3k-5k": "Very achievable for someone with your clinical background. Most healthcare professionals hit $5K within their first 60 days.",
+    "q5-5k-10k": "Perfect target. Nurses and PAs who add FM Certification typically earn 2-3x their hospital salary within 6 months.",
+    "q5-10k-15k": "With your medical training plus FM Certification, $15K/month is realistic within 12 months.",
+    "q5-15k-plus": "Clinical directors with your background build multi-practitioner clinics. The program gives you the framework to scale.",
+    // Q9 (index 8) - Pain Point
+    "q8-time-for-money": "12-hour shifts, rotating schedules, no autonomy over your time. FM breaks that cycle completely.",
+    "q8-stuck": "You're stuck in a system that undervalues you. FM Certification is the exit plan.",
+    "q8-exhausted": "Healthcare burnout is real — and FM is the antidote. You deserve better.",
+    // Q10 (index 9) - Current Income
+    "q9-under-3k": "With your clinical background, you should be earning 5-6x that. FM Certification bridges that gap immediately.",
+    "q9-over-8k": "Outstanding. Healthcare professionals at your level typically scale to $15-25K/month with FM Certification.",
   },
   "health-coach": {
-    "q1-0": "That's surprising for a coach - but it means you haven't been limited by a 'coaching ceiling' yet. FM Certification removes all ceilings.",
-    "q1-under-2k": "That's the classic coaching trap - trading time for too little money. FM Certification means you charge 3-4x more per session.",
-    "q1-2k-5k": "Solid for coaching, but you're hitting the ceiling. Coaches who upgrade to FM Certification clinical certification typically 3x their income.",
-    "q1-over-5k": "You're already a successful coach. The program takes you from 'coach' to 'clinical practitioner' - and your rates follow.",
-    "q2-5k": "Very achievable. Coaches who add FM Certification see an average 3x income increase because clinical > coaching in perceived value.",
-    "q2-10k": "That's the sweet spot for upgraded coaches. You already know how to work with clients - The program gives you the clinical authority to charge more.",
-    "q2-20k": "Coaches who add group clinical programs and lab interpretation hit $20K+ regularly. Your coaching skills are the delivery system.",
-    "q2-50k-plus": "Think clinic director. Your coaching background plus FM clinical skills plus team leverage. It's the proven path.",
-    "q3-active-clients": "Perfect! You can immediately upsell existing coaching clients to clinical packages. Most coaches 2x their client value overnight.",
-    "q3-past-clients": "Your coaching skills are transferable. The program adds the clinical dimension that makes clients see you as an authority, not just a coach.",
-    "q3-informal": "Coaching friends and family IS experience. You already have the empathy and communication skills - The program adds clinical structure.",
-    "q3-no-experience": "Your coaching training gives you client communication skills that clinical people often lack. That's actually a huge advantage.",
-    "q4-very-confident": "Impressive for a coach! The program will formalize that intuition into a repeatable clinical framework with evidence-based protocols.",
-    "q4-somewhat": "Most coaches can identify surface-level causes. The program takes you deeper - to the hormonal, gut, and metabolic root causes.",
-    "q4-not-very": "That's exactly the gap between coaching and clinical practice. FM Certification bridges it with a systematic 5-phase framework.",
-    "q4-refer-out": "What if you WERE the referral? Coaches who upgrade to clinical practitioners keep their clients AND charge 3x more.",
-    "q5-already-doing": "You're ahead of 99% of coaches. The program will systematize your lab skills and give you clinical-grade interpretation frameworks.",
-    "q5-want-to-learn": "This is THE skill that separates $50/hr coaches from $200/hr practitioners. The program teaches it step by step.",
-    "q5-open-to-it": "Lab interpretation is what turns a coach into a clinician. It's the single biggest upgrade you can make to your practice.",
-    "q5-not-sure": "As a coach, adding lab skills doubles your value proposition. Clients want someone who can test, not just guess.",
-    "q8-absolutely": "With your coaching discipline, you'll love the bite-sized modules. Many coaches say The program is the best investment they've made.",
-    "q8-yes-work": "The program fits around client sessions. Many coaches study in the morning before their first client.",
-    "q8-rearrange": "Your coaching schedule is already flexible. Even squeezing in 20 minutes between clients adds up fast.",
-    "q8-not-sure": "Self-paced means self-scheduled. Many coaches do 3-4 intensive sessions per week instead of daily. Works just as well.",
-    "q9-leave-job": "You're already your own boss as a coach - now imagine earning 3x more doing clinical work you're truly passionate about.",
-    "q9-security": "Financial stability that coaching alone rarely provides. Clinical practitioners have predictable, premium income streams.",
-    "q9-fulfillment": "You already help people as a coach. Imagine the fulfillment of actually SOLVING their root-cause health issues, not just supporting them.",
-    "q9-all-above": "Coaches who upgrade to FM Certification don't just earn more - they transform from 'wellness supporter' to 'clinical authority.' Complete identity shift.",
+    "q5-3k-5k": "Very achievable. Coaches who add clinical certification see 3x income because clinical > coaching in perceived value.",
+    "q5-5k-10k": "That's the sweet spot for upgraded coaches. You already know how to work with clients — the program adds clinical authority.",
+    "q5-10k-15k": "Coaches who add group clinical programs and lab interpretation hit $15K+ regularly.",
+    "q5-15k-plus": "Think clinic director. Coaching background plus FM clinical skills plus team leverage. It's the proven path.",
+    "q8-time-for-money": "The classic coaching trap — trading time for too little money. FM Certification means 3-4x more per session.",
+    "q8-no-credential": "You already help people as a coach. FM Certification makes you the authority clients are looking for.",
+    "q9-under-3k": "That's the coaching ceiling. Clinical practitioners break right through it.",
+    "q9-over-8k": "You're already a successful coach. FM Certification takes you from 'coach' to 'clinical practitioner.'",
   },
   "corporate": {
-    "q1-0": "Starting from zero is actually powerful - no bad habits, no limiting beliefs about what health professionals 'should' charge. Your corporate mindset is an advantage.",
-    "q1-under-2k": "You're just getting started. Corporate professionals who go all-in with FM Certification typically scale faster because you think in systems, not sessions.",
-    "q1-2k-5k": "Not bad for a side-hustle! But your corporate skills deserve more. The program gives you the clinical credibility to build a real business.",
-    "q1-over-5k": "Impressive for someone transitioning. Your business acumen is clearly working. The program adds clinical expertise to accelerate even further.",
-    "q2-5k": "Very achievable. Most corporate professionals who complete FM Certification replace their previous income within 90 days of certification.",
-    "q2-10k": "$10K/month is realistic within 6 months. Your project management and professional skills give you a massive advantage in building a practice.",
-    "q2-20k": "Think like a CEO, not a practitioner. Your corporate experience in building systems and managing teams translates directly to a multi-revenue practice.",
-    "q2-50k-plus": "Your corporate mind thinks at scale - that's rare in wellness. FM Certification plus your business skills is the formula for building a real company.",
-    "q3-active-clients": "Already working with clients while in corporate? That drive is exactly what predicts success in FM Certification.",
-    "q3-past-clients": "Your professional skills are fully transferable. The program adds the clinical expertise - you already have the business foundation.",
-    "q3-informal": "Helping friends and family with health already shows you have the instinct. The program gives you the framework to monetize that passion.",
-    "q3-no-experience": "31% of our highest earners came from corporate with zero health experience. Your professional skills are the unfair advantage nobody talks about.",
-    "q4-very-confident": "That's unusual for someone from corporate - you've clearly been studying. The program will formalize and certify that knowledge.",
-    "q4-somewhat": "You're already ahead of most career changers. The program takes your self-study and gives it clinical structure and accreditation.",
-    "q4-not-very": "Expected for a career change - and totally fine. The the ASI clinical framework teaches everything from the ground up, step by step.",
-    "q4-refer-out": "Right now, yes. But imagine being the expert everyone refers TO. Your corporate credibility plus FM Certification is a powerful combination.",
-    "q5-already-doing": "You've been studying ahead - that corporate work ethic is showing. The program will formalize your lab knowledge with clinical protocols.",
-    "q5-want-to-learn": "Lab interpretation is learnable - it's like learning to read financial statements. Structured, logical, and your analytical mind will love it.",
-    "q5-open-to-it": "Think of lab interpretation like data analysis for the body. Your corporate analytical skills translate perfectly.",
-    "q5-not-sure": "It sounds intimidating but it's really not. If you can read a spreadsheet, you can learn to read a lab panel. The program makes it systematic.",
-    "q8-absolutely": "That corporate discipline will serve you well. 20 minutes a day is less than your commute used to be.",
-    "q8-yes-work": "You can study during lunch, on the train, whenever. Many corporate professionals study during their notice period.",
-    "q8-rearrange": "That willingness to restructure your schedule shows you're serious about this career change. That's exactly what our top earners did.",
-    "q8-not-sure": "The program is fully self-paced. Many career changers batch their study on weekends while still working their corporate job.",
-    "q9-leave-job": "That's the dream of every corporate professional we work with. No more office politics, no more ceiling. 67% achieve it within 12 months.",
-    "q9-security": "Financial security WITHOUT the corporate stress. No more layoff anxiety, no more politics. Income YOU control.",
-    "q9-fulfillment": "Imagine trading pointless meetings for meaningful client sessions where you genuinely transform someone's health. That's the FM practitioner career change.",
-    "q9-all-above": "Corporate professionals who make this leap don't just change jobs - they transform their entire quality of life. That's what FM Certification delivers.",
+    "q5-3k-5k": "Very achievable. Most corporate professionals replace their previous income within 90 days of certification.",
+    "q5-5k-10k": "$10K/month is realistic within 6 months. Your project management skills give you a massive advantage.",
+    "q5-10k-15k": "Think like a CEO, not a practitioner. Your corporate experience translates directly to a multi-revenue practice.",
+    "q5-15k-plus": "Your corporate mind thinks at scale — that's rare in wellness. FM plus business skills is the formula.",
+    "q8-stuck": "Stuck in a system that promotes politics over purpose. FM gives you complete autonomy.",
+    "q8-meant-for-more": "You ARE meant for more than quarterly reviews and office politics. Your professional skills are an unfair advantage.",
+    "q9-over-8k": "Impressive. FM practitioners match corporate salaries working half the hours — and they actually love their work.",
   },
   "stay-at-home-mom": {
-    "q1-0": "Most moms in our program start at zero. That's not a limitation - it's a clean slate. And you'll be amazed at how fast you can build when motivated.",
-    "q1-under-2k": "Even earning something while managing a household shows incredible drive. The program can turn that side income into a real practice.",
-    "q1-2k-5k": "Earning $2-5K while raising kids? That takes serious hustle. The program gives you the clinical authority to double that working the SAME hours.",
-    "q1-over-5k": "That's remarkable while managing a family! You clearly have the drive. FM Certification will take your earning to the next tier.",
-    "q2-5k": "Totally achievable around a family schedule. Most mom practitioners work 3 days/week and hit $5K/month within 90 days of certification.",
-    "q2-10k": "$10K/month working around school hours is absolutely doable. Our mom practitioners are proof. You don't need 40 hours a week.",
-    "q2-20k": "Ambitious and possible. Moms who add virtual group programs can earn $20K+ while only working during school hours. The program shows you how.",
-    "q2-50k-plus": "Think big. Some of our mom practitioners built full practices with team members. Your organizational skills from running a household? That's CEO training.",
-    "q3-active-clients": "Working with clients while managing a household? That's incredibly impressive. The program gives you clinical tools to serve them even better.",
-    "q3-past-clients": "Life got busy with the kids - totally understandable. The program is designed to restart your career at a higher level, on YOUR schedule.",
-    "q3-informal": "Every mom is an informal health advisor - for your kids, your mom friends, your family. The program turns that natural instinct into a real career.",
-    "q3-no-experience": "Your life experience as a mom IS relevant. Empathy, patience, multitasking, problem-solving - those are clinical superpowers that can't be taught.",
-    "q4-very-confident": "That's impressive! You've clearly been studying. The program will give you the certification to match your knowledge.",
-    "q4-somewhat": "Your instincts are strong - probably from all those late-night Google searches about your kids' health. The program turns that curiosity into clinical skill.",
-    "q4-not-very": "Completely normal. You haven't had formal training yet. The program starts from the foundation and builds step by step, designed for beginners.",
-    "q4-refer-out": "What if other moms referred THEIR friends to YOU? That's what happens when a caring mom adds clinical certification. Referrals explode.",
-    "q5-already-doing": "You've been self-studying labs? That's incredible initiative. The program will formalize everything and give you confidence to use it professionally.",
-    "q5-want-to-learn": "Lab interpretation sounds scary but it's completely learnable. Many of our mom practitioners say it's their favorite part of the program.",
-    "q5-open-to-it": "Imagine being the mom who can actually READ your kids' lab results and know what they mean. The program gives you that superpower.",
-    "q5-not-sure": "It's simpler than you think. If you can follow a recipe, you can follow a lab interpretation framework. The program makes it step-by-step.",
-    "q8-absolutely": "20 minutes during nap time, after bedtime, during school hours - our mom practitioners find the time because the results are so worth it.",
-    "q8-yes-work": "Many moms study during nap time or after the kids go to bed. 20 minutes is less time than scrolling social media.",
-    "q8-rearrange": "That willingness to carve out time for YOURSELF shows you're ready. Your kids will see a mom building something incredible.",
-    "q8-not-sure": "The program is completely self-paced. Some moms do 3 sessions a week instead of daily. There's no pressure - only progress.",
-    "q9-leave-job": "You're already not in a 9-to-5 - you're in a 24/7 job called motherhood. The program gives you a career that works WITH your family, not against it.",
-    "q9-security": "Imagine contributing $5-10K/month to your family while being fully present for your kids. No daycare needed. No guilt. That's the FM practitioner life.",
-    "q9-fulfillment": "Beyond 'just a mom' - imagine your kids seeing you help people heal, earn your own income, and build something meaningful. What a role model.",
-    "q9-all-above": "FM Certified moms get it all - income, identity, flexibility, fulfillment. You don't have to choose between family and career. That's the whole point.",
+    "q5-3k-5k": "Totally achievable around a family schedule. Most mom practitioners work 3 days/week and hit $5K within 90 days.",
+    "q5-5k-10k": "$10K/month working around school hours is absolutely doable. Our mom practitioners are proof.",
+    "q5-10k-15k": "Ambitious and possible. Moms who add virtual group programs earn $15K+ during school hours.",
+    "q5-15k-plus": "Think big. Some of our mom practitioners built full practices with team members.",
+    "q8-exhausted": "Running a household is exhausting enough. You deserve work that energizes you instead of draining you.",
+    "q8-stuck": "Feeling stuck as 'just a mom' is real. FM gives you a career that works WITH your family.",
+    "q9-under-3k": "Most moms in our program start at zero. That's not a limitation — it's a clean slate.",
   },
   "other-passionate": {
-    "q1-0": "Starting from zero with pure passion is the best starting point. 38% of our top performers had non-traditional backgrounds. You're in good company.",
-    "q1-under-2k": "You've already started earning from your passion - that's more than most. The program gives you the certification to charge what you're really worth.",
-    "q1-2k-5k": "Building income from a non-traditional background shows real entrepreneurial spirit. The program adds the clinical credibility to scale further.",
-    "q1-over-5k": "Earning $5K+ from a non-traditional path? That's exceptional. FM Certification will accelerate your growth even further.",
-    "q2-5k": "Totally achievable regardless of background. 38% of our practitioners who hit $5K/month came from non-health fields.",
-    "q2-10k": "Your unique background is actually an advantage. You bring fresh perspective that traditional health professionals lack.",
-    "q2-20k": "Ambitious and proven. Non-traditional backgrounds often build the most creative, successful practices because you think differently.",
-    "q2-50k-plus": "Love that mindset. The most innovative practices in our network were built by people from non-traditional backgrounds. Think different, earn different.",
-    "q3-active-clients": "Already working with clients from a non-traditional starting point? That shows incredible initiative. The program adds the clinical structure.",
-    "q3-past-clients": "Your experience hasn't disappeared. The program gives you a fresh framework to re-enter with clinical-grade credibility.",
-    "q3-informal": "Helping people informally IS experience. Your passion and empathy are the foundation. The program adds the clinical framework on top.",
-    "q3-no-experience": "38% of our top performers had zero experience. Passion + the ASI clinical framework = a proven formula regardless of background.",
-    "q4-very-confident": "That's incredible for someone without a traditional health background. You've clearly done your homework. The program certifies that knowledge.",
-    "q4-somewhat": "Self-taught knowledge shows dedication. The program turns that passion-driven learning into a structured, certified clinical skill set.",
-    "q4-not-very": "Completely expected and completely fine. The program was designed to take passionate beginners and create confident clinical practitioners.",
-    "q4-refer-out": "Soon, people will be referring TO you. Your unique perspective plus FM Certification is a combination clients actively seek out.",
-    "q5-already-doing": "Self-studying labs from a non-traditional background? That's the kind of initiative that predicts success in FM Certification.",
-    "q5-want-to-learn": "Lab interpretation is 100% learnable from scratch. The program breaks it down into simple, logical steps. No medical degree required.",
-    "q5-open-to-it": "It's one of the most empowering skills you can learn. Imagine reading a lab panel and knowing exactly what's going on. The program teaches that.",
-    "q5-not-sure": "It sounds more intimidating than it is. Our most successful lab interpreters include a former teacher and a former artist. The program makes it accessible.",
-    "q8-absolutely": "That passion-driven commitment is exactly what predicts success. 20 minutes a day of focused learning leads to life-changing results.",
-    "q8-yes-work": "The program adapts to your schedule. Many of our non-traditional practitioners study in the evenings or on weekends.",
-    "q8-rearrange": "That willingness to restructure your life shows you're serious about this transformation. Our top earners all started with that same decision.",
-    "q8-not-sure": "Completely self-paced. Even 3-4 sessions per week works. The key is consistency, not intensity.",
-    "q9-leave-job": "Imagine replacing your current work with something you're genuinely passionate about. That's not a fantasy - 67% of our practitioners achieve it.",
-    "q9-security": "Financial stability doing work you love. No more wondering 'what if.' No more feeling stuck in the wrong career.",
-    "q9-fulfillment": "Picture it: every day you wake up excited, knowing you're transforming lives using skills you built from pure passion. That's the FM practitioner life.",
-    "q9-all-above": "People from non-traditional backgrounds often have the biggest transformations because they're not just changing careers - they're finally becoming who they were meant to be.",
+    "q5-3k-5k": "Totally achievable regardless of background. 38% of our practitioners who hit $5K/month came from non-health fields.",
+    "q5-5k-10k": "Your unique background is actually an advantage. Fresh perspective that traditional health professionals lack.",
+    "q5-10k-15k": "Non-traditional backgrounds often build the most creative, successful practices.",
+    "q5-15k-plus": "The most innovative practices in our network were built by people from non-traditional backgrounds.",
+    "q8-meant-for-more": "That inner knowing is powerful. 38% of our top performers felt exactly the same way before starting.",
+    "q8-no-credential": "You already know how to help people. FM Certification makes it official.",
+    "q9-under-3k": "Starting from zero with pure passion is the best starting point. You're in good company.",
   },
 };
 
-// ═══════════════════════════════════════════════════════════════════
-// DYNAMIC LAYER 3: Persona-specific reviewing steps
-// ═══════════════════════════════════════════════════════════════════
-const REVIEW_STEPS_BY_PERSONA: Record<Persona, string[]> = {
-  "healthcare-pro": [
-    "Validating clinical credentials...",
-    "Analyzing qualification criteria...",
-    "Calculating qualification score...",
-    "Determining acceptance tier...",
-    "Processing clinical fast-track eligibility...",
-    "Case #" + Math.floor(1400 + Math.random() * 200) + " — Qualification complete!",
-  ],
-  "health-coach": [
-    "Analyzing coaching experience...",
-    "Evaluating qualification criteria...",
-    "Calculating clinical readiness score...",
-    "Determining acceptance tier...",
-    "Processing coach-to-clinical upgrade...",
-    "Case #" + Math.floor(1400 + Math.random() * 200) + " — Qualification complete!",
-  ],
-  "corporate": [
-    "Evaluating transferable professional skills...",
-    "Analyzing qualification criteria...",
-    "Calculating transition readiness score...",
-    "Determining acceptance tier...",
-    "Processing career transition eligibility...",
-    "Case #" + Math.floor(1400 + Math.random() * 200) + " — Qualification complete!",
-  ],
-  "stay-at-home-mom": [
-    "Analyzing schedule flexibility...",
-    "Evaluating qualification criteria...",
-    "Calculating practitioner potential score...",
-    "Determining acceptance tier...",
-    "Processing flexible schedule eligibility...",
-    "Case #" + Math.floor(1400 + Math.random() * 200) + " — Qualification complete!",
-  ],
-  "other-passionate": [
-    "Analyzing passion and motivation profile...",
-    "Evaluating qualification criteria...",
-    "Calculating commitment score...",
-    "Determining acceptance tier...",
-    "Processing certification eligibility...",
-    "Case #" + Math.floor(1400 + Math.random() * 200) + " — Qualification complete!",
-  ],
-};
+// (Reviewing steps removed — replaced by inline ANALYZE_STEPS in component)
 
 // ═══════════════════════════════════════════════════════════════════
 // DYNAMIC LAYER 4: Persona-specific qualification framing
@@ -363,80 +210,37 @@ const COHORT_NAMES: Record<Persona, { name: string; spots: number }> = {
   "other-passionate": { name: "Q1 2026 Open Cohort", spots: 14 },
 };
 
-// ═══════════════════════════════════════════════════════════════════
-// DYNAMIC LAYER 6: Persona-specific optin bullets
-// ═══════════════════════════════════════════════════════════════════
-const OPTIN_BULLETS: Record<Persona, string[]> = {
-  "healthcare-pro": [
-    "Your clinical skills gap analysis + ASI fast-track timeline",
-    "Personalized healthcare-to-practitioner transition roadmap",
-    "Scholarship eligibility review (average approval: 94%)",
-  ],
-  "health-coach": [
-    "Your coach-to-clinical upgrade assessment from ASI",
-    "Personalized income growth roadmap (3x average increase)",
-    "52 CEU hours accreditation verification",
-  ],
-  "corporate": [
-    "Your career transition readiness report from ASI",
-    "Personalized corporate-to-practitioner roadmap",
-    "Access to 2,847+ certified practitioner network",
-  ],
-  "stay-at-home-mom": [
-    "Your family-friendly study schedule + earning timeline",
-    "Personalized part-time practice launch roadmap",
-    "Flexible Schedule cohort availability check",
-  ],
-  "other-passionate": [
-    "Your qualification status + Practitioner Type reveal",
-    "Personalized ASI certification roadmap",
-    "Scholarship eligibility assessment (73% acceptance rate)",
-  ],
-};
+// (Optin bullets removed — email capture is now a single-field inline step)
 
 // ═══════════════════════════════════════════════════════════════════
 // DYNAMIC LAYER 7: Persona-specific question subtitles
 // ═══════════════════════════════════════════════════════════════════
+// Keys = question index in new 16-question order
 const PERSONA_SUBTITLES: Record<Persona, Record<number, string>> = {
   "healthcare-pro": {
-    1: "Your clinical salary is your baseline. FM practitioners earn 2-3x their hospital salary.",
-    3: "Your medical training is already a head start. This measures how much we can accelerate you.",
-    5: "As a healthcare professional, you already have lab exposure. This is about functional interpretation.",
-    8: "Between shifts? Days off? Many nurses complete FM Certification faster than expected.",
-    13: "Healthcare professionals typically have the financial stability for career investment. This helps us match you with the right tier.",
-    14: "Many nurses and PAs use continuing education budgets or savings. What's your approach?",
+    5: "Your clinical salary is your baseline. FM practitioners earn 2-3x their hospital salary.",
+    8: "Healthcare professionals feel this deeply. Be honest — it matters for your results.",
+    9: "This helps us show you the real income gap FM Certification closes.",
   },
   "health-coach": {
-    1: "Be honest. This helps us show you the income gap between coaching and clinical practice.",
-    3: "Your coaching skills are the foundation. This measures your readiness for clinical work.",
-    5: "This is THE skill that separates $50/hr coaches from $200/hr clinical practitioners.",
-    8: "That's one morning session before your first client. Our coaches love this format.",
-    13: "Most coaches invest in themselves regularly. This helps us understand your current capacity.",
-    14: "Coaches who invest in certification see 3x ROI. How would you approach this investment?",
+    5: "Be honest. This helps us show you the income gap between coaching and clinical practice.",
+    6: "This is what separates $50/hr coaches from $200/hr clinical practitioners.",
+    8: "Coaches feel this frustration more than anyone. What's YOUR biggest pain?",
   },
   "corporate": {
-    1: "Most career changers start at zero - and that's actually the best place to start.",
-    3: "Your corporate discipline will serve you well here. This is about clinical readiness, not corporate skills.",
-    5: "Think of lab panels like financial statements for the body. Your analytical mind will love this.",
-    8: "That's your lunch break, or your commute. Many corporate professionals study while still employed.",
-    13: "Career changers often have savings or severance. This helps us understand your investment readiness.",
-    14: "Think of this like any professional development investment. What's realistic for you?",
+    5: "Most career changers dream bigger than they realize. What would change your life?",
+    8: "Your corporate frustrations are fuel for transformation. What hurts most?",
+    9: "This helps us show the real ROI of FM Certification for career changers.",
   },
   "stay-at-home-mom": {
-    1: "No judgment here. Many of our most successful practitioners started earning $0.",
-    3: "Your life experience with kids, family health, and empathy counts more than you think.",
-    5: "Imagine actually understanding your kids' lab results. This skill changes everything - personally and professionally.",
-    8: "That's one nap time session. Our mom practitioners love this bite-sized format.",
-    13: "Many moms use family budgets or personal savings. Be honest about your situation.",
-    14: "This is an investment in your family's future. How would you approach the financing?",
+    5: "No judgment here. This helps us create a realistic earning path that fits your life.",
+    8: "Moms feel this deeply. Be honest — your results page will reflect YOUR reality.",
+    9: "Many of our most successful mom practitioners started earning $0. Wherever you are is perfect.",
   },
   "other-passionate": {
-    1: "Starting from zero with passion is actually our favorite starting point.",
-    3: "No health background needed. This measures your instincts and willingness to learn.",
-    5: "Lab interpretation sounds intimidating but it's completely learnable from scratch.",
-    8: "20 minutes of focused learning. Many of our top performers studied in the evenings.",
-    13: "Passion-driven learners find a way. This helps us understand what options to offer you.",
-    14: "Consider this an investment in your new career. What approach feels right?",
+    5: "Starting from zero with passion is actually our favorite starting point.",
+    8: "This frustration is exactly what drives the biggest transformations.",
+    9: "Wherever you're starting, your unique background is an asset.",
   },
 };
 
@@ -459,24 +263,24 @@ interface QuizStep { id: number; pillar: string; question: string; subtitle?: st
 
 const QUESTIONS: QuizStep[] = [
   // ═══════════════════════════════════════════════════════════════════
-  // PHASE 1: EXCITEMENT (Q1-Q4) - "I'm excited about this"
+  // BLOCK 1: IDENTITY (Q1-Q3) — DMN Activation, Dopamine Priming
+  // Answerable in <2 seconds. Zero thinking. Pure self-recognition.
   // ═══════════════════════════════════════════════════════════════════
   {
-    id: 1, pillar: "Specialization",
-    question: "Which area of Functional Medicine excites you most?",
-    subtitle: "There's no wrong answer — what calls to you?",
+    id: 1, pillar: "Identity",
+    question: "What best describes your life right now?",
+    subtitle: "This helps us personalize everything for you.",
     options: [
-      { label: "Gut Health and Digestive Wellness", value: "gut-health", reaction: "Great choice! Gut health is the foundation of all wellness. Our gut specialists are in massive demand.", strength: "strong" },
-      { label: "Hormonal Health and Balance", value: "hormone-health", reaction: "Perfect! Women are desperate for qualified hormone practitioners. This is our #1 most in-demand specialty.", strength: "strong" },
-      { label: "Stress, Burnout and Adrenal Recovery", value: "burnout", reaction: "So needed right now! 1 in 3 professional women suffer from burnout. The demand is exploding.", strength: "strong" },
-      { label: "Autoimmune and Inflammation", value: "autoimmune", reaction: "Complex cases need clinical practitioners. This is advanced-level, premium-rate work.", strength: "strong" },
-      { label: "Weight Management and Metabolic Health", value: "metabolic", reaction: "Beyond basic diets — real metabolic transformation. One of the highest-paying specialties.", strength: "strong" },
-      { label: "Not sure yet — I want to explore", value: "explore", reaction: "That's perfect! We'll help you discover your ideal niche during the program.", strength: "good" },
+      { label: "I'm working full-time but dreaming of something more", value: "working-fulltime", reaction: "You're in the right place. Women in your exact situation are our highest achievers.", strength: "strong" },
+      { label: "I'm in a health/wellness career and want to go deeper", value: "wellness-career", reaction: "Amazing! You already have the foundation. Let's take it to the next level.", strength: "strong" },
+      { label: "I'm ready for a complete career change", value: "career-change", reaction: "That takes courage — and 31% of our highest earners made that exact leap.", strength: "strong" },
+      { label: "I'm a mom ready for my next chapter", value: "mom-next-chapter", reaction: "Moms bring the most incredible empathy and drive to this work.", strength: "strong" },
+      { label: "I'm retired and looking for my next purpose", value: "retired-purpose", reaction: "What a beautiful chapter to write. Your life experience is your biggest asset.", strength: "strong" },
     ],
   },
   {
     id: 2, pillar: "Background",
-    question: "What best describes your current background?",
+    question: "What's your background?",
     subtitle: "This helps us understand your starting point.",
     options: [
       { label: "Nurse or Nursing Assistant", value: "nurse", reaction: "Excellent! Healthcare professionals have a 94% acceptance rate. Your clinical background is a major advantage.", strength: "strong" },
@@ -488,120 +292,179 @@ const QUESTIONS: QuizStep[] = [
     ],
   },
   {
-    id: 3, pillar: "Experience",
-    question: "How would you describe your knowledge of Functional Medicine?",
-    subtitle: "No judgment here — every answer is valid.",
-    options: [
-      { label: "Brand new — I'm just discovering this field", value: "brand-new", reaction: "Perfect timing! You're starting with the gold standard. No bad habits to unlearn.", strength: "good" },
-      { label: "I've done some research and self-study", value: "self-study", reaction: "Great foundation! The program turns that curiosity into real clinical expertise.", strength: "good" },
-      { label: "I've taken courses or workshops before", value: "some-training", reaction: "Even better. We'll build on what you know and take it to clinical level.", strength: "strong" },
-      { label: "I already work with clients using some FM principles", value: "already-practicing", reaction: "Excellent! You can start applying ASI protocols with your existing clients immediately.", strength: "strong" },
-    ],
-  },
-  {
-    id: 4, pillar: "Motivation",
-    question: "What is the main reason you want to get certified?",
-    subtitle: "Understanding your 'why' helps me support you better...",
+    id: 3, pillar: "Motivation",
+    question: "What brought you here today?",
+    subtitle: "Every reason is a valid reason.",
     options: [
       { label: "I want to help people heal naturally", value: "help-people", reaction: "That's what it's all about. You'll have the tools to actually transform lives.", strength: "strong" },
-      { label: "I want to leave my current job and work for myself", value: "leave-job", reaction: "Freedom. That's what 67% of our practitioners achieved within their first year.", strength: "strong" },
-      { label: "I want to add FM services to my existing practice", value: "add-services", reaction: "Smart move! Adding FM services typically doubles or triples practice revenue.", strength: "strong" },
-      { label: "I want the freedom to work from home on my own schedule", value: "work-from-home", reaction: "That's exactly what I wanted too. Now I set my own hours and never miss a moment with my daughter.", strength: "strong" },
-      { label: "I'm burned out and need a new path", value: "burned-out", reaction: "I was exactly where you are. 14 years as an ER nurse nearly broke me. FM gave me my life back.", strength: "strong" },
+      { label: "I want to leave my job and work for myself", value: "leave-job", reaction: "Freedom. That's what 67% of our practitioners achieved within their first year.", strength: "strong" },
+      { label: "I want to add FM to my existing practice", value: "add-services", reaction: "Smart move! Adding FM services typically doubles or triples practice revenue.", strength: "strong" },
+      { label: "I want the freedom to work from home", value: "work-from-home", reaction: "That's exactly what this certification enables. Set your own hours, work from anywhere.", strength: "strong" },
+      { label: "I'm burned out and need a new path", value: "burned-out", reaction: "Burnout is the #1 reason women come to us. FM is the antidote — purpose-driven work on YOUR terms.", strength: "strong" },
     ],
   },
   // ═══════════════════════════════════════════════════════════════════
-  // PHASE 2: PAIN SURFACES (Q5) - "My situation actually sucks"
+  // BLOCK 2: AWARENESS (Q4-Q5) — Surface past failures + fears
+  // Before building the dream, acknowledge where they've been stuck.
   // ═══════════════════════════════════════════════════════════════════
   {
-    id: 5, pillar: "Pain Point",
+    id: 4, pillar: "Experience",
+    question: "What have you already tried?",
+    subtitle: "No judgment — this helps us understand your journey.",
+    options: [
+      { label: "Other certifications or courses that didn't deliver", value: "other-certs", reaction: "You invested money and time and didn't get results. That's not your fault — it's the program's. This one is different.", strength: "strong" },
+      { label: "Coaching programs or mentorships", value: "coaching", reaction: "Coaching gives motivation but rarely gives clinical skills. FM Certification gives you both.", strength: "strong" },
+      { label: "Self-study — YouTube, books, podcasts", value: "self-study", reaction: "You clearly have the drive. What you're missing is the structured clinical framework and the credential.", strength: "good" },
+      { label: "Nothing yet — this is my first step", value: "nothing-yet", reaction: "A clean slate is powerful. No bad habits to unlearn. You're starting with the right program first.", strength: "strong" },
+    ],
+  },
+  {
+    id: 5, pillar: "Mindset",
+    question: "What's your biggest fear about starting something new?",
+    subtitle: "Be honest — everyone has one.",
+    options: [
+      { label: "I'm worried it's too late for me", value: "too-late", reaction: "Our average graduate is 47. Our oldest is 68. She now earns $6K/month. It is NEVER too late.", strength: "strong" },
+      { label: "I'm not sure I can afford it", value: "afford", reaction: "We hear this a lot. That's exactly why we created the scholarship program — so finances don't stop anyone.", strength: "good" },
+      { label: "I don't know if I have enough time", value: "no-time", reaction: "20 minutes a day. That's it. Most women study during lunch breaks or after the kids go to bed.", strength: "strong" },
+      { label: "I'm afraid I'm not smart enough or qualified", value: "not-qualified", reaction: "If you can learn to drive a car, you can learn functional medicine. The program is designed for beginners.", strength: "strong" },
+      { label: "I've been burned before by programs that overpromise", value: "burned-before", reaction: "That skepticism is healthy. That's why we have 9 accreditations, 2,847+ graduates, and a 7-day money-back guarantee.", strength: "strong" },
+    ],
+  },
+  // ═══════════════════════════════════════════════════════════════════
+  // BLOCK 3: DESIRE (Q6-Q8) — Dream Building, Emotional Peak
+  // Now that she's engaged, build the dream. Future self visualization.
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: 6, pillar: "Income Goal",
+    question: "What monthly income would change your life?",
+    subtitle: "Dream big — there's no wrong answer here.",
+    options: [
+      { label: "$3,000 to $5,000 a month", value: "3k-5k", reaction: "Very achievable. 73% of our practitioners hit this within their first 90 days.", strength: "strong" },
+      { label: "$5,000 to $10,000 a month", value: "5k-10k", reaction: "That's our sweet spot. The average practitioner earns $8-12K/month within 6 months.", strength: "strong" },
+      { label: "$10,000 to $15,000 a month", value: "10k-15k", reaction: "Ambitious and very doable. That's what our top practitioners earn working from home.", strength: "strong" },
+      { label: "$15,000+ a month", value: "15k-plus", reaction: "That's the mindset of a future clinical director. Practitioners who add group programs hit this regularly.", strength: "strong" },
+    ],
+  },
+  {
+    id: 7, pillar: "Specialization",
+    question: "Which area of health excites you most?",
+    subtitle: "There's no wrong answer — what calls to you?",
+    options: [
+      { label: "Gut Health and Digestive Wellness", value: "gut-health", reaction: "Great choice! Gut health is the foundation of all wellness. Our gut specialists are in massive demand.", strength: "strong" },
+      { label: "Hormonal Health and Balance", value: "hormone-health", reaction: "Perfect! Women are desperate for qualified hormone practitioners. This is our #1 most in-demand specialty.", strength: "strong" },
+      { label: "Stress, Burnout and Adrenal Recovery", value: "burnout", reaction: "So needed right now! 1 in 3 professional women suffer from burnout. The demand is exploding.", strength: "strong" },
+      { label: "Autoimmune and Inflammation", value: "autoimmune", reaction: "Complex cases need clinical practitioners. This is advanced-level, premium-rate work.", strength: "strong" },
+      { label: "Weight Management and Metabolic Health", value: "metabolic", reaction: "Beyond basic diets — real metabolic transformation. One of the highest-paying specialties.", strength: "strong" },
+      { label: "Not sure yet — I want to explore", value: "explore", reaction: "That's perfect! We'll help you discover your ideal niche during the program.", strength: "good" },
+    ],
+  },
+  {
+    id: 8, pillar: "Dream Life",
+    question: "Imagine 12 months from now — certified, with clients, earning your goal income. What matters most?",
+    subtitle: "Close your eyes for a second and picture it...",
+    options: [
+      { label: "Time freedom — setting my own schedule", value: "time-freedom", reaction: "Being there for every school pickup, every soccer game. That's the practitioner life.", strength: "strong" },
+      { label: "Financial freedom — never stress about money again", value: "financial-freedom", reaction: "Imagine never stressing about bills again. That peace of mind changes everything.", strength: "strong" },
+      { label: "Purpose and meaning — doing work that matters", value: "purpose", reaction: "Waking up excited every morning, knowing you're genuinely transforming lives. That feeling is real.", strength: "strong" },
+      { label: "The complete transformation — all of the above", value: "complete-transformation", reaction: "That's exactly what this certification delivers. Not just income — a complete life transformation.", strength: "strong" },
+    ],
+  },
+  // ═══════════════════════════════════════════════════════════════════
+  // BLOCK 4: PAIN + REALITY (Q9-Q11) — Contrast, Urgency
+  // Dream is built. Now create contrast with current reality.
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: 9, pillar: "Pain Point",
     question: "What frustrates you MOST about your current situation?",
     subtitle: "Be honest with yourself...",
     options: [
       { label: "I'm trading time for money and it's not sustainable", value: "time-for-money", reaction: "That's the worst feeling. You're stuck on a treadmill that never stops. FM breaks that cycle.", strength: "strong" },
-      { label: "I feel stuck with no clear path forward", value: "stuck", reaction: "I know that feeling. You can see where you want to be but there's no roadmap. Until now.", strength: "strong" },
+      { label: "I feel stuck with no clear path forward", value: "stuck", reaction: "You can see where you want to be but there's no roadmap. Until now.", strength: "strong" },
       { label: "I know I'm meant for more but don't know how to get there", value: "meant-for-more", reaction: "That inner knowing is real. The gap between your potential and your reality — that's what we close.", strength: "strong" },
-      { label: "I'm exhausted and my health or relationships are suffering", value: "exhausted", reaction: "That was me too. The thing you're sacrificing is the thing you're supposed to be protecting. Let's fix that.", strength: "strong" },
+      { label: "I'm exhausted and my health or relationships are suffering", value: "exhausted", reaction: "The thing you're sacrificing is the thing you're supposed to be protecting. Let's fix that.", strength: "strong" },
       { label: "I have the knowledge but no credential to back it up", value: "no-credential", reaction: "You KNOW you can help people. You just can't prove it. ASI certification gives you that credibility.", strength: "strong" },
     ],
   },
-  // ═══════════════════════════════════════════════════════════════════
-  // PHASE 3: DESIRE BUILDS (Q6-Q7) - "Here's what I want"
-  // ═══════════════════════════════════════════════════════════════════
   {
-    id: 6, pillar: "Timeline",
-    question: "When would you ideally want to start your certification?",
-    subtitle: "This helps us understand your urgency.",
-    options: [
-      { label: "Immediately — I'm ready now", value: "immediately", reaction: "I love that energy! Immediate starters have a 94% completion rate.", strength: "strong" },
-      { label: "Within the next 30 days", value: "30-days", reaction: "Perfect timing with our next intake. Strong qualifier.", strength: "strong" },
-      { label: "In 1 to 3 months", value: "1-3-months", reaction: "We can reserve a spot for qualified applicants. Let's continue...", strength: "good" },
-      { label: "Just exploring for now", value: "exploring", reaction: "That's okay! Let's see if you qualify so you know your options.", strength: "developing" },
-    ],
-  },
-  {
-    id: 7, pillar: "Income Goal",
-    question: "What monthly income would make this certification worth it for you?",
-    subtitle: "Dream big — there's no low option here.",
-    options: [
-      { label: "$3,000 to $5,000 a month", value: "3k-5k", reaction: "Very achievable. 73% of our practitioners hit this within their first 90 days.", strength: "strong" },
-      { label: "$5,000 to $10,000 a month", value: "5k-10k", reaction: "That's our sweet spot. The average ASI practitioner earns $8-12K/month within 6 months.", strength: "strong" },
-      { label: "$10,000 to $15,000 a month", value: "10k-15k", reaction: "Ambitious and very doable. That's what Sarah earns working from home.", strength: "strong" },
-      { label: "$15,000+ a month", value: "15k-plus", reaction: "That's the mindset of a future clinical director. Practitioners who add group programs hit this regularly.", strength: "strong" },
-    ],
-  },
-  // ═══════════════════════════════════════════════════════════════════
-  // PHASE 4: URGENCY HITS (Q8) - "I've been stuck way too long"
-  // ═══════════════════════════════════════════════════════════════════
-  {
-    id: 8, pillar: "Time Stuck",
-    question: "How long have you been thinking about making a change like this?",
-    subtitle: "This is a reality check moment...",
-    options: [
-      { label: "Less than a month", value: "less-than-month", reaction: "Fresh energy! You're acting fast. That's a great sign.", strength: "good" },
-      { label: "1 to 6 months", value: "1-6-months", reaction: "You've been circling this. Something brought you here today. Let's see if now is the time.", strength: "good" },
-      { label: "6 months to a year", value: "6-12-months", reaction: "Almost a year thinking about this... What's going to be different if you wait another year?", strength: "strong" },
-      { label: "Over a year — I keep putting it off", value: "over-year", reaction: "Over a year of wanting something different. How many more years are you going to let slip by?", strength: "strong" },
-    ],
-  },
-  // ═══════════════════════════════════════════════════════════════════
-  // PHASE 5: REALITY CHECK + DREAM (Q9-Q10) - Gap creation
-  // ═══════════════════════════════════════════════════════════════════
-  {
-    id: 9, pillar: "Current Income",
+    id: 10, pillar: "Current Income",
     question: "What is your current monthly income?",
-    subtitle: "Just so I can understand where you're at right now...",
+    subtitle: "This helps us understand the gap between where you are and where you want to be.",
     options: [
-      { label: "Under $3,000 a month", value: "under-3k", reaction: "Noted. The gap between where you are and where you want to be — that's what we close.", strength: "good" },
+      { label: "Under $3,000 a month", value: "under-3k", reaction: "Noted. The gap between where you are and where you want to be — that's exactly what this certification closes.", strength: "good" },
       { label: "$3,000 to $5,000 a month", value: "3k-5k", reaction: "Solid base. But you deserve more. Let's see what we can build.", strength: "good" },
       { label: "$5,000 to $8,000 a month", value: "5k-8k", reaction: "Not bad — but imagine doubling that while working half the hours.", strength: "strong" },
-      { label: "Over $8,000 a month", value: "over-8k", reaction: "Impressive! You're already ahead. FM certification could take you to the next level.", strength: "strong" },
+      { label: "Over $8,000 a month", value: "over-8k", reaction: "Impressive! You're already ahead. FM certification takes you to the next level.", strength: "strong" },
     ],
   },
-  {
-    id: 10, pillar: "Dream Life",
-    question: "Imagine 12 months from now. You're certified, you have clients, and you're earning your goal income. What matters most to you about that life?",
-    subtitle: "Close your eyes for a second and picture it...",
-    options: [
-      { label: "Financial freedom — no more living paycheck to paycheck", value: "financial-freedom", reaction: "Imagine never stressing about bills again. That peace of mind changes everything.", strength: "strong" },
-      { label: "Time freedom — setting my own schedule and being present for family", value: "time-freedom", reaction: "Being there for every school pickup, every soccer game. That's the practitioner life.", strength: "strong" },
-      { label: "Purpose — doing meaningful work that actually helps people heal", value: "purpose", reaction: "Waking up excited every morning, knowing you're genuinely transforming lives. That feeling is real.", strength: "strong" },
-      { label: "Independence — no more answering to a boss or broken system", value: "independence", reaction: "Building something that's YOURS. No one can take it away. That's true security.", strength: "strong" },
-      { label: "All of the above", value: "all-above", reaction: "That's exactly what ASI certification delivers. Not just income — a complete life transformation.", strength: "strong" },
-    ],
-  },
-  // ═══════════════════════════════════════════════════════════════════
-  // PHASE 6: COMMITMENT (Q11) - "I'm ready to do this"
-  // ═══════════════════════════════════════════════════════════════════
   {
     id: 11, pillar: "Commitment",
-    question: "If you knew this could change your life — how committed are you to making it happen?",
-    subtitle: "Last question — and this one matters...",
+    question: "How much time can you realistically dedicate per week?",
+    subtitle: "There's no wrong answer — the program adapts to YOUR schedule.",
     options: [
-      { label: "100% committed — I'm going all in", value: "100-percent", reaction: "That's the answer of someone who's going to succeed. Nothing will stop you.", strength: "strong" },
-      { label: "Very committed — I just need to see the path", value: "very-committed", reaction: "The commitment is there. Now I just need to show you the roadmap.", strength: "strong" },
-      { label: "Interested — but I have questions first", value: "interested", reaction: "Totally fair. That's what the scholarship call is for. All your questions answered.", strength: "good" },
-      { label: "Curious — but not sure if it's right for me", value: "curious", reaction: "Let's find out together. The call will help you decide if this is your path.", strength: "developing" },
+      { label: "20 minutes a day — I'll make it work", value: "20-min", reaction: "That's all it takes. 20 minutes a day is exactly how the program is designed.", strength: "strong" },
+      { label: "About an hour a day", value: "1-hour", reaction: "With that commitment, you could be certified in as little as 4 weeks. Impressive dedication.", strength: "strong" },
+      { label: "Weekends only", value: "weekends", reaction: "Weekend warriors are some of our most focused students. Quality over quantity.", strength: "good" },
+      { label: "I'll find the time — this matters to me", value: "find-time", reaction: "That determination is everything. Women who say this have a 91% completion rate.", strength: "strong" },
+    ],
+  },
+  // ═══════════════════════════════════════════════════════════════════
+  // ─── EMAIL CAPTURE HAPPENS HERE (between Q11 and Q12) ─────────
+  // 11 micro-commitments invested. Deep trust built. Email feels natural.
+  // ═══════════════════════════════════════════════════════════════════
+  // BLOCK 5: COMMITMENT (Q12-Q16) — Qualifying, Final Segmentation
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: 12, pillar: "Purpose",
+    question: "Who would benefit most from your new skills?",
+    subtitle: "This shapes how we personalize your certification path.",
+    options: [
+      { label: "My future clients — I want to build a practice", value: "clients", reaction: "You're already thinking like a practitioner. That mindset is half the battle.", strength: "strong" },
+      { label: "My family — I want to protect their health", value: "family", reaction: "There's no greater motivation than family. You'll have clinical tools most doctors don't.", strength: "strong" },
+      { label: "Myself — I need to heal my own body first", value: "myself", reaction: "Heal yourself first, then help others. That's exactly how the best practitioners are born.", strength: "strong" },
+      { label: "My community — I want to make a bigger impact", value: "community", reaction: "Community health is where functional medicine has the biggest impact. You'll be a leader.", strength: "strong" },
+    ],
+  },
+  {
+    id: 13, pillar: "Readiness",
+    question: "What do you already have set up?",
+    subtitle: "This helps us personalize your certification path.",
+    options: [
+      { label: "Nothing yet — I'm starting completely fresh", value: "nothing", reaction: "A blank slate is actually powerful. We'll build everything for you from the ground up.", strength: "good" },
+      { label: "Business name or social media presence", value: "name-social", reaction: "You've already started! The certification gives you the clinical credibility to match your brand.", strength: "good" },
+      { label: "I already see clients", value: "have-clients", reaction: "Perfect! You can immediately apply what you learn. Your existing clients will see the difference.", strength: "strong" },
+      { label: "I have everything — just need the training", value: "have-everything", reaction: "You're ready for takeoff. The certification is the final piece of your puzzle.", strength: "strong" },
+    ],
+  },
+  {
+    id: 14, pillar: "Timeline",
+    question: "When would you ideally want to start?",
+    subtitle: "This helps us understand your readiness.",
+    options: [
+      { label: "Immediately — I'm ready now", value: "immediately", reaction: "Immediate starters have a 94% completion rate. That energy is everything.", strength: "strong" },
+      { label: "Within the next 30 days", value: "30-days", reaction: "Perfect timing. You'll be certified before most people finish a Netflix series.", strength: "strong" },
+      { label: "In 1 to 3 months", value: "1-3-months", reaction: "We can reserve your spot. Let's finish and see your full results.", strength: "good" },
+      { label: "Just exploring for now", value: "exploring", reaction: "That's okay! Let's see what your personalized path looks like.", strength: "developing" },
+    ],
+  },
+  {
+    id: 15, pillar: "Reflection",
+    question: "How would you feel if you looked back a year from now and hadn't started?",
+    subtitle: "Take a moment with this one...",
+    options: [
+      { label: "Devastated — I'd deeply regret not taking action", value: "devastated", reaction: "That feeling you just had? That's your answer. Don't let future-you down.", strength: "strong" },
+      { label: "Frustrated — another year of the same thing", value: "frustrated", reaction: "A year from now, you'll wish you started today. Every single graduate says this.", strength: "strong" },
+      { label: "Fine — but I know I'd always wonder 'what if'", value: "what-if", reaction: "The 'what if' is the question that haunts people for decades. Let's answer it now.", strength: "good" },
+      { label: "I'd find another way eventually", value: "another-way", reaction: "Maybe. But the women who are earning $8K+/month right now all started with a single step.", strength: "developing" },
+    ],
+  },
+  {
+    id: 16, pillar: "Intent",
+    question: "Are you doing this to build a business, for personal growth, or both?",
+    subtitle: "Final question — this shapes your entire results page.",
+    options: [
+      { label: "Build a business — help people AND earn income", value: "business", reaction: "Entrepreneurial spirit! Your results page will include income projections and business tools.", strength: "strong" },
+      { label: "Personal growth — heal myself and loved ones", value: "personal", reaction: "Beautiful. Your results will focus on deep clinical knowledge and personal mastery.", strength: "strong" },
+      { label: "Both — learn first, maybe business later", value: "both", reaction: "Smart approach. We'll show you both paths so you can decide on your own terms.", strength: "strong" },
     ],
   },
 ];
@@ -609,9 +472,73 @@ const QUESTIONS: QuizStep[] = [
 
 
 
+// ═══════════════════════════════════════════════════════════════════
+// CONDITIONAL INSERTS — light branching based on quiz answers
+// These appear between questions when specific conditions are met.
+// ═══════════════════════════════════════════════════════════════════
+interface ConditionalInsert {
+  id: string;
+  afterQ: number; // question index (0-based) that triggers this
+  condition: (answers: Record<number, string>) => boolean;
+  type: "question" | "reassurance";
+  pillar?: string;
+  question?: string;
+  subtitle?: string;
+  options?: QuizOption[];
+  sarahMessage?: string;
+  stats?: { label: string; value: string }[];
+}
+
+const CONDITIONAL_INSERTS: ConditionalInsert[] = [
+  // ── After Q2 (background): Career changers get a follow-up ──────
+  {
+    id: "career-leaving",
+    afterQ: 1,
+    condition: (a) => a[1] === "career-change",
+    type: "question",
+    pillar: "Background",
+    question: "What career are you transitioning from?",
+    subtitle: "This helps us show you how your professional skills transfer directly.",
+    options: [
+      { label: "Corporate / Office / Management", value: "corporate", reaction: "Corporate skills translate beautifully — project management, communication, leadership. You're ahead of 80% of new practitioners.", strength: "strong" },
+      { label: "Education / Teaching", value: "education", reaction: "Teachers make exceptional practitioners. You already know how to explain complex concepts simply — that's a clinical superpower.", strength: "strong" },
+      { label: "Retail / Service / Hospitality", value: "service", reaction: "Customer-facing experience is gold. You already know how to read people and make them feel seen.", strength: "strong" },
+      { label: "Creative / Arts / Freelance", value: "creative", reaction: "Creative thinkers build the most unique, memorable practices. Your brain works differently — that's your edge.", strength: "strong" },
+      { label: "Something else entirely", value: "other-career", reaction: "Every career builds transferable skills. You'd be surprised how much of your experience applies directly.", strength: "good" },
+    ],
+  },
+  // ── After Q5 (biggest fear = afford): Financial reassurance ─────
+  {
+    id: "afford-reassurance",
+    afterQ: 4,
+    condition: (a) => a[4] === "afford",
+    type: "reassurance",
+    sarahMessage: "I hear you, {name}. Finances are a real concern — and I respect that you're thinking about it seriously. Here's what I want you to know before we continue...",
+    stats: [
+      { label: "Average ROI timeline", value: "87% of graduates earn back their full investment within 60 days" },
+      { label: "Scholarship available", value: "Up to 70% tuition reduction for qualified applicants like you" },
+      { label: "Flexible start", value: "Start for as little as $100 — full access from day one" },
+    ],
+  },
+  // ── After Q5 (biggest fear = burned before): Trust-building ─────
+  {
+    id: "burned-credibility",
+    afterQ: 4,
+    condition: (a) => a[4] === "burned-before",
+    type: "reassurance",
+    sarahMessage: "I completely understand your skepticism, {name}. You've invested in programs before and been let down. Here's why ASI is fundamentally different...",
+    stats: [
+      { label: "9 International Accreditations", value: "Recognized by CPD, IPHM, CMA and 6 more — not self-certified" },
+      { label: "2,847+ Verified Graduates", value: "Real women, real results, across 14 countries" },
+      { label: "7-Day Money-Back Guarantee", value: "Full refund, no questions asked — because we know you'll stay" },
+      { label: "4.8/5 Independent Rating", value: "Verified by third-party review platforms, not our own website" },
+    ],
+  },
+];
+
 // ─── Types ─────────────────────────────────────────────────────────
-type Stage = "intro" | "quiz" | "testimonial" | "optin" | "reviewing" | "qualified" | "result";
-const TOTAL_STEPS = 15; // 11 questions + intro + optin + reviewing + qualified
+type Stage = "intro" | "quiz" | "testimonial" | "conditional" | "email-capture" | "analyzing" | "qualified" | "result";
+const TOTAL_STEPS = 20; // 16 questions + intro + email-capture + analyzing + qualified
 
 // ─── Route mapping ─────────────────────────────────────────────────
 const ROLE_ROUTES: Record<string, string> = {
@@ -625,32 +552,31 @@ const ROLE_ROUTES: Record<string, string> = {
 export default function FMCertificationQuiz() {
   const [stage, setStage] = useState<Stage>("intro");
   const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [reaction, setReaction] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  // Audio removed from quiz - now plays only in scholarship chat
   const [direction, setDirection] = useState(1);
-  const [reviewStep, setReviewStep] = useState(0);
-  const [optinTimer, setOptinTimer] = useState(900);
+  const [analyzeStep, setAnalyzeStep] = useState(0);
+  const [currentConditional, setCurrentConditional] = useState<string | null>(null);
+  const [conditionalAnswers, setConditionalAnswers] = useState<Record<string, string>>({});
+  const [shownConditionals, setShownConditionals] = useState<Record<string, boolean>>({});
   const fireConfetti = useConfetti();
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const practitionerTypeKey = SPEC_TO_PRACT[answers[0]] || "hormone-health";
+  const practitionerTypeKey = SPEC_TO_PRACT[answers[6]] || "hormone-health";
   const practitionerType = PRACTITIONER_TYPES[practitionerTypeKey] || PRACTITIONER_TYPES["hormone-health"];
-  const incomeGoal = answers[6] || "5k-10k";
-  const currentRole: Persona = BACKGROUND_TO_PERSONA[answers[1]] || "other-passionate";
+  const incomeGoal = answers[5] || "5k-10k";
+  // Persona: Q1 (life situation) overrides for mom/career-change, else use Q2 (background)
+  const currentRole: Persona = answers[0] === "mom-next-chapter" ? "stay-at-home-mom"
+    : answers[0] === "career-change" ? "other-passionate"
+    : (BACKGROUND_TO_PERSONA[answers[1]] || "other-passionate");
 
   // Dynamic data based on persona
   const testimonials = TESTIMONIALS_BY_PERSONA[currentRole] || TESTIMONIALS_BY_PERSONA["other-passionate"];
-  const reviewSteps = REVIEW_STEPS_BY_PERSONA[currentRole] || REVIEW_STEPS_BY_PERSONA["other-passionate"];
   const qualFraming = QUALIFICATION_FRAMING[currentRole] || QUALIFICATION_FRAMING["other-passionate"];
   const cohort = COHORT_NAMES[currentRole] || COHORT_NAMES["other-passionate"];
-  const optinBullets = OPTIN_BULLETS[currentRole] || OPTIN_BULLETS["other-passionate"];
   const certSubtitle = CERT_SUBTITLE[currentRole] || CERT_SUBTITLE["other-passionate"];
 
   // Get dynamic reaction: persona-specific override or base
@@ -700,29 +626,20 @@ export default function FMCertificationQuiz() {
     sessionStorage.setItem("quiz_start_tracked", "1");
   }, []);
 
-  // Optin countdown timer
+  // Analyzing animation — 5 steps over ~5 seconds, then qualified
+  const ANALYZE_STEPS = [
+    "Analyzing your answers...",
+    "Matching your specialization...",
+    "Calculating qualification score...",
+    "Building your personalized path...",
+    `${name}, your certification path is ready!`,
+  ];
+
   useEffect(() => {
-    if (stage === "optin") {
-      timerRef.current = setInterval(() => {
-        setOptinTimer((prev) => (prev <= 0 ? 0 : prev - 1));
-      }, 1000);
-    }
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [stage]);
-
-
-  const formatTimer = (s: number) => {
-    const m = Math.floor(s / 60);
-    const sec = s % 60;
-    return `${m}:${sec.toString().padStart(2, "0")}`;
-  };
-
-  // Reviewing animation
-  useEffect(() => {
-    if (stage !== "reviewing") return;
+    if (stage !== "analyzing") return;
     const interval = setInterval(() => {
-      setReviewStep((prev) => {
-        if (prev >= reviewSteps.length - 1) {
+      setAnalyzeStep((prev) => {
+        if (prev >= ANALYZE_STEPS.length - 1) {
           clearInterval(interval);
           setTimeout(() => {
             setStage("qualified");
@@ -732,9 +649,10 @@ export default function FMCertificationQuiz() {
         }
         return prev + 1;
       });
-    }, 700);
+    }, 1000);
     return () => clearInterval(interval);
-  }, [stage, fireConfetti, reviewSteps.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage, fireConfetti]);
 
   // Auto-redirect after qualified stage (2 seconds)
   useEffect(() => {
@@ -748,7 +666,9 @@ export default function FMCertificationQuiz() {
 
   const getStepNumber = (): number => {
     if (stage === "intro") return 0;
-    if (stage === "optin" || stage === "reviewing" || stage === "qualified" || stage === "result") return TOTAL_STEPS;
+    if (stage === "conditional") return 1 + currentQ + 1; // sits between the triggering Q and next Q
+    if (stage === "email-capture") return 14;
+    if (stage === "analyzing" || stage === "qualified" || stage === "result") return TOTAL_STEPS;
     const testimonialsBefore = testimonials.filter((t) => t.afterQ <= currentQ).length;
     return 1 + currentQ + testimonialsBefore;
   };
@@ -787,7 +707,32 @@ export default function FMCertificationQuiz() {
     }, 1200);
   };
 
-  // Audio removed from quiz - now plays only in scholarship chat (see scholarship-chat.tsx)
+  const handleEmailSubmit = async () => {
+    if (!email || !email.includes("@")) return;
+    // Fire-and-forget — don't block the quiz flow
+    fetch("/api/quiz-funnel", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name, email,
+        funnel: "fm-certification",
+        answers,
+        practitionerType: practitionerTypeKey,
+        incomeGoal,
+        currentRole,
+      }),
+    }).catch(() => {});
+  };
+
+  // Shared logic: after a question is "done" (including any conditional), proceed to next step
+  const proceedAfterQuestion = (qIndex: number) => {
+    const justAnswered = qIndex + 1;
+    const testimonial = testimonials.find((t) => t.afterQ === justAnswered);
+    if (testimonial) { setStage("testimonial"); return; }
+    if (qIndex === 10) { setStage("email-capture"); return; }
+    if (qIndex < QUESTIONS.length - 1) { setCurrentQ(qIndex + 1); setStage("quiz"); }
+    else { setStage("analyzing"); }
+  };
 
   const handleNext = () => {
     setDirection(1);
@@ -798,17 +743,40 @@ export default function FMCertificationQuiz() {
       return;
     }
     if (stage === "testimonial") {
+      // After testimonial, check if next step would be email-capture (after Q11/index 10)
+      if (currentQ === 10) { setStage("email-capture"); return; }
       if (currentQ < QUESTIONS.length - 1) { setCurrentQ(currentQ + 1); setStage("quiz"); }
-      else { setStage("optin"); }
+      else { setStage("analyzing"); }
+      return;
+    }
+    if (stage === "conditional") {
+      const insert = CONDITIONAL_INSERTS.find((c) => c.id === currentConditional);
+      if (!insert) return;
+      if (insert.type === "question" && !conditionalAnswers[insert.id]) return;
+      setShownConditionals((prev) => ({ ...prev, [insert.id]: true }));
+      setCurrentConditional(null);
+      proceedAfterQuestion(currentQ);
+      return;
+    }
+    if (stage === "email-capture") {
+      if (!email || !email.includes("@")) return;
+      handleEmailSubmit();
+      setCurrentQ(11); // Continue to Q12
+      setStage("quiz");
       return;
     }
     if (stage === "quiz") {
       if (!answers[currentQ]) return;
-      const justAnswered = currentQ + 1;
-      const testimonial = testimonials.find((t) => t.afterQ === justAnswered);
-      if (testimonial) { setStage("testimonial"); return; }
-      if (currentQ < QUESTIONS.length - 1) { setCurrentQ(currentQ + 1); }
-      else { setStage("optin"); }
+      // Check for conditional inserts before proceeding
+      const conditional = CONDITIONAL_INSERTS.find(
+        (c) => c.afterQ === currentQ && c.condition(answers) && !shownConditionals[c.id]
+      );
+      if (conditional) {
+        setCurrentConditional(conditional.id);
+        setStage("conditional");
+        return;
+      }
+      proceedAfterQuestion(currentQ);
     }
   };
 
@@ -816,35 +784,16 @@ export default function FMCertificationQuiz() {
     setDirection(-1);
     setReaction(null);
     if (stage === "quiz" && currentQ === 0) { setStage("intro"); return; }
+    if (stage === "conditional") { setCurrentConditional(null); setStage("quiz"); return; }
     if (stage === "testimonial") { setStage("quiz"); return; }
+    if (stage === "email-capture") { setStage("quiz"); return; } // currentQ is still 10
+    if (stage === "quiz" && currentQ === 11) { setCurrentQ(10); setStage("quiz"); return; } // Skip email-capture on back
     if (stage === "quiz" && currentQ > 0) {
       const prevTestimonial = testimonials.find((t) => t.afterQ === currentQ);
       if (prevTestimonial) { setStage("testimonial"); setCurrentQ(currentQ - 1); return; }
       setCurrentQ(currentQ - 1);
     }
-    if (stage === "optin") { setCurrentQ(QUESTIONS.length - 1); setStage("quiz"); }
-  };
-
-  const handleOptinSubmit = async () => {
-    if (!email || !email.includes("@") || !lastName.trim() || !phone.trim()) return;
-    setSubmitting(true);
-    try {
-      await fetch("/api/quiz-funnel", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name, lastName, email, phone,
-          funnel: "fm-certification",
-          answers,
-          practitionerType: practitionerTypeKey,
-          incomeGoal,
-          currentRole,
-        }),
-      });
-    } catch { /* still proceed */ }
-    setSubmitting(false);
-    setReviewStep(0);
-    setStage("reviewing");
+    if (stage === "analyzing") { setCurrentQ(QUESTIONS.length - 1); setStage("quiz"); }
   };
 
   // Read variant from URL for A/B testing (e.g. /quiz/depth-method?v=B)
@@ -855,22 +804,29 @@ export default function FMCertificationQuiz() {
   const handleSeeResults = () => {
     setStage("result");
     const params = new URLSearchParams({
-      name, lastName, email,
+      name, email,
       type: practitionerTypeKey,
       role: currentRole,
       variant: urlVariant,
-      // All 11 quiz answers with correct semantic param names
-      specialization: answers[0] || "",    // Q1: Which area excites you
-      background: answers[1] || "",        // Q2: Current background
-      experience: answers[2] || "",        // Q3: FM knowledge level
-      motivation: answers[3] || "",        // Q4: Reason for certification
-      painPoint: answers[4] || "",         // Q5: Current frustration
-      timeline: answers[5] || "",          // Q6: When to start
-      incomeGoal: answers[6] || "",        // Q7: Target monthly income
-      timeStuck: answers[7] || "",         // Q8: How long considering change
-      currentIncome: answers[8] || "",     // Q9: Current monthly income
-      dreamLife: answers[9] || "",         // Q10: What matters most
-      commitment: answers[10] || "",       // Q11: Commitment level
+      // All 16 quiz answers — neuroscience-optimized order
+      lifeSituation: answers[0] || "",     // Q1: Life situation (identity)
+      background: answers[1] || "",        // Q2: Background
+      motivation: answers[2] || "",        // Q3: What brought you here
+      triedBefore: answers[3] || "",       // Q4: What have you tried
+      biggestFear: answers[4] || "",       // Q5: Biggest fear
+      incomeGoal: answers[5] || "",        // Q6: Income goal
+      specialization: answers[6] || "",    // Q7: Specialization
+      dreamLife: answers[7] || "",         // Q8: Dream life
+      painPoint: answers[8] || "",         // Q9: Pain point
+      currentIncome: answers[9] || "",     // Q10: Current income
+      weeklyHours: answers[10] || "",      // Q11: Weekly time commitment
+      whoBenefits: answers[11] || "",      // Q12: Who benefits
+      readiness: answers[12] || "",        // Q13: Readiness (what's set up)
+      timeline: answers[13] || "",         // Q14: Timeline
+      reflection: answers[14] || "",       // Q15: Year from now reflection
+      intent: answers[15] || "",           // Q16: Business/personal/both
+      // Conditional branching answers
+      careerLeaving: conditionalAnswers["career-leaving"] || "",
     });
 
     const route = ROLE_ROUTES[currentRole] || "/results/career-change";
@@ -881,10 +837,16 @@ export default function FMCertificationQuiz() {
     if (stage === "intro") return !!name.trim();
     if (stage === "quiz") return !!answers[currentQ];
     if (stage === "testimonial") return true;
+    if (stage === "conditional") {
+      const insert = CONDITIONAL_INSERTS.find((c) => c.id === currentConditional);
+      if (insert?.type === "reassurance") return true;
+      return !!conditionalAnswers[insert?.id || ""];
+    }
+    if (stage === "email-capture") return !!email && email.includes("@");
     return false;
   };
 
-  const animKey = `${stage}-${currentQ}`;
+  const animKey = `${stage}-${currentQ}-${currentConditional || ""}`;
 
   const strongCount = Object.entries(answers).reduce((count, [qIdx, val]) => {
     const q = QUESTIONS[parseInt(qIdx)];
@@ -899,64 +861,41 @@ export default function FMCertificationQuiz() {
     // ── INTRO ──
     if (stage === "intro") {
       return (
-        <div className="space-y-5">
-          {/* Progress Badge */}
-          <div className="text-center">
-            <span className="text-sm text-gray-400">0% complete</span>
-          </div>
-
-          {/* Sarah Welcome Card - NEW COPY */}
-          <div
-            className="rounded-2xl p-5 border-2"
-            style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}40` }}
-          >
-            <div className="flex items-start gap-4">
-              <Image
-                src={SARAH_AVATAR}
-                alt="Sarah Mitchell"
-                width={72}
-                height={72}
-                className="rounded-full border-3 object-cover flex-shrink-0 shadow-lg"
-                style={{ borderColor: BRAND.gold }}
-              />
-              <div className="flex-1">
-                <p className="text-lg font-bold" style={{ color: BRAND.burgundy }}>
-                  👋 Hey! I&apos;m Sarah
-                </p>
-              </div>
-            </div>
-
-            {/* Sarah's Story - Larger Text */}
-            <div className="mt-4 space-y-4">
-              <p className="text-base leading-relaxed text-gray-800">
-                I went from <strong>burned-out ER nurse</strong> and single mom to earning <strong style={{ color: BRAND.burgundy }}>$15K/month</strong> as a Functional Medicine Practitioner. Working from home. My own hours.
-              </p>
-              <p className="text-base leading-relaxed text-gray-700">
-                I&apos;ve helped <strong>2,847+ women</strong> do the same — even with <em>ZERO medical background</em>.
-              </p>
-            </div>
-          </div>
-
-          {/* What This Quiz Reveals - Larger Text */}
-          <div className="space-y-3">
-            <p className="text-lg font-semibold text-center" style={{ color: BRAND.burgundy }}>
-              This 3-minute quiz reveals:
+        <div className="space-y-6">
+          {/* Institute Logo + Title */}
+          <div className="text-center space-y-3">
+            <Image src={ASI_LOGO} alt="ASI" width={56} height={56} className="mx-auto" />
+            <h2 className="text-2xl md:text-3xl font-bold leading-tight" style={{ color: BRAND.burgundyDark }}>
+              Functional Medicine Certification — Eligibility Assessment
+            </h2>
+            <p className="text-base text-gray-500 max-w-md mx-auto">
+              Find out if you qualify for our internationally accredited FM Certification program.
             </p>
-            <div className="flex flex-col gap-2 text-base text-gray-700">
-              <span className="flex items-center gap-2">✅ Your best-fit specialty</span>
-              <span className="flex items-center gap-2">✅ Your realistic earning potential</span>
-              <span className="flex items-center gap-2">✅ If you qualify for a scholarship</span>
+          </div>
+
+          {/* What This Assessment Determines */}
+          <div
+            className="rounded-xl p-5 border"
+            style={{ backgroundColor: `${BRAND.gold}06`, borderColor: `${BRAND.gold}30` }}
+          >
+            <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: BRAND.burgundy }}>
+              This 5-minute assessment determines:
+            </p>
+            <div className="flex flex-col gap-2.5 text-base text-gray-700">
+              <span className="flex items-center gap-2.5"><CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: BRAND.gold }} /> Your best-fit clinical specialization</span>
+              <span className="flex items-center gap-2.5"><CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: BRAND.gold }} /> Your projected earning potential</span>
+              <span className="flex items-center gap-2.5"><CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: BRAND.gold }} /> Your eligibility for scholarship pricing</span>
             </div>
           </div>
 
-          {/* Name Input - Larger */}
-          <div className="space-y-4 pt-2">
-            <label className="text-lg font-medium text-center block" style={{ color: BRAND.burgundy }}>
-              What&apos;s your first name?
+          {/* Name Input */}
+          <div className="space-y-4">
+            <label className="text-base font-medium text-center block" style={{ color: BRAND.burgundyDark }}>
+              Enter your first name to begin
             </label>
             <input
               type="text"
-              placeholder="Enter your first name..."
+              placeholder="First name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && name.trim()) handleNext(); }}
@@ -971,22 +910,26 @@ export default function FMCertificationQuiz() {
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               <span className="relative flex items-center justify-center">
-                Start My Assessment <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                See If I Qualify <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </span>
             </Button>
           </div>
 
-          {/* Social Proof - Larger */}
-          <div className="text-center py-2">
-            <p className="text-base text-gray-500">
-              🎯 <strong>2,847+ women</strong> have taken this assessment
+          {/* Accreditation + Social Proof */}
+          <div className="text-center space-y-2">
+            <div className="flex items-center justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={ACCREDITATION_LOGOS} alt="Accreditations" className="h-8 opacity-60" />
+            </div>
+            <p className="text-sm text-gray-400">
+              9 international accreditations &bull; 2,847+ graduates &bull; 4.8/5 rating
             </p>
           </div>
 
-          {/* Trust Badges - Larger */}
+          {/* Trust Badges */}
           <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
-            <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> 3 min</span>
-            <span className="flex items-center gap-1"><Shield className="w-4 h-4" /> 100% private</span>
+            <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> 5 min</span>
+            <span className="flex items-center gap-1"><Shield className="w-4 h-4" /> 100% confidential</span>
           </div>
         </div>
       );
@@ -1009,7 +952,7 @@ export default function FMCertificationQuiz() {
           <div className="flex justify-center gap-1">
             {[1, 2, 3, 4, 5].map((s) => (<Star key={s} className="w-5 h-5 fill-current" style={{ color: BRAND.gold }} />))}
           </div>
-          {testimonial.afterQ === 9 && (
+          {testimonial.afterQ === 13 && (
             <div className="p-4 rounded-xl text-left" style={{ backgroundColor: `${BRAND.gold}08`, border: `1px solid ${BRAND.gold}40` }}>
               <p className="text-sm font-semibold mb-1" style={{ color: BRAND.burgundy }}>Your results so far:</p>
               <p className="text-sm text-gray-600">You&apos;re showing strong clinical potential. Just 3 more questions to confirm your Practitioner Type and qualification status!</p>
@@ -1019,146 +962,196 @@ export default function FMCertificationQuiz() {
       );
     }
 
-    // ── OPTIN (DYNAMIC bullets per persona) ──
-    if (stage === "optin") {
-      return (
-        <div className="space-y-5">
-          {/* Timer Badge */}
-          <div className="text-center">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold" style={{ backgroundColor: `${BRAND.burgundy}10`, color: BRAND.burgundy }}>
-              <Clock className="w-3 h-3" /> Results expire in {formatTimer(optinTimer)}
+    // ── CONDITIONAL INSERT (branching step) ──
+    if (stage === "conditional") {
+      const insert = CONDITIONAL_INSERTS.find((c) => c.id === currentConditional);
+      if (!insert) return null;
+
+      if (insert.type === "question") {
+        const selectedValue = conditionalAnswers[insert.id];
+        return (
+          <div className="space-y-5">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-sm font-medium uppercase tracking-wider px-3 py-1.5 rounded-full" style={{ backgroundColor: `${BRAND.gold}15`, color: BRAND.burgundy }}>{insert.pillar}</span>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold leading-tight" style={{ color: BRAND.burgundyDark }}>{insert.question}</h2>
+              {insert.subtitle && <p className="text-base text-gray-500 mt-2">{insert.subtitle}</p>}
+            </div>
+            <div className="space-y-3">
+              {insert.options?.map((opt) => {
+                const isSelected = selectedValue === opt.value;
+                return (
+                  <button key={opt.value} onClick={() => setConditionalAnswers((prev) => ({ ...prev, [insert.id]: opt.value }))}
+                    className="w-full p-5 rounded-xl border-2 transition-all text-left"
+                    style={{ borderColor: isSelected ? BRAND.burgundy : "#e5e7eb", backgroundColor: isSelected ? `${BRAND.burgundy}08` : "white" }}>
+                    <div className="flex items-center gap-4">
+                      <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: isSelected ? BRAND.burgundy : "#d1d5db" }}>
+                        {isSelected && <div className="w-4 h-4 rounded-full" style={{ backgroundColor: BRAND.burgundy }} />}
+                      </div>
+                      <span className="font-medium text-base" style={{ color: BRAND.burgundy }}>{opt.label}</span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
+        );
+      }
 
+      // ── Reassurance type (Sarah message + stats) ──
+      return (
+        <div className="space-y-6">
+          <div className="rounded-xl p-4 border" style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}30` }}>
+            <div className="flex items-start gap-3">
+              <Image src={SARAH_AVATAR} alt="Sarah M." width={48} height={48} className="rounded-full border-2 object-cover flex-shrink-0 shadow-md" style={{ borderColor: BRAND.gold }} />
+              <div>
+                <p className="text-gray-900 text-sm font-bold">Sarah M.</p>
+                <p className="text-gray-700 text-sm mt-1 leading-relaxed">
+                  &quot;{insert.sarahMessage?.replace("{name}", name)}&quot;
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-3">
+            {insert.stats?.map((stat) => (
+              <motion.div key={stat.label}
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-center gap-3 p-3 rounded-xl"
+                style={{ backgroundColor: `${BRAND.gold}08`, border: `1px solid ${BRAND.gold}30` }}
+              >
+                <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: "#2AA97B" }} />
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>{stat.label}</p>
+                  <p className="text-xs text-gray-600">{stat.value}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ── EMAIL CAPTURE (after Q11, feels like another quiz step) ──
+    if (stage === "email-capture") {
+      return (
+        <div className="space-y-6">
           {/* Sarah Message */}
           <div className="rounded-xl p-4 border" style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}30` }}>
             <div className="flex items-start gap-3">
               <Image src={SARAH_AVATAR} alt="Sarah M." width={48} height={48} className="rounded-full border-2 object-cover flex-shrink-0 shadow-md" style={{ borderColor: BRAND.gold }} />
               <div>
                 <p className="text-gray-900 text-sm font-bold">Sarah M.</p>
-                <p className="text-gray-600 text-xs mt-1">
-                  &quot;{name}, your assessment is complete! 🎉 Enter your details below so I can send your personalized certification roadmap.&quot;
+                <p className="text-gray-700 text-sm mt-1 leading-relaxed">
+                  &quot;Almost done, {name}! Enter your email to see your personalized certification path.&quot;
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Certificate Preview */}
-          <div className="flex justify-center">
-            <div className="relative w-full max-w-[200px]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={CERTIFICATE_IMG} alt="Your Certificate" className="w-full rounded-lg shadow-lg border border-gray-200" />
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-md whitespace-nowrap" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                Your Certificate Awaits
-              </div>
+          {/* Progress indicator */}
+          <div className="text-center">
+            <p className="text-base font-semibold" style={{ color: BRAND.burgundy }}>5 questions left</p>
+            <p className="text-sm text-gray-500 mt-1">Your personalized results are almost ready</p>
+          </div>
+
+          {/* Email Input */}
+          <div className="space-y-3">
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="email"
+                placeholder="Your best email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter" && email.includes("@")) handleNext(); }}
+                className="w-full h-14 pl-12 pr-4 text-base border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
+                style={{ borderColor: email.includes("@") ? BRAND.gold : "#e5e7eb" }}
+                autoFocus
+              />
             </div>
-          </div>
-
-          {/* Form with Full Gold Metallic Frame */}
-          <div className="rounded-2xl overflow-hidden" style={{ background: BRAND.goldMetallic, padding: "3px" }}>
-            <div className="bg-white rounded-xl p-4 space-y-3">
-              {/* First Name (readonly) */}
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type="text" value={name} readOnly className="w-full h-11 pl-10 pr-4 text-sm border-2 rounded-xl bg-gray-50 text-gray-600 font-medium" style={{ borderColor: `${BRAND.gold}40` }} />
-              </div>
-              {/* Last Name */}
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type="text" placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)}
-                  className="w-full h-11 pl-10 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
-                  style={{ borderColor: lastName.trim() ? BRAND.gold : "#e5e7eb" }} />
-              </div>
-              {/* Email */}
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type="email" placeholder="Your best email" value={email} onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-11 pl-10 pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
-                  style={{ borderColor: email.includes("@") ? BRAND.gold : "#e5e7eb" }} />
-              </div>
-              {/* Phone with US Flag + +1 */}
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                  <span className="text-base">🇺🇸</span>
-                  <span className="text-gray-500 font-medium text-sm">+1</span>
-                </div>
-                <input type="tel" placeholder="(555) 123-4567" value={phone}
-                  onChange={(e) => {
-                    const cleaned = e.target.value.replace(/[^\d\s()-]/g, "");
-                    setPhone(cleaned);
-                  }}
-                  className="w-full h-11 pl-[4.5rem] pr-4 text-sm border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
-                  style={{ borderColor: phone.trim() ? BRAND.gold : "#e5e7eb" }} />
-              </div>
-              <p className="text-xs text-gray-500 text-center">📱 We&apos;ll text you your results + exclusive bonuses</p>
-            </div>
-          </div>
-
-          {/* DYNAMIC optin bullets */}
-          <div className="p-3 rounded-xl" style={{ backgroundColor: `${BRAND.gold}08` }}>
-            <p className="text-[10px] font-medium mb-1.5" style={{ color: BRAND.burgundy }}>You&apos;ll receive:</p>
-            <ul className="space-y-1 text-[10px] text-gray-600">
-              {optinBullets.map((item) => (
-                <li key={item} className="flex items-center gap-1.5"><CheckCircle className="w-3 h-3 flex-shrink-0" style={{ color: BRAND.gold }} />{item}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* DYNAMIC scarcity */}
-          <div className="text-center p-2 rounded-lg" style={{ backgroundColor: `${BRAND.burgundy}08` }}>
-            <p className="text-[11px] font-bold" style={{ color: BRAND.burgundy }}>
-              ⚡ Only {cohort.spots} spots left in the {cohort.name}
-            </p>
           </div>
 
           {/* Trust */}
-          <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
+          <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
             <Lock className="w-3 h-3" />
-            <span>100% private • No spam ever • Unsubscribe anytime</span>
+            <span>100% private — no spam ever</span>
           </div>
         </div>
       );
     }
 
-    // ── REVIEWING (DYNAMIC steps per persona) ──
-    if (stage === "reviewing") {
+    // ── ANALYZING RESULTS (Neural insight primer — 5 seconds) ──
+    if (stage === "analyzing") {
+      const specLabel = PRACTITIONER_TYPES[practitionerTypeKey]?.label || "Functional Medicine";
+      const bgLabels: Record<string, string> = {
+        nurse: "Nursing", doctor: "Medical", "allied-health": "Allied Health",
+        "mental-health": "Mental Health", wellness: "Wellness", "career-change": "Career Transition",
+      };
+      const bgLabel = bgLabels[answers[1]] || "Your Background";
+      const incomeLabels: Record<string, string> = {
+        "3k-5k": "$3K-$5K/mo", "5k-10k": "$5K-$10K/mo", "10k-15k": "$10K-$15K/mo", "15k-plus": "$15K+/mo",
+      };
+      const incLabel = incomeLabels[answers[5]] || "$5K-$10K/mo";
+      const readyLabels: Record<string, string> = {
+        nothing: "Starting Fresh (full DFY package)", "name-social": "Brand Started",
+        "have-clients": "Active Clients", "have-everything": "Ready to Launch",
+      };
+      const readyLabel = readyLabels[answers[12]] || "Starting Fresh";
+
+      const summaryStats = [
+        { label: "Specialization Match", value: specLabel, pct: "98% fit" },
+        { label: "Background", value: bgLabel, pct: "94% acceptance rate" },
+        { label: "Income Goal", value: incLabel, pct: "achievable in 8-12 months" },
+        { label: "Readiness", value: readyLabel, pct: "package included" },
+      ];
+
       return (
-        <div className="space-y-8 py-10">
+        <div className="space-y-8 py-8">
           <div className="text-center">
             <Image src={ASI_LOGO} alt="ASI" width={64} height={64} className="mx-auto mb-3" />
-            <h2 className="text-xl font-bold mb-1" style={{ color: BRAND.burgundyDark }}>Reviewing Your Assessment</h2>
-            <p className="text-sm text-gray-500">{name}, please wait while we analyze your profile...</p>
+            <h2 className="text-xl font-bold mb-1" style={{ color: BRAND.burgundyDark }}>
+              {analyzeStep < 2 ? "Analyzing your answers..." : `Here's what we found:`}
+            </h2>
+            <p className="text-sm text-gray-500">{name}, please wait...</p>
           </div>
-          <div className="space-y-3 max-w-xs mx-auto">
-            {reviewSteps.map((step, i) => (
-              <motion.div key={step}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: i <= reviewStep ? 1 : 0.3, x: 0 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-center gap-3"
-              >
-                {i < reviewStep ? (
-                  <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: BRAND.gold }} />
-                ) : i === reviewStep ? (
-                  <Loader2 className="w-5 h-5 flex-shrink-0 animate-spin" style={{ color: BRAND.burgundy }} />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border-2 flex-shrink-0" style={{ borderColor: "#e5e7eb" }} />
-                )}
-                <span className={`text-sm ${i <= reviewStep ? "text-gray-800 font-medium" : "text-gray-400"}`}>{step}</span>
-              </motion.div>
-            ))}
-          </div>
+
+          {/* Progress bar */}
           <div className="max-w-xs mx-auto">
             <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
               <motion.div className="h-full rounded-full" style={{ background: BRAND.burgundyGold }}
                 initial={{ width: "0%" }}
-                animate={{ width: `${Math.round((reviewStep / (reviewSteps.length - 1)) * 100)}%` }}
+                animate={{ width: `${Math.round((analyzeStep / (ANALYZE_STEPS.length - 1)) * 100)}%` }}
                 transition={{ duration: 0.5, ease: "easeOut" }} />
             </div>
           </div>
-          {reviewStep >= 4 && (
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-xs font-medium" style={{ color: BRAND.burgundy }}>
-              Checking eligibility...
+
+          {/* Summary stats — reveal one by one after step 1 */}
+          {analyzeStep >= 2 && (
+            <div className="space-y-3 max-w-sm mx-auto">
+              {summaryStats.map((stat, i) => (
+                <motion.div key={stat.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: analyzeStep >= i + 2 ? 1 : 0, y: analyzeStep >= i + 2 ? 0 : 10 }}
+                  transition={{ duration: 0.4, delay: i * 0.15 }}
+                  className="flex items-center gap-3 p-3 rounded-xl"
+                  style={{ backgroundColor: `${BRAND.gold}08`, border: `1px solid ${BRAND.gold}30` }}
+                >
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: "#2AA97B" }} />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>{stat.label}: {stat.value}</p>
+                    <p className="text-xs text-gray-500">{stat.pct}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+
+          {/* Final message */}
+          {analyzeStep >= ANALYZE_STEPS.length - 1 && (
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-base font-semibold" style={{ color: BRAND.burgundy }}>
+              {name}, your personalized certification path is ready...
             </motion.p>
           )}
         </div>
@@ -1245,7 +1238,7 @@ export default function FMCertificationQuiz() {
             );
           })}
         </div>
-        {currentQ >= 9 && (
+        {currentQ >= 14 && (
           <p className="text-center text-xs text-gray-400 flex items-center justify-center gap-1">
             <Sparkles className="w-3 h-3" style={{ color: BRAND.gold }} /> Almost done - your Practitioner Type is about to be revealed!
           </p>
@@ -1257,11 +1250,17 @@ export default function FMCertificationQuiz() {
   const getNextLabel = (): string => {
     if (stage === "intro") return "See If I Qualify";
     if (stage === "testimonial") return "Continue";
+    if (stage === "conditional") {
+      const insert = CONDITIONAL_INSERTS.find((c) => c.id === currentConditional);
+      return insert?.type === "reassurance" ? "I Understand — Continue" : "Next";
+    }
+    if (stage === "email-capture") return "See My Results";
+    if (stage === "quiz" && currentQ === QUESTIONS.length - 1) return "See My Results";
     return "Next";
   };
 
-  // ─── Reviewing / Result layout ────────────────────────────────
-  if (stage === "reviewing" || stage === "result") {
+  // ─── Analyzing / Result layout ────────────────────────────────
+  if (stage === "analyzing" || stage === "result") {
     return (
       <div className="min-h-screen" style={{ background: `linear-gradient(to bottom right, ${BRAND.cream}, #f5f0e8)` }}>
         <div className="py-6 md:py-10 px-4">
@@ -1269,7 +1268,7 @@ export default function FMCertificationQuiz() {
             <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ background: "#fff", boxShadow: `0 0 0 3px ${BRAND.gold}40, 0 25px 50px -12px rgba(114, 47, 55, 0.25)` }}>
               <div className="px-5 py-3" style={{ background: BRAND.goldMetallic }}>
                 <span className="text-sm font-bold" style={{ color: BRAND.burgundyDark }}>
-                  {stage === "reviewing" ? "Processing Assessment..." : "Redirecting..."}
+                  {stage === "analyzing" ? "Analyzing Your Results..." : "Redirecting..."}
                 </span>
               </div>
               <div className="p-6 md:p-10">{renderContent()}</div>
@@ -1311,7 +1310,7 @@ export default function FMCertificationQuiz() {
                 <Stethoscope className="w-4 h-4" /> ASI Clinical Assessment
               </span>
               <span className="text-sm font-bold px-2 py-1 rounded-full" style={{ backgroundColor: `${BRAND.burgundyDark}20`, color: BRAND.burgundyDark }}>
-                {stage === "intro" ? "Start" : stage === "optin" ? "Final Step" : `${currentQ + 1} / ${QUESTIONS.length}`}
+                {stage === "intro" ? "Start" : stage === "email-capture" ? "Almost Done" : stage === "conditional" ? `${currentQ + 1} / ${QUESTIONS.length}` : `${currentQ + 1} / ${QUESTIONS.length}`}
               </span>
             </div>
             <div className="relative">
@@ -1335,27 +1334,14 @@ export default function FMCertificationQuiz() {
                     <ArrowLeft className="w-4 h-4" /> Back
                   </button>
                 ) : <div />}
-                {stage === "optin" ? (
-                  <Button onClick={handleOptinSubmit}
-                    disabled={!email.includes("@") || !lastName.trim() || !phone.trim() || submitting}
-                    size="lg"
-                    className="group h-12 px-8 text-base font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 min-w-[160px] disabled:opacity-50 relative overflow-hidden"
-                    style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                    <span className="relative flex items-center justify-center">
-                      {submitting ? <><Loader2 className="w-5 h-5 animate-spin mr-2" /> Submitting...</> : <>Review My Assessment <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" /></>}
-                    </span>
-                  </Button>
-                ) : (
-                  <Button onClick={handleNext} disabled={!canProceed()} size="lg"
-                    className="group h-12 px-8 text-base font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 min-w-[160px] disabled:opacity-50 relative overflow-hidden"
-                    style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
-                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                    <span className="relative flex items-center justify-center">
-                      {getNextLabel()} <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </Button>
-                )}
+                <Button onClick={handleNext} disabled={!canProceed()} size="lg"
+                  className="group h-12 px-8 text-base font-bold rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.6)] hover:scale-[1.02] transition-all duration-300 min-w-[160px] disabled:opacity-50 relative overflow-hidden"
+                  style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                  <span className="relative flex items-center justify-center">
+                    {getNextLabel()} <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </Button>
               </div>
             </div>
           </div>

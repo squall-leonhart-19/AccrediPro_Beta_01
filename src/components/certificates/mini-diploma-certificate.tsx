@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, Share2, Award, Loader2, CheckCircle, Linkedin } from "lucide-react";
+import { Download, Share2, Award, Loader2, CheckCircle, Linkedin, ArrowRight, BookOpen, Users, Briefcase, GraduationCap, Star } from "lucide-react";
 import confetti from "canvas-confetti";
+import Link from "next/link";
 
 interface MiniDiplomaCertificateProps {
     studentName: string;
@@ -336,6 +337,83 @@ export function MiniDiplomaCertificate({
                         </div>
                     </div>
                 </Card>
+
+                {/* ═══════════════════════════════════════════════════════ */}
+                {/* WHAT'S NEXT? — CRO Section                             */}
+                {/* ═══════════════════════════════════════════════════════ */}
+                <div className="mt-12 mb-8">
+                    {/* Section Header */}
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#D4AF37]/20 to-[#E5C158]/20 px-5 py-2 rounded-full mb-4 border border-[#D4AF37]/30">
+                            <Star className="w-4 h-4 text-[#D4AF37]" />
+                            <span className="text-sm font-semibold text-[#722F37] tracking-wide">WHAT&apos;S NEXT?</span>
+                        </div>
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+                            Ready to Go Further?
+                        </h2>
+                        <p className="text-gray-600 max-w-lg mx-auto leading-relaxed">
+                            You&apos;ve proven you have what it takes. The Mini-Diploma was your foundation —
+                            here&apos;s how to build a real practice and start helping clients.
+                        </p>
+                    </div>
+
+                    {/* Offer Card */}
+                    <Card className="overflow-hidden shadow-xl border-[#D4AF37]/30">
+                        {/* Gold Header Bar */}
+                        <div className="bg-gradient-to-r from-[#722F37] to-[#8B3A42] px-6 py-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest">Full Certification Program</p>
+                                    <p className="text-white text-lg font-bold mt-1">ASI Board Certification</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-white/60 text-xs line-through">$1,997 Value</p>
+                                    <p className="text-[#D4AF37] text-lg font-bold">Scholarship Available</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Features Grid */}
+                        <div className="p-6 md:p-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                {[
+                                    { icon: BookOpen, label: "Level 1 through Level 4", desc: "Complete training pathway" },
+                                    { icon: GraduationCap, label: "300+ Advanced Courses", desc: "Deep specializations & electives" },
+                                    { icon: Users, label: "6-Month Mentorship", desc: "With industry experts" },
+                                    { icon: Briefcase, label: "DFY Client Materials", desc: "Protocols, templates & marketing" },
+                                    { icon: Award, label: "Full ASI Board Certification", desc: "Nationally recognized credential" },
+                                    { icon: Star, label: "Business Launch Blueprint", desc: "Start earning from day one" },
+                                ].map((feature, idx) => (
+                                    <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 hover:bg-[#D4AF37]/5 transition-colors">
+                                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#E5C158] flex items-center justify-center flex-shrink-0 shadow-sm">
+                                            <feature.icon className="w-5 h-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-gray-900 text-sm">{feature.label}</p>
+                                            <p className="text-gray-500 text-xs">{feature.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Aspirational CTA */}
+                            <div className="text-center bg-gradient-to-br from-[#fdfbf7] to-[#fff9f0] rounded-2xl p-6 border border-[#D4AF37]/20">
+                                <p className="text-gray-700 mb-4 leading-relaxed max-w-md mx-auto">
+                                    <em>If you feel this is the right path for you</em> — Sarah has a special scholarship
+                                    offer waiting in your Circle Pod. Pay what you can. The Institute covers the rest.
+                                </p>
+                                <Link
+                                    href={`/portal/${portalSlug}/circle`}
+                                    className="inline-flex items-center gap-2 bg-gradient-to-r from-[#722F37] to-[#8B3A42] text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+                                >
+                                    Talk to Sarah in Circle Pod
+                                    <ArrowRight className="w-5 h-5" />
+                                </Link>
+                                <p className="text-xs text-gray-400 mt-3">No pressure. Only if it feels right for you.</p>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
 
             </div>
         </div>

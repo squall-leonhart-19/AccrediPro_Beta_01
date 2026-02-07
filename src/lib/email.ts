@@ -22,7 +22,7 @@ const FROM_EMAIL_TRANSACTIONAL = process.env.FROM_EMAIL || "AccrediPro Academy <
 // Format: "Sarah <email>" looks like a personal email, not marketing
 const FROM_EMAIL_MARKETING = process.env.FROM_EMAIL_MARKETING || "Sarah <info@accredipro-certificate.com>";
 // Personal emails for login credentials - plain, personal, lands in Primary
-const FROM_EMAIL_PERSONAL = "Sarah Mitchell <sarah@accredipro-certificate.com>";
+const FROM_EMAIL_PERSONAL = "Sarah <sarah@accredipro-certificate.com>";
 
 // DFY emails - sent as Jessica via concierge address
 const FROM_EMAIL_DFY = "Jessica | AccrediPro Concierge <concierge@accredipro.academy>";
@@ -1421,7 +1421,7 @@ Since you already have an account, just log in to start your 9 interactive lesso
 
 Link: ${loginUrl}
 
-You have 7 days to complete all lessons and earn your certificate.
+You have 48 hours to complete all lessons and earn your certificate.
 
 I'll be chatting with you inside the lessons!
 
@@ -1438,7 +1438,7 @@ Password: ${password}
 
 Link: ${loginUrl}
 
-You have 7 days to complete all 3 lessons and earn your certificate.
+You have 48 hours to complete all 3 lessons and earn your certificate.
 
 I'll be chatting with you inside the lessons!
 
@@ -1452,7 +1452,7 @@ AccrediPro Academy`;
 <p>Great news - your free <b>${nicheName} Mini Diploma</b> is ready!</p>
 <p>Since you already have an account, just log in to start your 9 interactive lessons with me.</p>
 <p>Link: <a href="${loginUrl}">${loginUrl}</a></p>
-<p>You have 7 days to complete all lessons and earn your certificate.</p>
+<p>You have 48 hours to complete all lessons and earn your certificate.</p>
 <p>I'll be chatting with you inside the lessons!</p>
 <p>Sarah<br/>AccrediPro Academy</p>`
     : `<p>Hey ${firstName}!</p>
@@ -1463,7 +1463,7 @@ AccrediPro Academy`;
 <b>Password:</b> ${password}
 </p>
 <p>Link: <a href="${loginUrl}">${loginUrl}</a></p>
-<p>You have 7 days to complete all 3 lessons and earn your certificate.</p>
+<p>You have 48 hours to complete all 3 lessons and earn your certificate.</p>
 <p>I'll be chatting with you inside the lessons!</p>
 <p>Sarah<br/>AccrediPro Academy</p>`;
 
@@ -1519,7 +1519,7 @@ export async function sendWomensHealthWelcomeEmail({ to, firstName, isExistingUs
         <li style="margin: 5px 0;">9 chat-style lessons (~60 min total)</li>
         <li style="margin: 5px 0;">Women's Health certificate upon completion</li>
         <li style="margin: 5px 0;">Personal voice message from me</li>
-        <li style="margin: 5px 0;">7 days to complete</li>
+        <li style="margin: 5px 0;">48 hours to complete</li>
       </ul>
     `, 'cream')}
 
@@ -1552,7 +1552,7 @@ export async function sendWomensHealthWelcomeEmail({ to, firstName, isExistingUs
     ${primaryButton('Start Your First Lesson', `${BASE_URL}/womens-health-diploma`)}
 
     <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
-      <p style="margin: 0; font-size: 14px; color: #666;"><strong>Important:</strong> You have 7 days to complete your mini diploma. Complete all 3 lessons to earn your certificate!</p>
+      <p style="margin: 0; font-size: 14px; color: #666;"><strong>Important:</strong> You have 48 hours to complete your mini diploma. Complete all 3 lessons to earn your certificate!</p>
     </div>
 
     <p style="color: #555; font-size: 16px; margin-top: 30px;">I'll be chatting with you inside the lessons!<br/><strong>Sarah</strong></p>

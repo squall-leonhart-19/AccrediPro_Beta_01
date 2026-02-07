@@ -27,6 +27,8 @@ const DIPLOMA_TAG_PREFIX: Record<string, string> = {
     "adhd-coaching-diploma": "adhd-coaching-lesson-complete",
     "pet-nutrition-diploma": "pet-nutrition-lesson-complete",
     "spiritual-healing-diploma": "spiritual-healing-lesson-complete",
+    "integrative-health-diploma": "integrative-health-lesson-complete",
+    "life-coaching-diploma": "life-coaching-lesson-complete",
 };
 
 async function getLeadData(userId: string, diplomaSlug: string) {

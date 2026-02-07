@@ -303,7 +303,7 @@ function SpiritualHealingMiniDiplomaContent() {
                                     </div>
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-white text-sm font-semibold">4,247 spiritual healers certified</p>
+                                    <p className="text-white text-sm font-semibold">2,400+ spiritual healers certified</p>
                                     <p className="text-white/60 text-xs">Join them today — it's free</p>
                                 </div>
                             </div>
@@ -443,7 +443,7 @@ function SpiritualHealingMiniDiplomaContent() {
                     {/* Social Proof Counter */}
                     <div className="flex justify-center gap-6 mb-10">
                         <div className="text-center">
-                            <p className="text-3xl font-black" style={{ color: BRAND.burgundy }}>4,247</p>
+                            <p className="text-3xl font-black" style={{ color: BRAND.burgundy }}>2,400+</p>
                             <p className="text-xs text-gray-500">Certified Practitioners</p>
                         </div>
                         <div className="text-center">
@@ -463,7 +463,7 @@ function SpiritualHealingMiniDiplomaContent() {
                             { name: "Michelle T., Social Worker", age: "44", income: "$4,300/mo", before: "Licensed Social Worker, 12 years", story: "Years of helping others drained my own spirit. The system was broken — paperwork over people. Spiritual healing certification gave me a way to truly serve without the burnout. I've never felt more aligned with my purpose.", avatar: "/zombie-avatars/user_44_bathroom_mirror_1767801533.webp" },
                             { name: "Sandra K., Retiree", age: "55", income: "$7,100/mo", before: "Corporate Manager, Retired", story: "After my husband passed, I found healing through spiritual practice. I realized I could help other women navigate grief and loss. This certification gave me the credibility to turn my pain into purpose — and a thriving practice.", avatar: "/zombie-avatars/user_55_cooking_class_1767801442.webp" },
                             { name: "Angela C., Massage Therapist", age: "41", income: "$3,800/mo", before: "Licensed Massage Therapist", story: "I knew I was only touching the surface — literally. My clients would release emotions on the table and I had no tools to help them process it. Spiritual healing completed my skill set. Now I offer whole-person transformation.", avatar: "/zombie-avatars/user_41_coffee_shop_working_1768611487.webp" },
-                            { name: "Karen W., Stay-at-Home Mom", age: "38", income: "$4,900/mo", before: "Stay-at-Home Mom, 10 years", story: "My spiritual awakening happened after my divorce. I went from feeling lost to discovering a gift I didn't know I had. This certification showed me how to turn that gift into a real career — on my schedule, around my kids.", avatar: "/zombie-avatars/user_38_home_office_1768611487.webp" }
+                            { name: "Karen W., Stay-at-Home Mom", age: "38", income: "$4,900/mo", before: "Stay-at-Home Mom, 10 years", story: "My spiritual awakening happened after my divorce. I went from feeling lost to discovering a gift I didn't know I had. This certification showed me how to turn that gift into a real career — on my schedule, around my kids.", avatar: "/zombie-avatars/user_38_single_mom_1767718497633.webp" }
                         ].map((story, i) => (
                             <div key={i} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                                 <div className="flex items-center gap-3 mb-4">
@@ -761,7 +761,7 @@ function SpiritualHealingMiniDiplomaContent() {
                     <div className="grid md:grid-cols-3 gap-4">
                         {[
                             { num: 1, title: "What Is Spiritual Healing?", desc: "Root-cause thinking, the 5 root causes of spiritual disconnection, and real client case studies that prove this works" },
-                            { num: 2, title: "The D.E.P.T.H. Method™", desc: "Your signature 5-step framework for spiritual transformation: Discover, Evaluate, Pinpoint, Transform & Heal" },
+                            { num: 2, title: "The S.A.C.R.E.D. Method™", desc: "Your signature 6-step framework for spiritual transformation: See, Attune, Clear, Reconnect, Empower & Deepen" },
                             { num: 3, title: "Getting Your First Clients", desc: "Warm market strategy, pricing your packages, and a 30-day launch plan to start earning $4K-$8K/month" }
                         ].map((lesson) => (
                             <div key={lesson.num} className="rounded-xl p-5 border" style={{ backgroundColor: `${BRAND.burgundy}80`, borderColor: `${BRAND.gold}30` }}>
@@ -814,6 +814,7 @@ function SpiritualHealingMiniDiplomaContent() {
                         }}
                         isSubmitting={isSubmitting}
                         isVerifying={isVerifying}
+                        niche="spiritual-healing"
                     />
                 </div>
             </section>
@@ -897,7 +898,7 @@ function SpiritualHealingMiniDiplomaContent() {
                             <div>
                                 <div className="grid grid-cols-3 gap-4 mb-6">
                                     {[
-                                        { num: "4,247+", label: "Certified Practitioners" },
+                                        { num: "2,400+", label: "Certified Practitioners" },
                                         { num: "42", label: "Countries" },
                                         { num: "4.9/5", label: "Student Rating" }
                                     ].map((stat, i) => (

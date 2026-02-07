@@ -1,7 +1,63 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { days9to23 } from "@/data/masterclass-days-9-23";
 import { days24to45 } from "@/data/masterclass-days-24-45";
+// Spiritual Healing curriculum
+import { shDays1to8 } from "@/data/masterclass-spiritual-healing-days-1-8";
+import { shDays9to23 } from "@/data/masterclass-spiritual-healing-days-9-23";
+import { shDays24to45 } from "@/data/masterclass-spiritual-healing-days-24-45";
+// Energy Healing curriculum
+import { ehDays1to8 } from "@/data/masterclass-energy-healing-days-1-8";
+import { ehDays9to23 } from "@/data/masterclass-energy-healing-days-9-23";
+import { ehDays24to45 } from "@/data/masterclass-energy-healing-days-24-45";
+// Reiki Healing curriculum
+import { rkDays1to8 } from "@/data/masterclass-reiki-healing-days-1-8";
+import { rkDays9to23 } from "@/data/masterclass-reiki-healing-days-9-23";
+import { rkDays24to45 } from "@/data/masterclass-reiki-healing-days-24-45";
+// ADHD Coaching curriculum
+import { adhdDays1to8 } from "@/data/masterclass-adhd-coaching-days-1-8";
+import { adhdDays9to23 } from "@/data/masterclass-adhd-coaching-days-9-23";
+import { adhdDays24to45 } from "@/data/masterclass-adhd-coaching-days-24-45";
+// Christian Coaching curriculum
+import { ccDays1to8 } from "@/data/masterclass-christian-coaching-days-1-8";
+import { ccDays9to23 } from "@/data/masterclass-christian-coaching-days-9-23";
+import { ccDays24to45 } from "@/data/masterclass-christian-coaching-days-24-45";
+// Gut Health curriculum
+import { ghDays1to8 } from "@/data/masterclass-gut-health-days-1-8";
+import { ghDays9to23 } from "@/data/masterclass-gut-health-days-9-23";
+import { ghDays24to45 } from "@/data/masterclass-gut-health-days-24-45";
+// Health Coach curriculum
+import { hcDays1to8 } from "@/data/masterclass-health-coach-days-1-8";
+import { hcDays9to23 } from "@/data/masterclass-health-coach-days-9-23";
+import { hcDays24to45 } from "@/data/masterclass-health-coach-days-24-45";
+// Holistic Nutrition curriculum
+import { hnDays1to8 } from "@/data/masterclass-holistic-nutrition-days-1-8";
+import { hnDays9to23 } from "@/data/masterclass-holistic-nutrition-days-9-23";
+import { hnDays24to45 } from "@/data/masterclass-holistic-nutrition-days-24-45";
+// Hormone Health curriculum
+import { hhDays1to8 } from "@/data/masterclass-hormone-health-days-1-8";
+import { hhDays9to23 } from "@/data/masterclass-hormone-health-days-9-23";
+import { hhDays24to45 } from "@/data/masterclass-hormone-health-days-24-45";
+// Integrative Health curriculum
+import { ihDays1to8 } from "@/data/masterclass-integrative-health-days-1-8";
+import { ihDays9to23 } from "@/data/masterclass-integrative-health-days-9-23";
+import { ihDays24to45 } from "@/data/masterclass-integrative-health-days-24-45";
+// Life Coaching curriculum
+import { lcDays1to8 } from "@/data/masterclass-life-coaching-days-1-8";
+import { lcDays9to23 } from "@/data/masterclass-life-coaching-days-9-23";
+import { lcDays24to45 } from "@/data/masterclass-life-coaching-days-24-45";
+// Nurse Coach curriculum
+import { ncDays1to8 } from "@/data/masterclass-nurse-coach-days-1-8";
+import { ncDays9to23 } from "@/data/masterclass-nurse-coach-days-9-23";
+import { ncDays24to45 } from "@/data/masterclass-nurse-coach-days-24-45";
+// Pet Nutrition curriculum
+import { pnDays1to8 } from "@/data/masterclass-pet-nutrition-days-1-8";
+import { pnDays9to23 } from "@/data/masterclass-pet-nutrition-days-9-23";
+import { pnDays24to45 } from "@/data/masterclass-pet-nutrition-days-24-45";
+// Women's Hormone Health curriculum
+import { whhDays1to8 } from "@/data/masterclass-womens-hormone-health-days-1-8";
+import { whhDays9to23 } from "@/data/masterclass-womens-hormone-health-days-9-23";
+import { whhDays24to45 } from "@/data/masterclass-womens-hormone-health-days-24-45";
 
 /**
  * GET - Check current templates
@@ -485,31 +541,97 @@ Sarah 💛`,
 
 /**
  * POST - Seed ALL 45 days of hyper-value masterclass curriculum
+ * Query params:
+ *   ?niche=functional-medicine (default, uses generic "all" category)
+ *   ?niche=spiritual-healing (uses spiritual-healing specific content)
  */
-export async function POST() {
+export async function POST(req: NextRequest) {
     try {
-        // Combine all days
-        const allTemplates = [
-            ...days1to8,
-            ...days9to23,
-            ...days24to45,
-        ];
+        const niche = req.nextUrl.searchParams.get("niche") || "functional-medicine";
+
+        let allTemplates: typeof days1to8;
+        let nicheCategory: string;
+
+        switch (niche) {
+            case "spiritual-healing":
+                allTemplates = [...shDays1to8, ...shDays9to23, ...shDays24to45];
+                nicheCategory = "spiritual-healing";
+                break;
+            case "energy-healing":
+                allTemplates = [...ehDays1to8, ...ehDays9to23, ...ehDays24to45];
+                nicheCategory = "energy-healing";
+                break;
+            case "reiki-healing":
+                allTemplates = [...rkDays1to8, ...rkDays9to23, ...rkDays24to45];
+                nicheCategory = "reiki-healing";
+                break;
+            case "adhd-coaching":
+                allTemplates = [...adhdDays1to8, ...adhdDays9to23, ...adhdDays24to45];
+                nicheCategory = "adhd-coaching";
+                break;
+            case "christian-coaching":
+                allTemplates = [...ccDays1to8, ...ccDays9to23, ...ccDays24to45];
+                nicheCategory = "christian-coaching";
+                break;
+            case "gut-health":
+                allTemplates = [...ghDays1to8, ...ghDays9to23, ...ghDays24to45];
+                nicheCategory = "gut-health";
+                break;
+            case "health-coach":
+                allTemplates = [...hcDays1to8, ...hcDays9to23, ...hcDays24to45];
+                nicheCategory = "health-coach";
+                break;
+            case "holistic-nutrition":
+                allTemplates = [...hnDays1to8, ...hnDays9to23, ...hnDays24to45];
+                nicheCategory = "holistic-nutrition";
+                break;
+            case "hormone-health":
+                allTemplates = [...hhDays1to8, ...hhDays9to23, ...hhDays24to45];
+                nicheCategory = "hormone-health";
+                break;
+            case "integrative-health":
+                allTemplates = [...ihDays1to8, ...ihDays9to23, ...ihDays24to45];
+                nicheCategory = "integrative-health";
+                break;
+            case "life-coaching":
+                allTemplates = [...lcDays1to8, ...lcDays9to23, ...lcDays24to45];
+                nicheCategory = "life-coaching";
+                break;
+            case "nurse-coach":
+                allTemplates = [...ncDays1to8, ...ncDays9to23, ...ncDays24to45];
+                nicheCategory = "nurse-coach";
+                break;
+            case "pet-nutrition":
+                allTemplates = [...pnDays1to8, ...pnDays9to23, ...pnDays24to45];
+                nicheCategory = "pet-nutrition";
+                break;
+            case "womens-hormone-health":
+                allTemplates = [...whhDays1to8, ...whhDays9to23, ...whhDays24to45];
+                nicheCategory = "womens-hormone-health";
+                break;
+            default:
+                // Default: use functional medicine / generic curriculum
+                allTemplates = [...days1to8, ...days9to23, ...days24to45];
+                nicheCategory = "all";
+        }
 
         let created = 0;
         let updated = 0;
 
         for (const t of allTemplates) {
             const existing = await prisma.masterclassTemplate.findFirst({
-                where: { nicheCategory: "all", dayNumber: t.day },
+                where: { nicheCategory, dayNumber: t.day },
             });
 
             const data = {
-                nicheCategory: "all",
+                nicheCategory,
                 dayNumber: t.day,
                 sarahMessage: t.sarah,
                 zombieMessages: t.zombies,
                 gapTopic: t.gap,
                 lessonTitle: `Day ${t.day}: ${t.gap.split("-").map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}`,
+                // Include sarahAudioUrl if present
+                ...((t as any).sarahAudioUrl && { sarahAudioUrl: (t as any).sarahAudioUrl }),
             };
 
             if (existing) {
@@ -526,7 +648,9 @@ export async function POST() {
 
         return NextResponse.json({
             success: true,
-            message: `Created ${created} new, updated ${updated} existing templates.`,
+            niche,
+            nicheCategory,
+            message: `Created ${created} new, updated ${updated} existing templates for ${niche}.`,
             totalDays: allTemplates.length,
         });
     } catch (error) {

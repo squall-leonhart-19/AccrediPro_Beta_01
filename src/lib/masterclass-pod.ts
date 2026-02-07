@@ -277,7 +277,7 @@ export async function triggerMilestoneMessage(
 }
 
 /**
- * Trigger exam passed celebration messages
+ * Trigger exam passed celebration messages + schedule 24h scholarship conversion
  */
 export async function triggerExamPassedMessages(
     userId: string
@@ -294,6 +294,8 @@ export async function triggerExamPassedMessages(
         select: { firstName: true },
     });
     const firstName = user?.firstName || "friend";
+    const zombieProfileName = pod.zombieProfile?.name || "Jennifer";
+    const zombieFirstName = zombieProfileName.split(" ")[0];
 
     const examPassed = getPreCompletionMessage("exam_passed");
     if (!examPassed) return;
@@ -318,8 +320,6 @@ export async function triggerExamPassedMessages(
     for (let i = 0; i < examPassed.zombies.length; i++) {
         const zombieGroup = examPassed.zombies[i];
         const randomIdx = Math.floor(Math.random() * zombieGroup.options.length);
-        const zombieProfileName = pod.zombieProfile?.name || "Jennifer";
-        const zombieFirstName = zombieProfileName.split(" ")[0];
         const content = zombieGroup.options[randomIdx]
             .replace(/{firstName}/g, firstName)
             .replace(/{zombieName}/g, zombieProfileName)
@@ -340,12 +340,108 @@ export async function triggerExamPassedMessages(
                 podId: pod.id,
                 dayNumber: 0,
                 senderType: "zombie",
-                senderName: pod.zombieProfile?.name || "Jennifer",
+                senderName: zombieProfileName,
                 senderAvatar: pod.zombieProfile?.avatar,
                 content,
                 scheduledFor: zombieTime,
             },
         });
+    }
+
+    // ========================================================
+    // SCHEDULE POST-EXAM SCHOLARSHIP CONVERSION (24h delayed)
+    // ========================================================
+    const scholarship = getPreCompletionMessage("post_exam_scholarship");
+    if (scholarship) {
+        // Sarah's scholarship announcement at +24h
+        const sarahScholarshipTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        await prisma.masterclassMessage.create({
+            data: {
+                podId: pod.id,
+                dayNumber: 0,
+                senderType: "sarah",
+                senderName: "Sarah Mitchell",
+                senderAvatar: "/coaches/sarah-coach.webp",
+                content: scholarship.sarah
+                    .replace(/{firstName}/g, firstName)
+                    .replace(/{zombieFirstName}/g, zombieFirstName)
+                    .replace(/{zombieName}/g, zombieProfileName),
+                scheduledFor: sarahScholarshipTime,
+                offerMention: "certification-scholarship",
+            },
+        });
+
+        // Zombie messages with complex delays (3h, 24h+15min, etc.)
+        for (let i = 0; i < scholarship.zombies.length; i++) {
+            const zombieGroup = scholarship.zombies[i];
+            const randomIdx = Math.floor(Math.random() * zombieGroup.options.length);
+            const content = zombieGroup.options[randomIdx]
+                .replace(/{firstName}/g, firstName)
+                .replace(/{zombieName}/g, zombieProfileName)
+                .replace(/{zombieFirstName}/g, zombieFirstName);
+
+            const delayMs = parseScholarshipDelay(zombieGroup.delay);
+            const zombieTime = new Date(now.getTime() + delayMs);
+
+            await prisma.masterclassMessage.create({
+                data: {
+                    podId: pod.id,
+                    dayNumber: 0,
+                    senderType: "zombie",
+                    senderName: zombieProfileName,
+                    senderAvatar: pod.zombieProfile?.avatar,
+                    content,
+                    scheduledFor: zombieTime,
+                },
+            });
+        }
+
+        // Sarah's intermediate responses in the PWYW arc
+        // +24h+25min: Sarah "calling the institute"
+        const sarahCallingTime = new Date(now.getTime() + (24 * 60 + 25) * 60 * 1000);
+        await prisma.masterclassMessage.create({
+            data: {
+                podId: pod.id,
+                dayNumber: 0,
+                senderType: "sarah",
+                senderName: "Sarah Mitchell",
+                senderAvatar: "/coaches/sarah-coach.webp",
+                content: `${zombieFirstName}, $500 is MORE than enough. Don't ever feel like it's not enough. 💛\n\nLet me call the Institute right now and get this approved for you. Give me 10 minutes...\n\n📞 Calling now...`,
+                scheduledFor: sarahCallingTime,
+            },
+        });
+
+        // +24h+35min: Sarah confirms APPROVED + sends link
+        const sarahApprovedTime = new Date(now.getTime() + (24 * 60 + 35) * 60 * 1000);
+        await prisma.masterclassMessage.create({
+            data: {
+                podId: pod.id,
+                dayNumber: 0,
+                senderType: "sarah",
+                senderName: "Sarah Mitchell",
+                senderAvatar: "/coaches/sarah-coach.webp",
+                content: `✅ APPROVED! ${zombieFirstName}, the Institute said YES!\n\nThey're covering $1,497 of your tuition. Your contribution: $500.\n\nHere's your personal enrollment link:\n🔗 https://sarah.accredipro.academy/checkout-fm-certification-program\n\nUse code: SCHOLARSHIP500\n\nThis link is valid for 48 hours. After that the scholarship spot goes to someone else.\n\nI'm so excited for you! 🎉`,
+                scheduledFor: sarahApprovedTime,
+                offerMention: "certification-scholarship-approved",
+            },
+        });
+
+        // +24h+50min: Sarah turns to the real student
+        const sarahOfferTime = new Date(now.getTime() + (24 * 60 + 50) * 60 * 1000);
+        await prisma.masterclassMessage.create({
+            data: {
+                podId: pod.id,
+                dayNumber: 0,
+                senderType: "sarah",
+                senderName: "Sarah Mitchell",
+                senderAvatar: "/coaches/sarah-coach.webp",
+                content: `${firstName}... I meant what I said earlier. This scholarship is for BOTH of you. 💛\n\n${zombieFirstName} just went for it and I couldn't be more proud.\n\nIf you feel like this is the right path for you — just tell me what amount feels comfortable. $200, $300, $500, whatever it is. There's no wrong answer.\n\nThe Institute covers the rest. Same program. Same certification. Same mentorship.\n\nNo pressure at all. But if you want this... now is the time.\n\nWhat do you think? 💛`,
+                scheduledFor: sarahOfferTime,
+                offerMention: "certification-scholarship-student-offer",
+            },
+        });
+
+        console.log(`[MASTERCLASS] Scheduled post-exam scholarship conversion sequence for user ${userId}`);
     }
 
     // Update pod to post_completion and start Day 1 of masterclass
@@ -358,6 +454,30 @@ export async function triggerExamPassedMessages(
     });
 
     console.log(`[MASTERCLASS] Triggered exam passed celebration for user ${userId}, transitioning to post_completion`);
+}
+
+/**
+ * Parse complex delay strings like "3h", "24h+15min", "24h+42min"
+ * Returns delay in milliseconds
+ */
+function parseScholarshipDelay(delay: string): number {
+    // Handle compound delays like "24h+15min"
+    if (delay.includes("+")) {
+        const parts = delay.split("+");
+        return parts.reduce((total, part) => total + parseSingleDelay(part.trim()), 0);
+    }
+    return parseSingleDelay(delay);
+}
+
+function parseSingleDelay(delay: string): number {
+    if (delay.endsWith("h")) {
+        return parseInt(delay.replace("h", "")) * 60 * 60 * 1000;
+    } else if (delay.endsWith("min")) {
+        return parseInt(delay.replace("min", "")) * 60 * 1000;
+    } else if (delay.endsWith("sec")) {
+        return parseInt(delay.replace("sec", "")) * 1000;
+    }
+    return 30 * 1000; // default 30 sec
 }
 
 /**
