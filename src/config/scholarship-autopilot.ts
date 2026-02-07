@@ -293,19 +293,18 @@ SO PROUD OF YOU! 💜`;
     }
 
     // Scholarship approved
-    const hasDrop = tier.drop > 0;
-    const investmentLine = hasDrop
-        ? `${formatCurrency(tier.theyPay)} (Institute covered extra ${formatCurrency(tier.drop)}!)`
-        : `${formatCurrency(tier.theyPay)} CONFIRMED!`;
+    const savings = BASE_PRICE - tier.theyPay;
 
-    return `🎉 ${firstName}! Case #${caseNumber} → APPROVED! 💜
+    return `🎉 ${firstName}! Case #${caseNumber} — APPROVED! 💜
 
-Investment: ${investmentLine}
+The Institute just covered ${formatCurrency(savings)} of your tuition!
+
+You pay: ${formatCurrency(tier.theyPay)} (instead of ${formatCurrency(BASE_PRICE)})
 
 👉 ${CHECKOUT_URL}
-Code: ${tier.couponCode}
+Use code: ${tier.couponCode}
 
-Tap the link above, enter your code at checkout. ⏰ Scholarship valid for 10 minutes — go go go! 🔥`;
+⏰ This scholarship expires in 10 minutes — tap the link, enter your code, and you're in!`;
 }
 
 
