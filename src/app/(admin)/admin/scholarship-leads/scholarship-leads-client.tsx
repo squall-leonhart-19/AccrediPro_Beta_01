@@ -271,6 +271,33 @@ export default function ScholarshipLeadsClient() {
         URL.revokeObjectURL(url);
     };
 
+    const exportConversations = () => {
+        const esc = (s: string) => `"${(s || "").replace(/"/g, '""').replace(/\n/g, " | ")}"`;
+        const rows = [["Lead Name", "Email", "Status", "Score", "Sender", "Message", "Timestamp", "Drop-off Stage"].join(",")];
+        filtered.forEach(l => {
+            const name = `${l.firstName} ${l.lastName || ""}`.trim();
+            if (l.messages.length === 0) {
+                // Still include leads with no messages to spot silent drop-offs
+                rows.push([esc(name), l.email, l.status, `${l.qualificationScore}%`, "", esc("(no messages)"), "", l.dropOffStage || ""].join(","));
+            } else {
+                l.messages.forEach(msg => {
+                    rows.push([
+                        esc(name), l.email, l.status, `${l.qualificationScore}%`,
+                        msg.isFromVisitor ? "Lead" : "Sarah AI",
+                        esc(msg.message),
+                        new Date(msg.createdAt).toLocaleString(),
+                        l.dropOffStage || "",
+                    ].join(","));
+                });
+            }
+        });
+        const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = `scholarship-conversations-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
+        URL.revokeObjectURL(url);
+    };
+
     // ─── Loading ─────────────────────────────────────────────
     if (loading) {
         return (
@@ -305,7 +332,10 @@ export default function ScholarshipLeadsClient() {
                                 </Button>
                             </Link>
                             <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1.5 text-xs">
-                                <Download className="w-3.5 h-3.5" /> Export
+                                <Download className="w-3.5 h-3.5" /> Export Leads
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={exportConversations} className="gap-1.5 text-xs">
+                                <MessageCircle className="w-3.5 h-3.5" /> Export Chats
                             </Button>
                             <Button variant="outline" size="sm" onClick={fetchLeads} className="gap-1.5 text-xs">
                                 <RefreshCw className="w-3.5 h-3.5" />
