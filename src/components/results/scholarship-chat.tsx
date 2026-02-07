@@ -718,7 +718,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           const t2b = setTimeout(async () => {
             setIsTyping(false);
 
-            const msg2Content = `Institute Functional Medicine Private Path — the only program that takes you from zero to closing $3K-$5K clients in 6-12 months, ${firstName}:
+            const msg2Content = `You qualify for our Institute Functional Medicine Private Path to ${incomeGoalLabel} — the only program that takes you from zero to closing $3K-$5K clients in 6-12 months, ${firstName}:
 
 🎓 Main Certification + Advanced + Master + Practice (20 Modules — 4 Levels)
 🌐 Done-For-You Website to start attracting clients
@@ -727,9 +727,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
 🛠 Tools & Resources to manage clients professionally
 💻 Coach Workspace — your complete practitioner hub
 
-Type the amount you can cover and I'll call the Institute right now to see if they'll approve your scholarship and pay the rest.
-
-Please be serious — this is a real path to ${incomeGoalLabel} monthly. Minimum is $200 💜`;
+Type the amount you can cover and I'll call the Institute right now to see if they'll approve your scholarship and pay the rest 📞`;
 
             const msg2: ChatMessage = {
               id: "sarah-2",
@@ -1112,7 +1110,7 @@ Please be serious — this is a real path to ${incomeGoalLabel} monthly. Minimum
           const guidanceMsg: ChatMessage = {
             id: `sarah-guidance-${Date.now()}`,
             role: "sarah",
-            content: `No pressure at all, ${firstName}! 💜 Just type the amount you'd like to invest — even $200 works — and I'll call the Institute right now to see if it's approved for your scholarship! 📞`,
+            content: `No pressure at all, ${firstName}! 💜 Just type the amount you can cover and I'll call the Institute right now to see if they'll approve your scholarship and pay the rest 📞`,
             timestamp: new Date().toISOString(),
           };
           setMessages(prev => [...prev, guidanceMsg]);
