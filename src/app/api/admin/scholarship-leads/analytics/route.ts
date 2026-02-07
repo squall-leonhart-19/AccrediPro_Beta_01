@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -11,10 +11,11 @@ export const dynamic = "force-dynamic";
  * Returns analytics for scholarship quiz:
  * - Question-by-question drop-off rates
  * - Answer distribution per question
- * - Background/income/specialization breakdowns
+ * - Background/income/specialization/currentIncome breakdowns
  * - Common conversion patterns
+ * - Date range filtering via ?days=7|30|90|all
  */
-export async function GET() {
+export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -29,14 +30,21 @@ export async function GET() {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Get all scholarship applications with quiz data
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    // Date range filter
+    const daysParam = req.nextUrl.searchParams.get("days") || "30";
+    const dateFilter: { gte?: Date } = {};
+    if (daysParam !== "all") {
+        const days = parseInt(daysParam, 10) || 30;
+        const since = new Date();
+        since.setDate(since.getDate() - days);
+        dateFilter.gte = since;
+    }
 
+    // Get all scholarship applications with quiz data
     const scholarshipTags = await prisma.userTag.findMany({
         where: {
             tag: "scholarship_application_submitted",
-            createdAt: { gte: thirtyDaysAgo },
+            ...(dateFilter.gte ? { createdAt: { gte: dateFilter.gte } } : {}),
         },
         include: {
             user: {
@@ -60,66 +68,93 @@ export async function GET() {
         orderBy: { createdAt: "desc" },
     });
 
-    // New Hormozi 11-question structure
+    // 11-question Hormozi quiz structure
+    // NOTE: quizData uses OLD field names from URL params, mapped here
     const QUESTIONS = [
-        { id: 1, pillar: "Specialization", text: "Which area of FM excites you most?", key: "specialization" },
-        { id: 2, pillar: "Background", text: "What best describes your background?", key: "background" },
-        { id: 3, pillar: "Experience", text: "Knowledge of Functional Medicine?", key: "experience" },
-        { id: 4, pillar: "Motivation", text: "Main reason to get certified?", key: "motivation" },
-        { id: 5, pillar: "Pain Point", text: "What frustrates you MOST?", key: "painPoint" },
-        { id: 6, pillar: "Timeline", text: "When to start certification?", key: "timeline" },
-        { id: 7, pillar: "Income Goal", text: "Target monthly income?", key: "incomeGoal" },
-        { id: 8, pillar: "Time Stuck", text: "How long thinking about change?", key: "timeStuck" },
-        { id: 9, pillar: "Current Income", text: "Current monthly income?", key: "currentIncome" },
-        { id: 10, pillar: "Dream Life", text: "What matters most about goal life?", key: "dreamLife" },
-        { id: 11, pillar: "Commitment", text: "How committed are you?", key: "commitment" },
+        { id: 1, pillar: "Specialization", text: "Which area of FM excites you most?", key: "specialization", oldKeys: ["type"] },
+        { id: 2, pillar: "Background", text: "What best describes your background?", key: "background", oldKeys: ["role"] },
+        { id: 3, pillar: "Experience", text: "Knowledge of Functional Medicine?", key: "experience", oldKeys: [] },
+        { id: 4, pillar: "Motivation", text: "Main reason to get certified?", key: "motivation", oldKeys: ["clinicalReady"] },
+        { id: 5, pillar: "Pain Point", text: "What frustrates you MOST?", key: "painPoint", oldKeys: ["labInterest"] },
+        { id: 6, pillar: "Timeline", text: "When to start certification?", key: "timeline", oldKeys: ["startTimeline"] },
+        { id: 7, pillar: "Income Goal", text: "Target monthly income?", key: "incomeGoal", oldKeys: ["goal", "pastCerts"] },
+        { id: 8, pillar: "Time Stuck", text: "How long thinking about change?", key: "timeStuck", oldKeys: ["missingSkill"] },
+        { id: 9, pillar: "Current Income", text: "Current monthly income?", key: "currentIncome", oldKeys: [] },
+        { id: 10, pillar: "Dream Life", text: "What matters most about goal life?", key: "dreamLife", oldKeys: ["vision"] },
+        { id: 11, pillar: "Commitment", text: "How committed are you?", key: "commitment", oldKeys: [] },
     ];
 
-    // Answer labels for display
+    // Answer labels for display (includes both old and new quiz values)
     const ANSWER_LABELS: Record<string, Record<string, string>> = {
         specialization: {
             "gut-health": "Gut Health", "hormone-health": "Hormonal Health", "burnout": "Stress/Burnout",
-            "autoimmune": "Autoimmune", "metabolic": "Metabolic Health", "explore": "Not sure yet"
+            "autoimmune": "Autoimmune", "metabolic": "Metabolic Health", "explore": "Not sure yet",
+            // Old quiz values
+            "gut-restoration": "Gut Health", "burnout-recovery": "Stress/Burnout",
+            "autoimmune-support": "Autoimmune", "metabolic-optimization": "Metabolic Health",
         },
         background: {
             "nurse": "Nurse/Nursing Assistant", "doctor": "Doctor/PA/NP", "allied-health": "Allied Health",
-            "mental-health": "Mental Health Pro", "wellness": "Wellness/Fitness", "career-change": "Career Change"
+            "mental-health": "Mental Health Pro", "wellness": "Wellness/Fitness", "career-change": "Career Change",
+            // Persona values from old quiz
+            "healthcare-pro": "Healthcare Pro", "health-coach": "Health Coach",
+            "corporate": "Corporate Career Change", "stay-at-home-mom": "Stay-at-Home Mom",
+            "other-passionate": "Other/Passionate",
         },
         experience: {
-            "brand-new": "Brand new", "self-study": "Self-study", "some-training": "Some courses", "already-practicing": "Already practicing"
+            "brand-new": "Brand new", "self-study": "Self-study", "some-training": "Some courses", "already-practicing": "Already practicing",
         },
         motivation: {
             "help-people": "Help people heal", "leave-job": "Leave current job", "add-services": "Add to practice",
-            "work-from-home": "Work from home", "burned-out": "Burned out"
+            "work-from-home": "Work from home", "burned-out": "Burned out",
+            // Old clinicalReady values
+            "yes-eager": "Yes, eager", "yes-with-guidance": "Yes, with guidance",
+            "not-yet": "Not yet", "unsure": "Unsure",
         },
         painPoint: {
             "time-for-money": "Trading time for money", "stuck": "Feeling stuck", "meant-for-more": "Meant for more",
-            "exhausted": "Exhausted", "no-credential": "No credential"
+            "exhausted": "Exhausted", "no-credential": "No credential",
+            // Old labInterest values
+            "very-interested": "Very interested", "somewhat": "Somewhat interested",
+            "not-sure": "Not sure", "already-know": "Already know",
         },
         timeline: {
-            "immediately": "Immediately", "30-days": "Within 30 days", "1-3-months": "1-3 months", "exploring": "Just exploring"
+            "immediately": "Immediately", "30-days": "Within 30 days", "1-3-months": "1-3 months", "exploring": "Just exploring",
+            // Old values
+            "this-week": "This week", "this-month": "This month",
         },
         incomeGoal: {
-            "3k-5k": "$3K-$5K/month", "5k-10k": "$5K-$10K/month", "10k-15k": "$10K-$15K/month", "15k-plus": "$15K+/month"
+            "3k-5k": "$3K-$5K/month", "5k-10k": "$5K-$10K/month", "10k-15k": "$10K-$15K/month", "15k-plus": "$15K+/month",
+            // Old goal values
+            "5k": "$5K/month", "10k": "$10K/month", "20k": "$20K/month", "50k-plus": "$50K+/month",
         },
         timeStuck: {
-            "less-than-month": "< 1 month", "1-6-months": "1-6 months", "6-12-months": "6-12 months", "over-year": "Over a year"
+            "less-than-month": "< 1 month", "1-6-months": "1-6 months", "6-12-months": "6-12 months", "over-year": "Over a year",
+            // Old missingSkill values
+            "clinical-skills": "Clinical skills", "business-skills": "Business skills",
+            "confidence": "Confidence", "credential": "Credential", "all-above": "All of the above",
         },
         currentIncome: {
-            "under-3k": "Under $3K", "3k-5k": "$3K-$5K", "5k-8k": "$5K-$8K", "over-8k": "Over $8K"
+            "under-3k": "Under $3K", "3k-5k": "$3K-$5K", "5k-8k": "$5K-$8K", "over-8k": "Over $8K",
+            // Old values
+            "0": "$0/month", "under-2k": "Under $2K", "2k-5k": "$2K-$5K", "over-5k": "Over $5K",
         },
         dreamLife: {
             "financial-freedom": "Financial freedom", "time-freedom": "Time freedom", "purpose": "Purpose",
-            "independence": "Independence", "all-above": "All of the above"
+            "independence": "Independence", "all-above": "All of the above",
+            // Old vision values
+            "leave-job": "Leave 9-to-5", "security": "Financial security",
+            "fulfillment": "Fulfillment", "all-above": "All of the above",
         },
         commitment: {
-            "100-percent": "100% committed", "very-committed": "Very committed", "interested": "Interested", "curious": "Just curious"
+            "100-percent": "100% committed", "very-committed": "Very committed", "interested": "Interested", "curious": "Just curious",
         }
     };
 
     // Extract quiz data from all applications
     const totalStarts = scholarshipTags.length;
-    const totalCompletes = scholarshipTags.filter(st => st.user.enrollments.length > 0).length;
+    // Count completions = quiz submissions with all core fields present (not enrollments!)
+    let totalCompletes = 0;
 
     // Count answers per question
     const questionStats: Record<string, { reached: number; answered: number; answers: Record<string, number> }> = {};
@@ -127,10 +162,11 @@ export async function GET() {
         questionStats[q.key] = { reached: 0, answered: 0, answers: {} };
     });
 
-    // Pattern counters
+    // Distribution counters
     const backgroundCounts: Record<string, number> = {};
     const incomeGoalCounts: Record<string, number> = {};
     const specializationCounts: Record<string, number> = {};
+    const currentIncomeCounts: Record<string, number> = {};
     const patternCounts: Record<string, number> = {};
 
     scholarshipTags.forEach((st) => {
@@ -140,21 +176,26 @@ export async function GET() {
 
         const quizData = meta?.quizData || {};
 
-        // Map old field names to new ones
+        // Map old field names → new analytics keys
         const mappedData: Record<string, string> = {};
-        if (quizData.type) mappedData.specialization = quizData.type;
-        if (quizData.role) mappedData.background = quizData.role;
-        if (quizData.experience) mappedData.experience = quizData.experience;
-        if (quizData.goal) mappedData.incomeGoal = quizData.goal;
-        if (quizData.currentIncome) mappedData.currentIncome = quizData.currentIncome;
-        if (quizData.commitment) mappedData.commitment = quizData.commitment;
-        if (quizData.vision) mappedData.dreamLife = quizData.vision;
-        if (quizData.startTimeline) mappedData.timeline = quizData.startTimeline;
 
-        // Also check direct new field names
-        Object.keys(quizData).forEach(k => {
-            if (!mappedData[k]) mappedData[k] = quizData[k];
+        // For each question, check new key first, then old keys
+        QUESTIONS.forEach(q => {
+            if (quizData[q.key]) {
+                mappedData[q.key] = quizData[q.key];
+            } else {
+                for (const oldKey of q.oldKeys) {
+                    if (quizData[oldKey]) {
+                        mappedData[q.key] = quizData[oldKey];
+                        break;
+                    }
+                }
+            }
         });
+
+        // Count how many questions were answered to determine completion
+        const answeredCount = QUESTIONS.filter(q => mappedData[q.key]).length;
+        if (answeredCount >= 6) totalCompletes++; // Consider "complete" if ≥6 questions answered
 
         // Track funnel - assume they reached all questions up to their last answered one
         let lastAnswered = -1;
@@ -186,13 +227,17 @@ export async function GET() {
             const label = ANSWER_LABELS.specialization[mappedData.specialization] || mappedData.specialization;
             specializationCounts[label] = (specializationCounts[label] || 0) + 1;
         }
+        if (mappedData.currentIncome) {
+            const label = ANSWER_LABELS.currentIncome[mappedData.currentIncome] || mappedData.currentIncome;
+            currentIncomeCounts[label] = (currentIncomeCounts[label] || 0) + 1;
+        }
 
-        // Track pattern (background → motivation → timeline)
-        if (mappedData.background && mappedData.motivation && mappedData.timeline) {
+        // Track pattern (background → incomeGoal → timeline)
+        if (mappedData.background && mappedData.incomeGoal && mappedData.timeline) {
             const bgLabel = ANSWER_LABELS.background[mappedData.background] || mappedData.background;
-            const motLabel = ANSWER_LABELS.motivation[mappedData.motivation] || mappedData.motivation;
+            const goalLabel = ANSWER_LABELS.incomeGoal[mappedData.incomeGoal] || mappedData.incomeGoal;
             const timeLabel = ANSWER_LABELS.timeline[mappedData.timeline] || mappedData.timeline;
-            const pattern = `${bgLabel} → ${motLabel} → ${timeLabel}`;
+            const pattern = `${bgLabel} → ${goalLabel} → ${timeLabel}`;
             patternCounts[pattern] = (patternCounts[pattern] || 0) + 1;
         }
     });
@@ -202,7 +247,7 @@ export async function GET() {
         const stats = questionStats[q.key];
         const dropOffRate = stats.reached > 0 ? Math.round(((stats.reached - stats.answered) / stats.reached) * 100) : 0;
 
-        // get top answers
+        // Get top answers with labels
         const answers = Object.entries(stats.answers)
             .map(([value, count]) => ({
                 value,
@@ -244,20 +289,23 @@ export async function GET() {
             percentage: totalStarts > 0 ? Math.round((count / totalStarts) * 100 * 10) / 10 : 0,
         }))
         .sort((a, b) => b.count - a.count)
-        .slice(0, 5);
+        .slice(0, 10);
 
-    // Calculate avg time (approximate based on created timestamps)
-    const avgTimeToComplete = "4m 32s"; // Placeholder - would need event tracking for real data
+    // Enrolled count (actually paid)
+    const totalEnrolled = scholarshipTags.filter(st => st.user.enrollments.length > 0).length;
 
     return NextResponse.json({
         totalStarts,
         totalCompletes,
+        totalEnrolled,
         overallCompletionRate: totalStarts > 0 ? Math.round((totalCompletes / totalStarts) * 100 * 10) / 10 : 0,
-        avgTimeToComplete,
+        enrollmentRate: totalStarts > 0 ? Math.round((totalEnrolled / totalStarts) * 100 * 10) / 10 : 0,
         funnel,
         topPatterns,
         backgroundBreakdown: toBreakdown(backgroundCounts),
         incomeGoalBreakdown: toBreakdown(incomeGoalCounts),
         specializationBreakdown: toBreakdown(specializationCounts),
+        currentIncomeBreakdown: toBreakdown(currentIncomeCounts),
+        daysFilter: daysParam,
     });
 }

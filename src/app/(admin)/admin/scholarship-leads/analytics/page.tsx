@@ -15,6 +15,9 @@ import {
     AlertTriangle,
     CheckCircle,
     Loader2,
+    DollarSign,
+    Calendar,
+    CreditCard,
 } from "lucide-react";
 
 // ─── Types ─────────────────────────────────────────────────────────
@@ -33,32 +36,29 @@ interface QuestionFunnel {
     }[];
 }
 
+interface BreakdownItem {
+    label: string;
+    count: number;
+    percentage: number;
+}
+
 interface AnalyticsData {
     totalStarts: number;
     totalCompletes: number;
+    totalEnrolled: number;
     overallCompletionRate: number;
-    avgTimeToComplete: string;
+    enrollmentRate: number;
     funnel: QuestionFunnel[];
     topPatterns: {
         pattern: string;
         count: number;
         percentage: number;
     }[];
-    backgroundBreakdown: {
-        label: string;
-        count: number;
-        percentage: number;
-    }[];
-    incomeGoalBreakdown: {
-        label: string;
-        count: number;
-        percentage: number;
-    }[];
-    specializationBreakdown: {
-        label: string;
-        count: number;
-        percentage: number;
-    }[];
+    backgroundBreakdown: BreakdownItem[];
+    incomeGoalBreakdown: BreakdownItem[];
+    specializationBreakdown: BreakdownItem[];
+    currentIncomeBreakdown: BreakdownItem[];
+    daysFilter: string;
 }
 
 // ─── Constants ─────────────────────────────────────────────────────────
@@ -69,104 +69,39 @@ const BRAND = {
     goldLight: "#f5d998",
 };
 
-// Question definitions for labels
-const QUESTIONS = [
-    { id: 1, pillar: "Specialization", text: "Which area of FM excites you most?" },
-    { id: 2, pillar: "Background", text: "What best describes your background?" },
-    { id: 3, pillar: "Experience", text: "Knowledge of Functional Medicine?" },
-    { id: 4, pillar: "Motivation", text: "Main reason to get certified?" },
-    { id: 5, pillar: "Pain Point", text: "What frustrates you MOST?" },
-    { id: 6, pillar: "Timeline", text: "When to start certification?" },
-    { id: 7, pillar: "Income Goal", text: "Target monthly income?" },
-    { id: 8, pillar: "Time Stuck", text: "How long thinking about change?" },
-    { id: 9, pillar: "Current Income", text: "Current monthly income?" },
-    { id: 10, pillar: "Dream Life", text: "What matters most about goal life?" },
-    { id: 11, pillar: "Commitment", text: "How committed are you?" },
+const DATE_OPTIONS = [
+    { label: "7 days", value: "7" },
+    { label: "30 days", value: "30" },
+    { label: "90 days", value: "90" },
+    { label: "All time", value: "all" },
 ];
 
 export default function ScholarshipAnalyticsPage() {
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
+    const [daysFilter, setDaysFilter] = useState("30");
+    const [expandedQ, setExpandedQ] = useState<number | null>(null);
 
     useEffect(() => {
-        fetchAnalytics();
-    }, []);
+        fetchAnalytics(daysFilter);
+    }, [daysFilter]);
 
-    const fetchAnalytics = async () => {
+    const fetchAnalytics = async (days: string) => {
+        setLoading(true);
         try {
-            const res = await fetch("/api/admin/scholarship-leads/analytics");
+            const res = await fetch(`/api/admin/scholarship-leads/analytics?days=${days}`);
             if (res.ok) {
                 const json = await res.json();
                 setData(json);
-            } else {
-                // Generate mock data if API doesn't exist yet
-                setData(generateMockData());
             }
         } catch {
-            // Fallback to mock data
-            setData(generateMockData());
+            // silently fail
         } finally {
             setLoading(false);
         }
     };
 
-    const generateMockData = (): AnalyticsData => {
-        // Generate realistic mock funnel data
-        let remaining = 847;
-        const funnel: QuestionFunnel[] = QUESTIONS.map((q, idx) => {
-            const dropOff = idx === 0 ? 0 : Math.floor(remaining * (Math.random() * 0.08 + 0.02));
-            const reached = remaining;
-            remaining -= dropOff;
-            const answered = remaining;
-
-            return {
-                questionNumber: q.id,
-                questionText: q.text,
-                pillar: q.pillar,
-                reached,
-                answered,
-                dropOffRate: reached > 0 ? Math.round((dropOff / reached) * 100) : 0,
-                answers: [],
-            };
-        });
-
-        return {
-            totalStarts: 847,
-            totalCompletes: 612,
-            overallCompletionRate: 72.3,
-            avgTimeToComplete: "4m 32s",
-            funnel,
-            topPatterns: [
-                { pattern: "Healthcare → Help People → Immediately", count: 156, percentage: 25.5 },
-                { pattern: "Wellness → Leave Job → 30 days", count: 98, percentage: 16.0 },
-                { pattern: "Career Change → Burned Out → Immediately", count: 87, percentage: 14.2 },
-            ],
-            backgroundBreakdown: [
-                { label: "Nurse or Nursing Assistant", count: 287, percentage: 46.9 },
-                { label: "Wellness/Fitness Professional", count: 124, percentage: 20.3 },
-                { label: "Other career — ready for change", count: 98, percentage: 16.0 },
-                { label: "Allied Health (PT, OT, Dietitian)", count: 56, percentage: 9.2 },
-                { label: "Doctor, PA, or NP", count: 28, percentage: 4.6 },
-                { label: "Mental Health Professional", count: 19, percentage: 3.1 },
-            ],
-            incomeGoalBreakdown: [
-                { label: "$5,000 to $10,000/month", count: 267, percentage: 43.6 },
-                { label: "$10,000 to $15,000/month", count: 189, percentage: 30.9 },
-                { label: "$3,000 to $5,000/month", count: 98, percentage: 16.0 },
-                { label: "$15,000+/month", count: 58, percentage: 9.5 },
-            ],
-            specializationBreakdown: [
-                { label: "Hormonal Health and Balance", count: 198, percentage: 32.4 },
-                { label: "Gut Health and Digestive Wellness", count: 156, percentage: 25.5 },
-                { label: "Stress, Burnout and Adrenal Recovery", count: 124, percentage: 20.3 },
-                { label: "Weight Management and Metabolic Health", count: 78, percentage: 12.7 },
-                { label: "Autoimmune and Inflammation", count: 34, percentage: 5.6 },
-                { label: "Not sure yet", count: 22, percentage: 3.6 },
-            ],
-        };
-    };
-
-    if (loading) {
+    if (loading && !data) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-50">
                 <Loader2 className="w-8 h-8 animate-spin text-amber-600" />
@@ -177,78 +112,94 @@ export default function ScholarshipAnalyticsPage() {
     if (!data) return null;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 p-6">
-            <div className="max-w-7xl mx-auto space-y-6">
+        <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 p-4 sm:p-6">
+            <div className="max-w-7xl mx-auto space-y-5">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-3">
                     <div className="flex items-center gap-4">
                         <Link href="/admin/scholarship-leads">
                             <Button variant="outline" size="sm" className="gap-2">
-                                <ArrowLeft className="w-4 h-4" /> Back to Leads
+                                <ArrowLeft className="w-4 h-4" /> Leads
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-2xl font-bold" style={{ color: BRAND.burgundy }}>
+                            <h1 className="text-xl sm:text-2xl font-bold" style={{ color: BRAND.burgundy }}>
                                 Quiz Analytics
                             </h1>
-                            <p className="text-sm text-gray-500">Question completion & answer patterns</p>
+                            <p className="text-xs sm:text-sm text-gray-500">Question completion & answer patterns</p>
                         </div>
                     </div>
-                    <Badge className="text-sm px-3 py-1" style={{ background: BRAND.gold, color: BRAND.burgundyDark }}>
-                        Last 30 days
-                    </Badge>
+                    {/* Date Filter */}
+                    <div className="flex items-center gap-1.5 bg-white rounded-lg border p-1">
+                        {DATE_OPTIONS.map(opt => (
+                            <button
+                                key={opt.value}
+                                onClick={() => setDaysFilter(opt.value)}
+                                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                                    daysFilter === opt.value
+                                        ? "text-white shadow-sm"
+                                        : "text-gray-500 hover:text-gray-700"
+                                }`}
+                                style={daysFilter === opt.value ? { background: BRAND.burgundy } : {}}
+                            >
+                                {opt.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Top Stats */}
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <Card>
-                        <CardContent className="pt-6">
+                        <CardContent className="pt-5 pb-4">
                             <div className="flex items-center gap-3">
-                                <div className="p-3 rounded-xl" style={{ background: `${BRAND.gold}20` }}>
-                                    <Users className="w-6 h-6" style={{ color: BRAND.gold }} />
+                                <div className="p-2.5 rounded-xl" style={{ background: `${BRAND.gold}20` }}>
+                                    <Users className="w-5 h-5" style={{ color: BRAND.gold }} />
                                 </div>
                                 <div>
                                     <p className="text-2xl font-bold" style={{ color: BRAND.burgundy }}>{data.totalStarts}</p>
-                                    <p className="text-sm text-gray-500">Quiz Starts</p>
+                                    <p className="text-xs text-gray-500">Quiz Starts</p>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
                     <Card>
-                        <CardContent className="pt-6">
+                        <CardContent className="pt-5 pb-4">
                             <div className="flex items-center gap-3">
-                                <div className="p-3 rounded-xl bg-green-100">
-                                    <CheckCircle className="w-6 h-6 text-green-600" />
+                                <div className="p-2.5 rounded-xl bg-green-100">
+                                    <CheckCircle className="w-5 h-5 text-green-600" />
                                 </div>
                                 <div>
                                     <p className="text-2xl font-bold text-green-600">{data.totalCompletes}</p>
-                                    <p className="text-sm text-gray-500">Completes</p>
+                                    <p className="text-xs text-gray-500">Completed ({data.overallCompletionRate}%)</p>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
                     <Card>
-                        <CardContent className="pt-6">
+                        <CardContent className="pt-5 pb-4">
                             <div className="flex items-center gap-3">
-                                <div className="p-3 rounded-xl bg-blue-100">
-                                    <Target className="w-6 h-6 text-blue-600" />
+                                <div className="p-2.5 rounded-xl bg-blue-100">
+                                    <CreditCard className="w-5 h-5 text-blue-600" />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold text-blue-600">{data.overallCompletionRate}%</p>
-                                    <p className="text-sm text-gray-500">Completion Rate</p>
+                                    <p className="text-2xl font-bold text-blue-600">{data.totalEnrolled}</p>
+                                    <p className="text-xs text-gray-500">Enrolled ({data.enrollmentRate}%)</p>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
                     <Card>
-                        <CardContent className="pt-6">
+                        <CardContent className="pt-5 pb-4">
                             <div className="flex items-center gap-3">
-                                <div className="p-3 rounded-xl bg-purple-100">
-                                    <BarChart3 className="w-6 h-6 text-purple-600" />
+                                <div className="p-2.5 rounded-xl bg-purple-100">
+                                    <Target className="w-5 h-5 text-purple-600" />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold text-purple-600">{data.avgTimeToComplete}</p>
-                                    <p className="text-sm text-gray-500">Avg. Time</p>
+                                    <p className="text-2xl font-bold text-purple-600">
+                                        {data.totalStarts > 0 ? Math.round((data.totalEnrolled / data.totalStarts) * 100 * 10) / 10 : 0}%
+                                    </p>
+                                    <p className="text-xs text-gray-500">Quiz → Enrolled</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -257,173 +208,185 @@ export default function ScholarshipAnalyticsPage() {
 
                 {/* Question Funnel */}
                 <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2" style={{ color: BRAND.burgundy }}>
+                    <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg" style={{ color: BRAND.burgundy }}>
                             <TrendingDown className="w-5 h-5" />
                             Question-by-Question Drop-off
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="space-y-3">
-                            {data.funnel.map((q, idx) => (
-                                <div key={q.questionNumber} className="flex items-center gap-4">
-                                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
-                                        style={{ background: `${BRAND.gold}30`, color: BRAND.burgundy }}>
-                                        {q.questionNumber}
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="flex items-center justify-between mb-1">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-medium text-sm" style={{ color: BRAND.burgundy }}>{q.questionText}</span>
-                                                <Badge variant="outline" className="text-xs">{q.pillar}</Badge>
-                                            </div>
-                                            <div className="flex items-center gap-4 text-sm">
-                                                <span className="text-gray-500">{q.reached} reached</span>
-                                                <span className="font-medium text-green-600">{q.answered} answered</span>
-                                                {q.dropOffRate > 0 && (
-                                                    <span className="flex items-center gap-1 text-red-500">
-                                                        <AlertTriangle className="w-3 h-3" />
-                                                        {q.dropOffRate}% drop
+                        <div className="space-y-2.5">
+                            {data.funnel.map((q) => (
+                                <div key={q.questionNumber}>
+                                    <div
+                                        className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-1.5 -mx-1.5 transition-colors"
+                                        onClick={() => setExpandedQ(expandedQ === q.questionNumber ? null : q.questionNumber)}
+                                    >
+                                        <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                                            style={{ background: `${BRAND.gold}30`, color: BRAND.burgundy }}>
+                                            {q.questionNumber}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center justify-between mb-1">
+                                                <div className="flex items-center gap-2 min-w-0">
+                                                    <span className="font-medium text-sm truncate" style={{ color: BRAND.burgundy }}>{q.questionText}</span>
+                                                    <Badge variant="outline" className="text-[10px] shrink-0">{q.pillar}</Badge>
+                                                </div>
+                                                <div className="flex items-center gap-3 text-xs shrink-0 ml-2">
+                                                    <span className="text-gray-400">{q.reached} reached</span>
+                                                    <span className={`font-semibold ${q.answered === 0 ? "text-red-500" : "text-green-600"}`}>
+                                                        {q.answered} answered
                                                     </span>
-                                                )}
+                                                    {q.dropOffRate > 0 && (
+                                                        <span className={`flex items-center gap-0.5 font-medium ${q.dropOffRate > 20 ? "text-red-600" : q.dropOffRate > 5 ? "text-orange-500" : "text-gray-400"}`}>
+                                                            <AlertTriangle className="w-3 h-3" />
+                                                            {q.dropOffRate}%
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full rounded-full transition-all duration-500"
+                                                    style={{
+                                                        width: `${data.totalStarts > 0 ? (q.answered / data.totalStarts) * 100 : 0}%`,
+                                                        background: q.dropOffRate > 20 ? '#ef4444' : q.dropOffRate > 5 ? BRAND.gold : '#22c55e'
+                                                    }}
+                                                />
                                             </div>
                                         </div>
-                                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                            <div
-                                                className="h-full rounded-full transition-all duration-500"
-                                                style={{
-                                                    width: `${(q.answered / data.totalStarts) * 100}%`,
-                                                    background: q.dropOffRate > 5 ? '#ef4444' : q.dropOffRate > 3 ? BRAND.gold : '#22c55e'
-                                                }}
-                                            />
-                                        </div>
                                     </div>
+
+                                    {/* Expanded: Answer Distribution */}
+                                    {expandedQ === q.questionNumber && q.answers.length > 0 && (
+                                        <div className="ml-10 mt-2 mb-3 p-3 bg-gray-50 rounded-lg border">
+                                            <p className="text-xs font-semibold text-gray-500 mb-2">Answer Distribution</p>
+                                            <div className="space-y-1.5">
+                                                {q.answers.map(a => (
+                                                    <div key={a.value} className="flex items-center gap-2">
+                                                        <div className="flex-1">
+                                                            <div className="flex items-center justify-between text-xs mb-0.5">
+                                                                <span className="font-medium text-gray-700 truncate max-w-[250px]">{a.label}</span>
+                                                                <span className="text-gray-500 shrink-0 ml-2">{a.count} ({a.percentage}%)</span>
+                                                            </div>
+                                                            <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+                                                                <div className="h-full rounded-full" style={{ width: `${a.percentage}%`, background: BRAND.burgundy }} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Answer Patterns Grid */}
-                <div className="grid grid-cols-2 gap-6">
-                    {/* Background Breakdown */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg" style={{ color: BRAND.burgundy }}>
-                                <PieChart className="w-5 h-5" />
-                                Background Distribution
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-3">
-                                {data.backgroundBreakdown.map((item) => (
-                                    <div key={item.label} className="flex items-center gap-3">
-                                        <div className="flex-1">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <span className="text-sm font-medium truncate max-w-[200px]">{item.label}</span>
-                                                <span className="text-sm text-gray-500">{item.count} ({item.percentage}%)</span>
-                                            </div>
-                                            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                                <div
-                                                    className="h-full rounded-full"
-                                                    style={{ width: `${item.percentage}%`, background: BRAND.burgundy }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
+                {/* Breakdowns Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {/* Background */}
+                    <BreakdownCard
+                        title="Background Distribution"
+                        icon={<PieChart className="w-5 h-5" />}
+                        items={data.backgroundBreakdown}
+                        color={BRAND.burgundy}
+                    />
 
                     {/* Income Goals */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg" style={{ color: BRAND.burgundy }}>
-                                <Target className="w-5 h-5" />
-                                Income Goal Distribution
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-3">
-                                {data.incomeGoalBreakdown.map((item) => (
-                                    <div key={item.label} className="flex items-center gap-3">
-                                        <div className="flex-1">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <span className="text-sm font-medium">{item.label}</span>
-                                                <span className="text-sm text-gray-500">{item.count} ({item.percentage}%)</span>
-                                            </div>
-                                            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                                <div
-                                                    className="h-full rounded-full"
-                                                    style={{ width: `${item.percentage}%`, background: BRAND.gold }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <BreakdownCard
+                        title="Income Goal Distribution"
+                        icon={<Target className="w-5 h-5" />}
+                        items={data.incomeGoalBreakdown}
+                        color={BRAND.gold}
+                    />
+
+                    {/* Current Income */}
+                    <BreakdownCard
+                        title="Current Monthly Income"
+                        icon={<DollarSign className="w-5 h-5" />}
+                        items={data.currentIncomeBreakdown}
+                        color="#2563eb"
+                    />
 
                     {/* Specialization */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg" style={{ color: BRAND.burgundy }}>
-                                <BarChart3 className="w-5 h-5" />
-                                Specialization Interest
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-3">
-                                {data.specializationBreakdown.map((item) => (
-                                    <div key={item.label} className="flex items-center gap-3">
-                                        <div className="flex-1">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <span className="text-sm font-medium truncate max-w-[220px]">{item.label}</span>
-                                                <span className="text-sm text-gray-500">{item.count} ({item.percentage}%)</span>
-                                            </div>
-                                            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                                <div
-                                                    className="h-full rounded-full"
-                                                    style={{ width: `${item.percentage}%`, background: '#8b5cf6' }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <BreakdownCard
+                        title="Specialization Interest"
+                        icon={<BarChart3 className="w-5 h-5" />}
+                        items={data.specializationBreakdown}
+                        color="#8b5cf6"
+                    />
+                </div>
 
-                    {/* Top Patterns */}
+                {/* Top Patterns */}
+                {data.topPatterns.length > 0 && (
                     <Card>
-                        <CardHeader>
+                        <CardHeader className="pb-3">
                             <CardTitle className="flex items-center gap-2 text-lg" style={{ color: BRAND.burgundy }}>
                                 <TrendingDown className="w-5 h-5" />
-                                Most Common Paths
+                                Most Common Paths (Background → Income Goal → Timeline)
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {data.topPatterns.map((pattern, idx) => (
-                                    <div key={idx} className="p-3 rounded-xl border" style={{ borderColor: `${BRAND.gold}40` }}>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <Badge style={{ background: BRAND.gold, color: BRAND.burgundyDark }}>
-                                                #{idx + 1} Pattern
-                                            </Badge>
-                                            <span className="text-sm font-bold" style={{ color: BRAND.burgundy }}>
-                                                {pattern.count} leads ({pattern.percentage}%)
+                                    <div key={idx} className="p-3 rounded-lg border flex items-center justify-between gap-3" style={{ borderColor: `${BRAND.gold}40` }}>
+                                        <div className="flex items-center gap-2 min-w-0">
+                                            <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                                                style={{ background: `${BRAND.gold}30`, color: BRAND.burgundy }}>
+                                                {idx + 1}
                                             </span>
+                                            <span className="text-sm text-gray-700 truncate">{pattern.pattern}</span>
                                         </div>
-                                        <p className="text-sm text-gray-600 font-medium">{pattern.pattern}</p>
+                                        <Badge variant="outline" className="text-xs shrink-0">
+                                            {pattern.count} ({pattern.percentage}%)
+                                        </Badge>
                                     </div>
                                 ))}
                             </div>
                         </CardContent>
                     </Card>
-                </div>
+                )}
             </div>
         </div>
+    );
+}
+
+// ─── Reusable Breakdown Card ─────────────────────────────────────
+function BreakdownCard({ title, icon, items, color }: {
+    title: string;
+    icon: React.ReactNode;
+    items: BreakdownItem[];
+    color: string;
+}) {
+    if (!items || items.length === 0) return null;
+    return (
+        <Card>
+            <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-base" style={{ color: BRAND.burgundy }}>
+                    {icon}
+                    {title}
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-2.5">
+                    {items.map((item) => (
+                        <div key={item.label}>
+                            <div className="flex items-center justify-between mb-0.5">
+                                <span className="text-sm font-medium truncate max-w-[200px]">{item.label}</span>
+                                <span className="text-xs text-gray-500 shrink-0 ml-2">{item.count} ({item.percentage}%)</span>
+                            </div>
+                            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div
+                                    className="h-full rounded-full transition-all duration-300"
+                                    style={{ width: `${item.percentage}%`, background: color }}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </CardContent>
+        </Card>
     );
 }
