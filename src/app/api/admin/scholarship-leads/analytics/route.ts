@@ -8,12 +8,16 @@ export const dynamic = "force-dynamic";
 /**
  * GET /api/admin/scholarship-leads/analytics
  *
- * Returns analytics for scholarship quiz:
+ * Returns analytics for scholarship quizzes:
  * - Question-by-question drop-off rates
  * - Answer distribution per question
  * - Background/income/specialization/currentIncome breakdowns
  * - Common conversion patterns
- * - Date range filtering via ?days=7|30|90|all
+ *
+ * Query params:
+ *   ?days=7|30|90|today|all
+ *   ?variant=A|B|all
+ *   ?quiz=depth-method|fm-application|mini-diploma|all
  */
 export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
@@ -30,46 +34,96 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Variant filter
+    // ─── Parse Filters ─────────────────────────────────────────────
     const variantParam = req.nextUrl.searchParams.get("variant") || "all";
-
-    // Date range filter
+    const quizParam = req.nextUrl.searchParams.get("quiz") || "all";
     const daysParam = req.nextUrl.searchParams.get("days") || "30";
-    const dateFilter: { gte?: Date } = {};
-    if (daysParam !== "all") {
+
+    // Date range filter — "today" uses Alaska timezone (AKST = UTC-9)
+    const dateFilter: { gte?: Date; lte?: Date } = {};
+    if (daysParam === "today") {
+        // Alaska timezone: UTC-9 (AKST) / UTC-8 (AKDT)
+        const now = new Date();
+        const alaskaOffset = -9; // AKST — adjust to -8 during daylight saving if needed
+        const alaskaNow = new Date(now.getTime() + (now.getTimezoneOffset() + alaskaOffset * 60) * 60000);
+        const startOfDay = new Date(alaskaNow);
+        startOfDay.setHours(0, 0, 0, 0);
+        // Convert back to UTC for DB query
+        const startUTC = new Date(startOfDay.getTime() - (now.getTimezoneOffset() + alaskaOffset * 60) * 60000);
+        dateFilter.gte = startUTC;
+    } else if (daysParam !== "all") {
         const days = parseInt(daysParam, 10) || 30;
         const since = new Date();
         since.setDate(since.getDate() - days);
         dateFilter.gte = since;
     }
 
-    // Get quiz page views with progress data (from ChatOptin tracking)
-    const quizVisitors = await prisma.chatOptin.findMany({
+    const dateWhere = dateFilter.gte
+        ? { createdAt: { gte: dateFilter.gte, ...(dateFilter.lte ? { lte: dateFilter.lte } : {}) } }
+        : {};
+
+    // ─── Discover Available Quizzes ─────────────────────────────────
+    const allQuizVisitors = await prisma.chatOptin.findMany({
         where: {
             page: { startsWith: "quiz-start-" },
-            ...(dateFilter.gte ? { createdAt: { gte: dateFilter.gte } } : {}),
         },
         select: { page: true },
+    });
+
+    // Extract unique quiz slugs from page field (quiz-start-{slug}?v=...)
+    const quizSlugs = new Set<string>();
+    allQuizVisitors.forEach((v) => {
+        const match = v.page.match(/^quiz-start-([^?]+)/);
+        if (match) quizSlugs.add(match[1]);
+    });
+    const availableQuizzes = Array.from(quizSlugs).sort();
+
+    // ─── Quiz Page Views (from ChatOptin tracking) ──────────────────
+    const quizPageFilter = quizParam === "all"
+        ? "quiz-start-"
+        : `quiz-start-${quizParam}`;
+
+    const quizVisitors = await prisma.chatOptin.findMany({
+        where: {
+            page: { startsWith: quizPageFilter },
+            ...dateWhere,
+        },
+        select: { page: true, createdAt: true },
     });
     const quizPageViews = quizVisitors.length;
 
     // Parse per-question progress from page field (format: quiz-start-depth-method?v=A&q=5)
-    // q=0 means just landed, q=1 means answered Q1, etc.
     const questionProgress: number[] = new Array(12).fill(0); // index 0-11
     quizVisitors.forEach((v) => {
         const qMatch = v.page.match(/[?&]q=(\d+)/);
         const qReached = qMatch ? parseInt(qMatch[1], 10) : 0;
-        // Count how many visitors reached at least each question level
         for (let i = 0; i <= qReached && i < questionProgress.length; i++) {
             questionProgress[i]++;
         }
     });
 
-    // Get all scholarship applications with quiz data
+    // ─── Today stats (Alaska TZ) ────────────────────────────────────
+    const now = new Date();
+    const alaskaOffset = -9;
+    const alaskaNow = new Date(now.getTime() + (now.getTimezoneOffset() + alaskaOffset * 60) * 60000);
+    const alaskaDateStr = alaskaNow.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        timeZone: "America/Anchorage",
+    });
+    const alaskaTimeStr = alaskaNow.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        timeZone: "America/Anchorage",
+    });
+
+    // ─── Scholarship Applications ───────────────────────────────────
     const scholarshipTags = await prisma.userTag.findMany({
         where: {
             tag: "scholarship_application_submitted",
-            ...(dateFilter.gte ? { createdAt: { gte: dateFilter.gte } } : {}),
+            ...dateWhere,
         },
         include: {
             user: {
@@ -93,8 +147,7 @@ export async function GET(req: NextRequest) {
         orderBy: { createdAt: "desc" },
     });
 
-    // 11-question Hormozi quiz structure
-    // NOTE: quizData uses OLD field names from URL params, mapped here
+    // 11-question quiz structure
     const QUESTIONS = [
         { id: 1, pillar: "Specialization", text: "Which area of FM excites you most?", key: "specialization", oldKeys: ["type"] },
         { id: 2, pillar: "Background", text: "What best describes your background?", key: "background", oldKeys: ["role"] },
@@ -109,19 +162,16 @@ export async function GET(req: NextRequest) {
         { id: 11, pillar: "Commitment", text: "How committed are you?", key: "commitment", oldKeys: [] },
     ];
 
-    // Answer labels for display (includes both old and new quiz values)
     const ANSWER_LABELS: Record<string, Record<string, string>> = {
         specialization: {
             "gut-health": "Gut Health", "hormone-health": "Hormonal Health", "burnout": "Stress/Burnout",
             "autoimmune": "Autoimmune", "metabolic": "Metabolic Health", "explore": "Not sure yet",
-            // Old quiz values
             "gut-restoration": "Gut Health", "burnout-recovery": "Stress/Burnout",
             "autoimmune-support": "Autoimmune", "metabolic-optimization": "Metabolic Health",
         },
         background: {
             "nurse": "Nurse/Nursing Assistant", "doctor": "Doctor/PA/NP", "allied-health": "Allied Health",
             "mental-health": "Mental Health Pro", "wellness": "Wellness/Fitness", "career-change": "Career Change",
-            // Persona values from old quiz
             "healthcare-pro": "Healthcare Pro", "health-coach": "Health Coach",
             "corporate": "Corporate Career Change", "stay-at-home-mom": "Stay-at-Home Mom",
             "other-passionate": "Other/Passionate",
@@ -132,42 +182,35 @@ export async function GET(req: NextRequest) {
         motivation: {
             "help-people": "Help people heal", "leave-job": "Leave current job", "add-services": "Add to practice",
             "work-from-home": "Work from home", "burned-out": "Burned out",
-            // Old clinicalReady values
             "yes-eager": "Yes, eager", "yes-with-guidance": "Yes, with guidance",
             "not-yet": "Not yet", "unsure": "Unsure",
         },
         painPoint: {
             "time-for-money": "Trading time for money", "stuck": "Feeling stuck", "meant-for-more": "Meant for more",
             "exhausted": "Exhausted", "no-credential": "No credential",
-            // Old labInterest values
             "very-interested": "Very interested", "somewhat": "Somewhat interested",
             "not-sure": "Not sure", "already-know": "Already know",
         },
         timeline: {
             "immediately": "Immediately", "30-days": "Within 30 days", "1-3-months": "1-3 months", "exploring": "Just exploring",
-            // Old values
             "this-week": "This week", "this-month": "This month",
         },
         incomeGoal: {
             "3k-5k": "$3K-$5K/month", "5k-10k": "$5K-$10K/month", "10k-15k": "$10K-$15K/month", "15k-plus": "$15K+/month",
-            // Old goal values
             "5k": "$5K/month", "10k": "$10K/month", "20k": "$20K/month", "50k-plus": "$50K+/month",
         },
         timeStuck: {
             "less-than-month": "< 1 month", "1-6-months": "1-6 months", "6-12-months": "6-12 months", "over-year": "Over a year",
-            // Old missingSkill values
             "clinical-skills": "Clinical skills", "business-skills": "Business skills",
             "confidence": "Confidence", "credential": "Credential", "all-above": "All of the above",
         },
         currentIncome: {
             "under-3k": "Under $3K", "3k-5k": "$3K-$5K", "5k-8k": "$5K-$8K", "over-8k": "Over $8K",
-            // Old values
             "0": "$0/month", "under-2k": "Under $2K", "2k-5k": "$2K-$5K", "over-5k": "Over $5K",
         },
         dreamLife: {
             "financial-freedom": "Financial freedom", "time-freedom": "Time freedom", "purpose": "Purpose",
             "independence": "Independence", "all-above": "All of the above",
-            // Old vision values
             "leave-job": "Leave 9-to-5", "security": "Financial security",
             "fulfillment": "Fulfillment",
         },
@@ -195,16 +238,13 @@ export async function GET(req: NextRequest) {
 
     // Extract quiz data from all applications
     const totalStarts = filteredTags.length;
-    // Count completions = quiz submissions with all core fields present (not enrollments!)
     let totalCompletes = 0;
 
-    // Count answers per question
     const questionStats: Record<string, { reached: number; answered: number; answers: Record<string, number> }> = {};
     QUESTIONS.forEach(q => {
         questionStats[q.key] = { reached: 0, answered: 0, answers: {} };
     });
 
-    // Distribution counters
     const backgroundCounts: Record<string, number> = {};
     const incomeGoalCounts: Record<string, number> = {};
     const specializationCounts: Record<string, number> = {};
@@ -212,16 +252,10 @@ export async function GET(req: NextRequest) {
     const patternCounts: Record<string, number> = {};
 
     filteredTags.forEach((st) => {
-        const meta = st.metadata as {
-            quizData?: Record<string, string>;
-        } | null;
-
+        const meta = st.metadata as { quizData?: Record<string, string> } | null;
         const quizData = meta?.quizData || {};
 
-        // Map old field names → new analytics keys
         const mappedData: Record<string, string> = {};
-
-        // For each question, check new key first, then old keys
         QUESTIONS.forEach(q => {
             if (quizData[q.key]) {
                 mappedData[q.key] = quizData[q.key];
@@ -235,11 +269,9 @@ export async function GET(req: NextRequest) {
             }
         });
 
-        // Count how many questions were answered to determine completion
         const answeredCount = QUESTIONS.filter(q => mappedData[q.key]).length;
-        if (answeredCount >= 6) totalCompletes++; // Consider "complete" if ≥6 questions answered
+        if (answeredCount >= 6) totalCompletes++;
 
-        // Track funnel - assume they reached all questions up to their last answered one
         let lastAnswered = -1;
         QUESTIONS.forEach((q, idx) => {
             if (mappedData[q.key]) lastAnswered = idx;
@@ -256,7 +288,6 @@ export async function GET(req: NextRequest) {
             }
         });
 
-        // Count distributions
         if (mappedData.background) {
             const label = ANSWER_LABELS.background[mappedData.background] || mappedData.background;
             backgroundCounts[label] = (backgroundCounts[label] || 0) + 1;
@@ -274,7 +305,6 @@ export async function GET(req: NextRequest) {
             currentIncomeCounts[label] = (currentIncomeCounts[label] || 0) + 1;
         }
 
-        // Track pattern (background → incomeGoal → timeline)
         if (mappedData.background && mappedData.incomeGoal && mappedData.timeline) {
             const bgLabel = ANSWER_LABELS.background[mappedData.background] || mappedData.background;
             const goalLabel = ANSWER_LABELS.incomeGoal[mappedData.incomeGoal] || mappedData.incomeGoal;
@@ -284,12 +314,10 @@ export async function GET(req: NextRequest) {
         }
     });
 
-    // Build funnel response
+    // Build funnel
     const funnel = QUESTIONS.map((q) => {
         const stats = questionStats[q.key];
         const dropOffRate = stats.reached > 0 ? Math.round(((stats.reached - stats.answered) / stats.reached) * 100) : 0;
-
-        // Get top answers with labels
         const answers = Object.entries(stats.answers)
             .map(([value, count]) => ({
                 value,
@@ -311,7 +339,6 @@ export async function GET(req: NextRequest) {
         };
     });
 
-    // Build breakdowns
     const toBreakdown = (counts: Record<string, number>) => {
         const total = Object.values(counts).reduce((a, b) => a + b, 0);
         return Object.entries(counts)
@@ -323,7 +350,6 @@ export async function GET(req: NextRequest) {
             .sort((a, b) => b.count - a.count);
     };
 
-    // Top patterns
     const topPatterns = Object.entries(patternCounts)
         .map(([pattern, count]) => ({
             pattern,
@@ -333,10 +359,8 @@ export async function GET(req: NextRequest) {
         .sort((a, b) => b.count - a.count)
         .slice(0, 10);
 
-    // Enrolled count (actually paid)
     const totalEnrolled = filteredTags.filter(st => st.user.enrollments.length > 0).length;
 
-    // Variant breakdown
     const variantBreakdown = Object.entries(variantCounts)
         .map(([variant, count]) => ({
             variant,
@@ -345,7 +369,26 @@ export async function GET(req: NextRequest) {
         }))
         .sort((a, b) => b.count - a.count);
 
+    // ─── Per-quiz breakdown (views per quiz) ────────────────────────
+    const perQuizStats: Record<string, number> = {};
+    allQuizVisitors.forEach((v) => {
+        const match = v.page.match(/^quiz-start-([^?]+)/);
+        if (match) {
+            perQuizStats[match[1]] = (perQuizStats[match[1]] || 0) + 1;
+        }
+    });
+
     return NextResponse.json({
+        // Meta
+        alaskaDate: alaskaDateStr,
+        alaskaTime: alaskaTimeStr,
+        daysFilter: daysParam,
+        quizFilter: quizParam,
+        variantFilter: variantParam,
+        // Quizzes
+        availableQuizzes,
+        perQuizStats,
+        // Funnel numbers
         quizPageViews,
         totalStarts,
         totalCompletes,
@@ -353,16 +396,14 @@ export async function GET(req: NextRequest) {
         quizToSubmissionRate: quizPageViews > 0 ? Math.round((totalStarts / quizPageViews) * 100 * 10) / 10 : 0,
         overallCompletionRate: totalStarts > 0 ? Math.round((totalCompletes / totalStarts) * 100 * 10) / 10 : 0,
         enrollmentRate: totalStarts > 0 ? Math.round((totalEnrolled / totalStarts) * 100 * 10) / 10 : 0,
-        questionProgress, // [landed, answeredQ1, answeredQ2, ..., answeredQ11]
+        questionProgress,
         funnel,
         topPatterns,
         backgroundBreakdown: toBreakdown(backgroundCounts),
         incomeGoalBreakdown: toBreakdown(incomeGoalCounts),
         specializationBreakdown: toBreakdown(specializationCounts),
         currentIncomeBreakdown: toBreakdown(currentIncomeCounts),
-        daysFilter: daysParam,
         activeVariants,
         variantBreakdown,
-        variantFilter: variantParam,
     });
 }
