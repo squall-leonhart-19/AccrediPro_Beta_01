@@ -412,6 +412,9 @@ export async function triggerExamPassedMessages(
         });
 
         // +24h+35min: Sarah confirms APPROVED + sends link
+        const checkoutUrl = pod.nicheCategory === "functional-medicine"
+            ? "https://sarah.accredipro.academy/checkout-fm-certification-program"
+            : "https://sarah.accredipro.academy/checkout-asi-practictioner-path";
         const sarahApprovedTime = new Date(now.getTime() + (24 * 60 + 35) * 60 * 1000);
         await prisma.masterclassMessage.create({
             data: {
@@ -420,7 +423,7 @@ export async function triggerExamPassedMessages(
                 senderType: "sarah",
                 senderName: "Sarah Mitchell",
                 senderAvatar: "/coaches/sarah-coach.webp",
-                content: `✅ APPROVED! ${zombieFirstName}, the Institute said YES!\n\nThey're covering $1,497 of your tuition. Your contribution: $500.\n\nHere's your personal enrollment link:\n🔗 https://sarah.accredipro.academy/checkout-fm-certification-program\n\nUse code: SCHOLARSHIP500\n\nThis link is valid for 48 hours. After that the scholarship spot goes to someone else.\n\nI'm so excited for you! 🎉`,
+                content: `✅ APPROVED! ${zombieFirstName}, the Institute said YES!\n\nThey're covering $1,497 of your tuition. Your contribution: $500.\n\nHere's your personal enrollment link:\n🔗 ${checkoutUrl}\n\nUse code: SCHOLARSHIP500\n\nThis link is valid for 48 hours. After that the scholarship spot goes to someone else.\n\nI'm so excited for you! 🎉`,
                 scheduledFor: sarahApprovedTime,
                 offerMention: "certification-scholarship-approved",
             },
