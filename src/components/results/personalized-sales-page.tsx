@@ -75,6 +75,8 @@ const ACCREDITATION_LOGOS = "/all-logos.png";
 const BUNDLE_IMG = "https://assets.accredipro.academy/fm-certification/FM-BUNDLE-IMG.png";
 const SARAH_LARGE = "https://assets.accredipro.academy/fm-certification/Sarah-M.webp";
 const CERT_BANNER = "https://assets.accredipro.academy/fm-certification/CERTIFICATIONS_ACC-1.webp";
+const CERT_IMG = "https://learn.accredipro.academy/FUNCTIONAL_MEDICINE_CERTIFICATE.webp";
+const ALL_LOGOS = "https://learn.accredipro.academy/_next/image?url=%2Fall-logos.png&w=1200&q=75";
 
 const CHECKOUT_URL = "https://sarah.accredipro.academy/checkout-fm-certification";
 
@@ -369,8 +371,8 @@ function HeroSection({
 }) {
   const subhead = getHeroSubhead(persona, intent);
   const headlineText = intent === "personal"
-    ? `${name}, You Pre-Qualify for ${specLabel} Mastery`
-    : `${name}, You Pre-Qualify for ASI ${specLabel} Certification`;
+    ? `${name}, You Pre-Qualify for FM ${specLabel} Mastery`
+    : `${name}, You Pre-Qualify for FM Practitioner Certification — ${specLabel} Specialist`;
 
   const bgLabels: Record<string, string> = {
     nurse: "Healthcare", doctor: "Medical", "allied-health": "Allied Health",
@@ -440,6 +442,9 @@ function ScholarshipAnnouncement({ name, specLabel }: { name: string; specLabel:
           <br />
           <span style={{ color: B.burgundy }}>AccrediPro Scholarship</span>
         </h2>
+        <p className="text-base sm:text-lg text-gray-600 font-medium">
+          Functional Medicine Practitioner Certification + <span className="font-bold" style={{ color: B.burgundy }}>{specLabel} Specialist</span>
+        </p>
 
         <div
           className="relative inline-block rounded-2xl px-8 sm:px-12 py-8 border-4"
@@ -486,26 +491,11 @@ function BundleImageSection() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={BUNDLE_IMG} alt="FM Certification Bundle" className="w-full h-auto" />
         </div>
-        {/* Graduate ticker */}
-        <div className="mt-4 overflow-hidden rounded-xl py-3" style={{ background: `${B.cream}` }}>
-          <div className="flex gap-6 items-center justify-center flex-wrap">
-            {[
-              { img: "https://assets.accredipro.academy/fm-certification/T1.webp", name: "Jennifer M." },
-              { img: "https://assets.accredipro.academy/fm-certification/T2.webp", name: "Lisa K." },
-              { img: "https://assets.accredipro.academy/fm-certification/T3.webp", name: "Maria R." },
-              { img: "https://assets.accredipro.academy/fm-certification/T4.webp", name: "Amanda S." },
-              { img: "https://assets.accredipro.academy/fm-certification/T5.webp", name: "Nicole P." },
-            ].map((g) => (
-              <div key={g.name} className="flex items-center gap-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={g.img} alt={g.name} className="w-8 h-8 rounded-full object-cover border-2" style={{ borderColor: B.gold }} />
-                <div className="text-xs">
-                  <span className="text-yellow-500">★★★★★</span>
-                  <span className="text-gray-500 ml-1 hidden sm:inline">{g.name}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Social proof stats */}
+        <div className="mt-4 flex items-center justify-center gap-4 sm:gap-6 flex-wrap text-xs sm:text-sm text-gray-500">
+          <span className="flex items-center gap-1"><Star className="w-4 h-4" style={{ color: B.gold }} /> 4.8/5 rating</span>
+          <span className="flex items-center gap-1"><Users className="w-4 h-4" style={{ color: B.burgundy }} /> 2,847+ graduates</span>
+          <span className="flex items-center gap-1"><GraduationCap className="w-4 h-4" style={{ color: B.success }} /> 9 accreditations</span>
         </div>
       </div>
     </section>
@@ -523,7 +513,7 @@ function CTASection({
   checkoutLink: string; position: "first" | "mid" | "final"; spotsLeft?: number;
 }) {
   const cta = getCTACopy(timeline, intent);
-  const buttonText = `YES — Start My ${shortName} Certification for $97 →`;
+  const buttonText = `YES — Start My ${shortName} Certification for $97`;
 
   return (
     <section className="px-4 py-8 md:py-12" style={{ background: position === "final" ? B.burgundyDark : position === "mid" ? "#fff" : B.cream }}>
@@ -563,11 +553,13 @@ function CTASection({
 
         <a href={checkoutLink} target="_blank" rel="noopener noreferrer" className="block">
           <Button
-            className="w-full max-w-md mx-auto h-14 sm:h-16 text-base sm:text-lg font-bold rounded-xl shadow-lg hover:scale-[1.02] transition-all"
+            className="w-full max-w-md mx-auto h-auto py-4 sm:py-5 text-sm sm:text-base md:text-lg font-bold rounded-xl shadow-lg hover:scale-[1.02] transition-all whitespace-normal leading-tight"
             style={{ background: B.goldMetallic, color: B.burgundyDark }}
           >
-            {buttonText}
-            <ArrowRight className="w-5 h-5 ml-2 flex-shrink-0" />
+            <span className="flex items-center justify-center gap-2">
+              <span>{buttonText}</span>
+              <ArrowRight className="w-5 h-5 flex-shrink-0" />
+            </span>
           </Button>
         </a>
 
@@ -754,7 +746,9 @@ function PainMirrorSection({ painPoint, persona }: { painPoint: PainPoint; perso
 // ═══════════════════════════════════════════════════════════════════
 
 function CertIsForSection({ persona }: { persona: Persona }) {
-  const cards = getCertIsForCards(persona);
+  const rawCards = getCertIsForCards(persona);
+  // Sort matching cards FIRST so user sees "THIS IS YOU" at top
+  const cards = [...rawCards].sort((a, b) => (a.matchesPersona === b.matchesPersona ? 0 : a.matchesPersona ? -1 : 1));
   return (
     <section className="px-4 py-10 md:py-14" style={{ background: "#fff" }}>
       <div className="max-w-3xl mx-auto space-y-6">
@@ -1178,19 +1172,60 @@ function AccreditationSection() {
   return (
     <section className="px-4 py-10 md:py-14" style={{ background: B.cream }}>
       <div className="max-w-2xl mx-auto text-center space-y-6">
-        <h2 className="text-2xl font-bold" style={{ color: B.burgundyDark }}>
-          Internationally Accredited — Verified &amp; Trusted
-        </h2>
-        <p className="text-gray-500 text-sm">9 international accrediting bodies. Check each one yourself.</p>
+        {/* ASI Institute Header */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-center gap-3">
+            <Image src={ASI_LOGO} alt="ASI" width={40} height={40} />
+            <div className="text-left">
+              <p className="text-sm font-bold" style={{ color: B.burgundy }}>AccrediPro International</p>
+              <p className="text-xs text-gray-500">Standards Institute</p>
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold" style={{ color: B.burgundyDark }}>
+            Internationally Accredited — Verified &amp; Trusted
+          </h2>
+        </div>
+
+        {/* Certificate Image */}
+        <div className="max-w-sm mx-auto">
+          <div className="rounded-2xl overflow-hidden border-2 shadow-xl" style={{ borderColor: B.gold }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={CERT_IMG} alt="Functional Medicine Certificate" className="w-full h-auto" />
+          </div>
+        </div>
+
+        {/* Accreditation Logos */}
+        <div className="flex justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={ALL_LOGOS} alt="Accreditation Logos" className="max-w-full h-auto" style={{ maxHeight: 60 }} />
+        </div>
+
+        {/* 9 Accreditation Names */}
+        <div className="space-y-2">
+          <p className="text-xs font-bold uppercase tracking-wider" style={{ color: B.burgundy }}>
+            Backed by 9 International Certifications
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {["CMA", "IPHM", "CPD", "IAOTH", "ICAHP", "IGCT", "CTAA", "IHTCP", "IIOHT"].map((cert) => (
+              <span key={cert} className="px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-bold border" style={{ borderColor: B.gold, color: B.burgundy, background: `${B.gold}08` }}>
+                {cert}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Cert Banner */}
         <div className="flex justify-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={CERT_BANNER} alt="9 International Accreditations" className="max-w-full h-auto" style={{ maxHeight: 100 }} />
         </div>
+
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm text-gray-500">
           <span className="flex items-center gap-1"><Star className="w-4 h-4" style={{ color: B.gold }} /> 4.8/5 from 489+ reviews</span>
-          <span className="flex items-center gap-1"><Users className="w-4 h-4" style={{ color: B.burgundy }} /> 1,247+ certified</span>
+          <span className="flex items-center gap-1"><Users className="w-4 h-4" style={{ color: B.burgundy }} /> 2,847+ graduates</span>
           <span className="flex items-center gap-1"><GraduationCap className="w-4 h-4" style={{ color: B.success }} /> 9 accreditations</span>
         </div>
+
         {/* Second Trustpilot placement */}
         <div className="pt-4">
           <div

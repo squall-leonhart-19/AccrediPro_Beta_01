@@ -1064,6 +1064,18 @@ export default function FMCertificationQuiz() {
 
           {/* Form Fields */}
           <div className="space-y-3">
+            {/* First Name (auto-filled, read-only) */}
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                value={name}
+                readOnly
+                className="w-full h-14 pl-12 pr-4 text-base border-2 rounded-xl bg-gray-50 text-gray-700 cursor-default focus:outline-none"
+                style={{ borderColor: BRAND.gold }}
+              />
+            </div>
+
             {/* Last Name */}
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -1091,17 +1103,20 @@ export default function FMCertificationQuiz() {
               />
             </div>
 
-            {/* Phone */}
+            {/* Phone with US +1 flag */}
             <div>
-              <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <div className="relative flex">
+                <div className="flex items-center gap-1.5 px-3 h-14 border-2 border-r-0 rounded-l-xl bg-gray-50 flex-shrink-0" style={{ borderColor: phone.length >= 7 ? BRAND.gold : "#e5e7eb" }}>
+                  <span className="text-lg leading-none">🇺🇸</span>
+                  <span className="text-sm font-medium text-gray-600">+1</span>
+                </div>
                 <input
                   type="tel"
-                  placeholder="Phone number"
+                  placeholder="(555) 123-4567"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter" && allFilled) handleNext(); }}
-                  className="w-full h-14 pl-12 pr-4 text-base border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
+                  className="w-full h-14 pl-4 pr-4 text-base border-2 border-l-0 rounded-r-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
                   style={{ borderColor: phone.length >= 7 ? BRAND.gold : "#e5e7eb" }}
                 />
               </div>
