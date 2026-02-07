@@ -105,19 +105,18 @@ export async function POST(req: NextRequest) {
 
         // REJECTION: Amount below $200 minimum
         if (!tier) {
-            const rejectionMessage = `I hear you \u{1F49C} The Institute needs minimum $200 to activate your scholarship \u2014 that's 96% OFF the full $4,997 program.
+            const rejectionMessage = `I hear you \u{1F49C} The Institute needs minimum $200 to activate your scholarship \u2014 that's 96% OFF.
 
-For $200 you unlock:
-\u2705 20 Modules + 20 Certificates
-\u2705 9 Board Accreditations
-\u2705 DFY Website to Start Getting Clients
-\u2705 Legal Templates + Offer Builder
-\u2705 Client Management Resources
-\u2705 Coach Workspace
-\u2705 6 Months 1:1 Mentorship \u2014 Until Certified + Help Getting Clients
-\u2705 Lifetime Access
+${firstName}, for just $200 you get EVERYTHING:
 
-Imagine having your own website live, legal templates ready, and a complete system to manage clients \u2014 all set up for you.
+\u2705 Full BC-FMP\u2122 Board Certification (20 Modules)
+\u2705 Done-For-You Website \u2014 LIVE in 48h
+\u2705 6 Months 1:1 Mentorship with me
+\u2705 9 Board Accreditations + 20 Certificates
+\u2705 Legal Templates + Client Management System
+\u2705 Lifetime Access \u2014 zero recurring fees
+
+That's $200 for a $4,997 program. Other programs charge $8K-$15K for less.
 
 Can you make $200 work? I'll call the Institute right now \u{1F4DE}`;
 

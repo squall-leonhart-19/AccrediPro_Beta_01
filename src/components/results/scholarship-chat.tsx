@@ -318,7 +318,9 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       setVisitorId(stored.visitorId);
       setMessages(stored.messages);
       setHasStarted(stored.hasStarted);
-      setWelcomeDone(stored.welcomeDone);
+      // If chat has started and has messages, force welcomeDone to true
+      // This prevents the input from being permanently locked after restore
+      setWelcomeDone(stored.welcomeDone || (stored.hasStarted && stored.messages.length > 0));
     } else {
       setVisitorId("sch_" + Math.random().toString(36).substr(2, 9) + "_" + Date.now());
     }
@@ -363,6 +365,17 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       setTimeout(() => inputRef.current?.focus(), 200);
     }
   }, [isOpen, welcomeDone]);
+
+  // Safety net: If welcome sequence hasn't completed after 15s but chat started, force enable input
+  useEffect(() => {
+    if (hasStarted && !welcomeDone) {
+      const safetyTimer = setTimeout(() => {
+        console.log("[Scholarship Chat] Safety timeout — forcing welcomeDone=true");
+        setWelcomeDone(true);
+      }, 15000);
+      return () => clearTimeout(safetyTimer);
+    }
+  }, [hasStarted, welcomeDone]);
 
   // Pulse animation — stop after 12 seconds
   useEffect(() => {
@@ -516,11 +529,14 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
   // ─── Start scholarship chat ──────────────────────────────────────
   const startScholarshipChat = useCallback(async () => {
     if (hasStarted) return;
-    if (!visitorId) {
-      console.error("[Scholarship Chat] No visitorId - cannot start chat");
-      return;
+    // Generate visitorId inline if not set yet (race condition with useEffect)
+    let vid = visitorId;
+    if (!vid) {
+      vid = "sch_" + Math.random().toString(36).substr(2, 9) + "_" + Date.now();
+      setVisitorId(vid);
+      console.log("[Scholarship Chat] Generated visitorId inline:", vid);
     }
-    console.log("[Scholarship Chat] Starting chat for visitor:", visitorId);
+    console.log("[Scholarship Chat] Starting chat for visitor:", vid);
     setHasStarted(true);
 
     // 1. Register optin
@@ -529,7 +545,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          visitorId,
+          visitorId: vid,
           name: `${firstName} ${lastName}`.trim(),
           email,
           page: `scholarship-${page}`,
@@ -546,7 +562,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
           firstName,
           lastName,
           email,
-          visitorId,
+          visitorId: vid,
           quizData,
           page,
         }),
@@ -579,7 +595,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
         body: JSON.stringify({
           message: applicationSummary,
           page: `scholarship-${page}`,
-          visitorId,
+          visitorId: vid,
           userName: `${firstName} ${lastName}`.trim(),
           userEmail: email,
           isFromVisitor: true, // This is visitor's application data
@@ -597,14 +613,14 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     const saveSarahMessage = async (content: string, retries = 3) => {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
-          console.log(`[Scholarship Chat] Saving Sarah message (attempt ${attempt}/${retries}): "${content.substring(0, 50)}..." visitorId=${visitorId}`);
+          console.log(`[Scholarship Chat] Saving Sarah message (attempt ${attempt}/${retries}): "${content.substring(0, 50)}..." visitorId=${vid}`);
           const res = await fetch("/api/chat/sales", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               message: content,
               page: `scholarship-${page}`,
-              visitorId,
+              visitorId: vid,
               userName: `${firstName} ${lastName}`.trim(),
               userEmail: email,
               isFromVisitor: false, // This is Sarah's message
@@ -698,20 +714,19 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
 
             const msg2Content = `Here's what you're looking at, ${firstName}:
 
-✅ 20 Modules + 20 Certificates
-✅ 9 Board Accreditations
-✅ DFY Website to Start Getting Clients
-✅ Legal Templates + Offer Builder
-✅ Client Management Resources
-✅ Coach Workspace
-✅ 6 Months 1:1 Mentorship — Until Certified + Help Getting Clients
-✅ Lifetime Access
+✅ Full BC-FMP™ Board Certification (20 Modules)
+✅ Done-For-You Client-Getting Website — LIVE in 48h
+✅ 6 Months 1:1 Mentorship with ME until you're certified + getting clients
+✅ Legal Templates, Offer Builder & Client Management System
+✅ 9 Board Accreditations + 20 Certificates
+✅ Private Community (1,200+ practitioners)
+✅ Lifetime Access — zero recurring fees, ever
 
-Imagine having a fully done-for-you website, ready to take clients from day one. Legal templates already written. A complete system to manage and grow your practice.
+Other programs charge $8K-$15K for LESS than this.
 
-Total value: $4,997. But you won't pay anywhere near that.
+The Institute normally charges $4,997… but because you qualified through the scholarship program, you won't pay anywhere near that.
 
-How much can you invest today? I'll call the Institute and fight for maximum scholarship coverage 📞`;
+How much can you realistically invest today? Even $200 could work — I'll call the Institute and fight for maximum coverage 💪📞`;
 
             const msg2: ChatMessage = {
               id: "sarah-2",
@@ -803,8 +818,11 @@ How much can you invest today? I'll call the Institute and fight for maximum sch
     setIsOpen(true);
     if (!hasStarted) {
       startScholarshipChat();
+    } else if (!welcomeDone) {
+      // Chat was restored from localStorage but welcome never completed — force enable input
+      setWelcomeDone(true);
     }
-  }, [hasStarted, startScholarshipChat]);
+  }, [hasStarted, welcomeDone, startScholarshipChat]);
 
   // Expose globally for CTAs
   useEffect(() => {
@@ -1429,7 +1447,7 @@ SO PROUD OF YOU!`,
               inputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
             }, 300);
           }}
-          placeholder={welcomeDone ? "Type your message..." : "Sarah is reviewing your results..."}
+          placeholder={welcomeDone ? "Type your message..." : (messages.length > 0 ? "One moment..." : "Sarah is reviewing your results...")}
           disabled={!welcomeDone}
           className="flex-1 border rounded-full px-4 py-2.5 text-base sm:text-sm focus:outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400"
           style={{ borderColor: `${B.gold}40`, fontSize: "16px" }}

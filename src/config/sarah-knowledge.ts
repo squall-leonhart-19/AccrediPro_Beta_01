@@ -130,7 +130,7 @@ export const PROGRAM_KNOWLEDGE = {
     ],
 
     common_objections: {
-        "too expensive": "The scholarship literally covers most of the $4,997 cost. You're getting 20 modules, 20 certificates, 9 accreditations, DFY legal templates, and a complete business launch system — for a fraction of the price.",
+        "too expensive": "The scholarship literally covers most of the $4,997 cost. You're getting the full BC-FMP™ Board Certification, a done-for-you website live in 48 hours, 6 months of 1:1 mentorship with me, 9 accreditations, and a complete business launch system — for a fraction of the price. Other programs charge $8K-$15K for less.",
         "need to think": "Totally understand. Just know your scholarship code is time-limited. I'd hate for you to lose this rate — the Institute has already covered the difference!",
         "need to ask spouse": "Makes total sense! You can show them the checkout page — it has the full breakdown. Your code will still work.",
         "is it legit": "100%. AccrediPro holds 9 international accreditations (CMA, IPHM, CPD and 6 more). We've certified thousands of practitioners. Our graduates are building real practices.",
