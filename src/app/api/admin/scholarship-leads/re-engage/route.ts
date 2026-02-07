@@ -7,6 +7,7 @@ import path from "path";
 import fs from "fs";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60; // Allow up to 60s for sending many emails
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = "Sarah M. <sarah@accredipro.academy>";
@@ -101,13 +102,21 @@ export async function POST(req: NextRequest) {
         };
     });
 
-    // Save JSON to exports/
-    const exportDir = path.join(process.cwd(), "exports");
+    // Save JSON — use /tmp on Vercel (read-only filesystem), exports/ locally
+    const isVercel = !!process.env.VERCEL;
+    const exportDir = isVercel
+        ? "/tmp"
+        : path.join(process.cwd(), "exports");
     if (!fs.existsSync(exportDir)) fs.mkdirSync(exportDir, { recursive: true });
 
     const date = new Date().toISOString().slice(0, 10);
     const jsonPath = path.join(exportDir, `scholarship-leads-${date}.json`);
-    fs.writeFileSync(jsonPath, JSON.stringify(leads, null, 2), "utf-8");
+    try {
+        fs.writeFileSync(jsonPath, JSON.stringify(leads, null, 2), "utf-8");
+    } catch (fsErr) {
+        console.error("[Re-engage] Failed to save JSON (read-only fs?):", fsErr);
+        // Don't block email sending if file write fails
+    }
 
     // Segment counts
     const segments = { silent: 0, chatted_no_price: 0, named_price: 0, got_link_no_pay: 0, converted: 0 };

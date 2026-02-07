@@ -25,7 +25,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Missing type or data" }, { status: 400 });
         }
 
-        const exportDir = path.join(process.cwd(), "exports");
+        const isVercel = !!process.env.VERCEL;
+        const exportDir = isVercel
+            ? "/tmp"
+            : path.join(process.cwd(), "exports");
         if (!fs.existsSync(exportDir)) {
             fs.mkdirSync(exportDir, { recursive: true });
         }

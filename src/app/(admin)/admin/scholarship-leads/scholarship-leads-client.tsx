@@ -289,17 +289,23 @@ export default function ScholarshipLeadsClient() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ dryRun }),
             });
+            if (!res.ok) {
+                const errText = await res.text();
+                alert(`Failed (${res.status}): ${errText}`);
+                return;
+            }
             const result = await res.json();
             if (result.success) {
                 const msg = dryRun
-                    ? `JSON saved to exports/. Segments: Silent=${result.segments.silent}, Chatted=${result.segments.chatted_no_price}, Named Price=${result.segments.named_price}, Got Link=${result.segments.got_link_no_pay}, Converted=${result.segments.converted}`
-                    : `Done! Sent: ${result.emailResults.sent}, Skipped: ${result.emailResults.skipped}, Failed: ${result.emailResults.failed}. JSON saved.`;
+                    ? `JSON saved. Segments: Silent=${result.segments.silent}, Chatted=${result.segments.chatted_no_price}, Named Price=${result.segments.named_price}, Got Link=${result.segments.got_link_no_pay}, Converted=${result.segments.converted}`
+                    : `Done! Sent: ${result.emailResults.sent}, Skipped: ${result.emailResults.skipped}, Failed: ${result.emailResults.failed}${result.emailResults.errors?.length > 0 ? `\n\nErrors:\n${result.emailResults.errors.join("\n")}` : ""}`;
                 alert(msg);
             } else {
-                alert("Failed: " + (result.error || "Unknown error"));
+                alert("Failed: " + (result.error || JSON.stringify(result)));
             }
-        } catch {
-            alert("Failed — check console");
+        } catch (err) {
+            console.error("[Re-engage] Error:", err);
+            alert(`Failed: ${err instanceof Error ? err.message : String(err)}`);
         } finally {
             setSendingEmails(false);
         }
