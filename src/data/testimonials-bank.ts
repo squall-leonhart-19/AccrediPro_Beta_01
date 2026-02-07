@@ -282,3 +282,121 @@ export function getFeaturedTestimonial(
 export function getAllTestimonials(): Testimonial[] {
   return TESTIMONIALS;
 }
+
+// ---------------------------------------------------------------------------
+// DETAILED TESTIMONIALS (SP-sourced, with large photos + credentials)
+// ---------------------------------------------------------------------------
+
+export interface DetailedTestimonial {
+  id: string;
+  name: string;
+  credential?: string;
+  role: string;
+  beforeSituation: string;
+  afterSituation: string;
+  detailedQuote: string;
+  largePhoto: string;
+  personaTags: Persona[];
+  monthlyIncome?: string;
+  timeToResults?: string;
+}
+
+const DETAILED_TESTIMONIALS: DetailedTestimonial[] = [
+  {
+    id: "dt-jennifer",
+    name: "Jennifer Martinez",
+    credential: "RN",
+    role: "Former ER Nurse → FM Practitioner",
+    beforeSituation: "Basic nursing knowledge, burned out from 12-hour shifts",
+    afterSituation: "Interpreting thyroid panels, designing gut healing protocols, $150/hour",
+    detailedQuote:
+      "I went from basic nursing knowledge to confidently interpreting thyroid panels and designing gut healing protocols. Now earning $150/hour and clients book me months in advance because I can solve complex cases.",
+    largePhoto: "https://assets.accredipro.academy/fm-certification/TESTIMONIAL_01.jpg",
+    personaTags: ["healthcare-pro"],
+    monthlyIncome: "$11,200/mo",
+    timeToResults: "4 months",
+  },
+  {
+    id: "dt-lisa",
+    name: "Lisa Chen",
+    credential: "CNS",
+    role: "Nutritionist → Board-Certified FM Practitioner",
+    beforeSituation: "Stuck giving generic meal plans at $75/session",
+    afterSituation: "Root cause analysis, lab interpretation, $250/session",
+    detailedQuote:
+      "As a nutritionist, I was stuck giving meal plans. This training taught me root cause analysis, lab interpretation, and systematic protocols. I tripled my rates and clients get actual results now instead of temporary fixes.",
+    largePhoto: "https://assets.accredipro.academy/fm-certification/TESTIMONIAL_02.jpg",
+    personaTags: ["health-coach"],
+    monthlyIncome: "$12,000/mo",
+    timeToResults: "6 months",
+  },
+  {
+    id: "dt-amanda",
+    name: "Amanda Rodriguez",
+    role: "Marketing Coordinator → FM Practitioner",
+    beforeSituation: "Zero medical background, just passion for health",
+    afterSituation: "Confidently working with Hashimoto's, PCOS, chronic fatigue",
+    detailedQuote:
+      "I was a basic health coach referring out every complex case. Now I confidently work with Hashimoto's, PCOS, and chronic fatigue. Sarah's daily mentorship gave me clinical confidence I never thought I'd have.",
+    largePhoto: "https://assets.accredipro.academy/fm-certification/TESTIMONIAL_03.jpg",
+    personaTags: ["other-passionate", "corporate"],
+    monthlyIncome: "$7,500/mo",
+    timeToResults: "6 months",
+  },
+  {
+    id: "dt-michael",
+    name: "Michael Thompson",
+    credential: "LAc",
+    role: "Acupuncturist → Integrative FM Practitioner",
+    beforeSituation: "Eastern medicine only, struggled with Western labs",
+    afterSituation: "Integrating functional lab analysis with existing practice",
+    detailedQuote:
+      "As an acupuncturist, I knew Eastern medicine but struggled with Western labs. This training bridged the gap perfectly. Now I integrate functional lab analysis with my practice and my patients get incredible results.",
+    largePhoto: "https://assets.accredipro.academy/fm-certification/TESTIMONIAL_04.jpg",
+    personaTags: ["health-coach", "healthcare-pro"],
+    monthlyIncome: "$16,000/mo",
+    timeToResults: "8 weeks",
+  },
+  {
+    id: "dt-rachel",
+    name: "Rachel Kim",
+    credential: "RD",
+    role: "Registered Dietitian → FM Specialist",
+    beforeSituation: "Dietetics school gaps — no gut-brain-hormone training",
+    afterSituation: "Working 20 hrs/week from home earning $8K/month",
+    detailedQuote:
+      "This is what dietetics school should have taught but didn't. I finally understand gut-brain-hormone connections, autoimmune protocols, and evidence-based supplementation. Working 20 hrs/week from home earning $8K/month.",
+    largePhoto: "https://assets.accredipro.academy/fm-certification/TESTIMONIAL_05.jpeg",
+    personaTags: ["healthcare-pro", "health-coach"],
+    monthlyIncome: "$8,000/mo",
+    timeToResults: "8 weeks",
+  },
+  {
+    id: "dt-david",
+    name: "David Williams",
+    role: "Career Changer at 52 → FM Practitioner",
+    beforeSituation: "Thought he needed medical school to do this work",
+    afterSituation: "Clients say he's more thorough than their doctors",
+    detailedQuote:
+      "Career changer at 52. Thought I'd need medical school to do this work. The DEPTH Method gave me systematic frameworks that make complex cases manageable. Clients say I'm more thorough than their doctors.",
+    largePhoto: "https://assets.accredipro.academy/fm-certification/TESTIMONIAL_06.jpeg",
+    personaTags: ["corporate", "other-passionate"],
+    monthlyIncome: "$10,500/mo",
+    timeToResults: "5 months",
+  },
+];
+
+/**
+ * Get detailed testimonials, prioritizing persona matches first.
+ */
+export function getDetailedTestimonials(
+  persona: Persona,
+  limit: number = 6
+): DetailedTestimonial[] {
+  const sorted = [...DETAILED_TESTIMONIALS].sort((a, b) => {
+    const aMatch = a.personaTags.includes(persona) ? 1 : 0;
+    const bMatch = b.personaTags.includes(persona) ? 1 : 0;
+    return bMatch - aMatch;
+  });
+  return sorted.slice(0, limit);
+}

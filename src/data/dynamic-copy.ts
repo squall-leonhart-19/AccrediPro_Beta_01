@@ -912,3 +912,198 @@ export function getSpecializationLabel(
 ): SpecializationLabel {
   return SPECIALIZATION_LABELS[specialization];
 }
+
+// ---------------------------------------------------------------------------
+// 9. "THIS CERT IS FOR" CARDS (persona-aware highlight)
+// ---------------------------------------------------------------------------
+
+export interface CertIsForCard {
+  icon: string;
+  title: string;
+  description: string;
+  matchesPersona: boolean;
+}
+
+const CERT_IS_FOR_BASE: { icon: string; title: string; description: string; personas: Persona[] }[] = [
+  {
+    icon: "👩‍⚕️",
+    title: "Nurses & Medical Professionals",
+    description: "Leverage your clinical background to confidently transition into functional medicine coaching with systematic root cause protocols",
+    personas: ["healthcare-pro"],
+  },
+  {
+    icon: "🥗",
+    title: "Nutritionists & Dietitians",
+    description: "Move beyond generic meal plans to address gut dysfunction, hormones, and complex health cases with clinical depth",
+    personas: ["health-coach"],
+  },
+  {
+    icon: "🧘",
+    title: "Wellness Coaches & Practitioners",
+    description: "Stop feeling stuck with surface-level advice — gain the clinical skills to handle thyroid issues, autoimmune conditions, and chronic fatigue",
+    personas: ["health-coach"],
+  },
+  {
+    icon: "🏥",
+    title: "Health Coaches Wanting Depth",
+    description: "Frustrated by basic training? Learn functional lab interpretation, systems analysis, and evidence-based protocols",
+    personas: ["health-coach"],
+  },
+  {
+    icon: "💼",
+    title: "Career Changers Seeking Purpose",
+    description: "Build a meaningful career earning $75-200/hour while helping clients achieve transformations traditional medicine can't",
+    personas: ["corporate", "stay-at-home-mom", "other-passionate"],
+  },
+  {
+    icon: "🔬",
+    title: "Science-Minded Practitioners",
+    description: "Love evidence-based approaches? Master biomarker analysis, research-backed protocols, and systematic clinical reasoning",
+    personas: ["healthcare-pro", "other-passionate"],
+  },
+];
+
+export function getCertIsForCards(persona: Persona): CertIsForCard[] {
+  return CERT_IS_FOR_BASE.map((card) => ({
+    icon: card.icon,
+    title: card.title,
+    description: card.description,
+    matchesPersona: card.personas.includes(persona),
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// 10. TWO CHOICES (persona-specific contrast)
+// ---------------------------------------------------------------------------
+
+export interface TwoChoicesCopy {
+  bad: string[];
+  good: string[];
+}
+
+const TWO_CHOICES: Record<Persona, TwoChoicesCopy> = {
+  "healthcare-pro": {
+    bad: [
+      "Keep grinding 12-hour shifts until your body gives out",
+      "Watch patients cycle through the same prescriptions without improvement",
+      "Stay stuck referring out every complex case you can't solve",
+      "Never command premium fees because you lack FM specialization",
+      "Wonder \"what if\" for another 5 years",
+    ],
+    good: [
+      "Confidently interpret labs and identify root causes",
+      "Help patients solve complex health issues doctors can't",
+      "Work 15-20 hours a week from home on your terms",
+      "Earn $75-200/hour as a specialized practitioner",
+      "Join 1,247+ coaches with clinical mastery",
+      "Get Sarah's daily personal mentorship until you're certified",
+    ],
+  },
+  "health-coach": {
+    bad: [
+      "Keep giving generic wellness advice that doesn't solve complex cases",
+      "Stay stuck at $50-75/session with no way to raise rates",
+      "Lose clients to practitioners with actual clinical credentials",
+      "Never learn to interpret labs or design real protocols",
+      "Burn out chasing clients who don't value your work",
+    ],
+    good: [
+      "Go from health coach to Board-Certified FM Practitioner",
+      "3x your rates with a recognized clinical credential",
+      "Confidently handle thyroid, gut, hormone, and autoimmune cases",
+      "Build a waitlist practice where clients come to YOU",
+      "Earn $150-250/session as a clinical specialist",
+      "Get the depth that separates coaches from practitioners",
+    ],
+  },
+  corporate: {
+    bad: [
+      "Stay in your cubicle wondering \"what if\" for another decade",
+      "Keep trading your best hours for someone else's dream",
+      "Let Sunday scaries and Monday dread define your life",
+      "Watch your health deteriorate from corporate stress",
+      "Retire with regret instead of purpose",
+    ],
+    good: [
+      "Build a career that actually matters to you and others",
+      "Use your corporate skills as a secret weapon in practice building",
+      "Work from home with zero commute and full schedule control",
+      "Earn more than your corporate salary in 6-8 months",
+      "Join a community of successful career changers who did exactly this",
+      "No medical degree needed — your business skills are the advantage",
+    ],
+  },
+  "stay-at-home-mom": {
+    bad: [
+      "Keep losing yourself in the daily grind of family logistics",
+      "Watch the years pass without building something of your own",
+      "Feel financially dependent with no income to call yours",
+      "Miss the window when your kids are in school",
+      "Try another MLM that goes nowhere",
+    ],
+    good: [
+      "Study 20 minutes a day — during nap time or after bedtime",
+      "Build a real practice that fits around school hours",
+      "Earn more than your old corporate job on YOUR schedule",
+      "Model ambition and purpose for your children",
+      "Join other moms who built thriving practices around family",
+      "No childcare needed — 100% virtual, 100% flexible",
+    ],
+  },
+  "other-passionate": {
+    bad: [
+      "Keep giving free health advice without earning a cent",
+      "Stay frustrated watching people suffer from bad medical advice",
+      "Never turn your passion into a real profession",
+      "Let imposter syndrome stop you from helping others",
+      "Spend another year studying on your own with no credential",
+    ],
+    good: [
+      "Turn your health passion into a Board-Certified profession",
+      "Get the credential that makes your knowledge official",
+      "Help people professionally instead of just informally",
+      "Earn $75-200/hour doing work you genuinely love",
+      "Join 1,247+ practitioners who started exactly where you are",
+      "No medical background required — just passion and 20 min/day",
+    ],
+  },
+};
+
+export function getTwoChoices(persona: Persona): TwoChoicesCopy {
+  return TWO_CHOICES[persona] || TWO_CHOICES["other-passionate"];
+}
+
+// ---------------------------------------------------------------------------
+// 11. P.S. CLOSERS (persona + specialization aware)
+// ---------------------------------------------------------------------------
+
+export interface PSCloser {
+  headline: string;
+  body: string;
+}
+
+export function getPSClosers(
+  persona: Persona,
+  specialization: Specialization
+): PSCloser[] {
+  const specLabel = SPECIALIZATION_LABELS[specialization]?.name || "Functional Medicine";
+
+  const personaClient: Record<Persona, string> = {
+    "healthcare-pro": "a patient just left another ER visit where they were told 'everything looks normal' despite chronic fatigue, brain fog, and weight gain that's been destroying their quality of life for 2 years",
+    "health-coach": "a woman is Googling 'functional medicine near me' right now because her health coach couldn't help with her hormone imbalance and she needs someone with real clinical depth",
+    corporate: "someone just like you is sitting at their desk right now, Googling 'career change health,' wondering if they're too old to start over — they're not, and they need practitioners who understand burnout firsthand",
+    "stay-at-home-mom": "a mom is lying awake at 2am researching her child's health issues, wishing she understood functional medicine well enough to advocate for her family — that could be you helping moms like her",
+    "other-passionate": "someone you know — a friend, a neighbor, a coworker — is struggling with a health issue that conventional medicine can't solve, and they need exactly the help you could provide",
+  };
+
+  return [
+    {
+      headline: "The Part Where I Get Real With You",
+      body: `Right now, ${personaClient[persona]}. They need someone who understands the ${specLabel.toLowerCase()} framework. Someone who can look at their labs, identify what everyone else missed, and create a protocol that actually works. They don't need another doctor who gives them 8 minutes. They need a practitioner who gives them answers. They need YOU. The version of you who has the DEPTH Method™ framework and the credential to back it up.`,
+    },
+    {
+      headline: "One Last Thing (I Promise)",
+      body: `There's a client out there right now. They just left another appointment feeling dismissed. Their labs are "normal" but they feel terrible. They're losing hope. And they need someone with ${specLabel.toLowerCase()} expertise who actually listens, who understands root causes, who can connect the dots between their gut, their hormones, their thyroid, and their symptoms. That someone is you. Not the you who's reading this right now — the you who's 12 weeks from now. Certified. Confident. Ready. The only question is whether you'll let that version of yourself exist.`,
+    },
+  ];
+}
