@@ -176,10 +176,21 @@ export function PersonalizedSalesPage(props: PersonalizedSalesPageProps) {
         specLabel={spec.name}
         background={background}
         qualScore={props.qualScore || 92}
+        incomeGoal={incomeGoal}
+        painPoint={painPoint}
+        dreamLife={dreamLife}
+        timeline={timeline}
       />
 
       {/* S4: Scholarship Announcement */}
-      <ScholarshipAnnouncement name={name} specLabel={spec.name} />
+      <ScholarshipAnnouncement
+        name={name}
+        specLabel={spec.name}
+        incomeGoal={incomeGoal}
+        dreamLife={dreamLife}
+        persona={persona}
+        intent={intent}
+      />
 
       {/* S5: Bundle Image */}
       <BundleImageSection />
@@ -365,19 +376,73 @@ function TrustpilotBar() {
 // ═══════════════════════════════════════════════════════════════════
 
 function HeroSection({
-  name, persona, intent, specLabel, background, qualScore,
+  name, persona, intent, specLabel, background, qualScore, incomeGoal, painPoint, dreamLife, timeline,
 }: {
   name: string; persona: Persona; intent: Intent; specLabel: string; background: string; qualScore: number;
+  incomeGoal: IncomeGoal; painPoint: PainPoint; dreamLife: DreamLife; timeline: Timeline;
 }) {
-  const subhead = getHeroSubhead(persona, intent);
-  const headlineText = intent === "personal"
-    ? `${name}, You Pre-Qualify for FM ${specLabel} Mastery`
-    : `${name}, You Pre-Qualify for FM Practitioner Certification — ${specLabel} Specialist`;
-
   const bgLabels: Record<string, string> = {
     nurse: "Healthcare", doctor: "Medical", "allied-health": "Allied Health",
     "mental-health": "Mental Health", wellness: "Wellness", "career-change": "Career Changer",
   };
+
+  const incomeLabels: Record<string, string> = {
+    "3k-5k": "$3,000-$5,000", "5k-10k": "$5,000-$10,000",
+    "10k-15k": "$10,000-$15,000", "15k-plus": "$15,000+",
+  };
+
+  const painLabels: Record<string, string> = {
+    "time-for-money": "trading time for money",
+    stuck: "feeling stuck with no clear path forward",
+    "meant-for-more": "knowing you\u2019re meant for more",
+    exhausted: "being exhausted and burned out",
+    "no-credential": "having the knowledge but no credential",
+  };
+
+  const dreamLabels: Record<string, string> = {
+    "time-freedom": "time freedom",
+    "financial-freedom": "financial freedom",
+    purpose: "purpose and meaning",
+    "complete-transformation": "a complete life transformation",
+    independence: "independence",
+    "all-above": "the complete transformation",
+  };
+
+  const timelineLabels: Record<string, string> = {
+    immediately: "start immediately",
+    "30-days": "start within 30 days",
+    "1-3-months": "start within 1-3 months",
+    exploring: "explore your options",
+  };
+
+  const personaFromLabels: Record<string, string> = {
+    "healthcare-pro": "burned-out healthcare professional",
+    "health-coach": "undercharging health coach",
+    corporate: "unfulfilled corporate professional",
+    "stay-at-home-mom": "stay-at-home mom ready for her next chapter",
+    "other-passionate": "passionate career changer",
+  };
+
+  const incomeLabel = incomeLabels[incomeGoal] || "$5,000-$10,000";
+  const painLabel = painLabels[painPoint] || "wanting something more";
+  const dreamLabel = dreamLabels[dreamLife] || "a complete life transformation";
+  const timelineLabel = timelineLabels[timeline] || "start when you\u2019re ready";
+  const personaFrom = personaFromLabels[persona] || "someone ready for change";
+
+  // Hormozi headline: outcome-first, not credential-first
+  const headlineText = intent === "personal"
+    ? `${name}, Your Path to Mastering ${specLabel} Starts Here`
+    : `${name}, Your Path to ${incomeLabel}/Month as a ${specLabel} Specialist Starts Here`;
+
+  // Transformation subhead: pain → promise using THEIR words
+  const transformationLine = intent === "personal"
+    ? `You said you\u2019re tired of ${painLabel}. You want ${dreamLabel}. And you want to ${timelineLabel}.`
+    : `You said you\u2019re tired of ${painLabel}. You want ${dreamLabel}. And you want to ${timelineLabel}.`;
+
+  // Bridge: persona-specific "from X → to Y"
+  const bridgeLine = intent === "personal"
+    ? `We built this certification path specifically for ${bgLabels[background]?.toLowerCase() || "people"} like you \u2014 so you can master the clinical framework that transforms your health and your family\u2019s.`
+    : `We built this certification path specifically for ${bgLabels[background]?.toLowerCase() || "people"} like you \u2014 so you can go from ${personaFrom} to earning ${incomeLabel}/month from home in 6 months or less.`;
 
   return (
     <section className="px-4 pt-8 pb-6 md:pt-12 md:pb-8">
@@ -396,12 +461,16 @@ function HeroSection({
           </span>
         </div>
 
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight" style={{ color: B.burgundyDark }}>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight" style={{ color: B.burgundyDark }}>
           {headlineText}
         </h1>
 
-        <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed max-w-xl mx-auto">
-          {subhead}
+        <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-xl mx-auto">
+          {transformationLine}
+        </p>
+
+        <p className="text-sm sm:text-base font-medium leading-relaxed max-w-xl mx-auto" style={{ color: B.burgundy }}>
+          {bridgeLine}
         </p>
 
         {/* VSL Embed */}
@@ -426,7 +495,39 @@ function HeroSection({
 // S4: SCHOLARSHIP ANNOUNCEMENT
 // ═══════════════════════════════════════════════════════════════════
 
-function ScholarshipAnnouncement({ name, specLabel }: { name: string; specLabel: string }) {
+function ScholarshipAnnouncement({
+  name, specLabel, incomeGoal, dreamLife, persona, intent,
+}: {
+  name: string; specLabel: string; incomeGoal: IncomeGoal; dreamLife: DreamLife; persona: Persona; intent: Intent;
+}) {
+  const incomeLabels: Record<string, string> = {
+    "3k-5k": "$3K-$5K/month", "5k-10k": "$5K-$10K/month",
+    "10k-15k": "$10K-$15K/month", "15k-plus": "$15K+/month",
+  };
+
+  const dreamLabels: Record<string, string> = {
+    "time-freedom": "set your own schedule and be there for what matters",
+    "financial-freedom": "never stress about money again",
+    purpose: "do work that genuinely transforms lives",
+    "complete-transformation": "transform your income, your schedule, and your purpose",
+    independence: "build something that\u2019s entirely yours",
+    "all-above": "transform everything \u2014 income, freedom, and purpose",
+  };
+
+  const incomeLabel = incomeLabels[incomeGoal] || "$5K-$10K/month";
+  const dreamLabel = dreamLabels[dreamLife] || "transform your life";
+
+  // Persona-specific value prop under the price
+  const valueProps: Record<string, string> = {
+    "healthcare-pro": `Your clinical background + this certification = ${incomeLabel} from home. No more 12-hour shifts.`,
+    "health-coach": `Go from undercharging coach to Board-Certified practitioner earning ${incomeLabel}. Same passion, 3x the income.`,
+    corporate: `Your corporate skills + FM Certification = a practice earning ${incomeLabel}. Work for yourself, on your terms.`,
+    "stay-at-home-mom": `Study during nap time, certified in 12 weeks, earning ${incomeLabel} around your family\u2019s schedule.`,
+    "other-passionate": `Turn your passion into ${incomeLabel}. No medical background needed \u2014 just the drive you already have.`,
+  };
+
+  const personalValueProp = `Master clinical functional medicine and ${dreamLabel}. The deepest health education available for $97.`;
+
   return (
     <section className="px-4 py-8 md:py-12" style={{ background: "#fff" }}>
       <div className="max-w-2xl mx-auto text-center space-y-5">
@@ -456,7 +557,10 @@ function ScholarshipAnnouncement({ name, specLabel }: { name: string; specLabel:
           <div className="text-5xl sm:text-6xl md:text-7xl font-black" style={{ color: B.success }}>
             $97
           </div>
-          <p className="text-gray-600 mt-2 text-sm">One-time payment &bull; Lifetime access &bull; 7-day guarantee</p>
+          <p className="text-sm sm:text-base text-gray-700 mt-3 max-w-sm mx-auto leading-relaxed font-medium">
+            {intent === "personal" ? personalValueProp : (valueProps[persona] || valueProps["other-passionate"])}
+          </p>
+          <p className="text-gray-500 mt-2 text-xs">One-time payment &bull; Lifetime access &bull; 7-day guarantee</p>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 font-bold text-sm mt-3">
             <Zap className="w-4 h-4" />
             Save $2,900 — As a {specLabel} track student
