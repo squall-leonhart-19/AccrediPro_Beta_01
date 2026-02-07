@@ -21,6 +21,8 @@ import {
   Brain,
   Lock,
   Mail,
+  Phone,
+  User,
 } from "lucide-react";
 
 // ─── Brand ─────────────────────────────────────────────────────────
@@ -552,7 +554,9 @@ const ROLE_ROUTES: Record<string, string> = {
 export default function FMCertificationQuiz() {
   const [stage, setStage] = useState<Stage>("intro");
   const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [reaction, setReaction] = useState<string | null>(null);
@@ -667,7 +671,7 @@ export default function FMCertificationQuiz() {
   const getStepNumber = (): number => {
     if (stage === "intro") return 0;
     if (stage === "conditional") return 1 + currentQ + 1; // sits between the triggering Q and next Q
-    if (stage === "email-capture") return 14;
+    if (stage === "email-capture") return TOTAL_STEPS - 2; // after all 16 questions, before analyzing+qualified
     if (stage === "analyzing" || stage === "qualified" || stage === "result") return TOTAL_STEPS;
     const testimonialsBefore = testimonials.filter((t) => t.afterQ <= currentQ).length;
     return 1 + currentQ + testimonialsBefore;
@@ -714,9 +718,10 @@ export default function FMCertificationQuiz() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name, email,
+        name, lastName, email, phone,
         funnel: "fm-certification",
         answers,
+        conditionalAnswers,
         practitionerType: practitionerTypeKey,
         incomeGoal,
         currentRole,
@@ -729,9 +734,8 @@ export default function FMCertificationQuiz() {
     const justAnswered = qIndex + 1;
     const testimonial = testimonials.find((t) => t.afterQ === justAnswered);
     if (testimonial) { setStage("testimonial"); return; }
-    if (qIndex === 10) { setStage("email-capture"); return; }
     if (qIndex < QUESTIONS.length - 1) { setCurrentQ(qIndex + 1); setStage("quiz"); }
-    else { setStage("analyzing"); }
+    else { setStage("email-capture"); } // Last question → contact capture
   };
 
   const handleNext = () => {
@@ -743,10 +747,8 @@ export default function FMCertificationQuiz() {
       return;
     }
     if (stage === "testimonial") {
-      // After testimonial, check if next step would be email-capture (after Q11/index 10)
-      if (currentQ === 10) { setStage("email-capture"); return; }
       if (currentQ < QUESTIONS.length - 1) { setCurrentQ(currentQ + 1); setStage("quiz"); }
-      else { setStage("analyzing"); }
+      else { setStage("email-capture"); } // Last question testimonial → contact capture
       return;
     }
     if (stage === "conditional") {
@@ -759,10 +761,9 @@ export default function FMCertificationQuiz() {
       return;
     }
     if (stage === "email-capture") {
-      if (!email || !email.includes("@")) return;
+      if (!email || !email.includes("@") || !phone || phone.length < 7) return;
       handleEmailSubmit();
-      setCurrentQ(11); // Continue to Q12
-      setStage("quiz");
+      setStage("analyzing");
       return;
     }
     if (stage === "quiz") {
@@ -786,14 +787,13 @@ export default function FMCertificationQuiz() {
     if (stage === "quiz" && currentQ === 0) { setStage("intro"); return; }
     if (stage === "conditional") { setCurrentConditional(null); setStage("quiz"); return; }
     if (stage === "testimonial") { setStage("quiz"); return; }
-    if (stage === "email-capture") { setStage("quiz"); return; } // currentQ is still 10
-    if (stage === "quiz" && currentQ === 11) { setCurrentQ(10); setStage("quiz"); return; } // Skip email-capture on back
+    if (stage === "email-capture") { setStage("quiz"); return; } // currentQ is still last question
     if (stage === "quiz" && currentQ > 0) {
       const prevTestimonial = testimonials.find((t) => t.afterQ === currentQ);
       if (prevTestimonial) { setStage("testimonial"); setCurrentQ(currentQ - 1); return; }
       setCurrentQ(currentQ - 1);
     }
-    if (stage === "analyzing") { setCurrentQ(QUESTIONS.length - 1); setStage("quiz"); }
+    if (stage === "analyzing") { setStage("email-capture"); } // Back from analyzing → contact capture
   };
 
   // Read variant from URL for A/B testing (e.g. /quiz/depth-method?v=B)
@@ -803,8 +803,13 @@ export default function FMCertificationQuiz() {
 
   const handleSeeResults = () => {
     setStage("result");
+    // Store phone in sessionStorage (not URL) for Retell integration
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("quiz_phone", phone);
+      sessionStorage.setItem("quiz_lastName", lastName);
+    }
     const params = new URLSearchParams({
-      name, email,
+      name, lastName, email,
       type: practitionerTypeKey,
       role: currentRole,
       variant: urlVariant,
@@ -842,7 +847,7 @@ export default function FMCertificationQuiz() {
       if (insert?.type === "reassurance") return true;
       return !!conditionalAnswers[insert?.id || ""];
     }
-    if (stage === "email-capture") return !!email && email.includes("@");
+    if (stage === "email-capture") return !!lastName.trim() && !!email && email.includes("@") && !!phone && phone.length >= 7;
     return false;
   };
 
@@ -1033,31 +1038,47 @@ export default function FMCertificationQuiz() {
       );
     }
 
-    // ── EMAIL CAPTURE (after Q11, feels like another quiz step) ──
+    // ── CONTACT CAPTURE (after all 16 questions — "Where should we send your results?") ──
     if (stage === "email-capture") {
+      const allFilled = lastName.trim() && email.includes("@") && phone.length >= 7;
       return (
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* Sarah Message */}
           <div className="rounded-xl p-4 border" style={{ backgroundColor: `${BRAND.gold}08`, borderColor: `${BRAND.gold}30` }}>
             <div className="flex items-start gap-3">
-              <Image src={SARAH_AVATAR} alt="Sarah M." width={48} height={48} className="rounded-full border-2 object-cover flex-shrink-0 shadow-md" style={{ borderColor: BRAND.gold }} />
+              <Image src={SARAH_AVATAR} alt="Sarah" width={48} height={48} className="rounded-full border-2 object-cover flex-shrink-0 shadow-md" style={{ borderColor: BRAND.gold }} />
               <div>
                 <p className="text-gray-900 text-sm font-bold">Sarah M.</p>
                 <p className="text-gray-700 text-sm mt-1 leading-relaxed">
-                  &quot;Almost done, {name}! Enter your email to see your personalized certification path.&quot;
+                  &quot;{name}, you&apos;ve completed the assessment! Your results look very promising. Where should I send your personalized certification path?&quot;
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Progress indicator */}
+          {/* Heading */}
           <div className="text-center">
-            <p className="text-base font-semibold" style={{ color: BRAND.burgundy }}>5 questions left</p>
-            <p className="text-sm text-gray-500 mt-1">Your personalized results are almost ready</p>
+            <h2 className="text-xl font-bold" style={{ color: BRAND.burgundyDark }}>Where should we send your results?</h2>
+            <p className="text-sm text-gray-500 mt-1">Your certification coach will also call to review your personalized path.</p>
           </div>
 
-          {/* Email Input */}
+          {/* Form Fields */}
           <div className="space-y-3">
+            {/* Last Name */}
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full h-14 pl-12 pr-4 text-base border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
+                style={{ borderColor: lastName.trim() ? BRAND.gold : "#e5e7eb" }}
+                autoFocus
+              />
+            </div>
+
+            {/* Email */}
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
@@ -1065,18 +1086,33 @@ export default function FMCertificationQuiz() {
                 placeholder="Your best email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && email.includes("@")) handleNext(); }}
                 className="w-full h-14 pl-12 pr-4 text-base border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
                 style={{ borderColor: email.includes("@") ? BRAND.gold : "#e5e7eb" }}
-                autoFocus
               />
+            </div>
+
+            {/* Phone */}
+            <div>
+              <div className="relative">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="tel"
+                  placeholder="Phone number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter" && allFilled) handleNext(); }}
+                  className="w-full h-14 pl-12 pr-4 text-base border-2 rounded-xl focus:ring-2 focus:ring-amber-200 focus:outline-none transition-all bg-white"
+                  style={{ borderColor: phone.length >= 7 ? BRAND.gold : "#e5e7eb" }}
+                />
+              </div>
+              <p className="text-xs text-gray-400 mt-1.5 pl-1">Your certification coach will call to review your results</p>
             </div>
           </div>
 
           {/* Trust */}
           <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
             <Lock className="w-3 h-3" />
-            <span>100% private — no spam ever</span>
+            <span>100% private — we never share your information</span>
           </div>
         </div>
       );
@@ -1254,7 +1290,7 @@ export default function FMCertificationQuiz() {
       const insert = CONDITIONAL_INSERTS.find((c) => c.id === currentConditional);
       return insert?.type === "reassurance" ? "I Understand — Continue" : "Next";
     }
-    if (stage === "email-capture") return "See My Results";
+    if (stage === "email-capture") return "Get My Results";
     if (stage === "quiz" && currentQ === QUESTIONS.length - 1) return "See My Results";
     return "Next";
   };
