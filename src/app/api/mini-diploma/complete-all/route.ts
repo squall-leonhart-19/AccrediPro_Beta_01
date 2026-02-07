@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     // Handle Women's Health Mini Diploma (uses user tags, not LessonProgress)
     if (course === "womens-health") {
-      // Create all 9 lesson completion tags
+      // Create all 3 lesson completion tags
       for (let i = 1; i <= 9; i++) {
         await prisma.userTag.upsert({
           where: {

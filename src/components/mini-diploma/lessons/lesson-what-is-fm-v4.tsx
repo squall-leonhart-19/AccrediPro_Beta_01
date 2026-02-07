@@ -1120,7 +1120,7 @@ export function LessonWhatIsFMV4({
                             <div className="text-center mb-8">
                                 <Badge className="bg-gold-100 text-gold-700 border-0 mb-3">
                                     <Coffee className="h-3 w-3 mr-1" />
-                                    FREE Mini Diploma • 9 Lessons
+                                    FREE Mini Diploma • 3 Lessons
                                 </Badge>
                                 <h1 className="text-2xl font-bold text-slate-800 mb-2">Discover Functional Medicine</h1>
                                 <p className="text-sm text-burgundy-600 font-medium mb-2">

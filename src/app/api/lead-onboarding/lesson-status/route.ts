@@ -13,11 +13,11 @@ const NICHE_TAG_PREFIX: Record<string, string> = {
     "holistic-nutrition": "holistic-nutrition-lesson-complete",
     "hormone-health": "hormone-health-lesson-complete",
     "adhd-coaching": "adhd-coaching-lesson-complete",
-    "spiritual-healing": "spiritual-healing-lesson-complete",
     "energy-healing": "energy-healing-lesson-complete",
     "christian-coaching": "christian-coaching-lesson-complete",
     "reiki-healing": "reiki-healing-lesson-complete",
     "pet-nutrition": "pet-nutrition-lesson-complete",
+    "spiritual-healing": "spiritual-healing-lesson-complete",
 };
 
 // GET - Get lesson status and user info

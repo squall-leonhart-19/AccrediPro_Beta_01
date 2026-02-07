@@ -241,7 +241,7 @@ export async function GET(request: NextRequest) {
       let miniDiplomaTotalLessons = 0;
       for (const niche of Object.keys(miniDiplomaProgress)) {
         miniDiplomaCompletedLessons += miniDiplomaProgress[niche];
-        miniDiplomaTotalLessons += 9; // Each mini diploma has 9 lessons
+        miniDiplomaTotalLessons += 3; // Each mini diploma has 3 lessons
       }
       const miniDiplomaProgressPercent = miniDiplomaTotalLessons > 0
         ? Math.round((miniDiplomaCompletedLessons / miniDiplomaTotalLessons) * 100)

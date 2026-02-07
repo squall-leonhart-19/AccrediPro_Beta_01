@@ -139,7 +139,9 @@ def submit_image_request(prompt: str, api_key: str, lesson_num: int) -> Optional
         response = requests.post(WAVESPEED_API_URL, headers=headers, json=payload, timeout=30)
         response.raise_for_status()
         result = response.json()
-        request_id = result.get("id")
+        # API v3 wraps response in data envelope
+        data = result.get("data", result)
+        request_id = data.get("id") or result.get("id")
         print(f"   ✓ Lesson {lesson_num}: Submitted (ID: {request_id[:8]}...)")
         return request_id
     except Exception as e:
@@ -158,23 +160,32 @@ def poll_for_result(request_id: str, api_key: str, lesson_num: int, max_attempts
             response = requests.get(status_url, headers=headers, timeout=10)
             response.raise_for_status()
             result = response.json()
-            
-            status = result.get("status", "unknown")
-            
+            # API v3 wraps response in data envelope
+            data = result.get("data", result)
+
+            status = data.get("status", result.get("status", "unknown"))
+
             if status == "completed":
-                # Get result
+                # Check for outputs in data envelope first, then try /result endpoint
+                outputs = data.get("outputs", [])
+                if outputs:
+                    print(f"   ✓ Lesson {lesson_num}: Completed!")
+                    return outputs[0]
+
+                # Fallback: get result from /result endpoint
                 result_url = f"{WAVESPEED_RESULT_URL}/{request_id}/result"
                 response = requests.get(result_url, headers=headers, timeout=10)
                 response.raise_for_status()
                 result_data = response.json()
-                
-                outputs = result_data.get("outputs", [])
+                rd = result_data.get("data", result_data)
+
+                outputs = rd.get("outputs", result_data.get("outputs", []))
                 if outputs:
                     print(f"   ✓ Lesson {lesson_num}: Completed!")
                     return outputs[0]
-                    
+
             elif status == "failed":
-                error = result.get("error", "Unknown error")
+                error = data.get("error", result.get("error", "Unknown error"))
                 print(f"   ✗ Lesson {lesson_num}: Failed - {error}")
                 return None
                 
@@ -245,15 +256,15 @@ def generate_all_images(niche: str, prompts: Dict[str, str], output_dir: Path, m
     # Ensure output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
     
-    # Prepare tasks
+    # Prepare tasks — only generate for lessons that have prompts
     tasks = []
-    for i in range(1, 10):
+    max_lesson = max((int(k.split("_")[1]) for k in prompts if k.startswith("lesson_")), default=9)
+    for i in range(1, max_lesson + 1):
         prompt_key = f"lesson_{i}"
-        prompt = prompts.get(prompt_key, DEFAULT_PROMPTS.get(prompt_key, ""))
+        prompt = prompts.get(prompt_key, "")
         if not prompt:
-            print(f"⚠️  No prompt for lesson {i}, skipping")
             continue
-        
+
         api_key = get_api_key(i - 1)
         tasks.append((i, prompt, api_key, output_dir))
     
@@ -280,8 +291,8 @@ def generate_all_images(niche: str, prompts: Dict[str, str], output_dir: Path, m
     successful = [r for r in results if r["success"]]
     failed = [r for r in results if not r["success"]]
     
-    print(f"✅ Successful: {len(successful)}/9")
-    print(f"❌ Failed: {len(failed)}/9")
+    print(f"✅ Successful: {len(successful)}/{len(results)}")
+    print(f"❌ Failed: {len(failed)}/{len(results)}")
     print(f"⏱️  Time: {elapsed:.1f}s")
     
     if successful:

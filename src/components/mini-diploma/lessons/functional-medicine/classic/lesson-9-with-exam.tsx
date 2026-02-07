@@ -46,7 +46,7 @@ export function ClassicLessonYourNextStepWithExam({
         // OPENING - Transition from learning to vision
         {
             type: 'intro',
-            content: `{name}, you made it. 9 lessons. You showed up, you learned, you finished. Before we talk about your exam, I want to show you something. Not more science. You've learned plenty of that. I want to show you the LIFE that's waiting for you on the other side of this decision.`,
+            content: `{name}, you made it. 3 lessons. You showed up, you learned, you finished. Before we talk about your exam, I want to show you something. Not more science. You've learned plenty of that. I want to show you the LIFE that's waiting for you on the other side of this decision.`,
         },
 
         // A DAY IN YOUR NEW LIFE - Lifestyle storytelling
@@ -106,7 +106,7 @@ export function ClassicLessonYourNextStepWithExam({
         },
         {
             type: 'text',
-            content: `You need to know more than Google. Clients come to you BECAUSE you understand things their doctor doesn't. Root causes. Functional lab interpretation. The gut-hormone-inflammation connection. You just spent 9 lessons building this foundation. It's real. It matters.`,
+            content: `You need to know more than Google. Clients come to you BECAUSE you understand things their doctor doesn't. Root causes. Functional lab interpretation. The gut-hormone-inflammation connection. You just spent 3 lessons building this foundation. It's real. It matters.`,
         },
         {
             type: 'subheading',
@@ -222,7 +222,7 @@ export function ClassicLessonYourNextStepWithExam({
         // WHAT YOU'VE ACHIEVED
         {
             type: 'heading',
-            content: 'What You\'ve Built In 9 Lessons',
+            content: 'What You\'ve Built In 3 Lessons',
         },
         {
             type: 'text',
@@ -297,7 +297,7 @@ export function ClassicLessonYourNextStepWithExam({
         },
         {
             type: 'text',
-            content: `{name}, I want you to know something. I see you. I see the commitment it took to get through 9 lessons. I see the hope in wanting something more. I see the courage it takes to imagine a different life.`,
+            content: `{name}, I want you to know something. I see you. I see the commitment it took to get through 3 lessons. I see the hope in wanting something more. I see the courage it takes to imagine a different life.`,
         },
         {
             type: 'text',

@@ -1438,7 +1438,7 @@ Password: ${password}
 
 Link: ${loginUrl}
 
-You have 7 days to complete all 9 lessons and earn your certificate.
+You have 7 days to complete all 3 lessons and earn your certificate.
 
 I'll be chatting with you inside the lessons!
 
@@ -1463,7 +1463,7 @@ AccrediPro Academy`;
 <b>Password:</b> ${password}
 </p>
 <p>Link: <a href="${loginUrl}">${loginUrl}</a></p>
-<p>You have 7 days to complete all 9 lessons and earn your certificate.</p>
+<p>You have 7 days to complete all 3 lessons and earn your certificate.</p>
 <p>I'll be chatting with you inside the lessons!</p>
 <p>Sarah<br/>AccrediPro Academy</p>`;
 
@@ -1552,7 +1552,7 @@ export async function sendWomensHealthWelcomeEmail({ to, firstName, isExistingUs
     ${primaryButton('Start Your First Lesson', `${BASE_URL}/womens-health-diploma`)}
 
     <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
-      <p style="margin: 0; font-size: 14px; color: #666;"><strong>Important:</strong> You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!</p>
+      <p style="margin: 0; font-size: 14px; color: #666;"><strong>Important:</strong> You have 7 days to complete your mini diploma. Complete all 3 lessons to earn your certificate!</p>
     </div>
 
     <p style="color: #555; font-size: 16px; margin-top: 30px;">I'll be chatting with you inside the lessons!<br/><strong>Sarah</strong></p>
@@ -1581,7 +1581,7 @@ export async function sendWHReminderDay1Email(to: string, firstName: string) {
 
     ${primaryButton('Start Lesson 1 Now', `${BASE_URL}/womens-health-diploma/lesson/1`)}
 
-    <p style="color: #555; font-size: 16px; margin-top: 30px;">You've got 6 days left to complete all 9 lessons and earn your certificate.</p>
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">You've got 6 days left to complete all 3 lessons and earn your certificate.</p>
 
     <p style="color: #555; font-size: 16px;">Talk soon!<br/><strong>Sarah</strong></p>
   `;
@@ -1651,7 +1651,7 @@ export async function sendWHReminderDay3Email(to: string, firstName: string, com
   const content = `
     <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">You're doing great, ${firstName}!</h2>
 
-    <p style="color: #555; font-size: 16px;">You've completed <strong>${completedLessons} of 9 lessons</strong> - that's real progress!</p>
+    <p style="color: #555; font-size: 16px;">You've completed <strong>${completedLessons} of 3 lessons</strong> - that's real progress!</p>
 
     <p style="color: #555; font-size: 16px;">Just <strong>${remaining} more lessons</strong> to go before you earn your Women's Health certificate.</p>
 
@@ -1693,7 +1693,7 @@ export async function sendWHReminderDay5Email(to: string, firstName: string, com
 
     ${highlightBox(`
       <p style="margin: 0 0 8px 0; font-size: 15px; color: #C08938; font-weight: bold;">Don't Miss Out!</p>
-      <p style="margin: 0; font-size: 14px; color: #555;">Complete all 9 lessons to earn your official Women's Health & Hormones Mini Diploma certificate.</p>
+      <p style="margin: 0; font-size: 14px; color: #555;">Complete all 3 lessons to earn your official Women's Health & Hormones Mini Diploma certificate.</p>
     `, 'gold')}
 
     ${primaryButton('Continue Now', `${BASE_URL}/womens-health-diploma`)}
@@ -1762,7 +1762,7 @@ export async function sendWHExpiredEmail(to: string, firstName: string, complete
   ` : `
     <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">${firstName}, you were so close!</h2>
 
-    <p style="color: #555; font-size: 16px;">Your 7-day access has expired, and you completed <strong>${completedLessons} of 9 lessons</strong>.</p>
+    <p style="color: #555; font-size: 16px;">Your 7-day access has expired, and you completed <strong>${completedLessons} of 3 lessons</strong>.</p>
 
     <p style="color: #555; font-size: 16px;">You were making great progress! I'd hate to see all that learning go to waste.</p>
 
@@ -1794,7 +1794,7 @@ export async function sendWHGraduateWelcomeEmail(to: string, firstName: string) 
 
     <p style="color: #555; font-size: 16px;">Your Women's Health & Hormones Mini Diploma certificate is on its way to your inbox!</p>
 
-    <p style="color: #555; font-size: 16px;">I'm so proud of you for completing all 9 lessons. You now understand more about women's health than most people ever will.</p>
+    <p style="color: #555; font-size: 16px;">I'm so proud of you for completing all 3 lessons. You now understand more about women's health than most people ever will.</p>
 
     ${highlightBox(`
       <p style="margin: 0 0 12px 0; font-size: 15px; color: #2D6A4F; font-weight: bold;">Your Graduate Benefits:</p>

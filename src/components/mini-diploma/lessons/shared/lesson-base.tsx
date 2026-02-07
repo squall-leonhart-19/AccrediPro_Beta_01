@@ -49,7 +49,7 @@ export function LessonBase({
     lessonNumber,
     lessonTitle,
     lessonSubtitle,
-    totalLessons = 9,
+    totalLessons = 3,
     messages,
     onComplete,
     onNext,

@@ -381,7 +381,7 @@ export async function POST(request: NextRequest) {
 
         // Create Masterclass Pod for 30-day nurture sequence (non-blocking)
         // Pod status starts as "waiting", then activates after 24h via cron
-        createMasterclassPod(userId, score, examType).then((result) => {
+        createMasterclassPod(userId, examType).then((result) => {
             if (result.success) {
                 console.log(`[EXAM] Masterclass pod created: ${result.podId}`);
             } else {

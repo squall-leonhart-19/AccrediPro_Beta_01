@@ -225,12 +225,12 @@ export const NICHE_COLORS: Record<string, { bg: string; text: string; accent: st
     "health-coach": { bg: "bg-cyan-50", text: "text-cyan-700", accent: "bg-cyan-500" },
     "womens-hormone-health": { bg: "bg-rose-50", text: "text-rose-700", accent: "bg-rose-500" },
     "fm-healthcare": { bg: "bg-violet-50", text: "text-violet-700", accent: "bg-violet-500" },
-    "spiritual-healing": { bg: "bg-indigo-50", text: "text-indigo-700", accent: "bg-indigo-500" },
     "energy-healing": { bg: "bg-yellow-50", text: "text-yellow-700", accent: "bg-yellow-500" },
     "christian-coaching": { bg: "bg-sky-50", text: "text-sky-700", accent: "bg-sky-500" },
     "reiki-healing": { bg: "bg-teal-50", text: "text-teal-700", accent: "bg-teal-500" },
     "adhd-coaching": { bg: "bg-orange-50", text: "text-orange-700", accent: "bg-orange-500" },
     "pet-nutrition": { bg: "bg-lime-50", text: "text-lime-700", accent: "bg-lime-500" },
+    "spiritual-healing": { bg: "bg-indigo-50", text: "text-indigo-700", accent: "bg-indigo-500" },
     "unknown": { bg: "bg-gray-50", text: "text-gray-700", accent: "bg-gray-500" },
 };
 

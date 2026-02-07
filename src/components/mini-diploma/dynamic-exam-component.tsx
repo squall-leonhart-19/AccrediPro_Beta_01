@@ -179,8 +179,8 @@ export function DynamicExamComponent({
             const passed = true; // Always pass
             const scholarshipQualified = true; // Always qualify
 
-            // Also call API to record the result
-            await fetch("/api/mini-diploma/exam/submit", {
+            // Fire-and-forget API call to record the result (don't block UI)
+            fetch("/api/mini-diploma/exam/submit", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -189,7 +189,10 @@ export function DynamicExamComponent({
                     score,
                     passed,
                 }),
-            });
+            }).catch(err => console.error("Exam record API error (non-blocking):", err));
+
+            // Brief delay for dramatic effect then show results
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
             setResults({
                 score,
@@ -599,11 +602,11 @@ export function DynamicExamComponent({
                         <div className="bg-white rounded-lg p-4 border border-amber-200">
                             <div className="flex items-center gap-3 mb-2">
                                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-burgundy-600 text-white font-bold text-sm">2</span>
-                                <span className="font-semibold text-gray-800">Send me a quick message on Heartbeat that says:</span>
+                                <span className="font-semibold text-gray-800">Send me a quick message on Circle Pod saying:</span>
                             </div>
                             <div className="ml-11">
                                 <p className="text-lg font-bold text-burgundy-700 bg-burgundy-50 px-4 py-2 rounded-lg inline-block mb-2">
-                                    "Review left ✅"
+                                    "Ready for my certificate!"
                                 </p>
                                 <p className="text-sm text-gray-600">
                                     — and your diploma will arrive by email in 24–48 hours.

@@ -1,88 +1,88 @@
-# Mini Diploma Creation: Pet Nutrition & Wellness
+# Mini Diploma Creation: Spiritual Healing
 
 ## Tasks
 
-### 🚨 STEP 0: DATABASE COURSE (MANDATORY FIRST!)
-- [x] Create database course: `npx ts-node scripts/create-mini-diploma-course.ts --slug pet-nutrition-mini-diploma --name "Pet Nutrition & Wellness"`
+### Step 0: DATABASE COURSE (MANDATORY FIRST!)
+- [x] Create database course (ALREADY EXISTS from previous build — slug: spiritual-healing-mini-diploma)
 
 ### Step 1: Core Files
-- [x] Read spec file (or generate if not exists)
+- [x] Read/generate spec file
 - [x] Add lessons array to registry
 - [x] Add config entry to registry
-- [x] Update optin API - COURSE_SLUGS
-- [x] Update optin API - COACH_EMAILS
-- [x] Update optin API - WELCOME_MESSAGES
-- [x] Update optin API - getCertificationDisplayName
-- [x] Update optin API - nicheNames
+- [x] Update optin API (5 locations)
 - [x] Update auth get-redirect
 - [x] Update next.config.ts
+- [x] Update admin dashboard routes (leads, sources, niche)
+- [x] Update lesson-complete + lesson-status tag maps
+- [x] Update metric-types, onboarding-client, upgrade-lead-to-student
 
-### Step 2: Landing Page (COPY EXACTLY FROM TEMPLATE)
-- [x] Create landing page (COPY spiritual-healing page.tsx)
-- [x] Set correct Meta Pixel ID (BellaPetWellness: 1532546858004361)
-- [x] Add to diploma-configs.ts (for portal)
-- [x] Add to DIPLOMA_TAG_PREFIX in lead layout
+### Step 2: Landing Page
+- [x] Create landing page (COPY FM template, purple theme)
+- [x] Set correct Meta Pixel ID
+- [x] Add to diploma-configs.ts
+- [x] Add to DIPLOMA_TAG_PREFIX
 
 ### Step 3: Lesson Content
-- [x] Create lesson content JSON (9 lessons)
+- [x] Create lesson content JSON (3 lessons with checkpoints, case studies, highlights)
 - [x] Add to dynamic-lesson-router.tsx
-- [x] Add to DYNAMIC_CONTENT_NICHES in lesson page
+- [x] Add to DYNAMIC_CONTENT_NICHES
 
-### Step 4: Sequences (USE EMAIL_SEQUENCES.md TEMPLATE!)
-- [x] Create 60-day nurture sequence file FROM `docs/mini-diploma/EMAIL_SEQUENCES.md` (Using HEALTH_COACH fallback)
-- [x] Create DM sequence file FROM template (Using HEALTH_COACH fallback)
-- [x] Register sequences in registry (imports + config) (Using HEALTH_COACH fallback)
+### Step 4: Media Generation + Integration
+- [ ] Generate 3 doodle images (WaveSpeed API)
+- [ ] Generate 3 lesson audio (ElevenLabs API)
+- [ ] Upload images + audio to R2
+- [ ] Inject audioUrl + imageUrl into lesson JSON
 
-### Step 5: Cron & GHL
-- [x] Generate SMS template file for GHL
-- [x] Add to nudge cron (48-hour non-starter)
+### Step 5: Exam
+- [x] Create exam JSON (5 questions, trustpilot flow)
+- [x] Add import + mapping to exam page
 
-### Step 6: Verification
-- [x] Verify build passes
-- [ ] Test enrollment (sign up on landing page, verify user created)
-- [ ] Test portal access (/portal/pet-nutrition)
-- [ ] Verify sequence email cron works
-- [ ] Update `docs/mini-diploma/mini_diploma_planning.csv` status to "done"
+### Step 6: Circle Pod
+- [ ] Create Zombie persona JSON
+- [ ] Create Sarah knowledge JSON
+- [ ] Create 45-day curriculum (days 9-23 + 24-45)
+- [ ] Update seed route + seed to database
+
+### Step 7: Nurture Email Sequence
+- [x] Create 60-day nurture sequence (4 phases, niche-specific copy)
+- [x] Register nurture sequence in registry (SPIRITUAL_HEALING_NURTURE_SEQUENCE)
+
+### Step 8: SMS
+- [x] Generate SMS template for GHL (10 messages)
+
+### Step 9: Verification
+- [x] Verify build passes (586/586 pages, 0 errors)
+- [ ] Update planning CSV status to "done"
 
 ## Spec
 ```json
 {
-  "topic": "Pet Nutrition & Wellness",
+  "topic": "Spiritual Healing",
   "lessons": [
-    "Pet Nutrition Foundations",
-    "Understanding Pet Food Labels",
-    "Species-Appropriate Diets",
-    "Common Nutritional Deficiencies",
-    "Natural Supplements for Pets",
-    "Weight Management Strategies",
-    "Life Stage Nutrition",
-    "Treating Health Issues with Diet",
-    "Your Next Step"
+    "Spiritual Healing Foundation",
+    "The D.E.P.T.H. Method™ for Spiritual Healing",
+    "How To Get Your First Clients"
   ],
-  "colorScheme": "emerald",
+  "colorScheme": "purple",
   "brandColors": {
-    "primary": "#047857",
-    "accent": "#10b981",
-    "gradient": "from-emerald-700 to-teal-600"
+    "primary": "#6b21a8",
+    "accent": "#d4af37",
+    "gradient": "from-purple-900 via-indigo-800 to-purple-700"
   },
-  "pixelName": "BellaPetWellness",
-  "pixelId": "1532546858004361",
-  "targetAudience": "Pet moms wanting holistic care"
+  "targetAudience": "US women 35-55+ seeking spiritual growth and healing practice careers"
 }
 ```
 
 ## Completed
-All implementation steps completed!
+- Step 0: DB course exists
+- Step 1: Core files (14 files edited)
+- Step 2: Landing page (purple theme, 6 testimonials)
+- Step 3: Lesson JSON (3 lessons + router wiring)
+- Step 5: Exam JSON (5 questions + exam page wiring)
+- Step 7: Nurture emails (60-day, 4-phase sequence)
+- Step 8: SMS (10 messages for GHL)
+- Step 9: Build verified (586/586 pages)
 
-- Landing page: `src/app/(public)/pet-nutrition-mini-diploma/page.tsx` (840+ lines)
-- Lesson content: `src/components/mini-diploma/lessons/content/pet-nutrition.json` (9 comprehensive lessons)
-- Registry: Added PET_NUTRITION_LESSONS and config entry
-- Optin API: All 5 locations updated
-- Auth redirect: Added pet-nutrition-mini-diploma mapping
-- Next.config: Added to diplomaSlugs array
-- Diploma configs: Added pet-nutrition-diploma config
-- Lead layout: Added to DIPLOMA_TAG_PREFIX
-- Dynamic router: Added pet-nutrition import and mapping
-- Nudge cron: Added pet-nutrition tags
-- SMS template: Created `docs/sms-sequences/pet-nutrition-sms.md`
-- Build: ✅ PASSES
+## Remaining
+- Step 4: Media generation (WaveSpeed images + ElevenLabs audio) — requires external API calls
+- Step 6: Circle Pod — requires persona/knowledge JSON + DB seeding

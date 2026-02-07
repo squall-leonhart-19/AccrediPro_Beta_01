@@ -274,7 +274,7 @@ export default function NicheDeepDive({ niche }: NicheDeepDiveProps) {
                                         </p>
                                         <p className="text-xs text-gray-500 truncate">{lead.email}</p>
                                         <p className="text-xs text-amber-600">
-                                            {lead.lessonsCompleted}/9 lessons &middot; {lead.daysSinceActivity}d inactive
+                                            {lead.lessonsCompleted}/3 lessons &middot; {lead.daysSinceActivity}d inactive
                                         </p>
                                     </div>
                                 </div>

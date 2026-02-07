@@ -10,9 +10,10 @@ const ALL_TAG_PREFIXES = [
     "functional-medicine-lesson-complete", "gut-health-lesson-complete",
     "health-coach-lesson-complete", "holistic-nutrition-lesson-complete",
     "hormone-health-lesson-complete", "nurse-coach-lesson-complete",
-    "adhd-coaching-lesson-complete", "spiritual-healing-lesson-complete",
+    "adhd-coaching-lesson-complete",
     "energy-healing-lesson-complete", "christian-coaching-lesson-complete",
     "reiki-healing-lesson-complete", "pet-nutrition-lesson-complete",
+    "spiritual-healing-lesson-complete",
 ];
 
 function countLessonsFromTags(tags: { tag: string; createdAt: Date }[]) {

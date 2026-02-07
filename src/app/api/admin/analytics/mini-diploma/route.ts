@@ -106,7 +106,7 @@ export async function GET() {
         // Started - users who have completed at least 1 lesson
         const started = leadsWithProgress.filter((l) => l.lessonsCompleted > 0).length;
 
-        // Completed - users who finished all 9 lessons
+        // Completed - users who finished all 3 lessons
         const completed = leadsWithProgress.filter((l) => l.lessonsCompleted >= 9).length;
 
         // Watched training - users with training_watched tag
@@ -122,7 +122,7 @@ export async function GET() {
         // Enrolled in full certification (converted)
         const enrolled = leadsWithProgress.filter((l) => l.hasConvertedToPurchase).length;
 
-        // Avg time to complete (for users with 9 lessons done)
+        // Avg time to complete (for users with 3 lessons done)
         const completedLeads = leadsWithProgress.filter((l) => l.lessonsCompleted >= 9 && l.lastActivity);
         const avgTimeToComplete =
             completedLeads.length > 0

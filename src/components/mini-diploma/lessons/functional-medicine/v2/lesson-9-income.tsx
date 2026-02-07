@@ -119,7 +119,7 @@ This isn't fantasy. This is Diana's real Tuesday. And Jennifer's. And Michelle's
 **Pillar 1: Deep Expertise**
 You need to know more than Google. Clients come to you BECAUSE you understand things their doctor doesn't. Root causes. Functional labs. The gut-hormone-inflammation connection.
 
-*You just spent 9 lessons building this foundation. It's real. It matters.*
+*You just spent 3 lessons building this foundation. It's real. It matters.*
 
 **Pillar 2: Simple Systems**
 Practitioners who burn out wing it. Those who thrive have systems. Intake forms. Session templates. Follow-up protocols. They don't reinvent the wheel — they follow proven frameworks.
@@ -224,7 +224,7 @@ I ugly-cried in the car after that parent-teacher conference. This career change
         {
             id: 16,
             type: 'coach',
-            content: `{name}, let's pause and acknowledge what you've accomplished in these 9 lessons:`,
+            content: `{name}, let's pause and acknowledge what you've accomplished in these 3 lessons:`,
         },
         {
             id: 17,
@@ -288,7 +288,7 @@ This exam confirms your understanding and makes your achievement official. You'v
         {
             id: 21,
             type: 'coach',
-            content: `{name}, I want you to know something. I see you. I see the commitment it took to get through 9 lessons. I see the hope in wanting something more. I see the courage it takes to imagine a different life.`,
+            content: `{name}, I want you to know something. I see you. I see the commitment it took to get through 3 lessons. I see the hope in wanting something more. I see the courage it takes to imagine a different life.`,
         },
         {
             id: 22,

@@ -19,12 +19,12 @@ const COURSE_SLUGS: Record<string, string> = {
     "holistic-nutrition": "holistic-nutrition-mini-diploma",
     "nurse-coach": "nurse-coach-mini-diploma",
     "health-coach": "health-coach-mini-diploma",
-    "spiritual-healing": "spiritual-healing-mini-diploma",
     "energy-healing": "energy-healing-mini-diploma",
     "christian-coaching": "christian-coaching-mini-diploma",
     "reiki-healing": "reiki-healing-mini-diploma",
     "adhd-coaching": "adhd-coaching-mini-diploma",
     "pet-nutrition": "pet-nutrition-mini-diploma",
+    "spiritual-healing": "spiritual-healing-mini-diploma",
 };
 
 // Coach emails by mini diploma type
@@ -38,12 +38,12 @@ const COACH_EMAILS: Record<string, string> = {
     "holistic-nutrition": "sarah@accredipro-certificate.com",
     "nurse-coach": "sarah@accredipro-certificate.com",
     "health-coach": "sarah@accredipro-certificate.com",
-    "spiritual-healing": "sarah@accredipro-certificate.com",
     "energy-healing": "sarah@accredipro-certificate.com",
     "christian-coaching": "sarah@accredipro-certificate.com",
     "reiki-healing": "sarah@accredipro-certificate.com",
     "adhd-coaching": "sarah@accredipro-certificate.com",
     "pet-nutrition": "sarah@accredipro-certificate.com",
+    "spiritual-healing": "sarah@accredipro-certificate.com",
 };
 
 // Welcome messages by mini diploma type
@@ -145,29 +145,6 @@ Blessings,
 Sarah ✨`,
         voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up for the Christian Life Coaching Mini Diploma and wanted to personally welcome you. I'm so excited you're here! God has a plan for you, and I believe coaching is part of it. Check your dashboard to get started, and message me anytime if you have questions. Talk soon ${firstName}!`,
     },
-    "spiritual-healing": {
-        text: (firstName: string) => `Hey ${firstName}! 💕
-
-I'm Sarah, your coach for this entire journey - and I just saw your name come through!
-
-Welcome to your Spiritual Healing Mini Diploma! This is the start of something beautiful, and I'm SO excited you're here!
-
-Inside your dashboard you'll find:
-
-✨ Your 3 transformative lessons on spiritual healing ready to start
-✨ Your Roadmap showing where you're headed
-✨ Direct access to message me anytime
-
-I know something called you here for a reason. You felt the pull toward healing work. Let's discover together how you can channel that gift into a practice that transforms lives!
-
-Hit reply anytime - tell me a little about yourself! What's your spiritual journey been like? What's calling you to this work?
-
-I'm here for you every step of the way!
-
-With light,
-Sarah ✨`,
-        voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up for the Spiritual Healing Mini Diploma and wanted to personally welcome you. I'm so excited you're here! You have a gift for healing, and I can't wait to help you develop it. Check your dashboard to get started, and message me anytime if you have questions. Talk soon ${firstName}!`,
-    },
     "energy-healing": {
         text: (firstName: string) => `Hey ${firstName}! 💕
 
@@ -260,6 +237,29 @@ With tail wags,
 Sarah ✨`,
         voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up for the Pet Nutrition & Wellness Mini Diploma and wanted to personally welcome you. I'm so excited you're here! Helping pets thrive through nutrition is such rewarding work, and I can't wait to help you learn these skills. Check your dashboard to get started, and message me anytime if you have questions. Talk soon ${firstName}!`,
     },
+    "spiritual-healing": {
+        text: (firstName: string) => `Hey ${firstName}! 💕
+
+I'm Sarah, your coach for this entire journey - and I just saw your name come through!
+
+Welcome to your Spiritual Healing Mini Diploma! This is the start of something beautiful, and I'm SO excited you're here!
+
+Inside your dashboard you'll find:
+
+✨ Your 3 transformative lessons on spiritual healing ready to start
+✨ Your Roadmap showing where you're headed
+✨ Direct access to message me anytime
+
+I know something called you here for a reason. You felt the pull toward healing work. Let's discover together how you can channel that gift into a practice that transforms lives!
+
+Hit reply anytime - tell me a little about yourself! What's your spiritual journey been like? What's calling you to this work?
+
+I'm here for you every step of the way!
+
+With light,
+Sarah ✨`,
+        voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up for the Spiritual Healing Mini Diploma and wanted to personally welcome you. I'm so excited you're here! You have a gift for healing, and I can't wait to help you develop it. Check your dashboard to get started, and message me anytime if you have questions. Talk soon ${firstName}!`,
+    },
 };
 
 // ============================================================
@@ -299,12 +299,12 @@ function getCertificationDisplayName(course: string): string {
         "holistic-nutrition": "Holistic Nutrition",
         "nurse-coach": "Nurse Life Coach",
         "health-coach": "Health Coach",
-        "spiritual-healing": "Spiritual Healing",
         "energy-healing": "Energy Healing",
         "christian-coaching": "Christian Coaching",
         "reiki-healing": "Reiki Healing",
         "adhd-coaching": "ADHD Coaching",
         "pet-nutrition": "Pet Nutrition & Wellness",
+        "spiritual-healing": "Spiritual Healing",
     };
     return names[course] || "Health Certification";
 }
@@ -718,12 +718,12 @@ export async function POST(request: NextRequest) {
                 "holistic-nutrition": "Holistic Nutrition",
                 "nurse-coach": "Nurse Life Coach",
                 "health-coach": "Health Coach",
-                "spiritual-healing": "Spiritual Healing",
-                "energy-healing": "Energy Healing",
+                        "energy-healing": "Energy Healing",
                 "christian-coaching": "Christian Coaching",
                 "reiki-healing": "Reiki Healing",
                 "adhd-coaching": "ADHD Coaching",
                 "pet-nutrition": "Pet Nutrition & Wellness",
+                "spiritual-healing": "Spiritual Healing",
             };
             const nicheName = nicheNames[course] || course;
 

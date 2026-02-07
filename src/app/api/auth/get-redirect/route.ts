@@ -38,12 +38,12 @@ export async function GET() {
             "holistic-nutrition-mini-diploma": "holistic-nutrition",
             "nurse-coach-mini-diploma": "nurse-coach",
             "health-coach-mini-diploma": "health-coach",
-            "spiritual-healing-mini-diploma": "spiritual-healing",
             "energy-healing-mini-diploma": "energy-healing",
             "christian-coaching-mini-diploma": "christian-coaching",
             "reiki-healing-mini-diploma": "reiki-healing",
             "adhd-coaching-mini-diploma": "adhd-coaching",
             "pet-nutrition-mini-diploma": "pet-nutrition",
+            "spiritual-healing-mini-diploma": "spiritual-healing",
         };
 
         const miniDiplomaSlugs = Object.keys(miniDiplomaMap);

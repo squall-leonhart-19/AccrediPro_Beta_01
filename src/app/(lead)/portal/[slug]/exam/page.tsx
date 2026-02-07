@@ -4,10 +4,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { DynamicExamComponent, ExamConfig } from "@/components/mini-diploma/dynamic-exam-component";
 import { getConfigByPortalSlug } from "@/lib/mini-diploma-registry";
-import { Loader2, Award, ArrowRight, CheckCircle, Trophy } from "lucide-react";
+import { Loader2, Award, ArrowRight, CheckCircle, Trophy, RotateCcw } from "lucide-react";
 
 // Import exam content files for all niches
-import spiritualHealingExam from "@/components/mini-diploma/exams/content/spiritual-healing.json";
 import functionalMedicineExam from "@/components/mini-diploma/exams/content/functional-medicine.json";
 import adhdCoachingExam from "@/components/mini-diploma/exams/content/adhd-coaching.json";
 import gutHealthExam from "@/components/mini-diploma/exams/content/gut-health.json";
@@ -20,10 +19,10 @@ import holisticNutritionExam from "@/components/mini-diploma/exams/content/holis
 import nurseCoachExam from "@/components/mini-diploma/exams/content/nurse-coach.json";
 import healthCoachExam from "@/components/mini-diploma/exams/content/health-coach.json";
 import womensHormoneHealthExam from "@/components/mini-diploma/exams/content/womens-hormone-health.json";
+import spiritualHealingExam from "@/components/mini-diploma/exams/content/spiritual-healing.json";
 
 // Map portal slugs to exam configs - all niches have custom exams
 const EXAM_CONFIGS: Record<string, ExamConfig> = {
-    "spiritual-healing": spiritualHealingExam as ExamConfig,
     "functional-medicine": functionalMedicineExam as ExamConfig,
     "adhd-coaching": adhdCoachingExam as ExamConfig,
     "gut-health": gutHealthExam as ExamConfig,
@@ -36,6 +35,7 @@ const EXAM_CONFIGS: Record<string, ExamConfig> = {
     "nurse-coach": nurseCoachExam as ExamConfig,
     "health-coach": healthCoachExam as ExamConfig,
     "womens-hormone-health": womensHormoneHealthExam as ExamConfig,
+    "spiritual-healing": spiritualHealingExam as ExamConfig,
 };
 
 // Premium gold gradient
@@ -57,10 +57,12 @@ export default function ExamPage() {
     const slug = params.slug as string;
 
     const [firstName, setFirstName] = useState("there");
+    const [userEmail, setUserEmail] = useState("");
     const [userId, setUserId] = useState<string | undefined>();
     const [loading, setLoading] = useState(true);
     const [existingResult, setExistingResult] = useState<ExistingExamResult | null>(null);
     const [showExam, setShowExam] = useState(false);
+    const [resetting, setResetting] = useState(false);
 
     const portalConfig = getConfigByPortalSlug(slug);
     const examConfig = EXAM_CONFIGS[slug];
@@ -74,6 +76,7 @@ export default function ExamPage() {
                 if (userRes.ok) {
                     const userData = await userRes.json();
                     setFirstName(userData.firstName || "there");
+                    setUserEmail(userData.email || "");
                     setUserId(userData.userId);
                 }
 
@@ -170,6 +173,42 @@ export default function ExamPage() {
                                 View Your Certificate
                                 <ArrowRight className="w-5 h-5" />
                             </button>
+
+                            {/* Dev reset button - only for test accounts */}
+                            {userEmail === "at.seed019@gmail.com" && (
+                                <button
+                                    onClick={async () => {
+                                        setResetting(true);
+                                        try {
+                                            const examCategory = slug === "functional-medicine" ? "fm-healthcare" : slug;
+                                            const res = await fetch("/api/mini-diploma/exam/reset", {
+                                                method: "POST",
+                                                headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify({ category: examCategory }),
+                                            });
+                                            if (res.ok) {
+                                                setExistingResult(null);
+                                                setShowExam(false);
+                                            } else {
+                                                alert("Reset failed");
+                                            }
+                                        } catch {
+                                            alert("Reset failed");
+                                        } finally {
+                                            setResetting(false);
+                                        }
+                                    }}
+                                    disabled={resetting}
+                                    className="w-full mt-3 py-3 rounded-xl font-medium text-sm border-2 border-red-300 text-red-600 hover:bg-red-50 transition-all flex items-center justify-center gap-2"
+                                >
+                                    {resetting ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <RotateCcw className="w-4 h-4" />
+                                    )}
+                                    {resetting ? "Resetting..." : "🔧 Reset Exam & Retake (Dev Only)"}
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

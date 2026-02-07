@@ -674,7 +674,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       const t1b = setTimeout(async () => {
         setIsTyping(false);
         setMessages(prev => [...prev, msg1]);
-        await saveSarahMessage(msg1Content);
+        saveSarahMessage(msg1Content).catch(() => { }); // Non-blocking save
 
         // 🎵 Play welcome audio RIGHT after first message (only once!)
         if (welcomeAudioRef.current && !welcomeAudioPlayed.current) {
@@ -704,7 +704,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
 ✅ Legal Templates + Offer Builder
 ✅ Client Management Resources
 ✅ Coach Workspace
-✅ 1:1 Mentorship Until Certified
+✅ 6 Months 1:1 Mentorship — Until Certified + Help Getting Clients
 ✅ Lifetime Access
 
 Imagine having a fully done-for-you website, ready to take clients from day one. Legal templates already written. A complete system to manage and grow your practice.
@@ -720,8 +720,8 @@ How much can you invest today? I'll call the Institute and fight for maximum sch
               timestamp: new Date().toISOString(),
             };
             setMessages(prev => [...prev, msg2]);
-            await saveSarahMessage(msg2Content); // Save to DB for admin (with retry)
             setWelcomeDone(true);
+            saveSarahMessage(msg2Content).catch(() => { }); // Non-blocking save
           }, 3000); // Typing duration for msg2
           welcomeTimers.current.push(t2b);
         }, 4000); // Wait before msg2

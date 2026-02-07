@@ -1486,7 +1486,7 @@ export function UsersClient({ courses }: UsersClientProps) {
                                 <Progress value={user.miniDiplomaProgressPercent} className="h-1.5" />
                                 {user.miniDiplomaProgress && Object.entries(user.miniDiplomaProgress).map(([niche, count]) => (
                                   <div key={niche} className="text-xs text-gray-500">
-                                    {niche}: {count}/9 lessons
+                                    {niche}: {count}/3 lessons
                                   </div>
                                 ))}
                               </>

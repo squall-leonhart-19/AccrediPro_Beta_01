@@ -20,7 +20,7 @@ interface LessonRouterProps {
 
 /**
  * Routes to the correct Functional Medicine lesson component based on lesson number
- * 9-Lesson curriculum covering root-cause medicine foundations
+ * 3-Lesson curriculum covering root-cause medicine foundations
  */
 export function FunctionalMedicineLessonRouter({
     lessonNumber,
@@ -35,7 +35,7 @@ export function FunctionalMedicineLessonRouter({
         onNext,
         isCompleted,
         lessonNumber,
-        totalLessons: 9,
+        totalLessons: 3,
     };
 
     switch (lessonNumber) {

@@ -36,7 +36,7 @@ export async function POST() {
             },
         });
 
-        // Complete all 9 lessons
+        // Complete all 3 lessons
         const lessonTags = [];
         for (let i = 1; i <= 9; i++) {
             lessonTags.push({

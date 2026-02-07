@@ -35,7 +35,7 @@ export function LessonRouter({
         onNext,
         isCompleted,
         lessonNumber,
-        totalLessons: 9,
+        totalLessons: 3,
         isPaid: true, // User has paid if they're past lesson 1
     };
 

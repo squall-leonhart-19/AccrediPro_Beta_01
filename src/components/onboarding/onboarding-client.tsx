@@ -51,12 +51,12 @@ interface OnboardingClientProps {
 const focusAreaOptions = [
   { id: "functional-medicine", label: "Functional Medicine" },
   { id: "herbalism", label: "Herbalism & Herbal Medicine" },
-  { id: "spiritual-healing", label: "Spiritual Healing" },
   { id: "womens-health", label: "Women's Health" },
   { id: "nutrition", label: "Nutrition & Diet" },
   { id: "mind-body", label: "Mind-Body Connection" },
   { id: "aromatherapy", label: "Aromatherapy" },
   { id: "energy-healing", label: "Energy Healing" },
+  { id: "spiritual-healing", label: "Spiritual Healing" },
   { id: "holistic-wellness", label: "Holistic Wellness" },
   { id: "integrative-health", label: "Integrative Health" },
 ];

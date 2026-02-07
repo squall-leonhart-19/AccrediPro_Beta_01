@@ -15,11 +15,11 @@ const ALL_TAG_PREFIXES = [
     "hormone-health-lesson-complete",
     "nurse-coach-lesson-complete",
     "adhd-coaching-lesson-complete",
-    "spiritual-healing-lesson-complete",
     "energy-healing-lesson-complete",
     "christian-coaching-lesson-complete",
     "reiki-healing-lesson-complete",
     "pet-nutrition-lesson-complete",
+    "spiritual-healing-lesson-complete",
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -34,12 +34,12 @@ const CATEGORY_LABELS: Record<string, string> = {
     "holistic-nutrition": "Holistic Nutrition",
     "hormone-health": "Hormone Health",
     "nurse-coach": "Nurse Coach",
-    "spiritual-healing": "Spiritual Healing",
     "energy-healing": "Energy Healing",
     "christian-coaching": "Christian Coaching",
     "reiki-healing": "Reiki Healing",
     "adhd-coaching": "ADHD Coaching",
     "pet-nutrition": "Pet Nutrition",
+    "spiritual-healing": "Spiritual Healing",
     "unknown": "Unknown/Legacy",
 };
 

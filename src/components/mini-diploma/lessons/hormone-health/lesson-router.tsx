@@ -34,7 +34,7 @@ export function HormoneHealthLessonRouter({
         onNext,
         isCompleted,
         lessonNumber,
-        totalLessons: 9,
+        totalLessons: 3,
     };
 
     switch (lessonNumber) {

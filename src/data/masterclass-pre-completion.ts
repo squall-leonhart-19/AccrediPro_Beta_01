@@ -41,7 +41,7 @@ Your turn! And then... let's get started on Lesson 1! 💛
 
 Sarah
 
-P.S. - You have 48 hours to complete all 9 lessons + the exam. It's designed to be done in one focused sitting, but take breaks when you need them!`,
+P.S. - You have 48 hours to complete all 3 lessons + the exam. It's designed to be done in one focused sitting, but take breaks when you need them!`,
         zombies: [
             // RETROACTIVE - zombie's backstory (appears as if posted earlier)
             {
@@ -103,7 +103,7 @@ Sarah 💛`,
         lesson: 5,
         sarah: `🎉 HALFWAY POINT!
 
-{firstName}, you're officially 5/9 lessons done!
+{firstName}, you're officially 2/3 lessons done!
 
 Take a moment. Breathe. You're doing incredible.
 

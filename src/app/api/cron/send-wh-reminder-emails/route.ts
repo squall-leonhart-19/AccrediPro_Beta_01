@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
         t.tag.startsWith("wh-lesson-complete:")
       ).length;
 
-      // Skip if already completed all 9 lessons
+      // Skip if already completed all 3 lessons
       if (completedLessons >= 9) {
         results.skipped++;
         results.details.push(`${user.email}: Already completed all lessons`);
@@ -305,7 +305,7 @@ export async function GET(request: NextRequest) {
           data: { userId: user.id, tag: "wh-reminder-sent:expired", value: now.toISOString() },
         });
         results.expiredSent++;
-        results.details.push(`${user.email}: Sent expired email (${completedLessons}/9 lessons)`);
+        results.details.push(`${user.email}: Sent expired email (${completedLessons}/3 lessons)`);
       } catch (error) {
         results.errors++;
         const errMsg = error instanceof Error ? error.message : "Unknown error";

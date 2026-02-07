@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 // Import lesson content JSON files
-import spiritualHealingContent from "../content/spiritual-healing.json";
 import energyHealingContent from "../content/energy-healing.json";
 import christianCoachingContent from "../content/christian-coaching.json";
 import gutHealthContent from "../content/gut-health.json";
@@ -17,6 +16,7 @@ import holisticNutritionContent from "../content/holistic-nutrition.json";
 import nurseCoachContent from "../content/nurse-coach.json";
 import healthCoachContent from "../content/health-coach.json";
 import womensHormoneHealthContent from "../content/womens-hormone-health.json";
+import spiritualHealingContent from "../content/spiritual-healing.json";
 
 // Type for lesson content structure
 interface LessonData {
@@ -38,7 +38,6 @@ interface NicheContent {
 
 // Map portal slugs to their lesson content
 const LESSON_CONTENT: Record<string, NicheContent> = {
-    "spiritual-healing": spiritualHealingContent as NicheContent,
     "energy-healing": energyHealingContent as NicheContent,
     "christian-coaching": christianCoachingContent as NicheContent,
     "gut-health": gutHealthContent as NicheContent,
@@ -50,6 +49,7 @@ const LESSON_CONTENT: Record<string, NicheContent> = {
     "nurse-coach": nurseCoachContent as NicheContent,
     "health-coach": healthCoachContent as NicheContent,
     "womens-hormone-health": womensHormoneHealthContent as NicheContent,
+    "spiritual-healing": spiritualHealingContent as NicheContent,
 };
 
 interface DynamicLessonRouterProps {

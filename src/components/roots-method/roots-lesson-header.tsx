@@ -26,7 +26,7 @@ const ALL_LESSONS = [
     { num: 9, title: 'Case Study + 90-Day Roadmap' },
 ];
 
-export function RootsLessonHeader({ lessonNumber, totalLessons = 9, readTime }: RootsLessonHeaderProps) {
+export function RootsLessonHeader({ lessonNumber, totalLessons = 3, readTime }: RootsLessonHeaderProps) {
     const [showLessonNav, setShowLessonNav] = useState(false);
     const moduleProgress = Math.round((lessonNumber / totalLessons) * 100);
 

@@ -396,7 +396,7 @@ export function RootsLearningClient({
               </div>
               <Progress value={courseProgress} className="h-2" />
               <p className="text-xs text-gray-500 mt-2">
-                {completedLessons.length} of 9 lessons completed
+                {completedLessons.length} of 3 lessons completed
               </p>
             </div>
           </div>

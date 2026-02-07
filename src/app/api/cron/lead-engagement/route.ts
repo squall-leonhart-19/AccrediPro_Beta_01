@@ -129,7 +129,7 @@ export async function GET(request: Request) {
 
                     if (nudgeText) {
                         const finalMsg = nudgeText.replace(/\{\{firstName\}\}/g, user.firstName || "there")
-                            .replace(/\{\{lessonsRemaining\}\}/g, String(9 - completedLessons)); // Assuming 9 lessons default
+                            .replace(/\{\{lessonsRemaining\}\}/g, String(3 - completedLessons)); // Assuming 3 lessons default
 
                         await sendLeadDM(user.id, finalMsg);
                         await prisma.userTag.create({ data: { userId: user.id, tag: nudgeTag } });

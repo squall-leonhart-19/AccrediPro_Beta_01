@@ -39,7 +39,7 @@ export function LessonRouterV2({
     totalScore = 0,
 }: LessonRouterV2Props) {
     const commonProps = {
-        totalLessons: 9,
+        totalLessons: 3,
         firstName,
         onComplete,
         onNext,

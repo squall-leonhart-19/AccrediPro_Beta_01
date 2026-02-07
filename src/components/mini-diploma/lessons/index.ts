@@ -1,4 +1,4 @@
-// Mini Diploma Lessons - 9 Lessons with Sarah chat format
+// Mini Diploma Lessons - 3 Lessons with Sarah chat format
 export { LessonWhatIsFMV4 } from "./lesson-what-is-fm-v4";
 export { Lesson7BodySystems } from "./lesson-7-body-systems";
 export { LessonUnfairAdvantage } from "./lesson-unfair-advantage";

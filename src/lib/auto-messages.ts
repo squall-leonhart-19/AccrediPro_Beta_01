@@ -499,7 +499,7 @@ Just 3 more lessons to go. You've got this!`,
   9: {
     text: `{{firstName}}!!! 🎓✨
 
-OH MY GOSH - YOU DID IT!!! All 9 lessons COMPLETE!!!
+OH MY GOSH - YOU DID IT!!! All 3 lessons COMPLETE!!!
 
 I am SO incredibly proud of you right now! You've just completed your Women's Health & Hormones Mini Diploma!
 
@@ -521,7 +521,7 @@ I'm so proud of you! 💚
 
 With love,
 Sarah`,
-    voiceScript: `Oh my gosh {{firstName}}! YOU DID IT! All 9 lessons complete!
+    voiceScript: `Oh my gosh {{firstName}}! YOU DID IT! All 3 lessons complete!
 
 I am SO incredibly proud of you right now! You've just completed your Women's Health and Hormones Mini Diploma!
 

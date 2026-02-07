@@ -43,7 +43,7 @@ export function LessonYourNextStep({
     onNext,
     isCompleted = false,
     lessonNumber = 9,
-    totalLessons = 9,
+    totalLessons = 3,
     firstName = "friend",
 }: LessonProps) {
     const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -148,7 +148,7 @@ export function LessonYourNextStep({
         {
             id: 2,
             type: 'coach',
-            content: "You just completed all 9 lessons of the FM Mini Diploma! 🎉",
+            content: "You just completed all 3 lessons of the FM Mini Diploma! 🎉",
             delay: 3000,
         },
         {
@@ -262,7 +262,7 @@ export function LessonYourNextStep({
         {
             id: 18,
             type: 'voice-note',
-            content: `So here's my question, ${firstName}: Are you ready to go all in? To get the full certification, the complete toolkit, and start actually helping people heal? Because I believe you can do this. I've watched you show up for these 9 lessons. Now let's take it to the next level.`,
+            content: `So here's my question, ${firstName}: Are you ready to go all in? To get the full certification, the complete toolkit, and start actually helping people heal? Because I believe you can do this. I've watched you show up for these 3 lessons. Now let's take it to the next level.`,
             voiceDuration: "0:28",
             delay: 4000,
         },

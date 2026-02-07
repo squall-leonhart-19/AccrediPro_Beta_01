@@ -81,7 +81,7 @@ export async function GET() {
 
         const lessonTags = lead.tags.filter((t) => t.tag.startsWith(tagPrefix));
         const lessonCompleted = lessonTags.length;
-        const totalLessons = 9; // Default mini diploma has 9 lessons
+        const totalLessons = 3; // Default mini diploma has 3 lessons
         const progress = Math.round((lessonCompleted / totalLessons) * 100);
 
         // Get last activity

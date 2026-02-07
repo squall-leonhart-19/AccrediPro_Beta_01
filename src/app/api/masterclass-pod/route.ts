@@ -136,7 +136,7 @@ export async function GET(request: NextRequest) {
                 progress: {
                     userLessons: 0,
                     zombieLessons: 2, // Zombie starts ahead as social proof
-                    totalLessons: 9,
+                    totalLessons: 3,
                 },
             });
         }
@@ -229,7 +229,7 @@ export async function GET(request: NextRequest) {
             progress: {
                 userLessons: lessonProgress,
                 zombieLessons,
-                totalLessons: 9,
+                totalLessons: 3,
             },
             todayLesson: template
                 ? {

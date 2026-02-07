@@ -205,7 +205,7 @@ PS: If you're already done, ignore this. But if not - GO FINISH.`),
         subject: (firstName: string) => `Re: you did it, ${firstName}!`,
         content: (firstName: string) => cleanContent(`${firstName},
 
-YOU DID IT. All 9 lessons COMPLETE.
+YOU DID IT. All 3 lessons COMPLETE.
 
 I am so incredibly proud of you right now.
 

@@ -3407,7 +3407,7 @@ What you'll learn with me:
 
 Start Your First Lesson: https://learn.accredipro.academy/womens-health-diploma
 
-Important: You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!
+Important: You have 7 days to complete your mini diploma. Complete all 3 lessons to earn your certificate!
 
 I'll be chatting with you inside the lessons!
 
@@ -3444,7 +3444,7 @@ What you'll learn with me:
 
 Start Your First Lesson: https://learn.accredipro.academy/womens-health-diploma
 
-Important: You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!
+Important: You have 7 days to complete your mini diploma. Complete all 3 lessons to earn your certificate!
 
 I'll be chatting with you inside the lessons!
 
@@ -3481,7 +3481,7 @@ What you'll learn with me:
 
 Start Your First Lesson: https://learn.accredipro.academy/womens-health-diploma
 
-Important: You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!
+Important: You have 7 days to complete your mini diploma. Complete all 3 lessons to earn your certificate!
 
 I'll be chatting with you inside the lessons!
 
@@ -3518,7 +3518,7 @@ What you'll learn with me:
 
 Start Your First Lesson: https://learn.accredipro.academy/womens-health-diploma
 
-Important: You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!
+Important: You have 7 days to complete your mini diploma. Complete all 3 lessons to earn your certificate!
 
 I'll be chatting with you inside the lessons!
 
@@ -3718,7 +3718,7 @@ PS: If you're already done, ignore this. But if not - GO FINISH.`,
     subject: "Re: your certificate is ready",
     content: `{{firstName}},
 
-YOU DID IT. All 9 lessons COMPLETE.
+YOU DID IT. All 3 lessons COMPLETE.
 
 I am so incredibly proud of you right now.
 

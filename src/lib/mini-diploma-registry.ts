@@ -13,12 +13,12 @@ import { FUNCTIONAL_MEDICINE_DMS } from "./functional-medicine-dms";
 import { WH_NURTURE_60_DAY_V3 } from "./wh-nurture-60-day-v3";
 import { TIME_BASED_DMS as WH_DMS, SarahDM } from "./wh-sarah-dms";
 // Niche-specific nurture sequences (no fallback needed)
-import { SPIRITUAL_HEALING_NURTURE_SEQUENCE } from "./spiritual-healing-nurture-60-day";
 import { ENERGY_HEALING_NURTURE_SEQUENCE } from "./energy-healing-nurture-60-day";
 import { CHRISTIAN_COACHING_NURTURE_SEQUENCE } from "./christian-coaching-nurture-60-day";
 import { REIKI_HEALING_NURTURE_SEQUENCE } from "./reiki-healing-nurture-60-day";
 import { ADHD_COACHING_NURTURE_SEQUENCE } from "./adhd-coaching-nurture-60-day";
 import { PET_NUTRITION_NURTURE_SEQUENCE } from "./pet-nutrition-nurture-60-day";
+import { SPIRITUAL_HEALING_NURTURE_SEQUENCE } from "./spiritual-healing-nurture-60-day";
 
 // Lesson definition for portal
 export interface DiplomaLesson {
@@ -253,10 +253,9 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         displayName: "Spiritual Healing",
         lessons: SPIRITUAL_HEALING_LESSONS,
         checkoutUrl: DEFAULT_CHECKOUT_URL,
-        examCategory: "spiritual-healing",
+        examCategory: "spiritual-healing-exam",
         lessonTagPrefix: "spiritual-healing-lesson-complete",
         nurtureSequence: SPIRITUAL_HEALING_NURTURE_SEQUENCE,
-        dmSequence: HEALTH_COACH_DMS, // DMs still use health coach fallback
         nudgePrefix: "spiritual-healing-nudge",
         nurturePrefix: "spiritual-healing-nurture",
         completionTag: "spiritual-healing-mini-diploma:completed",

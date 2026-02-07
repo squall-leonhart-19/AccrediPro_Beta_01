@@ -283,7 +283,7 @@ export default function CirclePodPage() {
     const { pod, zombie, messages = [], progress } = podData;
     const userLessons = progress?.userLessons || 0;
     const zombieLessons = progress?.zombieLessons || Math.min(userLessons + 2, 9); // Zombie is ahead
-    const totalLessons = 9;
+    const totalLessons = 3;
     const currentLesson = LESSON_TITLES[userLessons] || LESSON_TITLES[0];
     const timeRemaining = getTimeRemaining();
 

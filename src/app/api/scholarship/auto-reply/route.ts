@@ -114,7 +114,7 @@ For $200 you unlock:
 \u2705 Legal Templates + Offer Builder
 \u2705 Client Management Resources
 \u2705 Coach Workspace
-\u2705 1:1 Mentorship Until Certified
+\u2705 6 Months 1:1 Mentorship \u2014 Until Certified + Help Getting Clients
 \u2705 Lifetime Access
 
 Imagine having your own website live, legal templates ready, and a complete system to manage clients \u2014 all set up for you.

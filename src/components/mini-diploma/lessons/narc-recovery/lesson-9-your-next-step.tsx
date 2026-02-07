@@ -103,7 +103,7 @@ Women's health impacts:
             id: 11,
             type: 'system',
             content: `**Certificate Unlocked!**
-You've completed all 9 lessons.
+You've completed all 3 lessons.
 
 Your official Narcissistic Abuse Recovery & Hormones Mini Diploma certificate is ready to download!
 

@@ -10,9 +10,10 @@ const ALL_TAG_PREFIXES = [
     "functional-medicine-lesson-complete", "gut-health-lesson-complete",
     "health-coach-lesson-complete", "holistic-nutrition-lesson-complete",
     "hormone-health-lesson-complete", "nurse-coach-lesson-complete",
-    "adhd-coaching-lesson-complete", "spiritual-healing-lesson-complete",
+    "adhd-coaching-lesson-complete",
     "energy-healing-lesson-complete", "christian-coaching-lesson-complete",
     "reiki-healing-lesson-complete", "pet-nutrition-lesson-complete",
+    "spiritual-healing-lesson-complete",
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -20,10 +21,10 @@ const CATEGORY_LABELS: Record<string, string> = {
     "functional-medicine": "Functional Medicine", "fm-healthcare": "FM Healthcare",
     "gut-health": "Gut Health", "health-coach": "Health Coach",
     "holistic-nutrition": "Holistic Nutrition", "hormone-health": "Hormone Health",
-    "nurse-coach": "Nurse Coach", "spiritual-healing": "Spiritual Healing",
     "energy-healing": "Energy Healing", "christian-coaching": "Christian Coaching",
     "reiki-healing": "Reiki Healing", "adhd-coaching": "ADHD Coaching",
-    "pet-nutrition": "Pet Nutrition", "unknown": "Unknown/Legacy",
+    "pet-nutrition": "Pet Nutrition", "spiritual-healing": "Spiritual Healing",
+    "unknown": "Unknown/Legacy",
 };
 
 function countLessonsFromTags(tags: { tag: string; createdAt: Date }[]) {

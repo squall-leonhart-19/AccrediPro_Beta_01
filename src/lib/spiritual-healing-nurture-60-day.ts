@@ -1,24 +1,24 @@
 /**
- * Certified Spiritual Healing Specialist Mini Diploma - 60-Day Nurture Sequence
- * 
+ * Certified Spiritual Healing Practitioner Mini Diploma - 60-Day Nurture Sequence
+ *
  * OFFER: $297 Complete Career Certification
- * 
+ *
  * What's Included:
- * - 3-Level Certification (SH-FC™ + SH-CP™ + SH-BC™)
+ * - 3-Level Certification (SH-FC + SH-CP + SH-BC)
  * - Board Certified Master Practitioner title
- * - 25+ in-depth lessons on energy work, chakra healing, spiritual counseling
+ * - 25+ in-depth lessons on spiritual healing, intuitive development, soul-centered practice
  * - Sarah mentorship access
  * - My Circle Mastermind (5-person pod, DAILY check-ins)
  * - ASI Practitioner Directory listing
  * - Community access (20,000+ practitioners)
  * - LIFETIME ACCESS
- * 
+ *
  * Phase 1 (Days 0-14): VALUE - Build trust, NO selling
  * Phase 2 (Days 15-30): DESIRE - Show transformation
  * Phase 3 (Days 31-45): DECISION - Clear $297 offer
  * Phase 4 (Days 46-60): RE-ENGAGE - Stay connected
- * 
- * Target: US Women 35-55+ seeking spiritual growth and healing careers
+ *
+ * Target: US Women 35-55+ seeking spiritual healing careers
  */
 
 function cleanContent(content: string): string {
@@ -26,9 +26,9 @@ function cleanContent(content: string): string {
         .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}]/gu, '')
         .replace(/\*\*([^*]+)\*\*/g, '$1')
         .replace(/\*([^*]+)\*/g, '$1')
-        .replace(/[""]/g, '"')
-        .replace(/['']/g, "'")
-        .replace(/—/g, '-')
+        .replace(/["\u201C\u201D]/g, '"')
+        .replace(/['\u2018\u2019]/g, "'")
+        .replace(/\u2014/g, '-')
         .trim();
 }
 
@@ -42,139 +42,120 @@ export const SPIRITUAL_HEALING_NURTURE_SEQUENCE = [
     // PHASE 1: VALUE (Days 0-14) - NO SELLING
     // ============================================
 
-    // Email 1 - Day 0: Welcome
     {
         id: 1,
         phase: "value",
         day: 0,
-        subject: "Re: your Certified Spiritual Healing Specialist access, {{firstName}}",
+        subject: "Re: your Certified Spiritual Healing Practitioner access, {{firstName}}",
         content: cleanContent(`{{firstName}},
 
 You're in.
 
 I just saw your name come through, and I wanted to personally welcome you to the AccrediPro Standards Institute community.
 
-You're now one of thousands of women who've started this sacred journey - practitioners in 47 countries who understand that true healing happens at the soul level.
+You're now one of thousands of women who've started this sacred journey - practitioners who understand that true healing begins at the soul level.
 
-Your Certified Spiritual Healing Specialist Mini Diploma is ready. This isn't like other free courses - this is real training from the same institute that certifies Board Certified Master Practitioners in spiritual healing modalities.
+Your Certified Spiritual Healing Practitioner Mini Diploma is ready. This isn't like other free courses - this is real training from the same institute that certifies Board Certified Master Practitioners in spiritual healing.
 
 Here's what I want you to do:
 
-Log in and start Lesson 1. It takes about 10 minutes. By the end, you'll know if this path is calling you.
+Log in and start Lesson 1. It takes about 10 minutes. By the end, you'll know if spiritual healing is your calling.
 
 I'll be checking in over the next few days. And {{firstName}} - if you have ANY questions, just hit reply. I read every email personally.
 
-The universe brought you here for a reason.
+When the soul is ready, the path appears. You're here for a reason.
 
 ${ASI_SIGNATURE}
 
 P.S. Check your messages inside the portal - I've left you a personal voice note. Welcome to ASI.`),
     },
 
-    // Email 2 - Day 1: Sarah's Story
     {
         id: 2,
         phase: "value",
         day: 1,
-        subject: "Re: my spiritual awakening (thought you'd relate)",
+        subject: "Re: the 3 signs your spiritual gifts are ready to serve others",
         content: cleanContent(`{{firstName}},
 
-Can I tell you about the moment everything changed for me?
+After working with thousands of spiritual healers, I've noticed 3 signs that someone's gifts are ready to become a calling:
 
-Five years ago, I was going through the darkest period of my life. A painful divorce, health issues, and a sense that something was deeply wrong - but I couldn't name it.
+1. You feel other people's emotions - even when they haven't said a word. You walk into a room and sense the heaviness. You meet someone and just KNOW something is off. People call you "too sensitive." But you're not too sensitive. You're spiritually attuned.
 
-Traditional therapy helped some. Medicine managed symptoms. But nothing touched the emptiness I felt inside.
+2. People already come to you for comfort. Friends, family, even strangers open up to you. They say things like "I don't know why I'm telling you this." It happens because your spirit creates a safe space that draws people in.
 
-Then I discovered spiritual healing.
+3. You feel a pull toward something bigger. A quiet knowing that you're meant for more. Not in an ego way - in a soul way. Like there's work you came here to do, and every day you don't do it, something feels incomplete.
 
-I remember my first energy session. The practitioner didn't just treat my body - she saw my SOUL. She found blockages I'd been carrying since childhood. Pain I'd buried so deep I'd forgotten it was there.
+If you recognized yourself in even one of those signs, {{firstName}}, it's not a coincidence that you're here.
 
-Within weeks, I felt lighter. Within months, I felt reborn.
+Your sensitivity isn't a burden. It's your greatest qualification.
 
-That's when I knew: this is what I'm meant to do. Not just heal myself, but help others find their way back to wholeness.
-
-The training gave me structure. The certification gave me credibility. But the CALLING - that was already inside me. Just like it's inside you.
-
-So tell me, {{firstName}} - what brought you here? What healing are you seeking?
-
-Hit reply. I want to hear your story.
-
-With love and light,
+The question isn't whether you have the gift. It's whether you'll answer the call.
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 3 - Day 3: Why Spiritual Healing Works
     {
         id: 3,
         phase: "value",
         day: 3,
-        subject: "Re: why traditional approaches often fall short",
+        subject: "Re: what is spiritual healing, really?",
         content: cleanContent(`{{firstName}},
 
-I need to tell you about Catherine.
+Let me clear something up.
 
-She came to one of our Board Certified practitioners last year. 48 years old. Successful career. Beautiful family. 
+Spiritual healing isn't about religion. It isn't about crystals or candles (though those can be lovely). It isn't about being "perfect" or having all the answers.
 
-But inside? She was falling apart.
+Spiritual healing is the practice of connecting with a person's deepest self - their soul, their spirit, their essence - and helping them release what no longer serves them.
 
-Anxiety that wouldn't stop. A constant feeling of being "unseen." Crying in the shower so her kids wouldn't hear.
+It works at a level that traditional approaches often miss.
 
-She'd tried everything: therapy, medication, meditation apps, self-help books. Nothing worked for long.
+Therapy addresses the mind. Medicine addresses the body. But spiritual healing addresses the SOUL - the place where our deepest wounds live, and where our deepest transformation begins.
 
-When she found a certified spiritual healing practitioner, she was skeptical. "New age stuff," she thought.
+When someone carries grief they can't name... when anxiety has no logical source... when they feel disconnected from themselves... that's a spiritual wound. And it needs a spiritual healer.
 
-But within 30 minutes of her first session, she was sobbing. Not from pain - from RELIEF. Because for the first time, someone was addressing what she'd always known:
+Our Board Certified practitioner, Grace, worked with a woman named Diana who'd been to 4 therapists over 10 years. Good therapists. She understood her patterns intellectually.
 
-Her suffering wasn't just in her mind. It was in her SPIRIT.
+But nothing shifted.
 
-Here's what {{firstName}} - conventional approaches often fail because they only address the physical or psychological. But we are spiritual beings having a human experience. When the soul is wounded, no pill can fix it.
+In their first spiritual healing session, Grace guided Diana into a space of deep inner stillness. What emerged was a core wound Diana had never accessed through talk alone - a profound disconnection from her own worthiness.
 
-This is what you're learning in your Mini Diploma. This is the difference between surface-level help and deep, lasting transformation.
+Three sessions later, Diana said: "For the first time in my life, I feel whole."
 
-Have you started your lessons yet?
+That's spiritual healing. That's the work waiting for you.
 
-${ASI_SIGNATURE}
-
-P.S. Catherine now leads women's healing circles. Her exact words: "Therapy kept me functioning. Spiritual healing brought me back to life."`),
+${ASI_SIGNATURE}`),
     },
 
-    // Email 4 - Day 5: Client Win Story
     {
         id: 4,
         phase: "value",
         day: 5,
-        subject: "Re: something beautiful happened",
+        subject: "Re: I almost quit before I found spiritual healing",
         content: cleanContent(`{{firstName}},
 
-I have to share something that happened this week.
+I need to be honest with you about something.
 
-One of our Board Certified practitioners, Grace, just sent me this message:
+Before I found spiritual healing, I was lost.
 
-"Sarah, my client broke down in happy tears today. She said for the first time in 20 years, she doesn't feel like she's carrying her mother's pain anymore. The ancestral healing work we did - it FREED her."
+I'd tried everything. Self-help books. Workshops. Retreats. I even considered going back to school for counseling. Nothing fit.
 
-This is why I do this work.
+I knew I was meant to help people heal. I KNEW it in my bones. But every path I tried felt like wearing someone else's shoes.
 
-Not the certificates. Not the income (though that matters too). THIS.
+Then I discovered spiritual healing - not the watered-down version you see on social media, but the real, structured practice of soul-level transformation.
 
-That moment when someone who's been carrying invisible burdens finally feels LIGHT again.
+And everything clicked.
 
-Grace is one of thousands of ASI-certified spiritual healing practitioners now helping people around the world. She got certified 10 months ago. Now she has a thriving practice.
+For the first time, I had language for what I'd always felt. I had a framework for the intuitive knowing I'd carried my whole life. I had a path that honored my gifts instead of asking me to suppress them.
 
-But more importantly - she gets to witness miracles. Daily.
+Was I scared? Absolutely. I worried people would judge me. I worried I wasn't "spiritual enough." I worried I was too old to start something new.
 
-{{firstName}}, I don't know exactly why you signed up for this Mini Diploma. Maybe you're seeking your own healing. Maybe you've always felt called to this work. Maybe someone you love needs help no doctor can provide.
+But the calling was louder than the fear.
 
-Whatever the reason - trust that intuition.
+{{firstName}}, if you're feeling that same pull - that quiet voice saying "this is it" - please don't ignore it. That voice has been waiting for you to listen.
 
-Keep going with your lessons.
-
-${ASI_SIGNATURE}
-
-P.S. How are you finding the lessons so far? What's resonating?`),
+${ASI_SIGNATURE}`),
     },
 
-    // Email 5 - Day 7: Engagement Question
     {
         id: 5,
         phase: "value",
@@ -182,115 +163,112 @@ P.S. How are you finding the lessons so far? What's resonating?`),
         subject: "Re: quick question for you",
         content: cleanContent(`{{firstName}},
 
-I've been thinking about you.
+It's been a week since you started your Certified Spiritual Healing Practitioner Mini Diploma.
 
-It's been a week since you started your Certified Spiritual Healing Specialist Mini Diploma, and I'm curious:
-
-What's surprised you most so far?
+What's resonating most with you so far?
 
 When I ask our practitioners this question, the most common answers are:
 
-1. "I had no idea there were so many modalities - chakra work, energy clearing, soul retrieval..."
-2. "The connection between emotional pain and physical illness made so much sense"
-3. "I realized the intuitive gifts I thought were 'weird' are actually my greatest strengths"
+1. "I always knew I was meant to heal - now I have a path"
+2. "The connection between spiritual and emotional healing finally makes sense"
+3. "I realize I've been doing spiritual work intuitively my whole life"
 
 What about you?
 
-Just hit reply and tell me one thing that made you go "wow."
+Just hit reply and share one thing that clicked.
 
 ${ASI_SIGNATURE}
 
-P.S. If you haven't had a chance to dive in yet, no judgment. But try to carve out 15 minutes this week. Your soul is waiting.`),
+P.S. If you haven't started yet, no judgment. But try to carve out 15 minutes this week. The first lesson alone will shift your understanding.`),
     },
 
-    // Email 6 - Day 10: Free Value Tip
     {
         id: 6,
         phase: "value",
         day: 10,
-        subject: "Re: a simple grounding technique most people miss",
+        subject: "Re: a centering practice every healer needs",
         content: cleanContent(`{{firstName}},
 
-Quick spiritual healing tip - something simple but powerful:
+Quick spiritual healing technique that transforms your practice:
 
-Most people try to "raise their vibration" before they're grounded.
+Most people try to do healing work while carrying everyone else's energy.
 
-It's like trying to fly without roots.
+It's like trying to pour from an empty cup. Draining. Exhausting. Sometimes even harmful.
 
-When you're ungrounded, you might feel:
-- Scattered and anxious
-- Unable to focus
-- Disconnected from your body
-- Easily overwhelmed by others' energy
+Signs you're carrying energy that isn't yours:
+- Feeling heavy after conversations
+- Mood shifts with no clear cause
+- Exhaustion that sleep doesn't fix
+- Absorbing others' anxiety or sadness
 
-The fix takes 2 minutes:
+Here's a centering practice I teach every practitioner:
 
-Stand barefoot if possible. Visualize roots growing from your feet deep into the earth. Feel the earth's energy rising up through you. Breathe.
+Close your eyes. Place one hand on your heart. Take three slow breaths. On each exhale, silently say: "I release what is not mine." Feel the weight lifting. On your next inhale, say: "I call my own energy back to me." Feel yourself returning to your center - clear, grounded, whole.
 
-Sound simple? It is. And it changes EVERYTHING.
+One minute. Transforms everything.
 
-This is what we call "spiritual hygiene" - daily practices that keep your energy clean and your spirit strong.
+This is core curriculum material, but I wanted you to have it now.
 
-At ASI, we train practitioners to master these fundamentals before moving to advanced techniques. It's why our certified practitioners get different results.
+At ASI, we teach energetic boundaries FIRST because they protect both practitioner and client. It's why our certified healers don't burn out.
 
-Try this for one week and notice what shifts.
+Try it three times today. Notice the difference.
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 7 - Day 12: Check-in
     {
         id: 7,
         phase: "value",
         day: 12,
-        subject: "Re: checking in on your journey",
+        subject: "Re: checking in on you",
         content: cleanContent(`{{firstName}},
 
 Just wanted to check in.
 
-How are you doing with your Mini Diploma?
+How's your spiritual healing journey going?
 
-If you're moving through it - beautiful. You're joining thousands of women who've completed this sacred training.
+If you're flowing through the lessons - wonderful. You're joining thousands who've completed this training.
 
-If life got in the way - that's okay too. Spirit works on its own timeline.
+If life interrupted - that's okay. Spiritual growth has its own timing.
 
-The women who finish this Mini Diploma tell me it changed how they see themselves. How they understand their gifts. How they connect with others who are suffering.
+The women who complete this Mini Diploma tell me: "I finally understand my purpose."
 
-Even 10 minutes at a time counts. Every lesson plants a seed.
+That understanding is worth everything.
 
-What's one thing I can help you with right now?
+Even 10 minutes at a time counts. The soul doesn't rush.
+
+What can I help you with right now?
 
 ${ASI_SIGNATURE}
 
-P.S. If you've finished or are close - reply with "COMPLETE" and I'll share what comes next on this path.`),
+P.S. If you've finished - reply "DONE" and I'll share what's next on your path.`),
     },
 
-    // Email 8 - Day 14: Two Weeks In
     {
         id: 8,
         phase: "value",
         day: 14,
-        subject: "Re: two weeks on your spiritual path",
+        subject: "Re: two weeks in",
         content: cleanContent(`{{firstName}},
 
-It's been two weeks since you started your Certified Spiritual Healing Specialist journey with AccrediPro Standards Institute.
+It's been two weeks since you started your Certified Spiritual Healing Practitioner journey.
 
 I want to acknowledge something:
 
-This material asks a lot of you. Not just time - but PRESENCE. Opening to things you may have been taught to dismiss or hide.
+Learning to work at the soul level requires opening parts of yourself you may have kept protected for years. It takes courage.
 
 So wherever you are right now...
 
-If you've finished: I'm so honored to walk this path with you. You now understand more about spiritual healing than most people ever will. Your completion certificate is on its way.
+If you've finished: I'm honored to witness your awakening. You now understand spiritual healing at a deeper level than most ever will.
 
-And {{firstName}} - something awakened in you. You're not the same person who signed up two weeks ago. You're remembering who you really are.
+And {{firstName}} - you're not the same person who started two weeks ago. Something shifted in your spirit.
 
-If you're still in progress: Keep going. You're answering a call that's been waiting for you.
+If you're still in progress: Keep going. Each lesson builds on the last.
 
 Whatever camp you're in:
 
-I see you.
-I believe in your gifts.
+I see your gifts.
+I believe in your calling.
 I'm here if you need anything.
 
 ${ASI_SIGNATURE}`),
@@ -300,166 +278,189 @@ ${ASI_SIGNATURE}`),
     // PHASE 2: DESIRE (Days 15-30)
     // ============================================
 
-    // Email 9 - Day 15: Practitioner Transformation
     {
         id: 9,
         phase: "desire",
         day: 15,
-        subject: "Re: how Luna found her calling",
+        subject: "Re: how Grace went from burned out nurse to thriving healer",
         content: cleanContent(`{{firstName}},
 
-I want to tell you what happened to Luna after she got certified.
+I want to tell you about Grace's journey.
 
-Luna was a corporate accountant for 22 years. Successful on paper. Empty inside.
+Grace was a hospice nurse for 18 years. She held hands with the dying. She comforted families in their darkest hours. She was everyone's rock.
 
-She'd always felt things others didn't. Sensed energy. Had intuitive knowing she'd learned to suppress because it didn't fit the corporate world.
+But inside? She was crumbling.
 
-Then she got her 3-level spiritual healing certification through ASI.
+The weight of all that grief. The spiritual questions her medical training couldn't answer. The feeling that she was meant to help people in a different way.
 
-Month 1: Terrified but alive. Finally learning to trust her gifts instead of hide them.
+Then she got certified in spiritual healing through ASI.
 
-Month 2: Offered free sessions to friends. Word spread. "How do you know these things about me?"
+Month 1: Finally had a framework for the intuitive gifts she'd always used with patients. Everything made sense.
 
-Month 3: Four paying clients. $200 each for energy clearing and spiritual guidance.
+Month 2: Started offering spiritual healing sessions on weekends. Word spread fast.
 
-Month 6: Left accounting.
+Month 3: Wait list formed. Clients were finding her through the ASI Directory.
 
-Today: Luna works from home. Sees 12-15 clients a week. Makes more than she did in corporate - with 100x the fulfillment.
+Month 6: Left nursing. Full-time spiritual healing practice. Zero regrets.
+
+Today: Grace sees 15 clients weekly. $150/session. More fulfilled than she's ever been. And she sleeps soundly - because she's not carrying everyone else's pain anymore.
 
 Here's what changed:
 
-Before: "Luna Chen, CPA"
-After: "Luna Chen, SH-BC - Board Certified Spiritual Healing Practitioner"
+Before: "Grace, RN - Hospice Nurse"
+After: "Grace, RN, SH-BC - Board Certified Spiritual Healing Practitioner"
 
-That title gave her permission to be who she always was.
+That credential gave structure to what she'd always felt.
 
-{{firstName}}, I'm sharing this because... maybe you see yourself in her story?
+{{firstName}}, do you see yourself in her story?
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 10 - Day 18: Day in the Life
     {
         id: 10,
         phase: "desire",
         day: 18,
-        subject: "Re: what my days look like now",
+        subject: "Re: why spiritual healers earn MORE than therapists",
         content: cleanContent(`{{firstName}},
 
-Want to know what my days look like as a spiritual healing practitioner?
+This might surprise you.
 
-6:30am - Wake naturally. Meditation. Connect with my guides. Set intentions.
+Board Certified spiritual healers often earn MORE than traditional therapists.
 
-8:00am - Check my Mastermind pod chat. Share my morning reflection. Hold space for my pod members' shares.
+Here's why:
 
-9:00am - First client session. A woman processing grief after a devastating loss. I witness. I hold space. I facilitate healing that goes beyond words.
+1. No insurance company tells you what to charge. You set your own rates.
 
-11:00am - Second session. Chakra clearing and energy alignment. Client texts later: "I feel 10 pounds lighter."
+2. Sessions are deeply transformative - clients see results faster, so they value the work MORE.
 
-1:00pm - Sacred pause. Lunch in stillness.
+3. There's a massive supply gap. Millions of people are searching for spiritual healing. Very few practitioners are properly certified.
 
-2:00pm - Check the ASI Directory. Two new inquiries from people seeking certified practitioners.
+4. You don't need a 4-year degree. You need skill, certification, and compassion - things you may already have.
 
-3:30pm - Content creation. Sharing wisdom. Planting seeds.
+What spiritual healing practitioners earn:
 
-Evening - Present. Grounded. ALIVE.
+- Beginning (first 3 months): $2,500-$4,500/month
+- Established (6-12 months): $5,000-$8,000/month
+- Advanced (12+ months): $8,000-$15,000/month
 
-No fluorescent lights. No soul-crushing meetings. No pretending to be someone I'm not.
+And this is with 10-15 clients per week. Not 40. Not burning out.
 
-I introduce myself differently now: "I'm Sarah, a Board Certified Spiritual Healing Practitioner."
+Grace told me: "I made more in my first full month of spiritual healing than my best month in nursing. And I worked half the hours."
 
-That sentence changed everything.
+A typical day:
 
-${ASI_SIGNATURE}
+9:00am - Morning meditation and intention setting
+10:00am - Client session (soul-level healing for grief)
+11:30am - Client session (spiritual alignment for life transition)
+1:00pm - Lunch and self-care
+2:30pm - Client session (remote - works beautifully for spiritual work)
+4:00pm - Done for the day
 
-P.S. The daily Mastermind check-ins? They're my anchor. Knowing 4 other women on this path are walking with me.`),
-    },
+No commute. No corporate politics. No soul-crushing bureaucracy.
 
-    // Email 11 - Day 21: Common Questions
-    {
-        id: 11,
-        phase: "desire",
-        day: 21,
-        subject: "Re: questions you might be asking",
-        content: cleanContent(`{{firstName}},
-
-Let me answer the questions I know you're asking:
-
-"But is spiritual healing legitimate?"
-
-ASI is incorporated in Delaware, with offices in New York and Dubai. Credentials recognized by CMA, CPD, and IPHM. Every certificate has a public verification ID. You'll have real, verifiable credentials - not woo-woo fluff.
-
-"Will people pay for this?"
-
-The wellness industry is $5.6 trillion. More people than ever are seeking alternative healing. 73% of our practitioners say client demand exceeds their capacity.
-
-"Can I do this without special gifts?"
-
-Spiritual sensitivity can be developed. Our training awakens and strengthens intuitive abilities. Luna thought she "wasn't psychic enough." Now she channels messages that change lives.
-
-"Am I too old to start?"
-
-Our average practitioner age is 47. Many start in their 50s and 60s. Life experience becomes your greatest asset.
-
-"What if my family doesn't understand?"
-
-They might not. At first. But when they see the transformation in you - and then in your clients - understanding comes.
-
-The only real barrier is not starting.
+Just meaningful work that lights you up.
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 12 - Day 24: Community + Mastermind
+    {
+        id: 11,
+        phase: "desire",
+        day: 21,
+        subject: "Re: your clients are looking for you right now",
+        content: cleanContent(`{{firstName}},
+
+Right now, in your area, people are searching:
+
+"spiritual healer near me"
+"soul healing practitioner"
+"spiritual healing for grief"
+"holistic spiritual counseling"
+
+They're looking for someone exactly like you.
+
+But they need to find you. And they need to trust you.
+
+That's what certification does.
+
+It's the difference between:
+"I do spiritual healing" (skepticism)
+and
+"I'm a Board Certified Spiritual Healing Practitioner through ASI" (trust)
+
+Let me answer what I know you're wondering:
+
+"Is spiritual healing actually legitimate?"
+
+ASI is incorporated in Delaware, with offices in New York and Dubai. Credentials recognized by CMA, CPD, and IPHM. Every certificate has public verification.
+
+"Will people actually pay for this?"
+
+Spiritual healing is one of the fastest growing wellness modalities. 73% of our practitioners say demand exceeds their capacity.
+
+"Do I need to be psychic or have special powers?"
+
+No. Spiritual healing is a skill that can be developed through proper training. You don't need to see auras or hear spirits. You need presence, compassion, and technique.
+
+"Am I too old to start?"
+
+Our average practitioner age is 47. Many start at 55+. Life experience makes you a BETTER healer. Clients trust wisdom.
+
+The only real question is: will you answer the call?
+
+${ASI_SIGNATURE}`),
+    },
+
     {
         id: 12,
         phase: "desire",
         day: 24,
-        subject: "Re: the sacred circle nobody talks about",
+        subject: "Re: the meditation that changed Lisa's entire practice",
         content: cleanContent(`{{firstName}},
 
-Can I tell you the part of this journey nobody talks about?
+Here's what nobody tells you about becoming a spiritual healer:
 
-The isolation.
+It can be lonely.
 
-When you wake up to spiritual truth, you can't unsee it. You sense things everywhere. You want to help everyone.
+You start sensing things others miss. You see patterns beneath the surface. You feel called to help people who don't even know they need it.
 
-But most people don't get it.
-Your friends think you've gone "woo-woo."
-Your family worries about you.
-And you're walking this path alone.
+But your old friends don't understand.
+Your family thinks it's "a phase."
+You're walking a path that feels solitary.
 
 That's why we created the My Circle Mastermind.
 
-Here's how it works:
+When you enroll, you're matched with 5 fellow spiritual healers. Your Circle.
 
-You get placed in a pod of 5 soul sisters. Your Sacred Circle.
+Every day:
+- Morning intentions and spiritual check-ins
+- Client case discussions
+- Technique sharing and practice
+- Mutual support and celebration
 
-Every single day:
-- Morning intention sharing
-- Spiritual insights and downloads
-- Support through client challenges
-- Celebration of breakthroughs
+Lisa, one of our practitioners, shared a meditation practice with her Circle that transformed everything. It was a simple grounding meditation she'd developed - 5 minutes of connecting with divine source before each session.
 
-This isn't a Facebook group with 50,000 strangers.
+Her entire Circle adopted it. Within a month, all five reported deeper sessions, clearer intuition, and less energetic fatigue.
 
-This is YOUR 5. Women who understand energetic boundaries. Who celebrate when you clear generational trauma. Who hold space when the work gets heavy.
+Lisa said: "My Circle didn't just support my practice - they elevated it. We grow together."
 
-Plus the ASI Directory where seekers find YOU.
+This isn't a random Facebook group.
 
-No one walks this path alone. I didn't. Luna didn't. Grace didn't.
+This is YOUR 5. Women who speak your language. Who understand when you say "her soul was crying." Who celebrate your first paid session. Who hold space for YOU.
+
+No one succeeds alone in this work. Grace didn't. Lisa didn't. I didn't.
 
 ${ASI_SIGNATURE}
 
-P.S. The women in my original pod are now my soul family. We still share daily, 3 years later.`),
+P.S. My original Circle? Still checking in daily, 3 years later. Soul sisters in the truest sense.`),
     },
 
-    // Email 13 - Day 27: Two Paths
     {
         id: 13,
         phase: "desire",
         day: 27,
-        subject: "Re: two futures from this moment",
+        subject: "Re: two possible futures",
         content: cleanContent(`{{firstName}},
 
 Imagine it's one year from now.
@@ -468,11 +469,11 @@ Two versions of that moment:
 
 PATH A: Nothing Changed
 
-Same life. Same longing. The Mini Diploma a distant memory you meant to do something with.
+Same life. Same curiosity about spiritual healing. The Mini Diploma unfinished or unused.
 
-Still sensing things you can't explain. Still hiding your gifts.
+Still feeling that pull you can't explain. Still sensing things others miss. Still wondering "what if."
 
-Not terrible. Just... unfulfilled.
+Not bad. Just... unchanged.
 
 PATH B: You Made a Decision
 
@@ -480,38 +481,35 @@ You're Board Certified. Three levels complete: SH-FC, SH-CP, SH-BC.
 
 You introduce yourself: "Hi, I'm {{firstName}}, SH-BC - Board Certified Spiritual Healing Practitioner."
 
-You're in the ASI Directory. Seekers find YOU.
+You're in the ASI Directory. Clients find YOU.
 
-You have your 5-person Sacred Circle. Daily spiritual connection. Women who became your soul family.
+You have your 5-person Mastermind Circle. Daily support. Fellow healers who became soul sisters.
 
-10 clients seeking healing. $4,000-$7,000/month. Doing work that matters.
+10 clients weekly. $4,000-$7,000/month. Work that feeds your spirit.
 
-That feeling of "I'm meant for something more"? Gone. Because you're LIVING it.
+That calling you felt? Fully answered. That gift you carried? Finally honored.
 
-Both futures take the same 365 days to arrive.
+Both futures take the same 365 days.
 
-The only difference is the choice you make now.
+The only difference is your decision now.
 
-${ASI_SIGNATURE}
-
-P.S. The universe is waiting for your answer. Which path do you choose?`),
+${ASI_SIGNATURE}`),
     },
 
-    // Email 14 - Day 30: Personal Invitation
     {
         id: 14,
         phase: "desire",
         day: 30,
-        subject: "Re: a sacred invitation",
+        subject: "Re: an invitation from my heart",
         content: cleanContent(`{{firstName}},
 
 It's been a month since you started.
 
-I want to personally invite you to take the next step on your spiritual path.
+I want to personally invite you to take the next step.
 
-If you've felt called to something more... if you've wondered what it would take to become a certified spiritual healing practitioner...
+If you've felt called to spiritual healing... if you've wondered what it takes to do this professionally...
 
-Here's what's waiting for you:
+Here's what's waiting:
 
 The Complete Career Certification - $297
 
@@ -524,31 +522,28 @@ ALL 3 CERTIFICATION LEVELS:
 
 THE TRAINING:
 - 25+ in-depth lessons
-- Energy healing protocols
-- Chakra balancing techniques
-- Spiritual counseling methods
+- Intuitive development protocols
+- Soul-level healing techniques
+- Remote spiritual healing methods
 
 THE COMMUNITY:
-- My Circle Mastermind (5-person Sacred Circle)
-- DAILY spiritual check-ins
+- My Circle Mastermind (5-person pod)
+- DAILY practitioner check-ins
 - 20,000+ practitioner network
 
 CLIENT ACQUISITION:
-- ASI Directory listing (seekers find you)
+- ASI Directory listing
 - Sarah mentorship access
 - LIFETIME ACCESS
 
 BONUSES:
 - Session templates
 - Client intake forms
-- Pricing and packaging guides
+- Pricing guides
 
-Total value: $5,000+
-You pay: $297
+Ready? https://www.fanbasis.com/agency-checkout/AccrediPro/Gvw2y
 
-Ready to answer the call? https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
-
-Or just reply "tell me more."
+Or reply "tell me more."
 
 ${ASI_SIGNATURE}`),
     },
@@ -557,86 +552,76 @@ ${ASI_SIGNATURE}`),
     // PHASE 3: DECISION (Days 31-45)
     // ============================================
 
-    // Email 15 - Day 31: Full Roadmap
     {
         id: 15,
         phase: "decision",
         day: 31,
-        subject: "Re: the complete path",
+        subject: "Re: the complete certification roadmap",
         content: cleanContent(`{{firstName}},
 
 Here's the complete path to becoming a Board Certified Spiritual Healing Practitioner:
 
 STEP 0: Mini Diploma (Done)
-You've already built the foundation.
+You've got the foundation.
 
 STEP 1: Complete Career Certification ($297)
-Everything you need in one sacred package:
 
 LEVEL 1: SH-FC - Foundation Certified
-- Core spiritual healing principles
-- Basic energy work
+- Spiritual healing foundations
+- Intuitive development
 - Your first credential
 
 LEVEL 2: SH-CP - Certified Practitioner
-- Advanced modalities
-- Chakra mastery
-- Client protocols
+- Advanced techniques
+- Soul-level healing protocols
+- Client session frameworks
 
 LEVEL 3: SH-BC - Board Certified Master
 - Elite practitioner status
-- Complex case handling
-- Full spiritual authority
+- Complex cases
+- Full authority
 
 PLUS:
-- My Circle Mastermind (5-person Sacred Circle with daily check-ins)
+- My Circle Mastermind (daily check-ins)
 - ASI Directory listing
-- Session templates (BONUS)
+- Business templates (BONUS)
 - Client scripts (BONUS)
-- Business guides (BONUS)
 - Sarah mentorship access
 - LIFETIME ACCESS
 
-What certified practitioners earn:
+What practitioners earn:
 - Beginning: $2,500-$4,500/month
 - Established: $5,000-$8,000/month
 - Advanced: $8,000-$15,000/month
 
-The math: $297 / $175 per session = 2 clients to break even.
-TWO. CLIENTS.
+The math: $297 / $150 = 2 clients to break even.
 
-Reply if you have questions.
+Reply with questions.
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 16 - Day 34: The Investment
     {
         id: 16,
         phase: "decision",
         day: 34,
-        subject: "Re: the investment in your calling",
+        subject: "Re: the investment",
         content: cleanContent(`{{firstName}},
 
-Let's talk about the investment.
-
-The Complete Career Certification is $297.
+Let's talk about $297.
 
 For context:
-- Traditional energy healing training: $3,000-$10,000
-- Spiritual counseling programs: $5,000-$15,000
-- Other certification programs: $997-$2,997
+- Weekend spiritual workshops: $500-$2,000
+- Intuitive development programs: $1,500-$5,000
+- Full spiritual healing certifications: $3,000-$10,000
 
 What you get for $297:
-- 3-level certification (FC + CP + BC)
-- Board Certified Master title
+- 3-level certification
+- Board Certified title
 - 25+ lessons
-- My Circle Mastermind (daily spiritual connection)
+- My Circle Mastermind
 - ASI Directory listing
-- Session templates (bonus)
-- Client scripts (bonus)
-- Pricing guides (bonus)
-- Mentorship access
+- All bonuses
 - LIFETIME access
 
 Total value: $5,000+
@@ -644,23 +629,20 @@ You pay: $297
 
 The ROI:
 
-Most spiritual healing practitioners charge $150-$250 per session.
+Spiritual healers typically charge $125-$250/session.
 
-$297 / $150 = 2 clients.
+$297 / $125 = 2-3 clients.
 
-TWO SESSIONS and you've made your money back.
-Everything after that is abundance.
+THREE CLIENTS and you've covered the investment.
+Everything after that is profit - and purpose.
 
-Luna made $800 in her first month. Her investment returned 2.7x before she finished the training.
+Grace made over $600 in her first month of practice. Her investment paid back before she even finished certification.
 
-This isn't an expense. It's an investment in your divine purpose.
-
-Ready? https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+Ready? https://www.fanbasis.com/agency-checkout/AccrediPro/Gvw2y
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 17 - Day 36: The Credential
     {
         id: 17,
         phase: "decision",
@@ -668,172 +650,162 @@ ${ASI_SIGNATURE}`),
         subject: "Re: the credential that changes everything",
         content: cleanContent(`{{firstName}},
 
-Can I show you something?
+BEFORE:
+"{{firstName}} - Interested in spiritual healing"
+- No credential
+- Clients skeptical
+- No listings
 
-BEFORE Certification:
-"{{firstName}} - Spiritual Seeker"
-- No title
-- Clients unsure
-- No credibility
-
-AFTER Certification:
+AFTER:
 "{{firstName}}, SH-BC - Board Certified Spiritual Healing Practitioner"
 - Professional credential (CMA, CPD, IPHM recognized)
-- Clients trust and pay premium
+- Clients trust and pay
 - Listed in ASI Directory
-- Daily support from your Sacred Circle
+- Daily Mastermind support
 
 What you get:
 
 3 CREDENTIALS:
-- SH-FC (Foundation Certified)
-- SH-CP (Certified Practitioner)
-- SH-BC (Board Certified Master)
+- SH-FC
+- SH-CP
+- SH-BC
 
 THE BADGE:
-Display on LinkedIn, website, email signature.
+Display anywhere - LinkedIn, website, business cards.
 
 THE DIRECTORY:
-People searching for "certified spiritual healing practitioner" find YOU.
+People searching "certified spiritual healer" find YOU.
 
 THE CIRCLE:
-5-person Mastermind. Daily check-ins. Soul family.
+5-person Mastermind. Daily connection. Lasting bonds.
 
 THE VERIFICATION:
-Anyone can verify your credential at accredipro.com/verify
+Public verification at accredipro.com/verify
 
-Grace told me: "The day I updated my website to show SH-BC was the day I stopped explaining myself. I wasn't 'into spiritual stuff.' I was a certified professional."
+Grace told me: "When I could say 'I'm Board Certified,' the energy shifted completely. I wasn't justifying my work anymore. I was credentialed."
 
-You're not buying a course for $297.
+For $297, you become {{firstName}}, SH-BC.
 
-You're becoming {{firstName}}, SH-BC - Board Certified Spiritual Healing Practitioner.
-
-Ready? https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+Ready? https://www.fanbasis.com/agency-checkout/AccrediPro/Gvw2y
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 18 - Day 38: Objection Crusher
     {
         id: 18,
         phase: "decision",
         day: 38,
-        subject: "Re: what might be holding you back",
+        subject: "Re: what might be stopping you",
         content: cleanContent(`{{firstName}},
 
-Let me address what might be stopping you:
+Let me address what might be holding you back:
 
 "I don't have time."
 - Self-paced. No live requirements.
 - Most complete in 8-12 weeks.
 - Daily Mastermind takes 5 minutes.
 
-"$297 feels like a lot."
-- Less than most weekend workshops.
-- 2 sessions = break even.
-- Your calling is worth investing in.
+"$297 is a lot right now."
+- Less than most workshops.
+- 2-3 clients = break even.
+- LIFETIME access.
 
-"I'm not 'gifted' enough."
-- Spiritual abilities can be developed.
-- The training awakens dormant gifts.
+"I'm not sure I'm spiritual enough."
+- Spiritual healing is a skill, not a personality type.
+- The training develops your gifts.
 - Your Circle supports your growth.
 
-"What if I can't get clients?"
-- ASI Directory brings passive leads.
+"What if nobody pays me?"
+- ASI Directory brings leads.
 - 73% of practitioners exceed capacity.
-- Your Circle becomes your referral network.
+- Your Circle refers clients.
 
 "My family won't understand."
-- They might not. At first.
-- But transformation is undeniable.
-- 89% report increased support after 3 months.
+- They might not initially.
+- Results speak louder than explanations.
+- Your transformation will inspire them.
 
-"What if spiritual healing isn't 'real'?"
-- Tell that to the lives we've changed.
-- Tell that to Catherine, Luna, Grace.
-- The proof is in the healing.
+"What if I'm not good enough?"
+- You've been doing this work intuitively for years.
+- The certification gives structure to your natural gifts.
+- Every healer starts with doubt. The best ones start anyway.
 
-So what's REALLY stopping you?
+What's really stopping you?
 
 Reply honestly. I want to help.
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 19 - Day 40: The Mastermind
     {
         id: 19,
         phase: "decision",
         day: 40,
-        subject: "Re: the daily connection that changes everything",
+        subject: "Re: the daily support that changes everything",
         content: cleanContent(`{{firstName}},
 
-Can I tell you about My Circle Mastermind?
+About the My Circle Mastermind:
 
-Most certifications give you training and say "good luck."
+Most certifications give you content and wave goodbye.
 
-We do something sacred.
+We do something different.
 
-When you enroll, you're matched with a pod of 5 soul sisters. Your Sacred Circle.
+You're matched with 5 fellow spiritual healers. Your Circle.
 
-Every day, these women:
-- Share morning intentions
-- Process spiritual downloads
-- Support each other through challenges
-- Celebrate breakthroughs and transformations
+Every day:
+- Morning intentions
+- Spiritual check-ins
+- Client discussions
+- Celebration and support
 
-This isn't checking in with strangers.
+This isn't posting to strangers.
 
-This is DAILY connection with women who get it.
+This is DAILY connection with women who understand what you're experiencing.
 
-When a client session brings up your own stuff
-When you doubt your gifts
-When you witness something that shakes you
+When you feel a client's grief and need to process it...
+When you doubt your intuition...
+When you have a breakthrough that nobody else would understand...
 
-Your Circle holds you.
+Your Circle holds space for you.
 
-Maria told me: "The Mastermind alone is worth more than $297. I've never felt so spiritually supported."
-
-This is the difference between studying spiritual healing and LIVING as a spiritual healer.
+Grace told me: "The Mastermind alone is worth the $297. I've never felt so spiritually supported."
 
 The certification teaches you.
 The Circle sustains you.
 
-Ready to find your Circle? https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+Ready for your Circle? https://www.fanbasis.com/agency-checkout/AccrediPro/Gvw2y
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 20 - Day 42: Social Proof
     {
         id: 20,
         phase: "decision",
         day: 42,
-        subject: "Re: what certified practitioners are saying",
+        subject: "Re: what our practitioners say",
         content: cleanContent(`{{firstName}},
 
-Here's what our Board Certified Spiritual Healing Practitioners are experiencing:
+What Board Certified Spiritual Healing Practitioners experience:
 
-GRACE, 54, Former Teacher:
-"I went from feeling lost to fully aligned. The certification gave me structure. The Circle gave me soul family. I now facilitate healing that I once thought was reserved for 'special' people."
+GRACE, 48, Former Hospice Nurse:
+"I held hands with the dying for 18 years. Now I help the living heal at the soul level. The certification gave me structure for gifts I'd always had. 15 clients weekly, and I've never felt more alive."
 
-LUNA, 47, Former Accountant:
-"My first paying client cried and said I saw things her therapist never touched. That's when I knew this was real. 6 months in: 12 weekly clients, $6,500/month, complete fulfillment."
+LISA, 52, Former Yoga Instructor:
+"Yoga opened the door. Spiritual healing walked me through it. My clients go deeper in one session than they did in years of practice. The credential made people take my work seriously."
 
-MAYA, 39, Stay-at-Home Mom:
-"I always felt different. Sensitive. 'Too much.' This training taught me those are my GIFTS. Now I help other sensitive souls. My kids are proud of me for the first time."
+MARIA, 41, Former Social Worker:
+"I kept hitting walls in traditional social work. The system couldn't address spiritual wounds. Now I can. My clients call me their 'soul guide.' I've never been happier."
 
-CATHERINE, 51, Corporate Refugee:
-"I thought success meant corner offices. Now success means facilitating someone's breakthrough. And yes, I make more money too. But the meaning? Priceless."
+DIANE, 57, Started from Scratch:
+"I thought 57 was too late to start something new. It wasn't. My life experience makes clients trust me instantly. I wish I'd done this 10 years ago."
 
-These women aren't special. They're not chosen. They simply decided.
+None of them are special. They simply decided.
 
 Just like you can decide today.
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 21 - Day 44: Last Chance
     {
         id: 21,
         phase: "decision",
@@ -841,32 +813,32 @@ ${ASI_SIGNATURE}`),
         subject: "Re: the calling doesn't go away",
         content: cleanContent(`{{firstName}},
 
-I need to be honest with you.
+That pull you feel toward spiritual healing?
 
-That pull you feel toward spiritual healing? It's not going away.
+It doesn't go away.
 
-I've talked to women who waited years. Who had the Mini Diploma. Who felt called but didn't answer.
+I've talked to women who waited years. Who felt it. Who ignored it.
 
-And you know what they all say?
+Know what they all say?
 
 "I wish I'd started sooner."
 
 The calling gets louder, not quieter.
 
 Every day you wait is:
-- A client who doesn't find you
-- A healing that doesn't happen
-- Your gifts staying dormant
+- A soul that doesn't find healing
+- A client who keeps searching
+- Your gifts left unhonored
 
-I'm not trying to pressure you. This has to be your choice.
+Not pressuring you. It must be your choice.
 
-But I want you to make that choice consciously. Not by default.
+But make the choice consciously. Not by default.
 
-The Complete Certification: $297
-Two sessions to break even.
-And a lifetime of purpose.
+Complete Certification: $297
+Two clients to break even.
+A lifetime of purpose.
 
-If you feel it, trust it: https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+If you feel it, trust it: https://www.fanbasis.com/agency-checkout/AccrediPro/Gvw2y
 
 ${ASI_SIGNATURE}`),
     },
@@ -875,7 +847,6 @@ ${ASI_SIGNATURE}`),
     // PHASE 4: RE-ENGAGE (Days 46-60)
     // ============================================
 
-    // Email 22 - Day 48: Still Here
     {
         id: 22,
         phase: "re-engage",
@@ -883,53 +854,60 @@ ${ASI_SIGNATURE}`),
         subject: "Re: still here for you",
         content: cleanContent(`{{firstName}},
 
-I haven't heard from you in a while.
+Haven't heard from you in a while.
 
-That's okay. Everyone's journey is different.
+That's okay. Every soul has its own timing.
 
-I just wanted you to know: I'm still here. The door is still open. Your path is still waiting.
+Just wanted you to know: I'm still here. The door is open. Your path is waiting.
 
-Maybe now isn't the time. Maybe life is full. Maybe fear is loud.
+Maybe now isn't the time. Maybe life is full. Maybe doubt is loud.
 
 Whatever is true, I honor it.
 
-But when you're ready - whether that's tomorrow or a year from now - the certification will be here. I'll be here.
+When you're ready - the certification will be here. I'll be here.
 
-Your gifts aren't going anywhere.
+Your spiritual gifts aren't going anywhere.
 
 With love,
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 23 - Day 52: Resource Share
     {
         id: 23,
         phase: "re-engage",
         day: 52,
-        subject: "Re: something that might help",
+        subject: "Re: 70% off expires tonight - here's what you're missing",
         content: cleanContent(`{{firstName}},
 
-I wanted to share something with you - no strings attached.
+I don't do this often, but I wanted to give you one more chance at something special.
 
-A simple exercise for when you feel energetically heavy:
+Right now, the Complete Spiritual Healing Career Certification is available at 70% off.
 
-Close your eyes. Imagine a column of white light descending from above, entering through your crown. Feel it moving through your body, gently pushing out anything that isn't yours - absorbed emotions, others' energy, stress.
+$997 value for just $297.
 
-See it flowing out through your feet, into the earth. The earth transmutes it. You feel lighter.
+Here's what you're missing if you don't act:
 
-Breathe. Thank your guides. Open your eyes.
+- 3 board-level certifications (SH-FC, SH-CP, SH-BC)
+- 25+ lessons on soul-level healing
+- Your own My Circle Mastermind (5 women who become your soul sisters)
+- ASI Directory listing (clients find YOU)
+- Sarah mentorship access
+- LIFETIME access
 
-Takes 2 minutes. Works every time.
+Grace enrolled at this price. She made her investment back in her first 2 weeks of practice.
 
-This is from Lesson 7 of the certification, but I wanted you to have it now.
+Lisa enrolled at this price. She now earns more than she did in 15 years of yoga instruction.
 
-Because I believe you're on this path - whether certified or not.
+This pricing won't come back after tonight.
 
-${ASI_SIGNATURE}`),
+If the calling is still there: https://www.fanbasis.com/agency-checkout/AccrediPro/Gvw2y
+
+${ASI_SIGNATURE}
+
+P.S. I believe your gifts are meant to serve others. But the decision is yours.`),
     },
 
-    // Email 24 - Day 56: Reconnection
     {
         id: 24,
         phase: "re-engage",
@@ -939,53 +917,54 @@ ${ASI_SIGNATURE}`),
 
 I was thinking about you today.
 
-About that moment when you first signed up for the Mini Diploma. Something called you. Something whispered "this matters."
+About when you first signed up. Something called your spirit to this work. Something said "this matters."
 
-That voice? It's still there. Still whispering.
+That voice is still there.
 
-Maybe louder than before.
+Maybe louder now.
 
-I don't know what your journey looks like right now. But I know this:
+I don't know what your journey looks like. But I know this:
 
-The spiritual healing path isn't going anywhere. Women are seeking help that conventional approaches can't provide. And there are never enough certified practitioners.
+Spiritual healing is needed more than ever. People are anxious, disconnected, searching for meaning. And there are never enough trained practitioners.
 
-If you ever want to continue the conversation - about the certification, about the work, about anything - just reply.
+The world doesn't need more advice. It needs more healers.
+
+If you want to continue this conversation - about certification, about the work, about anything - just reply.
 
 I'm here.
 
 ${ASI_SIGNATURE}`),
     },
 
-    // Email 25 - Day 60: Final Message
     {
         id: 25,
         phase: "re-engage",
         day: 60,
-        subject: "Re: one final thought",
+        subject: "Re: one final message",
         content: cleanContent(`{{firstName}},
 
 This is my last scheduled message in this sequence.
 
-I want to leave you with something:
+I want to leave you with this:
 
-You found your way to spiritual healing for a reason. Whether you ever pursue certification or not - that calling is real. Those intuitive gifts are real. That longing for meaningful work is real.
+You found your way to spiritual healing for a reason. Whether you ever pursue certification or not - the calling is real. Your gifts are real. The longing for soul-level work is real.
 
-Whatever path you take from here, I hope you:
-- Trust your spiritual knowing
-- Use your gifts in whatever way feels right
+Whatever path you take, I hope you:
+- Trust your spiritual intuition
+- Use your gifts however feels right
 - Remember that healing is always possible
 
-If someday the time is right for certification, you know where to find me: https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+If someday the time is right: https://www.fanbasis.com/agency-checkout/AccrediPro/Gvw2y
 
-Until then, I'm sending you light and love on your journey.
+Until then, sending you peace, light, and deep spiritual nourishment.
 
-Thank you for being part of this community, even briefly.
+Thank you for being part of this community.
 
 With gratitude,
 
 ${ASI_SIGNATURE}
 
-P.S. I believe in you. I believe in your gifts. I believe you're meant for something beautiful.`),
+P.S. I believe in your gifts. I believe you're meant for sacred, beautiful work.`),
     },
 ];
 

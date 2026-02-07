@@ -13,12 +13,12 @@ const MINI_DIPLOMA_SLUGS = [
   "holistic-nutrition-mini-diploma",
   "nurse-coach-mini-diploma",
   "health-coach-mini-diploma",
-  "spiritual-healing-mini-diploma",
   "energy-healing-mini-diploma",
   "christian-coaching-mini-diploma",
   "reiki-healing-mini-diploma",
   "adhd-coaching-mini-diploma",
   "pet-nutrition-mini-diploma",
+  "spiritual-healing-mini-diploma",
   "integrative-health-functional-medicine-mini-diploma",
 ];
 

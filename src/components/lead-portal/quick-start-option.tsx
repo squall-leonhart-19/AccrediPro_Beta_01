@@ -136,7 +136,7 @@ export function QuickStartOption({
                                 📚 FULL TRAINING (67 min avg)
                             </h3>
                             <p className="text-sm text-gray-600 mb-3">
-                                Complete all 9 lessons and get your certificate today.
+                                Complete all 3 lessons and get your certificate today.
                                 89% finish in one sitting.
                             </p>
                             <div className="flex items-center gap-4 text-xs text-gray-500">
@@ -146,7 +146,7 @@ export function QuickStartOption({
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <CheckCircle2 className="w-3 h-3" />
-                                    9 lessons + certificate
+                                    3 lessons + certificate
                                 </span>
                             </div>
                         </div>

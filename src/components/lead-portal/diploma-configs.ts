@@ -154,25 +154,6 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
             ],
         }],
     },
-    "spiritual-healing-diploma": {
-        slug: "spiritual-healing-diploma",
-        portalSlug: "spiritual-healing",
-        name: "Spiritual Healing Certification",
-        shortName: "Spiritual Healing",
-        coachName: "Sarah",
-        coachImage: "/coaches/sarah-coach.webp",
-        modules: [{
-            id: 1,
-            title: "Foundation Course",
-            description: "Your path to certification",
-            icon: "BookOpen",
-            lessons: [
-                { id: 1, title: "Spiritual Healing Foundation", duration: "8 min" },
-                { id: 2, title: "The D.E.P.T.H. Method\u2122", duration: "8 min" },
-                { id: 3, title: "How To Get Your First Clients", duration: "8 min" },
-            ],
-        }],
-    },
     "energy-healing-diploma": {
         slug: "energy-healing-diploma",
         portalSlug: "energy-healing",
@@ -263,6 +244,25 @@ export const DIPLOMA_CONFIGS: Record<string, DiplomaConfig> = {
             icon: "BookOpen",
             lessons: [
                 { id: 1, title: "Pet Nutrition Foundation", duration: "8 min" },
+                { id: 2, title: "The D.E.P.T.H. Method\u2122", duration: "8 min" },
+                { id: 3, title: "How To Get Your First Clients", duration: "8 min" },
+            ],
+        }],
+    },
+    "spiritual-healing-diploma": {
+        slug: "spiritual-healing-diploma",
+        portalSlug: "spiritual-healing",
+        name: "Spiritual Healing Certification",
+        shortName: "Spiritual Healing",
+        coachName: "Sarah",
+        coachImage: "/coaches/sarah-coach.webp",
+        modules: [{
+            id: 1,
+            title: "Foundation Course",
+            description: "Your path to certification",
+            icon: "BookOpen",
+            lessons: [
+                { id: 1, title: "Spiritual Healing Foundation", duration: "8 min" },
                 { id: 2, title: "The D.E.P.T.H. Method\u2122", duration: "8 min" },
                 { id: 3, title: "How To Get Your First Clients", duration: "8 min" },
             ],

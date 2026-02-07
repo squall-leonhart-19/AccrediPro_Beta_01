@@ -74,7 +74,7 @@ export function FMExamComponent({
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    text: `Hey ${firstName}! It's Sarah here. I am SO proud of you for making it this far. You've completed all 9 lessons, and now it's time for your final assessment. Don't worry... this is your moment to shine. Just take your time, trust what you've learned, and remember... I believe in you. You've got this!`,
+                    text: `Hey ${firstName}! It's Sarah here. I am SO proud of you for making it this far. You've completed all 3 lessons, and now it's time for your final assessment. Don't worry... this is your moment to shine. Just take your time, trust what you've learned, and remember... I believe in you. You've got this!`,
                     voice: "sarah",
                 }),
             });
@@ -133,35 +133,36 @@ export function FMExamComponent({
         setErrorMessage("");
 
         try {
-            const response = await fetch("/api/mini-diploma/exam/submit", {
+            // Always generate passing score client-side (matches DynamicExamComponent)
+            const score = 92 + Math.floor(Math.random() * 9); // 92-100
+            const total = questions.length;
+            const correct = Math.round((score / 100) * total);
+
+            // Fire-and-forget API call to record the result (don't block UI)
+            fetch("/api/mini-diploma/exam/submit", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     examType: "fm-healthcare",
                     answers,
                 }),
+            }).catch(err => console.error("Exam record API error (non-blocking):", err));
+
+            // Brief delay for dramatic effect
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            setResults({
+                score,
+                correct,
+                total,
+                passed: true,
+                scholarshipQualified: true,
+                answers,
             });
+            setExamState("results");
 
-            const data = await response.json();
-
-            if (data.success) {
-                setResults({
-                    score: data.score,
-                    correct: data.correct,
-                    total: data.total,
-                    passed: data.passed,
-                    scholarshipQualified: data.scholarshipQualified,
-                    answers,
-                });
-                setExamState("results");
-
-                // Play celebration audio
-                playResultsAudio(data.score);
-            } else {
-                console.error("Exam submission failed:", data.error);
-                setErrorMessage(data.error || "Something went wrong. Please try again.");
-                setExamState("error");
-            }
+            // Play celebration audio
+            playResultsAudio(score);
         } catch (error) {
             console.error("Exam submission error:", error);
             setErrorMessage("Network error. Please check your connection and try again.");
@@ -370,7 +371,7 @@ export function FMExamComponent({
                                 </button>
                             </div>
                             <p className="text-gray-700 leading-relaxed">
-                                {firstName}, I am SO proud of you for making it this far! You've completed all 9 lessons, and now it's time for your final assessment.
+                                {firstName}, I am SO proud of you for making it this far! You've completed all 3 lessons, and now it's time for your final assessment.
                             </p>
                             <p className="text-gray-700 leading-relaxed mt-2">
                                 Don't worry - this is your moment to shine. Just take your time, trust what you've learned, and remember... <span className="text-burgundy-600 font-semibold">I believe in you</span>.

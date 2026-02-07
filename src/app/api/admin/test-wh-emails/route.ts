@@ -37,15 +37,15 @@ export async function POST(request: NextRequest) {
 
     // Day 3 (3 lessons)
     const day3 = await sendWHReminderDay3Email(email, firstName, 3);
-    results.push({ day: "Day 3 (3/9 lessons)", success: day3.success, error: day3.error });
+    results.push({ day: "Day 3 (3/3 lessons)", success: day3.success, error: day3.error });
 
     // Day 5 (5 lessons)
     const day5 = await sendWHReminderDay5Email(email, firstName, 5);
-    results.push({ day: "Day 5 (5/9 lessons)", success: day5.success, error: day5.error });
+    results.push({ day: "Day 5 (5/3 lessons)", success: day5.success, error: day5.error });
 
     // Day 6 (8 lessons - so close!)
     const day6 = await sendWHReminderDay6Email(email, firstName, 8);
-    results.push({ day: "Day 6 (8/9 lessons)", success: day6.success, error: day6.error });
+    results.push({ day: "Day 6 (8/3 lessons)", success: day6.success, error: day6.error });
 
     return NextResponse.json({
       success: true,

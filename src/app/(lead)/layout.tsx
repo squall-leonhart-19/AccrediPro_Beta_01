@@ -21,12 +21,12 @@ const DIPLOMA_TAG_PREFIX: Record<string, string> = {
     "nurse-coach-diploma": "nurse-coach-lesson-complete",
     "holistic-nutrition-diploma": "holistic-nutrition-lesson-complete",
     "hormone-health-diploma": "hormone-health-lesson-complete",
-    "spiritual-healing-diploma": "spiritual-healing-lesson-complete",
     "energy-healing-diploma": "energy-healing-lesson-complete",
     "christian-coaching-diploma": "christian-coaching-lesson-complete",
     "reiki-healing-diploma": "reiki-healing-lesson-complete",
     "adhd-coaching-diploma": "adhd-coaching-lesson-complete",
     "pet-nutrition-diploma": "pet-nutrition-lesson-complete",
+    "spiritual-healing-diploma": "spiritual-healing-lesson-complete",
 };
 
 async function getLeadData(userId: string, diplomaSlug: string) {
