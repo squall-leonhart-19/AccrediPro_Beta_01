@@ -721,6 +721,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
             const msg2Content = `You qualify for our Institute Functional Medicine Private Path to ${incomeGoalLabel} — the only program that takes you from zero to closing $3K-$5K clients in 6-12 months, ${firstName}:
 
 🎓 Main Certification + Advanced + Master + Practice (20 Modules — 4 Levels)
+🤝 1:1 Mentorship with ME — until you're 100% certified, getting clients & reading labs
 🌐 Done-For-You Website to start attracting clients
 📦 Business Box — offer templates, pricing strategies, client acquisition system
 📋 Legal Templates — consent forms, intake forms, disclaimers
