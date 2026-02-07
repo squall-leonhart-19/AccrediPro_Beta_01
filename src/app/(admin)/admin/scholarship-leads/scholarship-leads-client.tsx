@@ -278,6 +278,33 @@ export default function ScholarshipLeadsClient() {
         }
     };
 
+    const [sendingEmails, setSendingEmails] = useState(false);
+
+    const triggerReEngage = async (dryRun: boolean) => {
+        if (!dryRun && !confirm("Send re-engagement emails to ALL non-converted leads? This will send real emails via Resend.")) return;
+        setSendingEmails(true);
+        try {
+            const res = await fetch("/api/admin/scholarship-leads/re-engage", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ dryRun }),
+            });
+            const result = await res.json();
+            if (result.success) {
+                const msg = dryRun
+                    ? `JSON saved to exports/. Segments: Silent=${result.segments.silent}, Chatted=${result.segments.chatted_no_price}, Named Price=${result.segments.named_price}, Got Link=${result.segments.got_link_no_pay}, Converted=${result.segments.converted}`
+                    : `Done! Sent: ${result.emailResults.sent}, Skipped: ${result.emailResults.skipped}, Failed: ${result.emailResults.failed}. JSON saved.`;
+                alert(msg);
+            } else {
+                alert("Failed: " + (result.error || "Unknown error"));
+            }
+        } catch {
+            alert("Failed — check console");
+        } finally {
+            setSendingEmails(false);
+        }
+    };
+
     // ─── Loading ─────────────────────────────────────────────
     if (loading) {
         return (
@@ -316,6 +343,12 @@ export default function ScholarshipLeadsClient() {
                             </Button>
                             <Button variant="outline" size="sm" onClick={() => exportToServer("conversations")} disabled={!!exporting} className="gap-1.5 text-xs">
                                 {exporting === "conversations" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <MessageCircle className="w-3.5 h-3.5" />} Export Chats
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => triggerReEngage(true)} disabled={sendingEmails} className="gap-1.5 text-xs border-blue-200 text-blue-600 hover:bg-blue-50">
+                                {sendingEmails ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />} Save JSON
+                            </Button>
+                            <Button size="sm" onClick={() => triggerReEngage(false)} disabled={sendingEmails} className="gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white">
+                                {sendingEmails ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />} Re-engage All
                             </Button>
                             <Button variant="outline" size="sm" onClick={fetchLeads} className="gap-1.5 text-xs">
                                 <RefreshCw className="w-3.5 h-3.5" />

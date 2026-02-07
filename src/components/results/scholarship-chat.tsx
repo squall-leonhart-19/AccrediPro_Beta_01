@@ -1060,16 +1060,40 @@ Type the amount you can cover and I'll call the Institute right now to see if th
                     }).catch((err) => console.error("[Scholarship Email] Failed:", err));
                   }
 
-                  // Waiting message (TEXT ONLY — Sarah is "on the phone")
+                  // Nudge message (TEXT ONLY)
                   setTimeout(() => {
                     const waitingMsg: ChatMessage = {
                       id: `sarah-waiting-${Date.now()}`,
                       role: "sarah",
-                      content: `Your scholarship code expires in 10 minutes, ${firstName} — tap the link and enter the code now while it's active! I'll stay right here if you need anything 💜`,
+                      content: `Your scholarship is locked in — just tap the link above to enroll! I'll stay right here if you need anything 💜`,
                       timestamp: new Date().toISOString(),
                     };
                     setMessages(prev => [...prev, waitingMsg]);
                   }, 3000);
+
+                  // 5-minute follow-up if no response
+                  setTimeout(() => {
+                    // Check if user has responded since approval
+                    setMessages(prev => {
+                      const lastMsg = prev[prev.length - 1];
+                      // Only send follow-up if last message is from Sarah (user hasn't replied)
+                      if (lastMsg && lastMsg.role === "sarah") {
+                        const followUpMsg: ChatMessage = {
+                          id: `sarah-followup-${Date.now()}`,
+                          role: "sarah",
+                          content: `Hey ${firstName}, just checking in! 😊 Did the link work okay? If you have any questions about the program, I'm right here — ask me anything!\n\nYour scholarship is reserved and the link will work whenever you're ready 💜`,
+                          timestamp: new Date().toISOString(),
+                        };
+                        fetch("/api/chat/sales", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ message: followUpMsg.content, page: `scholarship-${page}`, visitorId, userName: `${firstName} ${lastName}`.trim(), userEmail: email, isFromVisitor: false, repliedBy: "Sarah M. (Auto-Followup)" }),
+                        }).catch(() => { });
+                        return [...prev, followUpMsg];
+                      }
+                      return prev;
+                    });
+                  }, 5 * 60 * 1000); // 5 minutes
 
                 }, 3500); // Typing duration for approval
               }, approvalDelay);
@@ -1095,10 +1119,93 @@ Type the amount you can cover and I'll call the Institute right now to see if th
       }
     }
 
-    // ═══ NON-NUMERIC FIRST RESPONSE — Guide them to name an amount ═══
-    // When user says "I don't know", "not sure", "what do you recommend?" etc.
-    // and autopilot hasn't triggered yet (no number detected, no context set)
-    if (!hasNumber && !autopilotTriggered.current && !scholarshipContextRef.current) {
+    // ═══ COST QUESTION DETECTION — Answer honestly ═══
+    const costKeywords = ["how much", "total cost", "what is the cost", "what does it cost", "price of", "what's the price", "how much does it cost", "what do i pay", "how much i'm i supposed to pay", "how much is it", "how much is the program", "what is total cost"];
+    const isCostQuestion = costKeywords.some(kw => userMessage.toLowerCase().includes(kw));
+
+    if (isCostQuestion) {
+      // Ensure context is set so AI can follow up after
+      if (!scholarshipContextRef.current) {
+        const costCtx = { amount: "pending", couponCode: undefined, checkoutUrl: "https://sarah.accredipro.academy/checkout-fm-certification-program" };
+        setScholarshipContext(costCtx);
+        scholarshipContextRef.current = costCtx;
+      }
+
+      setTimeout(() => {
+        setIsTyping(true);
+        setTimeout(() => {
+          setIsTyping(false);
+          const costMsg: ChatMessage = {
+            id: `sarah-cost-${Date.now()}`,
+            role: "sarah",
+            content: `Great question, ${firstName}! 💜 Here's the full picture:\n\nThe complete FM Certification is normally **$4,997**. But since you qualified for our scholarship, the Institute covers the difference — you only pay what you can.\n\nMost students contribute between **$100–$300** and the Institute pays the rest (that's $4,700–$4,900 covered for you).\n\nJust type the amount you can cover and I'll call the Institute right now to lock in your scholarship 📞`,
+            timestamp: new Date().toISOString(),
+          };
+          setMessages(prev => [...prev, costMsg]);
+
+          // Save to DB
+          fetch("/api/chat/sales", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: costMsg.content,
+              page: `scholarship-${page}`,
+              visitorId,
+              userName: `${firstName} ${lastName}`.trim(),
+              userEmail: email,
+              isFromVisitor: false,
+              repliedBy: "Sarah M. (Auto-Cost)",
+            }),
+          }).catch(() => { });
+        }, 2000);
+      }, 1000);
+      return;
+    }
+
+    // ═══ SCAM/TRUST CONCERN DETECTION — Build trust ═══
+    const trustKeywords = ["scam", "legit", "legitimate", "real", "fake", "fraud", "trust", "how do i know"];
+    const isTrustConcern = trustKeywords.some(kw => userMessage.toLowerCase().includes(kw));
+
+    if (isTrustConcern) {
+      if (!scholarshipContextRef.current) {
+        const trustCtx = { amount: "pending", couponCode: undefined, checkoutUrl: "https://sarah.accredipro.academy/checkout-fm-certification-program" };
+        setScholarshipContext(trustCtx);
+        scholarshipContextRef.current = trustCtx;
+      }
+
+      setTimeout(() => {
+        setIsTyping(true);
+        setTimeout(() => {
+          setIsTyping(false);
+          const trustMsg: ChatMessage = {
+            id: `sarah-trust-${Date.now()}`,
+            role: "sarah",
+            content: `I completely understand the skepticism, ${firstName} — there are SO many scammy programs out there. Here's why AccrediPro is different:\n\n✅ **9 international accreditations** (CMA, IPHM, CPD + 6 more)\n✅ **Thousands of graduates** across the US and internationally\n✅ **Real portal** at learn.accredipro.academy — you get instant access\n✅ **14-day satisfaction period** — if it's not the right fit, just reach out\n✅ **20 modules with individual certificates** — you earn credentials from Day 1\n\nI was a nurse for 14 years before joining. I wouldn't put my name on anything that isn't real 💜\n\nWant to ask me anything specific? I'm an open book.`,
+            timestamp: new Date().toISOString(),
+          };
+          setMessages(prev => [...prev, trustMsg]);
+
+          fetch("/api/chat/sales", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: trustMsg.content,
+              page: `scholarship-${page}`,
+              visitorId,
+              userName: `${firstName} ${lastName}`.trim(),
+              userEmail: email,
+              isFromVisitor: false,
+              repliedBy: "Sarah M. (Auto-Trust)",
+            }),
+          }).catch(() => { });
+        }, 2500);
+      }, 1000);
+      return;
+    }
+
+    // ═══ NON-NUMERIC RESPONSE — Guide them to name an amount ═══
+    // FIXED: Now triggers even if autopilot was previously triggered but context is null
+    if (!hasNumber && !scholarshipContextRef.current) {
       // Set a minimal context so future AI follow-ups work
       const guidanceCtx = {
         amount: "pending",
@@ -1139,6 +1246,84 @@ Type the amount you can cover and I'll call the Institute right now to see if th
       return;
     }
 
+    // ═══ SECOND NUMBER AFTER AUTOPILOT — Re-process the new amount ═══
+    // FIXED: When user says a new amount after rejection/approval, process it again
+    if (hasNumber && autopilotTriggered.current) {
+      try {
+        const autoReplyRes = await fetch("/api/scholarship/auto-reply", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMessage, firstName, lastName, email, visitorId, quizData }),
+        });
+        const autoReply = await autoReplyRes.json();
+
+        if (autoReply.hasAmount && autoReply.rejectionMessage) {
+          setTimeout(() => {
+            setIsTyping(true);
+            setTimeout(() => {
+              setIsTyping(false);
+              const rejMsg: ChatMessage = {
+                id: `sarah-re-rejection-${Date.now()}`,
+                role: "sarah",
+                content: autoReply.rejectionMessage,
+                timestamp: new Date().toISOString(),
+              };
+              setMessages(prev => [...prev, rejMsg]);
+              fetch("/api/chat/sales", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: autoReply.rejectionMessage, page: `scholarship-${page}`, visitorId, userName: `${firstName} ${lastName}`.trim(), userEmail: email, isFromVisitor: false, repliedBy: "Sarah M. (Auto-Rejection)" }),
+              }).catch(() => { });
+              const rejCtx = { amount: `$${autoReply.fullContext?.requestedAmount || 'below minimum'}` };
+              setScholarshipContext(rejCtx);
+              scholarshipContextRef.current = rejCtx;
+            }, 2500);
+          }, 1000);
+          return;
+        }
+
+        if (autoReply.hasAmount && autoReply.callingMessage && autoReply.approvalMessage) {
+          const approvalCtx = {
+            amount: autoReply.fullContext.finalAmount ? `$${autoReply.fullContext.finalAmount}` : undefined,
+            couponCode: autoReply.tier?.couponCode,
+            checkoutUrl: autoReply.checkoutUrl || autoReply.tier?.checkoutUrl,
+          };
+          setScholarshipContext(approvalCtx);
+          scholarshipContextRef.current = approvalCtx;
+
+          setTimeout(() => {
+            setIsTyping(true);
+            setTimeout(() => {
+              setIsTyping(false);
+              const callingMsg: ChatMessage = { id: `sarah-re-calling-${Date.now()}`, role: "sarah", content: autoReply.callingMessage, timestamp: new Date().toISOString() };
+              setMessages(prev => [...prev, callingMsg]);
+              fetch("/api/chat/sales", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: autoReply.callingMessage, page: `scholarship-${page}`, visitorId, userName: `${firstName} ${lastName}`.trim(), userEmail: email, isFromVisitor: false, repliedBy: "Sarah M. (Auto)" }) }).catch(() => { });
+
+              setTimeout(async () => {
+                setIsTyping(true);
+                setTimeout(async () => {
+                  setIsTyping(false);
+                  const approvalMsg: ChatMessage = { id: `sarah-re-approval-${Date.now()}`, role: "sarah", content: autoReply.approvalMessage, timestamp: new Date().toISOString() };
+                  setMessages(prev => [...prev, approvalMsg]);
+                  fetch("/api/chat/sales", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: autoReply.approvalMessage, page: `scholarship-${page}`, visitorId, userName: `${firstName} ${lastName}`.trim(), userEmail: email, isFromVisitor: false, repliedBy: "Sarah M. (Auto-Approval)" }) }).catch(() => { });
+
+                  // Send scholarship email
+                  if (email) {
+                    fetch("/api/scholarship/send-email", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, firstName, amount: autoReply.fullContext.finalAmount, checkoutUrl: autoReply.checkoutUrl || autoReply.tier?.checkoutUrl }) }).catch(() => { });
+                  }
+                }, 3500);
+              }, 15000);
+            }, 2000);
+          }, 1000);
+          return;
+        }
+
+        // If API didn't detect amount, fall through to AI
+      } catch (err) {
+        console.error("[Scholarship Re-Autopilot] Error:", err);
+      }
+    }
+
     // ═══ PAID/DONE DETECTION — Send Email #5 + Welcome Response ═══
     const paidKeywords = ["done", "paid", "purchased", "completed", "i paid", "just paid", "payment done", "payment complete"];
     const isPaidMessage = paidKeywords.some(kw => userMessage.toLowerCase().includes(kw));
@@ -1159,7 +1344,7 @@ You just made a decision that's going to change your life!
 Here's what happens next:
 
 1️⃣ Check your email in the next 5 minutes — you'll get your login credentials
-2️⃣ Log into your portal at learn.accredipro.academy  
+2️⃣ Log into your portal at learn.accredipro.academy
 3️⃣ Start with Module 1 — it's already unlocked for you
 4️⃣ Join our private community — links are inside your portal
 
@@ -1201,7 +1386,15 @@ SO PROUD OF YOU!`,
     }
 
     // ═══ 🤖 AI FOLLOW-UP — Claude Sonnet 4.5 handles any post-approval question ═══
-    if (scholarshipContextRef.current && autopilotTriggered.current && !hasNumber) {
+    // FIXED: Removed hasNumber block — AI can now handle messages with numbers after approval
+    // FIXED: Ensures context is always set before reaching this point
+    if (scholarshipContextRef.current) {
+      handleAIResponse(userMessage);
+    } else {
+      // ABSOLUTE FALLBACK — should never reach here, but guarantee a response
+      const fallbackCtx = { amount: "pending", couponCode: undefined, checkoutUrl: "https://sarah.accredipro.academy/checkout-fm-certification-program" };
+      setScholarshipContext(fallbackCtx);
+      scholarshipContextRef.current = fallbackCtx;
       handleAIResponse(userMessage);
     }
   };
