@@ -259,6 +259,8 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     couponCode?: string;
     checkoutUrl?: string;
   } | null>(null);
+  // Ref always stays current (avoids stale closures in useCallback/async)
+  const scholarshipContextRef = useRef<typeof scholarshipContext>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -697,7 +699,8 @@ Type any amount — I'll get on the phone with them immediately and fight for th
 
   // ─── 🤖 AI Follow-up Handler (Claude Sonnet 4.5) ─────────────────
   const handleAIResponse = useCallback(async (userMessage: string) => {
-    if (!scholarshipContext) return;
+    const ctx = scholarshipContextRef.current;
+    if (!ctx) return;
 
     setIsTyping(true);
 
@@ -715,9 +718,9 @@ Type any amount — I'll get on the phone with them immediately and fight for th
           message: userMessage,
           chatHistory,
           firstName,
-          amount: scholarshipContext.amount,
-          couponCode: scholarshipContext.couponCode,
-          checkoutUrl: scholarshipContext.checkoutUrl,
+          amount: ctx.amount,
+          couponCode: ctx.couponCode,
+          checkoutUrl: ctx.checkoutUrl,
         }),
       });
 
@@ -757,7 +760,7 @@ Type any amount — I'll get on the phone with them immediately and fight for th
       console.error("[Sarah AI] Error:", err);
       setIsTyping(false);
     }
-  }, [messages, scholarshipContext, firstName, lastName, email, visitorId, page]);
+  }, [messages, firstName, lastName, email, visitorId, page]);
 
   // ─── Open chat ─────────────────────────────────────────────────
   const openChat = useCallback(() => {
@@ -859,9 +862,9 @@ Type any amount — I'll get on the phone with them immediately and fight for th
 
               // 🤖 Set minimal scholarshipContext so AI can handle follow-up messages
               // This allows Sarah to continue the conversation and try to upsell to $200+
-              setScholarshipContext({
-                amount: `$${autoReply.fullContext?.requestedAmount || 'below minimum'}`,
-              });
+              const rejCtx = { amount: `$${autoReply.fullContext?.requestedAmount || 'below minimum'}` };
+              setScholarshipContext(rejCtx);
+              scholarshipContextRef.current = rejCtx;
               autopilotTriggered.current = true;
             }, 2500);
           }, 1000);
@@ -871,11 +874,13 @@ Type any amount — I'll get on the phone with them immediately and fight for th
         if (autoReply.hasAmount && autoReply.callingMessage && autoReply.approvalMessage) {
 
           // 💾 Save scholarship context for AI follow-up responses
-          setScholarshipContext({
+          const approvalCtx = {
             amount: autoReply.fullContext.finalAmount ? `$${autoReply.fullContext.finalAmount}` : undefined,
             couponCode: autoReply.fullContext.couponCode || undefined,
             checkoutUrl: autoReply.checkoutUrl,
-          });
+          };
+          setScholarshipContext(approvalCtx);
+          scholarshipContextRef.current = approvalCtx;
 
           // Step 1: Show "calling Institute" message after 1 second
           setTimeout(async () => {
@@ -1092,7 +1097,7 @@ SO PROUD OF YOU!`,
     }
 
     // ═══ 🤖 AI FOLLOW-UP — Claude Sonnet 4.5 handles any post-approval question ═══
-    if (scholarshipContext && autopilotTriggered.current && !hasNumber) {
+    if (scholarshipContextRef.current && autopilotTriggered.current && !hasNumber) {
       handleAIResponse(userMessage);
     }
   };
