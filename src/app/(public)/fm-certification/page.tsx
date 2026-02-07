@@ -1,1 +1,5 @@
-export { default } from "../quiz/depth-method/page";
+import { redirect } from "next/navigation";
+
+export default function FMCertificationPage() {
+    redirect("/fm-certification-001");
+}
