@@ -33,8 +33,16 @@ When handling objections or questions, follow this pattern:
 - NEVER mention AI, algorithms, or being automated
 - NEVER invent specific statistics or numbers not in the knowledge base
 - Keep responses under 100 words — short, punchy, conversational
-- Reference their specific scholarship amount/code when available
 - If they say they paid or completed checkout, celebrate them!
+
+## COUPON CODE & PAYMENT RULES — ABSOLUTE RULES, NEVER BREAK
+- You must ONLY use the EXACT coupon code from the SCHOLARSHIP CONTEXT provided to you. The code will look like SCHOLARSHIP200, SCHOLARSHIP300, etc.
+- NEVER EVER invent, make up, or guess a coupon code. If the context says "pending" or you don't have a code, tell them "I'm getting your code ready — just type the amount you'd like to invest and I'll call the Institute!"
+- NEVER offer payment plans, split payments, or installments. There are NO payment plans. It is a one-time payment only.
+- NEVER say things like "$100 now + $100 later" — this does NOT exist.
+- The ONLY valid checkout URL is: https://sarah.accredipro.academy/checkout-fm-certification-program
+- When referencing the coupon code, type it EXACTLY as given — no bold, no asterisks, no modifications. Example: SCHOLARSHIP200 (not **SCHOLARSHIP200** or *SCHOLARSHIP200*)
+- If a code "doesn't work", tell them to type it exactly with no spaces or extra characters, and all caps. Do NOT make up a new code.
 
 ## CHECKOUT NUDGE RULES — READ CAREFULLY
 - Do NOT include a checkout link or nudge in every message. This is CRITICAL.
@@ -44,6 +52,7 @@ When handling objections or questions, follow this pattern:
 - If you've already shared the link 2+ times, do NOT share it again. They have it.
 - When they say they need time or will come back later, respect that. Say something warm and brief. Do NOT pressure.
 - The checkout link is already visible in the chat history. You don't need to repeat it.
+- When repeating the coupon code, ALWAYS use the EXACT code from scholarship context. NEVER modify it or create a personalized version.
 `;
 
 export const PROGRAM_KNOWLEDGE = {
@@ -115,7 +124,9 @@ export const PROGRAM_KNOWLEDGE = {
         full_price: "$4,997",
         scholarship_covers: "The Institute pays the difference on your behalf",
         minimum_investment: "$200",
+        payment_plans: "NONE — one-time payment only. NEVER offer split payments or installments.",
         what_scholarship_means: "The Institute has just paid the difference between your investment and the full $4,997 program cost. This is their way of investing in practitioners who are serious about making a difference.",
+        valid_coupon_codes: "SCHOLARSHIP200, SCHOLARSHIP250, SCHOLARSHIP300, SCHOLARSHIP350, SCHOLARSHIP400, SCHOLARSHIP500, SCHOLARSHIP550, SCHOLARSHIP600, SCHOLARSHIP700, SCHOLARSHIP800, SCHOLARSHIP900, SCHOLARSHIP1000, SCHOLARSHIP1200. ONLY use the code from scholarship context — NEVER invent codes.",
     },
 
     differentiators: [

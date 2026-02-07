@@ -1089,6 +1089,50 @@ How much can you realistically invest today? Even $200 could work — I'll call 
       }
     }
 
+    // ═══ NON-NUMERIC FIRST RESPONSE — Guide them to name an amount ═══
+    // When user says "I don't know", "not sure", "what do you recommend?" etc.
+    // and autopilot hasn't triggered yet (no number detected, no context set)
+    if (!hasNumber && !autopilotTriggered.current && !scholarshipContextRef.current) {
+      // Set a minimal context so future AI follow-ups work
+      const guidanceCtx = {
+        amount: "pending",
+        couponCode: undefined,
+        checkoutUrl: "https://sarah.accredipro.academy/checkout-fm-certification-program",
+      };
+      setScholarshipContext(guidanceCtx);
+      scholarshipContextRef.current = guidanceCtx;
+
+      setTimeout(() => {
+        setIsTyping(true);
+        setTimeout(() => {
+          setIsTyping(false);
+          const guidanceMsg: ChatMessage = {
+            id: `sarah-guidance-${Date.now()}`,
+            role: "sarah",
+            content: `No pressure at all, ${firstName}! 💜 Just type the amount you'd like to invest — even $200 works — and I'll call the Institute right now to see if it's approved for your scholarship! 📞`,
+            timestamp: new Date().toISOString(),
+          };
+          setMessages(prev => [...prev, guidanceMsg]);
+
+          // Save to DB
+          fetch("/api/chat/sales", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: guidanceMsg.content,
+              page: `scholarship-${page}`,
+              visitorId,
+              userName: `${firstName} ${lastName}`.trim(),
+              userEmail: email,
+              isFromVisitor: false,
+              repliedBy: "Sarah M. (Auto-Guidance)",
+            }),
+          }).catch(() => { });
+        }, 2000);
+      }, 1000);
+      return;
+    }
+
     // ═══ PAID/DONE DETECTION — Send Email #5 + Welcome Response ═══
     const paidKeywords = ["done", "paid", "purchased", "completed", "i paid", "just paid", "payment done", "payment complete"];
     const isPaidMessage = paidKeywords.some(kw => userMessage.toLowerCase().includes(kw));
