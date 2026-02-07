@@ -55,18 +55,24 @@ function renderMessageWithLinks(text: string, isFromUser: boolean) {
 
   return parts.map((part, index) => {
     if (part.match(urlPattern)) {
+      // Clean trailing punctuation from URL
+      const cleanUrl = part.replace(/[.,;:!?)]+$/, "");
+      const trailing = part.slice(cleanUrl.length);
       return (
-        <a
-          key={index}
-          href={part}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`underline hover:opacity-80 break-all ${isFromUser ? "text-blue-200" : "text-blue-600"
-            }`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {part}
-        </a>
+        <span key={index}>
+          <a
+            href={cleanUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`underline font-semibold hover:opacity-80 break-all ${isFromUser ? "text-blue-200" : "text-blue-600"
+              }`}
+            style={{ textDecorationThickness: "2px" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {cleanUrl}
+          </a>
+          {trailing && <span>{trailing}</span>}
+        </span>
       );
     }
     return <span key={index}>{part}</span>;
@@ -1059,7 +1065,7 @@ How much can you realistically invest today? Even $200 could work — I'll call 
                     const waitingMsg: ChatMessage = {
                       id: `sarah-waiting-${Date.now()}`,
                       role: "sarah",
-                      content: `I'll stay right here on the call with the Institute while you complete your enrollment, ${firstName}... Take your time, I'm not going anywhere! 📞`,
+                      content: `Your scholarship code expires in 10 minutes, ${firstName} — tap the link and enter the code now while it's active! I'll stay right here if you need anything 💜`,
                       timestamp: new Date().toISOString(),
                     };
                     setMessages(prev => [...prev, waitingMsg]);

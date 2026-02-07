@@ -302,10 +302,10 @@ SO PROUD OF YOU! 💜`;
 
 Investment: ${investmentLine}
 
-Checkout: ${CHECKOUT_URL}
-Code: ✨ ${tier.couponCode} ✨
+👉 ${CHECKOUT_URL}
+Code: ${tier.couponCode}
 
-Link expires in 24h. You've got this! 🔥`;
+Tap the link above, enter your code at checkout. ⏰ Scholarship valid for 10 minutes — go go go! 🔥`;
 }
 
 
