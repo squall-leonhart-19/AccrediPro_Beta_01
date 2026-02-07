@@ -98,6 +98,29 @@ function getAllLessonTagPrefixes(): string[] {
 // Curriculum: 3 lessons (~25 min) + 5-question exam
 // ============================================================
 
+function emailHour1Pod(firstName: string, config: MiniDiplomaConfig, portalLink: string): { subject: string; html: string } {
+    return {
+        subject: `Your pod is waiting for you, ${firstName}! 💬`,
+        html: `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                <p>Hey ${firstName}!</p>
+                <p>I just set up your private study pod and your cohort mate is already in there chatting... 👀</p>
+                <p style="background: #f0f4ff; padding: 15px; border-radius: 8px; border-left: 4px solid #4f46e5;">
+                    <strong>Your pod is a small, private group</strong> of women going through the ${config.displayName} certification together. It's where the magic happens — support, accountability, and real conversations.
+                </p>
+                <p>All you have to do is <strong>introduce yourself</strong> — even just a "Hey, I'm ${firstName}!" works. 😊</p>
+                <p style="margin: 30px 0;">
+                    <a href="${portalLink}" style="background: #4f46e5; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                        Say Hi In Your Pod 💬
+                    </a>
+                </p>
+                <p>I'll be right there waiting to welcome you!</p>
+                <p>— Coach Sarah</p>
+            </div>
+        `,
+    };
+}
+
 function emailHour3(firstName: string, config: MiniDiplomaConfig, portalLink: string, personalizedHook: string): { subject: string; html: string } {
     return {
         subject: `${firstName}, 847 women started this week`,
@@ -397,9 +420,31 @@ export async function GET(request: NextRequest) {
             const incomeMessage = getIncomeMessage(qualData.incomeGoal);
 
             // ============================================================
-            // 48-HOUR EMAIL SEQUENCE (6 emails, no SMS)
-            // Timeline: 3h → 12h → 24h → 36h → 48h (recovery) → 72h (final)
+            // 48-HOUR EMAIL SEQUENCE (7 emails, no SMS)
+            // Timeline: 1h (pod) → 3h → 12h → 24h → 36h → 48h (recovery) → 72h (final)
             // ============================================================
+
+            // Hour 1: Pod engagement check — only if they haven't messaged in the pod yet
+            if (hoursSinceSignup >= 1 && hoursSinceSignup < 2 && !sentNudges.has("nudge:hour-1-pod-email")) {
+                try {
+                    // Check if the lead has sent any messages in their pod
+                    const podMessageCount = await prisma.podUserMessage.count({
+                        where: { userId: lead.id },
+                    });
+
+                    if (podMessageCount === 0) {
+                        const { subject, html } = emailHour1Pod(firstName, config, portalLink);
+                        await sendEmail({ to: leadEmail, subject, html, type: "transactional", userId: lead.id, emailType: "mini-diploma-nudge" });
+                        await prisma.userTag.create({ data: { userId: lead.id, tag: "nudge:hour-1-pod-email" } });
+                        results.push({ userId: lead.id, email: leadEmail, niche: nicheName, channel: "email", success: true, nudgeType: "hour-1-pod" });
+                    } else {
+                        // Already engaged in pod — skip this nudge and tag it so we don't check again
+                        await prisma.userTag.create({ data: { userId: lead.id, tag: "nudge:hour-1-pod-email" } }).catch(() => { });
+                    }
+                } catch (err) {
+                    console.error(`Failed hour-1-pod email to ${leadEmail}:`, err);
+                }
+            }
 
             // Hour 3: Social proof + what's inside
             if (hoursSinceSignup >= 3 && hoursSinceSignup < 4 && !sentNudges.has("nudge:hour-3-email")) {
