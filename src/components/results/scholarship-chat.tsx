@@ -81,25 +81,55 @@ interface StoredChat {
   email: string;
 }
 
-// ─── Human-readable quiz labels ──────────────────────────────────
-const INCOME_LABELS: Record<string, string> = {
-  "0": "$0/month", "under-2k": "under $2K/month", "2k-5k": "$2K-$5K/month", "over-5k": "over $5K/month",
+// ─── Quiz Answer Label Maps (matched to actual quiz questions) ───
+const SPECIALIZATION_LABELS: Record<string, string> = {
+  "gut-health": "Gut Health", "hormone-health": "Hormone Health",
+  "burnout": "Burnout Recovery", "autoimmune": "Autoimmune",
+  "metabolic": "Metabolic Health", "explore": "Exploring Options",
 };
-const GOAL_LABELS: Record<string, string> = {
-  "5k": "$5,000/month", "10k": "$10,000/month", "20k": "$20,000/month", "50k-plus": "$50,000+/month",
+const BACKGROUND_LABELS: Record<string, string> = {
+  "nurse": "Nurse / Nursing Assistant", "doctor": "Doctor / PA / NP",
+  "allied-health": "Allied Health", "mental-health": "Mental Health Professional",
+  "wellness": "Wellness / Fitness Professional", "career-change": "Career Changer",
 };
-const TYPE_LABELS: Record<string, string> = {
-  "hormone-health": "Hormone Health", "gut-restoration": "Gut Restoration",
-  "metabolic-optimization": "Metabolic Optimization", "burnout-recovery": "Burnout Recovery",
-  "autoimmune-support": "Autoimmune Support",
+const FM_KNOWLEDGE_LABELS: Record<string, string> = {
+  "brand-new": "Brand New", "self-study": "Self-Study",
+  "some-training": "Some Training", "already-practicing": "Already Practicing",
 };
-const EXPERIENCE_LABELS: Record<string, string> = {
-  "active-clients": "active clients", "past-clients": "past clients (took a break)",
-  "informal": "informal (friends & family)", "no-experience": "no direct experience yet",
+const MOTIVATION_LABELS: Record<string, string> = {
+  "help-people": "Help People Heal", "leave-job": "Leave Current Job",
+  "add-services": "Add FM to Practice", "work-from-home": "Work From Home",
+  "burned-out": "Burned Out, Need New Path",
 };
-const VISION_LABELS: Record<string, string> = {
-  "leave-job": "leave my 9-to-5", "security": "financial security",
-  "fulfillment": "fulfillment & meaningful work", "all-above": "the complete transformation",
+const PAIN_LABELS: Record<string, string> = {
+  "time-for-money": "Trading Time for Money", "stuck": "Feeling Stuck",
+  "meant-for-more": "Meant for More", "exhausted": "Exhausted",
+  "no-credential": "No Credential",
+};
+const TIMELINE_LABELS: Record<string, string> = {
+  "immediately": "Immediately", "30-days": "Within 30 Days",
+  "1-3-months": "1-3 Months", "exploring": "Just Exploring",
+};
+const INCOME_GOAL_LABELS: Record<string, string> = {
+  "3k-5k": "$3K-$5K/mo", "5k-10k": "$5K-$10K/mo",
+  "10k-15k": "$10K-$15K/mo", "15k-plus": "$15K+/mo",
+};
+const TIME_STUCK_LABELS: Record<string, string> = {
+  "less-than-month": "Less Than a Month", "1-6-months": "1-6 Months",
+  "6-12-months": "6-12 Months", "over-year": "Over a Year",
+};
+const CURRENT_INCOME_LABELS: Record<string, string> = {
+  "under-3k": "Under $3K/mo", "3k-5k": "$3K-$5K/mo",
+  "5k-8k": "$5K-$8K/mo", "over-8k": "$8K+/mo",
+};
+const DREAM_LABELS: Record<string, string> = {
+  "financial-freedom": "Financial Freedom", "time-freedom": "Time Freedom",
+  "purpose": "Purpose & Meaning", "independence": "Independence",
+  "all-above": "The Complete Transformation",
+};
+const COMMITMENT_LABELS: Record<string, string> = {
+  "100-percent": "100% All In", "very-committed": "Very Committed",
+  "interested": "Interested", "curious": "Curious",
 };
 
 // ─── Social Proof Notifications ──────────────────────────────────
@@ -528,17 +558,17 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       `SCHOLARSHIP APPLICATION`,
       `Name: ${firstName} ${lastName}`,
       `Email: ${email}`,
-      `Specialization: ${TYPE_LABELS[quizData.type] || quizData.type}`,
-      `Income Goal: ${GOAL_LABELS[quizData.goal] || quizData.goal}`,
-      `Current Income: ${INCOME_LABELS[quizData.currentIncome] || quizData.currentIncome}`,
-      `Experience: ${EXPERIENCE_LABELS[quizData.experience] || quizData.experience}`,
-      `Clinical Readiness: ${quizData.clinicalReady}`,
-      `Lab Interest: ${quizData.labInterest}`,
-      `Past Certs: ${quizData.pastCerts}`,
-      `Missing Skill: ${quizData.missingSkill}`,
-      `Commitment: ${quizData.commitment}`,
-      `Vision: ${VISION_LABELS[quizData.vision] || quizData.vision}`,
-      `Start Timeline: ${quizData.startTimeline}`,
+      `Specialization: ${SPECIALIZATION_LABELS[quizData.type] || quizData.type}`,
+      `Background: ${BACKGROUND_LABELS[quizData.currentIncome] || quizData.currentIncome}`,
+      `FM Knowledge: ${FM_KNOWLEDGE_LABELS[quizData.goal] || quizData.goal}`,
+      `Motivation: ${MOTIVATION_LABELS[quizData.experience] || quizData.experience}`,
+      `Pain Point: ${PAIN_LABELS[quizData.clinicalReady] || quizData.clinicalReady}`,
+      `Start Timeline: ${TIMELINE_LABELS[quizData.labInterest] || quizData.labInterest}`,
+      `Income Goal: ${INCOME_GOAL_LABELS[quizData.pastCerts] || quizData.pastCerts}`,
+      `Time Considering: ${TIME_STUCK_LABELS[quizData.missingSkill] || quizData.missingSkill}`,
+      `Current Income: ${CURRENT_INCOME_LABELS[quizData.commitment] || quizData.commitment}`,
+      `Dream Life: ${DREAM_LABELS[quizData.vision] || quizData.vision}`,
+      `Commitment: ${COMMITMENT_LABELS[quizData.startTimeline] || quizData.startTimeline}`,
       `Page: ${page}`,
     ].join("\n");
 
@@ -558,9 +588,9 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     } catch { }
 
     // 3. Sarah's welcome sequence — DELAYED for natural feel
-    const incomeLabel = INCOME_LABELS[quizData.currentIncome] || "$0/month";
-    const goalLabel = GOAL_LABELS[quizData.goal] || "$10,000/month";
-    const typeLabel = TYPE_LABELS[quizData.type] || "your specialization";
+    const backgroundLabel = BACKGROUND_LABELS[quizData.currentIncome] || "your background";
+    const incomeGoalLabel = INCOME_GOAL_LABELS[quizData.pastCerts] || "$5K-$10K/mo";
+    const typeLabel = SPECIALIZATION_LABELS[quizData.type] || "Functional Medicine";
 
     // Helper to save Sarah's message to database (so admin can see it)
     // Uses retry logic to ensure messages sync reliably
@@ -598,9 +628,9 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       console.error(`[Scholarship Chat] ❌ FAILED to save Sarah message after ${retries} attempts`);
     };
 
-    // NEW WELCOME SEQUENCE - Simplified (no value stack - they already see it on results page)
+    // ═══ HORMOZI WELCOME SEQUENCE — Short, punchy, value-stack ═══
 
-    const msg1Content = `Hey ${firstName}! 🎉 AMAZING news — you QUALIFY for our ASI Scholarship Program!`;
+    const msg1Content = `Hey ${firstName}! 🎉 You QUALIFIED — I just pulled your application.`;
     const msg1: ChatMessage = {
       id: "sarah-1",
       role: "sarah",
@@ -622,7 +652,6 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
         console.log("[Audio] Response:", { success: data.success, hasAudio: !!data.audio });
         if (data.success && data.audio) {
           setWelcomeAudioUrl(data.audio);
-          // Pre-load the audio
           const audio = new Audio(data.audio);
           audio.preload = "auto";
           welcomeAudioRef.current = audio;
@@ -631,14 +660,13 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
             console.log("[Audio] Error:", e);
             setIsPlayingWelcomeAudio(false);
           });
-          // Force load
           audio.load();
         }
       } catch (err) {
         console.log("[Audio] Fetch failed:", err);
       }
     };
-    fetchWelcomeAudio(); // Start fetching immediately
+    fetchWelcomeAudio();
 
     // Delay message 1 by 2 seconds (Sarah "reading" the application)
     const t1 = setTimeout(() => {
@@ -646,7 +674,7 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       const t1b = setTimeout(async () => {
         setIsTyping(false);
         setMessages(prev => [...prev, msg1]);
-        await saveSarahMessage(msg1Content); // Save to DB for admin (with retry)
+        await saveSarahMessage(msg1Content);
 
         // 🎵 Play welcome audio RIGHT after first message (only once!)
         if (welcomeAudioRef.current && !welcomeAudioPlayed.current) {
@@ -662,20 +690,28 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
             .catch((err) => console.log("[Audio] Autoplay blocked:", err.message));
         }
 
-        // Delay message 2 (investment ask) by 4 seconds
+        // Delay message 2 (HORMOZI VALUE STACK + investment ask)
         const t2 = setTimeout(() => {
           setIsTyping(true);
           const t2b = setTimeout(async () => {
             setIsTyping(false);
 
-            // Message 2: Simple, direct investment ask (NO budget hint - they only type in chat)
-            const msg2Content = `${firstName}, I want to call the Institute right now and see if they can cover most of your certification cost.
+            const msg2Content = `Here's what you're looking at, ${firstName}:
 
-To reach your goal of ${goalLabel}, you'll need the full FM Certification + Business System.
+✅ 20 Modules + 20 Certificates
+✅ 9 Board Accreditations
+✅ DFY Website to Start Getting Clients
+✅ Legal Templates + Offer Builder
+✅ Client Management Resources
+✅ Coach Workspace
+✅ 1:1 Mentorship Until Certified
+✅ Lifetime Access
 
-How much could you realistically invest today?
+Imagine having a fully done-for-you website, ready to take clients from day one. Legal templates already written. A complete system to manage and grow your practice.
 
-Type any amount — I'll get on the phone with them immediately and fight for the maximum scholarship coverage!`;
+Total value: $4,997. But you won't pay anywhere near that.
+
+How much can you invest today? I'll call the Institute and fight for maximum scholarship coverage 📞`;
 
             const msg2: ChatMessage = {
               id: "sarah-2",

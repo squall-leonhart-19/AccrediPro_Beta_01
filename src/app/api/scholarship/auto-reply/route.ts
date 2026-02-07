@@ -105,9 +105,23 @@ export async function POST(req: NextRequest) {
 
         // REJECTION: Amount below $200 minimum
         if (!tier) {
-            const rejectionMessage = `I totally understand 💜 Unfortunately, the Institute requires a minimum investment of $200 to qualify for the scholarship program.\n\nHere's why: the certification includes Practitioner + Advanced + Master levels, 9 specializations, mentorship, client acquisition system, offer templates, and lifetime access — valued at $4,997. The Institute subsidizes most of this, but needs at least $200 to cover their costs.\n\nIs there any way you could make $200 work? Let me know and I'll check with the Institute! 💪`;
+            const rejectionMessage = `I hear you \u{1F49C} The Institute needs minimum $200 to activate your scholarship \u2014 that's 96% OFF the full $4,997 program.
 
-            console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} → REJECTED (below $200 minimum)`);
+For $200 you unlock:
+\u2705 20 Modules + 20 Certificates
+\u2705 9 Board Accreditations
+\u2705 DFY Website to Start Getting Clients
+\u2705 Legal Templates + Offer Builder
+\u2705 Client Management Resources
+\u2705 Coach Workspace
+\u2705 1:1 Mentorship Until Certified
+\u2705 Lifetime Access
+
+Imagine having your own website live, legal templates ready, and a complete system to manage clients \u2014 all set up for you.
+
+Can you make $200 work? I'll call the Institute right now \u{1F4DE}`;
+
+            console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} \u2192 REJECTED (below $200 minimum)`);
 
             return NextResponse.json({
                 hasAmount: true,
@@ -123,6 +137,7 @@ export async function POST(req: NextRequest) {
                     email: email || "",
                     visitorId: visitorId || "",
                     offeredAmount: detectedAmount,
+                    requestedAmount: detectedAmount,
                     finalAmount: null,
                     couponCode: null,
                     quizData,
@@ -134,7 +149,7 @@ export async function POST(req: NextRequest) {
         const callingMessage = generateCallingMessage();
         const approvalMessage = generateApprovalMessage(firstName, detectedAmount, tier);
 
-        console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} → pays ${formatCurrency(tier.theyPay)} (${tier.couponCode})`);
+        console.log(`[Scholarship Auto-Reply] ${firstName} offered ${formatCurrency(detectedAmount)} \u2192 pays ${formatCurrency(tier.theyPay)} (${tier.couponCode})`);
 
         return NextResponse.json({
             hasAmount: true,
