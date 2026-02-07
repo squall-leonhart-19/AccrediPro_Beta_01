@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
  * - Drop-off analysis
  * - Qualification score
  */
-export async function GET() {
+export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -30,9 +30,22 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  // Date range filter
+  const daysParam = req.nextUrl.searchParams.get("days") || "all";
+  const dateFilter: { gte?: Date } = {};
+  if (daysParam !== "all") {
+    const days = parseInt(daysParam, 10) || 30;
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+    dateFilter.gte = since;
+  }
+
   // Get all scholarship applications
   const scholarshipTags = await prisma.userTag.findMany({
-    where: { tag: "scholarship_application_submitted" },
+    where: {
+      tag: "scholarship_application_submitted",
+      ...(dateFilter.gte ? { createdAt: { gte: dateFilter.gte } } : {}),
+    },
     include: {
       user: {
         select: {
@@ -329,6 +342,11 @@ export async function GET() {
   const weekStart = new Date(todayStart);
   weekStart.setDate(weekStart.getDate() - 7);
 
+  // Revenue = sum of offered amounts for converted leads
+  const revenue = leads
+    .filter((l) => l.hasConverted && l.offeredAmount)
+    .reduce((sum, l) => sum + (parseInt(l.offeredAmount!.replace(/[^0-9]/g, ""), 10) || 0), 0);
+
   const stats = {
     total: leads.length,
     today: leads.filter((l) => new Date(l.applicationDate) >= todayStart).length,
@@ -336,9 +354,11 @@ export async function GET() {
     pending: leads.filter((l) => l.status === "pending").length,
     approved: leads.filter((l) => l.status === "approved").length,
     converted: leads.filter((l) => l.hasConverted).length,
+    lost: leads.filter((l) => l.status === "lost").length,
     conversionRate: leads.length > 0 ? Math.round((leads.filter((l) => l.hasConverted).length / leads.length) * 100) : 0,
     avgQualScore: leads.length > 0 ? Math.round(leads.reduce((sum, l) => sum + l.qualificationScore, 0) / leads.length) : 0,
     totalUnread: leads.reduce((sum, l) => sum + l.unreadCount, 0),
+    revenue,
   };
 
   return NextResponse.json({ leads, stats });

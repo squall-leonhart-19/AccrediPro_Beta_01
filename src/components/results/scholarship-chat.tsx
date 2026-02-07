@@ -21,19 +21,20 @@ interface ScholarshipChatProps {
   lastName: string;
   email: string;
   quizData: {
-    type: string;
-    goal: string;
-    role: string;
-    currentIncome: string;
-    experience: string;
-    clinicalReady: string;
-    labInterest: string;
-    pastCerts: string;
-    missingSkill: string;
-    commitment: string;
-    vision: string;
-    startTimeline: string;
-    investmentBudget?: string; // From quiz Q15: 500, 600, 700, 800, 900, 1000-plus
+    type: string;           // Practitioner type key (e.g., "autoimmune-support")
+    role: string;           // Persona (e.g., "other-passionate")
+    specialization: string; // Q1: Area of interest (e.g., "autoimmune")
+    background: string;     // Q2: Current background (e.g., "career-change")
+    experience: string;     // Q3: FM knowledge (e.g., "self-study")
+    motivation: string;     // Q4: Reason for certification (e.g., "help-people")
+    painPoint: string;      // Q5: Current frustration (e.g., "no-credential")
+    timeline: string;       // Q6: When to start (e.g., "immediately")
+    incomeGoal: string;     // Q7: Target income (e.g., "5k-10k")
+    timeStuck: string;      // Q8: How long considering (e.g., "1-6-months")
+    currentIncome: string;  // Q9: Current income (e.g., "3k-5k")
+    dreamLife: string;      // Q10: What matters most (e.g., "purpose")
+    commitment: string;     // Q11: Commitment level (e.g., "100-percent")
+    variant?: string;
   };
   page?: string;
 }
@@ -92,6 +93,10 @@ const SPECIALIZATION_LABELS: Record<string, string> = {
   "gut-health": "Gut Health", "hormone-health": "Hormone Health",
   "burnout": "Burnout Recovery", "autoimmune": "Autoimmune",
   "metabolic": "Metabolic Health", "explore": "Exploring Options",
+  // Also accept PRACTITIONER_TYPES keys (passed as `type` param from results page)
+  "gut-restoration": "Gut Health", "burnout-recovery": "Burnout Recovery",
+  "autoimmune-support": "Autoimmune", "metabolic-optimization": "Metabolic Health",
+  "other-specialty": "Exploring Options",
 };
 const BACKGROUND_LABELS: Record<string, string> = {
   "nurse": "Nurse / Nursing Assistant", "doctor": "Doctor / PA / NP",
@@ -580,17 +585,17 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
       `SCHOLARSHIP APPLICATION`,
       `Name: ${firstName} ${lastName}`,
       `Email: ${email}`,
-      `Specialization: ${SPECIALIZATION_LABELS[quizData.type] || quizData.type}`,
-      `Background: ${BACKGROUND_LABELS[quizData.currentIncome] || quizData.currentIncome}`,
-      `FM Knowledge: ${FM_KNOWLEDGE_LABELS[quizData.goal] || quizData.goal}`,
-      `Motivation: ${MOTIVATION_LABELS[quizData.experience] || quizData.experience}`,
-      `Pain Point: ${PAIN_LABELS[quizData.clinicalReady] || quizData.clinicalReady}`,
-      `Start Timeline: ${TIMELINE_LABELS[quizData.labInterest] || quizData.labInterest}`,
-      `Income Goal: ${INCOME_GOAL_LABELS[quizData.pastCerts] || quizData.pastCerts}`,
-      `Time Considering: ${TIME_STUCK_LABELS[quizData.missingSkill] || quizData.missingSkill}`,
-      `Current Income: ${CURRENT_INCOME_LABELS[quizData.commitment] || quizData.commitment}`,
-      `Dream Life: ${DREAM_LABELS[quizData.vision] || quizData.vision}`,
-      `Commitment: ${COMMITMENT_LABELS[quizData.startTimeline] || quizData.startTimeline}`,
+      `Specialization: ${SPECIALIZATION_LABELS[quizData.specialization] || SPECIALIZATION_LABELS[quizData.type] || quizData.specialization || quizData.type}`,
+      `Background: ${BACKGROUND_LABELS[quizData.background] || quizData.background}`,
+      `FM Knowledge: ${FM_KNOWLEDGE_LABELS[quizData.experience] || quizData.experience}`,
+      `Motivation: ${MOTIVATION_LABELS[quizData.motivation] || quizData.motivation}`,
+      `Pain Point: ${PAIN_LABELS[quizData.painPoint] || quizData.painPoint}`,
+      `Start Timeline: ${TIMELINE_LABELS[quizData.timeline] || quizData.timeline}`,
+      `Income Goal: ${INCOME_GOAL_LABELS[quizData.incomeGoal] || quizData.incomeGoal}`,
+      `Time Considering: ${TIME_STUCK_LABELS[quizData.timeStuck] || quizData.timeStuck}`,
+      `Current Income: ${CURRENT_INCOME_LABELS[quizData.currentIncome] || quizData.currentIncome}`,
+      `Dream Life: ${DREAM_LABELS[quizData.dreamLife] || quizData.dreamLife}`,
+      `Commitment: ${COMMITMENT_LABELS[quizData.commitment] || quizData.commitment}`,
       `Page: ${page}`,
     ].join("\n");
 
@@ -610,9 +615,9 @@ export function ScholarshipChat({ firstName, lastName, email, quizData, page = "
     } catch { }
 
     // 3. Sarah's welcome sequence — DELAYED for natural feel
-    const backgroundLabel = BACKGROUND_LABELS[quizData.currentIncome] || "your background";
-    const incomeGoalLabel = INCOME_GOAL_LABELS[quizData.pastCerts] || "$5K-$10K/mo";
-    const typeLabel = SPECIALIZATION_LABELS[quizData.type] || "Functional Medicine";
+    const backgroundLabel = BACKGROUND_LABELS[quizData.background] || "your background";
+    const incomeGoalLabel = INCOME_GOAL_LABELS[quizData.incomeGoal] || "$5K-$10K/mo";
+    const typeLabel = SPECIALIZATION_LABELS[quizData.specialization] || SPECIALIZATION_LABELS[quizData.type] || "Functional Medicine";
 
     // Helper to save Sarah's message to database (so admin can see it)
     // Uses retry logic to ensure messages sync reliably

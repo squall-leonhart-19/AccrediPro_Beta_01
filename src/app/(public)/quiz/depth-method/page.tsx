@@ -75,6 +75,26 @@ const PRACTITIONER_TYPES: Record<string, { label: string; icon: typeof Stethosco
   "other-specialty": { label: "Custom Specialty Path", icon: Sparkles, description: "Tell us your passion and we'll map it to our specialty tracks. Your unique focus becomes your competitive advantage." },
 };
 
+// ─── Specialization → Practitioner Type mapping ──────────────────
+const SPEC_TO_PRACT: Record<string, string> = {
+  "gut-health": "gut-restoration",
+  "hormone-health": "hormone-health",
+  "burnout": "burnout-recovery",
+  "autoimmune": "autoimmune-support",
+  "metabolic": "metabolic-optimization",
+  "explore": "other-specialty",
+};
+
+// ─── Background → Persona mapping ─────────────────────────────────
+const BACKGROUND_TO_PERSONA: Record<string, Persona> = {
+  "nurse": "healthcare-pro",
+  "doctor": "healthcare-pro",
+  "allied-health": "healthcare-pro",
+  "mental-health": "health-coach",
+  "wellness": "health-coach",
+  "career-change": "other-passionate",
+};
+
 // ─── Persona types ─────────────────────────────────────────────────
 type Persona = "healthcare-pro" | "health-coach" | "corporate" | "stay-at-home-mom" | "other-passionate";
 
@@ -620,10 +640,10 @@ export default function FMCertificationQuiz() {
   const fireConfetti = useConfetti();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const practitionerTypeKey = answers[10] || "hormone-health";
+  const practitionerTypeKey = SPEC_TO_PRACT[answers[0]] || "hormone-health";
   const practitionerType = PRACTITIONER_TYPES[practitionerTypeKey] || PRACTITIONER_TYPES["hormone-health"];
-  const incomeGoal = answers[2] || "10k";
-  const currentRole = (answers[0] || "other-passionate") as Persona;
+  const incomeGoal = answers[6] || "5k-10k";
+  const currentRole: Persona = BACKGROUND_TO_PERSONA[answers[1]] || "other-passionate";
 
   // Dynamic data based on persona
   const testimonials = TESTIMONIALS_BY_PERSONA[currentRole] || TESTIMONIALS_BY_PERSONA["other-passionate"];
@@ -649,6 +669,36 @@ export default function FMCertificationQuiz() {
     if (personaSubs && personaSubs[qIndex]) return personaSubs[qIndex];
     return QUESTIONS[qIndex]?.subtitle;
   };
+
+  // Track quiz page view + per-question progress
+  const visitorIdRef = useRef<string>("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Reuse existing visitorId or create new one
+    let vid = sessionStorage.getItem("quiz_visitor_id");
+    if (!vid) {
+      vid = `qv_${Math.random().toString(36).slice(2, 11)}_${Date.now()}`;
+      sessionStorage.setItem("quiz_visitor_id", vid);
+    }
+    visitorIdRef.current = vid;
+
+    // Only fire initial page view once per session
+    const tracked = sessionStorage.getItem("quiz_start_tracked");
+    if (tracked) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const v = params.get("v") || "A";
+
+    fetch("/api/quiz/track-start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ visitorId: vid, variant: v, page: "depth-method", questionReached: 0 }),
+    }).catch(() => {});
+
+    sessionStorage.setItem("quiz_start_tracked", "1");
+  }, []);
 
   // Optin countdown timer
   useEffect(() => {
@@ -706,6 +756,22 @@ export default function FMCertificationQuiz() {
 
   const selectAnswer = (value: string, _reactionText: string) => {
     setAnswers((prev) => ({ ...prev, [currentQ]: value }));
+
+    // Track question progress (fire-and-forget)
+    if (visitorIdRef.current) {
+      const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      fetch("/api/quiz/track-start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          visitorId: visitorIdRef.current,
+          variant: urlParams?.get("v") || "A",
+          page: "depth-method",
+          questionReached: currentQ + 1, // Q answered (1-indexed)
+        }),
+      }).catch(() => {});
+    }
+
     // Show "Sarah is typing..." for 1.2 seconds before showing reaction
     setReaction(null);
     setIsTyping(true);
@@ -781,28 +847,30 @@ export default function FMCertificationQuiz() {
     setStage("reviewing");
   };
 
+  // Read variant from URL for A/B testing (e.g. /quiz/depth-method?v=B)
+  const urlVariant = typeof window !== "undefined"
+    ? new URLSearchParams(window.location.search).get("v") || "A"
+    : "A";
+
   const handleSeeResults = () => {
     setStage("result");
     const params = new URLSearchParams({
       name, lastName, email,
       type: practitionerTypeKey,
-      goal: incomeGoal,
       role: currentRole,
-      // Pass ALL quiz answers for hyper-personalization
-      currentIncome: answers[1] || "",        // Q2: current income
-      experience: answers[3] || "",            // Q4: client experience
-      clinicalReady: answers[4] || "",         // Q5: clinical readiness
-      labInterest: answers[5] || "",           // Q6: lab interest
-      pastCerts: answers[6] || "",             // Q7: past certifications
-      missingSkill: answers[7] || "",          // Q8: missing skill
-      commitment: answers[8] || "",            // Q9: commitment
-      vision: answers[9] || "",                // Q10: vision
-      careerPathLevel: answers[11] || "",      // Q12: career path level
-      clientAcquisition: answers[12] || "",    // Q13: client acquisition
-      financialSituation: answers[13] || "",   // Q14: financial situation (NEW)
-      investmentPriority: answers[14] || "",   // Q15: investment priority (NEW)
-      startTimeline: answers[15] || "",        // Q16: start timeline
-      qualificationChoice: answers[16] || "",  // Q17: final qualification choice
+      variant: urlVariant,
+      // All 11 quiz answers with correct semantic param names
+      specialization: answers[0] || "",    // Q1: Which area excites you
+      background: answers[1] || "",        // Q2: Current background
+      experience: answers[2] || "",        // Q3: FM knowledge level
+      motivation: answers[3] || "",        // Q4: Reason for certification
+      painPoint: answers[4] || "",         // Q5: Current frustration
+      timeline: answers[5] || "",          // Q6: When to start
+      incomeGoal: answers[6] || "",        // Q7: Target monthly income
+      timeStuck: answers[7] || "",         // Q8: How long considering change
+      currentIncome: answers[8] || "",     // Q9: Current monthly income
+      dreamLife: answers[9] || "",         // Q10: What matters most
+      commitment: answers[10] || "",       // Q11: Commitment level
     });
 
     const route = ROLE_ROUTES[currentRole] || "/results/career-change";

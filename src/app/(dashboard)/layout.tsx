@@ -11,6 +11,7 @@ import { OnboardingWrapper } from "@/components/onboarding/onboarding-wrapper";
 import { AchievementProvider } from "@/components/gamification/achievement-toast";
 import { FloatingCoachWidget } from "@/components/dashboard/floating-coach-widget";
 import { ImpersonationBanner } from "@/components/admin/impersonation-banner";
+import { SidebarProvider } from "@/contexts/sidebar-context";
 
 // All mini diploma course slugs
 const MINI_DIPLOMA_SLUGS = [
@@ -180,6 +181,7 @@ export default async function DashboardLayout({
         <SWRProvider>
           <NotificationProvider userId={session.user.id}>
             <AchievementProvider>
+              <SidebarProvider>
               {/* Impersonation Banner */}
               <ImpersonationBanner />
               <div className="min-h-screen bg-gray-50 overflow-x-hidden">
@@ -202,6 +204,7 @@ export default async function DashboardLayout({
 
                 {/* No floating widget for mini diploma - they have Sarah Chat in sidebar */}
               </div>
+              </SidebarProvider>
             </AchievementProvider>
           </NotificationProvider>
         </SWRProvider>

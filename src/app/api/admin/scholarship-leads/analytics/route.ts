@@ -30,6 +30,9 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    // Variant filter
+    const variantParam = req.nextUrl.searchParams.get("variant") || "all";
+
     // Date range filter
     const daysParam = req.nextUrl.searchParams.get("days") || "30";
     const dateFilter: { gte?: Date } = {};
@@ -39,6 +42,28 @@ export async function GET(req: NextRequest) {
         since.setDate(since.getDate() - days);
         dateFilter.gte = since;
     }
+
+    // Get quiz page views with progress data (from ChatOptin tracking)
+    const quizVisitors = await prisma.chatOptin.findMany({
+        where: {
+            page: { startsWith: "quiz-start-" },
+            ...(dateFilter.gte ? { createdAt: { gte: dateFilter.gte } } : {}),
+        },
+        select: { page: true },
+    });
+    const quizPageViews = quizVisitors.length;
+
+    // Parse per-question progress from page field (format: quiz-start-depth-method?v=A&q=5)
+    // q=0 means just landed, q=1 means answered Q1, etc.
+    const questionProgress: number[] = new Array(12).fill(0); // index 0-11
+    quizVisitors.forEach((v) => {
+        const qMatch = v.page.match(/[?&]q=(\d+)/);
+        const qReached = qMatch ? parseInt(qMatch[1], 10) : 0;
+        // Count how many visitors reached at least each question level
+        for (let i = 0; i <= qReached && i < questionProgress.length; i++) {
+            questionProgress[i]++;
+        }
+    });
 
     // Get all scholarship applications with quiz data
     const scholarshipTags = await prisma.userTag.findMany({
@@ -144,15 +169,32 @@ export async function GET(req: NextRequest) {
             "independence": "Independence", "all-above": "All of the above",
             // Old vision values
             "leave-job": "Leave 9-to-5", "security": "Financial security",
-            "fulfillment": "Fulfillment", "all-above": "All of the above",
+            "fulfillment": "Fulfillment",
         },
         commitment: {
             "100-percent": "100% committed", "very-committed": "Very committed", "interested": "Interested", "curious": "Just curious",
         }
     };
 
+    // Track all variants before filtering
+    const variantCounts: Record<string, number> = {};
+    scholarshipTags.forEach((st) => {
+        const meta = st.metadata as { quizData?: Record<string, string> } | null;
+        const v = meta?.quizData?.variant || "A";
+        variantCounts[v] = (variantCounts[v] || 0) + 1;
+    });
+    const activeVariants = Object.keys(variantCounts).sort();
+
+    // Filter by variant if specified
+    const filteredTags = variantParam !== "all"
+        ? scholarshipTags.filter((st) => {
+            const meta = st.metadata as { quizData?: Record<string, string> } | null;
+            return (meta?.quizData?.variant || "A") === variantParam;
+        })
+        : scholarshipTags;
+
     // Extract quiz data from all applications
-    const totalStarts = scholarshipTags.length;
+    const totalStarts = filteredTags.length;
     // Count completions = quiz submissions with all core fields present (not enrollments!)
     let totalCompletes = 0;
 
@@ -169,7 +211,7 @@ export async function GET(req: NextRequest) {
     const currentIncomeCounts: Record<string, number> = {};
     const patternCounts: Record<string, number> = {};
 
-    scholarshipTags.forEach((st) => {
+    filteredTags.forEach((st) => {
         const meta = st.metadata as {
             quizData?: Record<string, string>;
         } | null;
@@ -292,14 +334,26 @@ export async function GET(req: NextRequest) {
         .slice(0, 10);
 
     // Enrolled count (actually paid)
-    const totalEnrolled = scholarshipTags.filter(st => st.user.enrollments.length > 0).length;
+    const totalEnrolled = filteredTags.filter(st => st.user.enrollments.length > 0).length;
+
+    // Variant breakdown
+    const variantBreakdown = Object.entries(variantCounts)
+        .map(([variant, count]) => ({
+            variant,
+            count,
+            percentage: scholarshipTags.length > 0 ? Math.round((count / scholarshipTags.length) * 100 * 10) / 10 : 0,
+        }))
+        .sort((a, b) => b.count - a.count);
 
     return NextResponse.json({
+        quizPageViews,
         totalStarts,
         totalCompletes,
         totalEnrolled,
+        quizToSubmissionRate: quizPageViews > 0 ? Math.round((totalStarts / quizPageViews) * 100 * 10) / 10 : 0,
         overallCompletionRate: totalStarts > 0 ? Math.round((totalCompletes / totalStarts) * 100 * 10) / 10 : 0,
         enrollmentRate: totalStarts > 0 ? Math.round((totalEnrolled / totalStarts) * 100 * 10) / 10 : 0,
+        questionProgress, // [landed, answeredQ1, answeredQ2, ..., answeredQ11]
         funnel,
         topPatterns,
         backgroundBreakdown: toBreakdown(backgroundCounts),
@@ -307,5 +361,8 @@ export async function GET(req: NextRequest) {
         specializationBreakdown: toBreakdown(specializationCounts),
         currentIncomeBreakdown: toBreakdown(currentIncomeCounts),
         daysFilter: daysParam,
+        activeVariants,
+        variantBreakdown,
+        variantFilter: variantParam,
     });
 }

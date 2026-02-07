@@ -111,17 +111,17 @@ const PRACT: Record<string, { label: string; specialization: string; icon: typeo
 };
 
 const INCOME_MAP: Record<string, { label: string; monthly: number; yearly: number }> = {
-  "5k": { label: "$5,000/month", monthly: 5000, yearly: 60000 },
-  "10k": { label: "$10,000/month", monthly: 10000, yearly: 120000 },
-  "20k": { label: "$20,000/month", monthly: 20000, yearly: 240000 },
-  "50k-plus": { label: "$50,000+/month", monthly: 50000, yearly: 600000 },
+  "3k-5k": { label: "$5,000/month", monthly: 5000, yearly: 60000 },
+  "5k-10k": { label: "$10,000/month", monthly: 10000, yearly: 120000 },
+  "10k-15k": { label: "$15,000/month", monthly: 15000, yearly: 180000 },
+  "15k-plus": { label: "$20,000+/month", monthly: 20000, yearly: 240000 },
 };
 
 const CURRENT_INCOME_MAP: Record<string, { label: string; monthly: number }> = {
-  "0": { label: "$0", monthly: 0 },
-  "under-2k": { label: "under $2K", monthly: 1500 },
-  "2k-5k": { label: "$2K-$5K", monthly: 3500 },
-  "over-5k": { label: "$5K+", monthly: 6000 },
+  "under-3k": { label: "under $3K", monthly: 1500 },
+  "3k-5k": { label: "$3K-$5K", monthly: 4000 },
+  "5k-8k": { label: "$5K-$8K", monthly: 6500 },
+  "over-8k": { label: "$8K+", monthly: 9000 },
 };
 
 // Scholarship model — no checkout page, chat-based sales
@@ -148,22 +148,28 @@ function MomResultsInner() {
   const lastName = sp.get("lastName") || "";
   const email = sp.get("email") || "";
   const typeKey = sp.get("type") || "hormone-health";
-  const goalKey = sp.get("goal") || "10k";
   const role = sp.get("role") || "stay-at-home-mom";
+  const variant = sp.get("variant") || "A";
 
-  // ALL quiz answers for hyper-personalization
-  const currentIncome = sp.get("currentIncome") || "0";
-  const experience = sp.get("experience") || "no-experience";
-  const clinicalReady = sp.get("clinicalReady") || "not-very";
-  const labInterest = sp.get("labInterest") || "want-to-learn";
-  const pastCerts = sp.get("pastCerts") || "first-time";
-  const missingSkill = sp.get("missingSkill") || "framework";
-  const commitment = sp.get("commitment") || "absolutely";
-  const vision = sp.get("vision") || "all-above";
-  const careerPathLevel = sp.get("careerPathLevel") || "level-2";
-  const decisionMaker = sp.get("decisionMaker") || "yes-mine";
-  const startTimeline = sp.get("startTimeline") || "2-weeks";
-  const investmentBudget = sp.get("investmentBudget") || "500-1000";
+  // Quiz answers (semantic param names from depth-method quiz)
+  const specialization = sp.get("specialization") || "";
+  const background = sp.get("background") || "";
+  const experience = sp.get("experience") || "";
+  const motivation = sp.get("motivation") || "";
+  const painPoint = sp.get("painPoint") || "";
+  const timeline = sp.get("timeline") || "immediately";
+  const incomeGoal = sp.get("incomeGoal") || "5k-10k";
+  const timeStuck = sp.get("timeStuck") || "";
+  const currentIncome = sp.get("currentIncome") || "under-3k";
+  const dreamLife = sp.get("dreamLife") || "all-above";
+  const commitment = sp.get("commitment") || "100-percent";
+
+  // Legacy variables (from old quiz — kept for conditional content defaults)
+  const clinicalReady = "not-very";
+  const labInterest = "want-to-learn";
+  const pastCerts = "first-time";
+  const careerPathLevel = "level-2";
+  const decisionMaker = "yes-mine";
 
   // Career Path Level config
   const CAREER_PATH_MAP: Record<string, { stars: string; title: string; range: string; badge: string }> = {
@@ -202,11 +208,11 @@ function MomResultsInner() {
 
   const pract = PRACT[typeKey] || PRACT["hormone-health"];
   const PractIcon = pract.icon;
-  const income = INCOME_MAP[goalKey] || INCOME_MAP["10k"];
-  const curIncome = CURRENT_INCOME_MAP[currentIncome] || CURRENT_INCOME_MAP["0"];
+  const income = INCOME_MAP[incomeGoal] || INCOME_MAP["5k-10k"];
+  const curIncome = CURRENT_INCOME_MAP[currentIncome] || CURRENT_INCOME_MAP["under-3k"];
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [countdown, setCountdown] = useState(startTimeline === "this-week" ? 1200 : 1800);
+  const [countdown, setCountdown] = useState(timeline === "this-week" ? 1200 : 1800);
   const [mounted, setMounted] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -220,8 +226,8 @@ function MomResultsInner() {
 
   // Scholarship quiz data for chat widget
   const scholarshipQuizData = {
-    type: typeKey, goal: goalKey, role, currentIncome, experience,
-    clinicalReady, labInterest, pastCerts, missingSkill, commitment, vision, startTimeline, investmentBudget,
+    type: typeKey, role, specialization, background, experience, motivation, painPoint,
+    timeline, incomeGoal, timeStuck, currentIncome, dreamLife, commitment, variant,
   };
 
   const openScholarshipChat = () => {
@@ -236,8 +242,8 @@ function MomResultsInner() {
   const yearlyLoss = incomeGap * 12;
 
   // Urgency intensity based on Q12
-  const urgencySpots = startTimeline === "this-week" ? 3 : startTimeline === "2-weeks" ? 5 : 7;
-  const urgencyText = startTimeline === "this-week"
+  const urgencySpots = timeline === "this-week" ? 3 : timeline === "2-weeks" ? 5 : 7;
+  const urgencyText = timeline === "this-week"
     ? `URGENT: Only ${urgencySpots} scholarship spots left — chat with Sarah now`
     : `${urgencySpots} scholarship spots remaining — ${fmt(countdown)}`;
 
@@ -315,8 +321,8 @@ function MomResultsInner() {
     <div className="min-h-screen" style={{ background: `linear-gradient(180deg, ${B.cream} 0%, #f5f0e8 30%, ${B.cream} 100%)` }}>
 
       {/* ═══ STICKY URGENCY BAR (dynamic intensity from Q12) — clickable ═══ */}
-      <div onClick={openScholarshipChat} className="sticky top-0 z-50 py-2 sm:py-2.5 px-3 sm:px-4 text-center shadow-md cursor-pointer hover:opacity-90 transition-opacity" style={{ background: startTimeline === "this-week" ? B.burgundy : B.goldMetallic }}>
-        <p className="text-xs sm:text-sm font-bold" style={{ color: startTimeline === "this-week" ? "white" : B.burgundyDark }}>
+      <div onClick={openScholarshipChat} className="sticky top-0 z-50 py-2 sm:py-2.5 px-3 sm:px-4 text-center shadow-md cursor-pointer hover:opacity-90 transition-opacity" style={{ background: timeline === "this-week" ? B.burgundy : B.goldMetallic }}>
+        <p className="text-xs sm:text-sm font-bold" style={{ color: timeline === "this-week" ? "white" : B.burgundyDark }}>
           <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1 -mt-0.5" />
           <span className="sm:hidden">{urgencySpots} spots — Apply Now</span>
           <span className="hidden sm:inline">{urgencyText}</span>
@@ -370,7 +376,7 @@ function MomResultsInner() {
 
             {/* DYNAMIC subtitle from Q8 missing skill */}
             <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
-              {heroSubtitle[missingSkill] || heroSubtitle["framework"]}
+              {heroSubtitle[painPoint] || heroSubtitle["framework"]}
             </p>
 
             {/* Practitioner badge */}
@@ -443,10 +449,10 @@ function MomResultsInner() {
               <div>
                 <p className="font-bold text-sm" style={{ color: B.burgundy }}>Sarah reviewed your assessment:</p>
                 <p className="text-xs sm:text-sm text-gray-700 mt-1 leading-relaxed">
-                  {currentIncome === "0" && `"${firstName}, you told me you're currently earning $0 from health & wellness work. That actually puts you in a powerful position — no bad habits, no low-rate clients to "upgrade." You're starting with a clean slate and your clinical training as your foundation. Let me show you exactly how to go from $0 to ${income.label}."`}
-                  {currentIncome === "under-2k" && `"${firstName}, you said you're earning under $2K/month. With your clinical background, you should be earning 5-10x that. The gap between ${curIncome.label}/month and ${income.label} isn't about working harder — it's about having the right certification and framework. Let me show you the bridge."`}
-                  {currentIncome === "2k-5k" && `"${firstName}, $2K-$5K/month is solid — but with your healthcare credentials? You're leaving serious money on the table. Your clinical training makes you worth $200+/session, not $50. DEPTH closes that gap. I've seen nurses go from exactly where you are to ${income.label} in under 6 months."`}
-                  {currentIncome === "over-5k" && `"${firstName}, you're already earning $5K+ — impressive for a healthcare professional. But here's what I know: DEPTH certification could take you from $5K to ${income.label} because you'll add functional medicine protocols, lab interpretation, and group programs. The ceiling disappears."`}
+                  {currentIncome === "under-3k" && `"${firstName}, you told me you're currently earning $0 from health & wellness work. That actually puts you in a powerful position — no bad habits, no low-rate clients to "upgrade." You're starting with a clean slate and your clinical training as your foundation. Let me show you exactly how to go from $0 to ${income.label}."`}
+                  {currentIncome === "3k-5k" && `"${firstName}, you said you're earning under $2K/month. With your clinical background, you should be earning 5-10x that. The gap between ${curIncome.label}/month and ${income.label} isn't about working harder — it's about having the right certification and framework. Let me show you the bridge."`}
+                  {currentIncome === "5k-8k" && `"${firstName}, $2K-$5K/month is solid — but with your healthcare credentials? You're leaving serious money on the table. Your clinical training makes you worth $200+/session, not $50. DEPTH closes that gap. I've seen nurses go from exactly where you are to ${income.label} in under 6 months."`}
+                  {currentIncome === "over-8k" && `"${firstName}, you're already earning $5K+ — impressive for a healthcare professional. But here's what I know: DEPTH certification could take you from $5K to ${income.label} because you'll add functional medicine protocols, lab interpretation, and group programs. The ceiling disappears."`}
                 </p>
               </div>
             </div>
@@ -462,10 +468,10 @@ function MomResultsInner() {
 
             <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
               {[
-                { emoji: "😤", title: "Competing with thousands of identical coaches", desc: `Every day, more coaches flood your niche with the same generic advice.${currentIncome === "0" || currentIncome === "under-2k" ? " You're fighting for scraps while they undercut your prices." : ""} Without clinical differentiation, you're just another voice in the noise.` },
+                { emoji: "😤", title: "Competing with thousands of identical coaches", desc: `Every day, more coaches flood your niche with the same generic advice.${currentIncome === "under-3k" || currentIncome === "3k-5k" ? " You're fighting for scraps while they undercut your prices." : ""} Without clinical differentiation, you're just another voice in the noise.` },
                 { emoji: "💊", title: "Referring out your best opportunities", desc: `When clients come to you with complex cases — hormones, gut issues, fatigue — you have to send them somewhere else.${clinicalReady === "refer-out" || clinicalReady === "not-very" ? " You FEEL it — but you don't have the functional framework yet to help them." : " You KNOW there's a better way."} Those referrals could be $200/hr sessions.` },
                 { emoji: "💸", title: "Certifications that didn't pay off", desc: `You've invested in programs, courses, maybe even multiple certifications.${pastCerts === "spent-5k-plus" ? " You even told us you've spent $5K+ on other certifications and STILL feel unprepared." : ""} But none of them gave you the clinical edge to command premium rates.` },
-                { emoji: "🔒", title: "Impostor syndrome holding you back", desc: `You KNOW you're good at what you do.${vision === "leave-job" ? " You said you want to go full-time — but something's holding you back." : ""} But without proper clinical training, you hesitate to charge what you're worth. The confidence gap is costing you thousands.` },
+                { emoji: "🔒", title: "Impostor syndrome holding you back", desc: `You KNOW you're good at what you do.${dreamLife === "leave-job" ? " You said you want to go full-time — but something's holding you back." : ""} But without proper clinical training, you hesitate to charge what you're worth. The confidence gap is costing you thousands.` },
               ].map((p, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                   className="p-4 sm:p-5 rounded-xl border bg-white shadow-sm" style={{ borderColor: `${B.burgundy}15` }}>
@@ -512,7 +518,7 @@ function MomResultsInner() {
 
             <div className="p-4 sm:p-5 rounded-xl border-2 text-center" style={{ borderColor: B.burgundy, background: `${B.burgundy}08` }}>
               <p className="text-sm font-bold" style={{ color: B.burgundy }}>
-                {currentIncome === "0" ? "Every month you wait" : `The gap between ${curIncome.label}/month and ${income.label}`} is not a someday problem.
+                {currentIncome === "under-3k" ? "Every month you wait" : `The gap between ${curIncome.label}/month and ${income.label}`} is not a someday problem.
                 <br />It&apos;s a <span className="underline">${yearlyLoss.toLocaleString()}/year</span> problem. Starting today.
               </p>
             </div>
@@ -612,9 +618,9 @@ function MomResultsInner() {
                 <span className="underline decoration-2" style={{ textDecorationColor: B.gold, color: B.burgundy }}>Exactly Like You</span>
               </h2>
               <p className="text-xs sm:text-sm text-gray-500 max-w-lg mx-auto">
-                {currentIncome === "0" || currentIncome === "under-2k"
+                {currentIncome === "under-3k" || currentIncome === "3k-5k"
                   ? `They started where you are right now — ${curIncome.label}/month, unsure if this was even possible. Read their words. You'll feel like they're talking directly to you.`
-                  : currentIncome === "over-5k"
+                  : currentIncome === "over-8k"
                     ? `They were already earning well — but they felt the same ceiling you feel. Here's what happened when they added DEPTH to their clinical career.`
                     : `They were in your exact shoes — mom entrepreneurs earning ${curIncome.label}/month, wondering if there was something more. There was.`
                 }
@@ -671,12 +677,12 @@ function MomResultsInner() {
               {/* ─── Testimonial 2: Margaret — personalized to vision + commitment ─── */}
               <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
                 className="p-5 sm:p-6 md:p-8 rounded-2xl border bg-white shadow-md" style={{ borderColor: `${B.gold}30` }}>
-                {vision === "leave-job" && (
+                {dreamLife === "leave-job" && (
                   <div className="flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold w-fit" style={{ background: `${B.gold}12`, color: B.burgundy }}>
                     <Heart className="w-3 h-3" style={{ color: B.gold }} /> She wanted to leave her job too — just like you told us.
                   </div>
                 )}
-                {vision === "fulfillment" && (
+                {dreamLife === "fulfillment" && (
                   <div className="flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold w-fit" style={{ background: `${B.gold}12`, color: B.burgundy }}>
                     <Heart className="w-3 h-3" style={{ color: B.gold }} /> She wanted fulfillment — just like you told us.
                   </div>
@@ -692,7 +698,7 @@ function MomResultsInner() {
                         &ldquo;I need to be honest with you — when I clicked &apos;enroll,&apos; my hands were shaking. I was a PA for 9 years. My husband thought I was having a midlife crisis. My mom said &apos;why would you leave a perfectly good job?&apos; Everyone around me thought I was making the biggest mistake of my life.&rdquo;
                       </p>
                       <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
-                        &ldquo;But here&apos;s what nobody understood: I was <strong>dying inside</strong>. 14-hour shifts. 8 minutes per patient. Watching people leave with prescriptions I knew wouldn&apos;t fix the real problem. I came home too exhausted to play with my kids. I was a shell of myself. {vision === "leave-job" || vision === "fulfillment" ? "If you're reading this and you FEEL that — I SEE you." : "I bet some of you know exactly what I mean."}&rdquo;
+                        &ldquo;But here&apos;s what nobody understood: I was <strong>dying inside</strong>. 14-hour shifts. 8 minutes per patient. Watching people leave with prescriptions I knew wouldn&apos;t fix the real problem. I came home too exhausted to play with my kids. I was a shell of myself. {dreamLife === "leave-job" || dreamLife === "fulfillment" ? "If you're reading this and you FEEL that — I SEE you." : "I bet some of you know exactly what I mean."}&rdquo;
                       </p>
                       <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#374151" }}>
                         &ldquo;DEPTH gave me my life back. Not overnight — I won&apos;t lie to you. I studied 20 minutes during my kids&apos; nap time{commitment === "rearrange" || commitment === "not-sure" ? " (even when I felt too tired)" : ""}. I practiced protocols on weekends. It took me about 5 weeks to certify. But the day I walked into my hospital for the <em>last time</em>... I cried again. Happy tears this time.&rdquo;
@@ -1018,7 +1024,7 @@ function MomResultsInner() {
                 { icon: BookOpen, title: "20-Module Clinical Curriculum", desc: "From foundations to advanced lab interpretation — complete clinical training", value: "Included" },
                 { icon: GraduationCap, title: "ASI-Accredited Certification", desc: "Nationally recognized credential that stacks with your RN/PA", value: "Included" },
                 { icon: FlaskConical, title: "Functional Lab Training", desc: labInterest === "already-doing" ? "Systematize and elevate your existing lab skills to clinical grade" : "Learn to order and interpret real lab panels — the #1 income multiplier", value: "Included" },
-                { icon: DollarSign, title: "Business Setup System", desc: missingSkill === "client-system" ? "You said this is exactly what you need — client acquisition done for you" : "Client acquisition, pricing strategy, and practice launch — done for you", value: "Included" },
+                { icon: DollarSign, title: "Business Setup System", desc: painPoint === "client-system" ? "You said this is exactly what you need — client acquisition done for you" : "Client acquisition, pricing strategy, and practice launch — done for you", value: "Included" },
                 { icon: Users, title: "1-on-1 Mentorship Access", desc: "Personal guidance from ASI clinical directors including Sarah M.", value: "Included" },
                 { icon: Target, title: "Done-For-You Protocols", desc: `Ready-to-use ${pract.specialization.toLowerCase()} templates for every client type`, value: "Included" },
                 { icon: Package, title: "Physical Welcome Kit", desc: "Certificate, practitioner badge, and branded materials mailed to your door", value: "Included" },
@@ -1071,7 +1077,7 @@ function MomResultsInner() {
           </div>
           <SectionInner className="space-y-3">
             {[
-              { title: "Coach-to-Practitioner Upgrade Blueprint", desc: vision === "leave-job" ? "You said you want to go full-time. This is the EXACT step-by-step guide for scaling your practice safely and successfully." : "The complete roadmap for transitioning from 'wellness coach' to 'clinical practitioner' — with premium pricing to match.", value: "$497" },
+              { title: "Coach-to-Practitioner Upgrade Blueprint", desc: dreamLife === "leave-job" ? "You said you want to go full-time. This is the EXACT step-by-step guide for scaling your practice safely and successfully." : "The complete roadmap for transitioning from 'wellness coach' to 'clinical practitioner' — with premium pricing to match.", value: "$497" },
               { title: "Coach Referral Network System", desc: "Scripts, templates, and strategies to build a referral network with other coaches, practitioners, and healthcare providers.", value: "$397" },
               { title: "Niche Authority Positioning Kit", desc: "Position yourself as THE expert in your specialization — not just another coach. Includes bio templates, social proof strategies, and authority marketing blueprints.", value: "$297" },
               { title: "First 5 Premium Clients Accelerator", desc: experience === "active-clients" ? "Upgrade your existing clients to premium DEPTH packages using these upsell scripts and templates." : experience === "no-experience" ? "The exact outreach templates to go from ZERO clients to your first 5 premium-paying clients." : "The exact launch sequence our top coaches used to book their first 5 premium clients.", value: "$397" },
@@ -1148,7 +1154,7 @@ function MomResultsInner() {
 
             <div className="space-y-3">
               {[
-                { step: "1", title: "Immediate Access (Today)", desc: `Log in to your clinical dashboard, receive your welcome kit, and meet your mentor within 24 hours.${startTimeline === "this-week" ? " You said you're ready to start THIS week — let's go." : ""}`, icon: Zap },
+                { step: "1", title: "Immediate Access (Today)", desc: `Log in to your clinical dashboard, receive your welcome kit, and meet your mentor within 24 hours.${timeline === "this-week" ? " You said you're ready to start THIS week — let's go." : ""}`, icon: Zap },
                 { step: "2", title: `Complete ${pract.specialization} Track (${certWeeks} weeks)`, desc: `Follow your personalized specialization track at your own pace — 20 min/day.${commitment === "absolutely" ? " With your commitment level, you'll likely finish even faster." : ""}`, icon: BookOpen },
                 { step: "3", title: "Get Certified", desc: "Pass your clinical assessment, receive your ASI-accredited certificate, and get listed in the practitioner directory.", icon: GraduationCap },
                 { step: "4", title: `Land Clients & Reach ${income.label}`, desc: `Use the Business Setup System to land your first paying clients ${clientsTimeline}. Our certified practitioners average ${income.label} within 90 days.`, icon: DollarSign },
@@ -1222,7 +1228,7 @@ function MomResultsInner() {
                   {firstName}, as a coach who made this exact transition myself, I know exactly what you&apos;re feeling. The frustration of giving great advice but feeling like you lack the clinical edge. The imposter syndrome when clients have complex cases.
                 </p>
                 <p className="text-xs sm:text-sm font-medium leading-relaxed" style={{ color: B.burgundy }}>
-                  {sarahVision[vision] || sarahVision["all-above"]}
+                  {sarahVision[dreamLife] || sarahVision["all-above"]}
                 </p>
               </div>
             </div>
@@ -1285,9 +1291,9 @@ function MomResultsInner() {
 
         {/* ═══ SECTION 19: FINAL CTA ═══ */}
         <Section>
-          <div className="px-4 sm:px-6 py-3" style={{ background: startTimeline === "this-week" ? B.burgundy : B.goldMetallic }}>
-            <span className="text-xs sm:text-sm font-bold" style={{ color: startTimeline === "this-week" ? "white" : B.burgundyDark }}>
-              <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1.5 -mt-0.5" /> {startTimeline === "this-week" ? "URGENT — Your Cohort Starts This Week" : "Limited Availability — Mom-Preneur Track Cohort"}
+          <div className="px-4 sm:px-6 py-3" style={{ background: timeline === "this-week" ? B.burgundy : B.goldMetallic }}>
+            <span className="text-xs sm:text-sm font-bold" style={{ color: timeline === "this-week" ? "white" : B.burgundyDark }}>
+              <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1.5 -mt-0.5" /> {timeline === "this-week" ? "URGENT — Your Cohort Starts This Week" : "Limited Availability — Mom-Preneur Track Cohort"}
             </span>
           </div>
           <SectionInner className="text-center space-y-5 sm:space-y-6">
@@ -1298,11 +1304,11 @@ function MomResultsInner() {
             </h2>
 
             <p className="text-sm sm:text-base text-gray-600 max-w-lg mx-auto">
-              {vision === "leave-job" && `You said you want to leave your 9-to-5. This is the fastest path. ${urgencySpots} spots left in the Mom-Preneur Track.`}
-              {vision === "security" && `You want financial security for your family. Every day you wait is another day of uncertainty. ${urgencySpots} spots left.`}
-              {vision === "fulfillment" && `You want to do medicine the RIGHT way. Stop settling for a system that doesn't serve you or your patients. ${urgencySpots} spots left.`}
-              {vision === "all-above" && `Freedom. Security. Fulfillment. You want it all — and DEPTH delivers. But only ${urgencySpots} spots remain in this cohort.`}
-              {!["leave-job", "security", "fulfillment", "all-above"].includes(vision) && `You've invested years in your clinical education. This is the final piece — the framework that turns your training into ${income.label}. ${urgencySpots} spots left.`}
+              {dreamLife === "leave-job" && `You said you want to leave your 9-to-5. This is the fastest path. ${urgencySpots} spots left in the Mom-Preneur Track.`}
+              {dreamLife === "security" && `You want financial security for your family. Every day you wait is another day of uncertainty. ${urgencySpots} spots left.`}
+              {dreamLife === "fulfillment" && `You want to do medicine the RIGHT way. Stop settling for a system that doesn't serve you or your patients. ${urgencySpots} spots left.`}
+              {dreamLife === "all-above" && `Freedom. Security. Fulfillment. You want it all — and DEPTH delivers. But only ${urgencySpots} spots remain in this cohort.`}
+              {!["leave-job", "security", "fulfillment", "all-above"].includes(dreamLife) && `You've invested years in your clinical education. This is the final piece — the framework that turns your training into ${income.label}. ${urgencySpots} spots left.`}
             </p>
 
             <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-md mx-auto">

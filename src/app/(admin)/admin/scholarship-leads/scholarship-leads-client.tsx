@@ -5,18 +5,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Link from "next/link";
+import Image from "next/image";
 import {
     Search,
     RefreshCw,
     Users,
     CheckCircle2,
     Clock,
-    TrendingUp,
     MessageCircle,
-    FileText,
-    Calendar,
     Phone,
     Mail,
     DollarSign,
@@ -28,14 +26,13 @@ import {
     Send,
     Sparkles,
     User,
-    ArrowUpRight,
-    Zap,
-    Trophy,
     AlertCircle,
-    Flame,
-    Star,
+    BarChart3,
+    XCircle,
+    Download,
+    ArrowUpDown,
+    Loader2,
 } from "lucide-react";
-import Image from "next/image";
 
 // ─── Types ─────────────────────────────────────────────────────────
 interface ChatMessage {
@@ -93,13 +90,15 @@ interface Stats {
     pending: number;
     approved: number;
     converted: number;
+    lost: number;
     conversionRate: number;
     avgQualScore: number;
     totalUnread: number;
+    revenue: number;
 }
 
 // ─── Constants ─────────────────────────────────────────────────────────
-const BRAND = {
+const B = {
     burgundy: "#722f37",
     burgundyDark: "#5a252c",
     gold: "#d4af37",
@@ -108,171 +107,69 @@ const BRAND = {
 
 const SARAH_AVATAR = "/coaches/sarah-coach.webp";
 
-// ─── Audio Player Component ─────────────────────────────────────────────
+const STATUS_COLORS: Record<string, { bg: string; text: string; border: string; left: string }> = {
+    pending: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200", left: "border-l-amber-400" },
+    approved: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200", left: "border-l-blue-400" },
+    converted: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", left: "border-l-emerald-400" },
+    lost: { bg: "bg-red-50", text: "text-red-700", border: "border-red-200", left: "border-l-red-400" },
+};
+
+const DATE_OPTIONS = [
+    { label: "7d", value: "7" },
+    { label: "30d", value: "30" },
+    { label: "90d", value: "90" },
+    { label: "All", value: "all" },
+];
+
+const SORT_OPTIONS = [
+    { label: "Newest", value: "newest" },
+    { label: "Oldest", value: "oldest" },
+    { label: "Score", value: "score" },
+    { label: "Unread", value: "unread" },
+];
+
+// ─── Helpers ─────────────────────────────────────────────────────────
+function timeAgo(dateString: string) {
+    const diff = Date.now() - new Date(dateString).getTime();
+    const mins = Math.floor(diff / 60000);
+    const hours = Math.floor(mins / 60);
+    const days = Math.floor(hours / 24);
+    if (mins < 1) return "now";
+    if (mins < 60) return `${mins}m`;
+    if (hours < 24) return `${hours}h`;
+    if (days < 30) return `${days}d`;
+    return `${Math.floor(days / 30)}mo`;
+}
+
+function formatDate(dateString: string) {
+    return new Date(dateString).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+}
+
+// ─── Audio Player ─────────────────────────────────────────────────────
 function AudioPlayer({ url }: { url: string }) {
     const audioRef = useRef<HTMLAudioElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
 
-    const togglePlay = () => {
-        if (!audioRef.current) return;
-        if (isPlaying) audioRef.current.pause();
-        else audioRef.current.play();
-        setIsPlaying(!isPlaying);
-    };
-
     return (
-        <div className="flex items-center gap-2 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl px-3 py-2 border border-amber-200">
+        <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border">
             <audio
                 ref={audioRef}
                 src={url}
                 onTimeUpdate={(e) => setProgress((e.currentTarget.currentTime / e.currentTarget.duration) * 100 || 0)}
                 onEnded={() => setIsPlaying(false)}
             />
-            <button onClick={togglePlay} className="p-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg hover:shadow-xl transition-all">
+            <button
+                onClick={() => { if (!audioRef.current) return; isPlaying ? audioRef.current.pause() : audioRef.current.play(); setIsPlaying(!isPlaying); }}
+                className="p-1.5 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
+            >
                 {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
             </button>
-            <div className="flex-1 h-1.5 bg-amber-200 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all" style={{ width: `${progress}%` }} />
+            <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-gray-500 transition-all" style={{ width: `${progress}%` }} />
             </div>
-            <Volume2 className="w-4 h-4 text-amber-500" />
+            <Volume2 className="w-3 h-3 text-gray-400" />
         </div>
-    );
-}
-
-// ─── Stat Card Component ─────────────────────────────────────────────
-function StatCard({ icon: Icon, label, value, color, trend }: { icon: any; label: string; value: number | string; color: string; trend?: string }) {
-    return (
-        <div className="relative overflow-hidden rounded-2xl bg-white border border-gray-100 p-4 shadow-sm hover:shadow-lg transition-all duration-300 group">
-            <div className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10 -mr-8 -mt-8" style={{ background: color }} />
-            <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                    <div className="p-2 rounded-xl" style={{ background: `${color}15` }}>
-                        <Icon className="w-4 h-4" style={{ color }} />
-                    </div>
-                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</span>
-                </div>
-                <div className="flex items-end gap-2">
-                    <span className="text-3xl font-bold text-gray-900">{value}</span>
-                    {trend && (
-                        <span className="text-xs font-medium text-emerald-600 flex items-center gap-0.5 mb-1">
-                            <ArrowUpRight className="w-3 h-3" />
-                            {trend}
-                        </span>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-}
-
-// ─── Score Ring Component ─────────────────────────────────────────────
-function ScoreRing({ score, size = 48 }: { score: number; size?: number }) {
-    const radius = (size - 8) / 2;
-    const circumference = 2 * Math.PI * radius;
-    const progress = (score / 100) * circumference;
-    const color = score >= 60 ? "#10b981" : score >= 40 ? "#f59e0b" : "#ef4444";
-
-    return (
-        <div className="relative" style={{ width: size, height: size }}>
-            <svg className="transform -rotate-90" width={size} height={size}>
-                <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#e5e7eb" strokeWidth="4" />
-                <circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    fill="none"
-                    stroke={color}
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={circumference - progress}
-                    className="transition-all duration-500"
-                />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xs font-bold" style={{ color }}>{score}</span>
-            </div>
-        </div>
-    );
-}
-
-// ─── Lead Card Component ─────────────────────────────────────────────
-function LeadCard({
-    lead,
-    isSelected,
-    onClick,
-}: {
-    lead: ScholarshipLead;
-    isSelected: boolean;
-    onClick: () => void;
-}) {
-    const formatTime = (dateString: string) => {
-        const diff = Date.now() - new Date(dateString).getTime();
-        const mins = Math.floor(diff / 60000);
-        const hours = Math.floor(mins / 60);
-        const days = Math.floor(hours / 24);
-        if (mins < 60) return `${mins}m`;
-        if (hours < 24) return `${hours}h`;
-        return `${days}d`;
-    };
-
-    return (
-        <button
-            onClick={onClick}
-            className={`w-full p-4 text-left transition-all duration-200 border-l-4 ${isSelected
-                    ? "bg-gradient-to-r from-amber-50 to-orange-50 border-l-amber-500"
-                    : "bg-white hover:bg-gray-50 border-l-transparent hover:border-l-gray-200"
-                }`}
-        >
-            <div className="flex items-start gap-3">
-                {/* Avatar with Score Ring */}
-                <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-lg shadow-md">
-                        {lead.firstName[0]}
-                    </div>
-                    {lead.unreadCount > 0 && (
-                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
-                            {lead.unreadCount}
-                        </div>
-                    )}
-                </div>
-
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                        <span className="font-semibold text-gray-900 truncate">
-                            {lead.firstName} {lead.lastName || ""}
-                        </span>
-                        <Badge
-                            className={`text-[10px] px-1.5 py-0 ${lead.status === "converted"
-                                    ? "bg-emerald-100 text-emerald-700"
-                                    : lead.status === "approved"
-                                        ? "bg-blue-100 text-blue-700"
-                                        : "bg-amber-100 text-amber-700"
-                                }`}
-                        >
-                            {lead.status}
-                        </Badge>
-                    </div>
-                    <p className="text-sm text-gray-500 truncate">{lead.email}</p>
-                    <div className="flex items-center gap-3 mt-1.5">
-                        <span className="text-xs text-gray-400">{formatTime(lead.applicationDate)} ago</span>
-                        <div className="flex items-center gap-1">
-                            <Star className="w-3 h-3 text-amber-500" />
-                            <span className="text-xs font-medium text-gray-600">{lead.qualificationScore}%</span>
-                        </div>
-                        {lead.messages.length > 0 && (
-                            <div className="flex items-center gap-1">
-                                <MessageCircle className="w-3 h-3 text-gray-400" />
-                                <span className="text-xs text-gray-400">{lead.messages.length}</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0 mt-1" />
-            </div>
-        </button>
     );
 }
 
@@ -283,459 +180,450 @@ export default function ScholarshipLeadsClient() {
     const [loading, setLoading] = useState(true);
     const [selectedLead, setSelectedLead] = useState<ScholarshipLead | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
-    const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [daysFilter, setDaysFilter] = useState("all");
+    const [sortBy, setSortBy] = useState("newest");
     const [replyText, setReplyText] = useState("");
     const [sendingReply, setSendingReply] = useState(false);
+    const [updatingStatus, setUpdatingStatus] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // ─── Fetch Data ─────────────────────────────────────────────────────
+    // ─── Fetch ─────────────────────────────────────────────────────
     const fetchLeads = useCallback(async () => {
         try {
-            const res = await fetch("/api/admin/scholarship-leads");
+            const params = new URLSearchParams();
+            if (daysFilter !== "all") params.set("days", daysFilter);
+            const res = await fetch(`/api/admin/scholarship-leads?${params.toString()}`);
             if (res.ok) {
                 const data = await res.json();
                 setLeads(data.leads || []);
                 setStats(data.stats || null);
-                // Update selected lead if it exists
                 if (selectedLead) {
                     const updated = data.leads?.find((l: ScholarshipLead) => l.id === selectedLead.id);
                     if (updated) setSelectedLead(updated);
                 }
             }
-        } catch (error) {
-            console.error("Failed to fetch leads:", error);
-        } finally {
+        } catch { /* silently fail */ } finally {
             setLoading(false);
         }
-    }, [selectedLead]);
+    }, [daysFilter, selectedLead]);
 
-    useEffect(() => {
-        fetchLeads();
-        const interval = setInterval(fetchLeads, 15000);
-        return () => clearInterval(interval);
-    }, []);
+    useEffect(() => { fetchLeads(); const i = setInterval(fetchLeads, 15000); return () => clearInterval(i); }, []);
+    useEffect(() => { fetchLeads(); }, [daysFilter]);
+    useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [selectedLead?.messages]);
 
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [selectedLead?.messages]);
+    // ─── Filter + Sort ─────────────────────────────────────────────
+    const filtered = leads
+        .filter((l) => {
+            const q = searchQuery.toLowerCase();
+            const matchSearch = !q || l.firstName.toLowerCase().includes(q) || l.email.toLowerCase().includes(q) || l.phone?.includes(searchQuery);
+            const matchStatus = statusFilter === "all" || l.status === statusFilter;
+            return matchSearch && matchStatus;
+        })
+        .sort((a, b) => {
+            if (sortBy === "oldest") return new Date(a.applicationDate).getTime() - new Date(b.applicationDate).getTime();
+            if (sortBy === "score") return b.qualificationScore - a.qualificationScore;
+            if (sortBy === "unread") return b.unreadCount - a.unreadCount;
+            return new Date(b.applicationDate).getTime() - new Date(a.applicationDate).getTime();
+        });
 
-    // ─── Filter Leads ─────────────────────────────────────────────────────
-    const filteredLeads = leads.filter((lead) => {
-        const matchesSearch =
-            !searchQuery ||
-            lead.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            lead.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            lead.phone?.includes(searchQuery);
-        const matchesStatus = statusFilter === "all" || lead.status === statusFilter;
-        return matchesSearch && matchesStatus;
-    });
-
-    // ─── Send Reply ─────────────────────────────────────────────────────
+    // ─── Actions ─────────────────────────────────────────────
     const sendReply = async () => {
         if (!selectedLead?.visitorId || !replyText.trim()) return;
-
         setSendingReply(true);
         try {
             await fetch("/api/admin/live-chat/reply", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    visitorId: selectedLead.visitorId,
-                    message: replyText,
-                    page: selectedLead.page || "/scholarship",
-                }),
+                body: JSON.stringify({ visitorId: selectedLead.visitorId, message: replyText, page: selectedLead.page || "/scholarship" }),
             });
             setReplyText("");
             await fetchLeads();
-        } catch (error) {
-            console.error("Failed to send reply:", error);
-        } finally {
-            setSendingReply(false);
-        }
+        } catch { /* fail */ } finally { setSendingReply(false); }
     };
 
-    // ─── Format Date ─────────────────────────────────────────────────────
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    const updateStatus = async (status: string) => {
+        if (!selectedLead) return;
+        setUpdatingStatus(true);
+        try {
+            await fetch("/api/admin/scholarship-leads/status", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: selectedLead.id, status }),
+            });
+            await fetchLeads();
+        } catch { /* fail */ } finally { setUpdatingStatus(false); }
     };
 
-    // ─── Loading State ─────────────────────────────────────────────────────
+    const exportCSV = () => {
+        const rows = [["Name", "Email", "Phone", "Status", "Specialization", "Income Goal", "Background", "Offered Amount", "Score", "Applied", "Messages"].join(",")];
+        filtered.forEach(l => {
+            rows.push([
+                `"${l.firstName} ${l.lastName || ""}"`, l.email, l.phone || "", l.status,
+                l.specializationLabel, l.incomeGoalLabel, l.roleLabel, l.offeredAmount || "",
+                `${l.qualificationScore}%`, new Date(l.applicationDate).toLocaleDateString(), `${l.messages.length}`,
+            ].join(","));
+        });
+        const blob = new Blob([rows.join("\n")], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = `scholarship-leads-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    // ─── Loading ─────────────────────────────────────────────
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-white to-orange-50">
-                <div className="text-center">
-                    <div className="relative w-16 h-16 mx-auto mb-4">
-                        <div className="absolute inset-0 rounded-full border-4 border-amber-200" />
-                        <div className="absolute inset-0 rounded-full border-4 border-amber-500 border-t-transparent animate-spin" />
-                    </div>
-                    <p className="text-gray-500 font-medium">Loading scholarship leads...</p>
-                </div>
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
             </div>
         );
     }
 
+    const lead = selectedLead;
+    const sc = lead ? STATUS_COLORS[lead.status] || STATUS_COLORS.pending : null;
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50/30">
-            {/* ─── Header ─────────────────────────────────────────────────────── */}
-            <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100">
-                <div className="max-w-[1800px] mx-auto px-6 py-4">
-                    <div className="flex items-center justify-between mb-5">
-                        <div className="flex items-center gap-4">
-                            <div className="relative">
-                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 flex items-center justify-center shadow-lg shadow-orange-200">
-                                    <Trophy className="w-6 h-6 text-white" />
-                                </div>
-                                {stats && stats.totalUnread > 0 && (
-                                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
-                                        {stats.totalUnread}
-                                    </div>
-                                )}
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                                    Scholarship Leads
-                                </h1>
-                                <p className="text-sm text-gray-500">FM Certification Qualification Pipeline</p>
-                            </div>
+        <div className="min-h-screen bg-gray-50">
+            {/* ─── Header ─────────────────────────────────────────── */}
+            <div className="sticky top-0 z-20 bg-white border-b border-gray-200">
+                <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3">
+                    <div className="flex items-center justify-between gap-4 mb-3">
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-lg font-bold text-gray-900">Scholarship Leads</h1>
+                            {stats && (
+                                <Badge variant="outline" className="text-xs">
+                                    {stats.total} total
+                                    {stats.totalUnread > 0 && <span className="ml-1 text-red-500">({stats.totalUnread} unread)</span>}
+                                </Badge>
+                            )}
                         </div>
-                        <Button
-                            onClick={fetchLeads}
-                            variant="outline"
-                            className="gap-2 rounded-xl border-gray-200 hover:border-amber-300 hover:bg-amber-50 transition-all"
-                        >
-                            <RefreshCw className="w-4 h-4" />
-                            Refresh
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <Link href="/admin/scholarship-leads/analytics">
+                                <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+                                    <BarChart3 className="w-3.5 h-3.5" /> Analytics
+                                </Button>
+                            </Link>
+                            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1.5 text-xs">
+                                <Download className="w-3.5 h-3.5" /> Export
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={fetchLeads} className="gap-1.5 text-xs">
+                                <RefreshCw className="w-3.5 h-3.5" />
+                            </Button>
+                        </div>
                     </div>
 
-                    {/* ─── Stats Grid ─────────────────────────────────────────────────────── */}
+                    {/* Stats */}
                     {stats && (
-                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                            <StatCard icon={Flame} label="Today" value={stats.today} color="#f97316" />
-                            <StatCard icon={TrendingUp} label="This Week" value={stats.thisWeek} color="#3b82f6" />
-                            <StatCard icon={Users} label="Total Leads" value={stats.total} color="#8b5cf6" />
-                            <StatCard icon={Clock} label="Pending" value={stats.pending} color="#f59e0b" />
-                            <StatCard icon={CheckCircle2} label="Converted" value={stats.converted} color="#10b981" />
-                            <StatCard icon={Target} label="Conv. Rate" value={`${stats.conversionRate}%`} color="#ec4899" />
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-3">
+                            <div className="bg-gray-50 rounded-lg px-3 py-2 border">
+                                <p className="text-xs text-gray-500">Total</p>
+                                <p className="text-xl font-bold text-gray-900">{stats.total}
+                                    {stats.today > 0 && <span className="text-xs font-normal text-emerald-600 ml-1.5">+{stats.today} today</span>}
+                                </p>
+                            </div>
+                            <div className="bg-amber-50 rounded-lg px-3 py-2 border border-amber-100">
+                                <p className="text-xs text-amber-600">Pending</p>
+                                <p className="text-xl font-bold text-amber-700">{stats.pending}</p>
+                            </div>
+                            <div className="bg-emerald-50 rounded-lg px-3 py-2 border border-emerald-100">
+                                <p className="text-xs text-emerald-600">Converted</p>
+                                <p className="text-xl font-bold text-emerald-700">{stats.converted}
+                                    <span className="text-xs font-normal ml-1">({stats.conversionRate}%)</span>
+                                </p>
+                            </div>
+                            <div className="bg-blue-50 rounded-lg px-3 py-2 border border-blue-100">
+                                <p className="text-xs text-blue-600">Approved</p>
+                                <p className="text-xl font-bold text-blue-700">{stats.approved}</p>
+                            </div>
+                            <div className="bg-purple-50 rounded-lg px-3 py-2 border border-purple-100">
+                                <p className="text-xs text-purple-600">Revenue</p>
+                                <p className="text-xl font-bold text-purple-700">${stats.revenue.toLocaleString()}</p>
+                            </div>
                         </div>
                     )}
+
+                    {/* Filters */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <div className="relative flex-1 max-w-xs">
+                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                            <Input
+                                placeholder="Search name, email, phone..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="pl-8 h-8 text-sm rounded-lg"
+                            />
+                        </div>
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="h-8 px-2.5 rounded-lg border text-xs bg-white"
+                        >
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="converted">Converted</option>
+                            <option value="lost">Lost</option>
+                        </select>
+                        <div className="flex items-center gap-0.5 bg-white rounded-lg border p-0.5">
+                            {DATE_OPTIONS.map(o => (
+                                <button key={o.value} onClick={() => setDaysFilter(o.value)}
+                                    className={`px-2 py-1 rounded text-xs font-medium transition-colors ${daysFilter === o.value ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-700"}`}
+                                >{o.label}</button>
+                            ))}
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-gray-400">
+                            <ArrowUpDown className="w-3 h-3" />
+                            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="bg-transparent text-xs border-0 p-0 focus:ring-0">
+                                {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                            </select>
+                        </div>
+                        <span className="text-xs text-gray-400 ml-auto">{filtered.length} shown</span>
+                    </div>
                 </div>
             </div>
 
-            {/* ─── Main Content ─────────────────────────────────────────────────────── */}
-            <div className="max-w-[1800px] mx-auto p-6">
-                <div className="grid grid-cols-12 gap-6">
-                    {/* ─── Left Panel: Lead List ─────────────────────────────────────────────────────── */}
-                    <div className="col-span-12 lg:col-span-4 xl:col-span-3">
-                        <Card className="overflow-hidden border-0 shadow-xl shadow-gray-200/50 rounded-2xl">
-                            <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-                                <div className="flex items-center gap-2">
-                                    <div className="relative flex-1">
-                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                        <Input
-                                            placeholder="Search leads..."
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="pl-10 rounded-xl border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-100"
-                                        />
-                                    </div>
-                                    <select
-                                        value={statusFilter}
-                                        onChange={(e) => setStatusFilter(e.target.value)}
-                                        className="h-10 px-3 rounded-xl border border-gray-200 text-sm bg-white focus:border-amber-300"
-                                    >
-                                        <option value="all">All</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="approved">Approved</option>
-                                        <option value="converted">Converted</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <ScrollArea className="h-[calc(100vh-340px)]">
-                                {filteredLeads.length === 0 ? (
+            {/* ─── Main Content ─────────────────────────────────────────── */}
+            <div className="max-w-[1600px] mx-auto p-4 sm:p-6">
+                <div className="flex gap-4">
+                    {/* ─── Left: Lead List ─────────────────────────────────── */}
+                    <div className="w-[340px] shrink-0">
+                        <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+                            <ScrollArea className="h-[calc(100vh-280px)]">
+                                {filtered.length === 0 ? (
                                     <div className="p-8 text-center">
-                                        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
-                                            <Users className="w-8 h-8 text-gray-300" />
-                                        </div>
-                                        <p className="text-gray-500 font-medium">No leads found</p>
-                                        <p className="text-sm text-gray-400 mt-1">Try adjusting your filters</p>
+                                        <Users className="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                                        <p className="text-sm text-gray-400">No leads found</p>
                                     </div>
                                 ) : (
                                     <div className="divide-y divide-gray-100">
-                                        {filteredLeads.map((lead) => (
-                                            <LeadCard
-                                                key={lead.id}
-                                                lead={lead}
-                                                isSelected={selectedLead?.id === lead.id}
-                                                onClick={() => setSelectedLead(lead)}
-                                            />
-                                        ))}
+                                        {filtered.map((l) => {
+                                            const colors = STATUS_COLORS[l.status] || STATUS_COLORS.pending;
+                                            return (
+                                                <button
+                                                    key={l.id}
+                                                    onClick={() => setSelectedLead(l)}
+                                                    className={`w-full p-3 text-left transition-all border-l-3 ${
+                                                        selectedLead?.id === l.id
+                                                            ? `bg-gray-50 ${colors.left}`
+                                                            : `hover:bg-gray-50/50 border-l-transparent`
+                                                    }`}
+                                                    style={{ borderLeftWidth: "3px" }}
+                                                >
+                                                    <div className="flex items-start gap-2.5">
+                                                        <div className="relative shrink-0">
+                                                            <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-600">
+                                                                {l.firstName[0]}
+                                                            </div>
+                                                            {l.unreadCount > 0 && (
+                                                                <div className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                                                                    {l.unreadCount}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex items-center gap-1.5 mb-0.5">
+                                                                <span className="font-medium text-sm text-gray-900 truncate">{l.firstName} {l.lastName || ""}</span>
+                                                                <Badge className={`text-[9px] px-1 py-0 ${colors.bg} ${colors.text} border-0`}>{l.status}</Badge>
+                                                            </div>
+                                                            <p className="text-xs text-gray-400 truncate">{l.email}</p>
+                                                            <div className="flex items-center gap-2 mt-1">
+                                                                <span className="text-[10px] text-gray-400">{timeAgo(l.applicationDate)}</span>
+                                                                {l.offeredAmount && <span className="text-[10px] font-medium text-emerald-600">{l.offeredAmount}</span>}
+                                                                {l.incomeGoalLabel && <span className="text-[10px] text-gray-400">{l.incomeGoalLabel}</span>}
+                                                                {l.messages.length > 0 && (
+                                                                    <span className="text-[10px] text-gray-400 flex items-center gap-0.5">
+                                                                        <MessageCircle className="w-2.5 h-2.5" />{l.messages.length}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <ChevronRight className="w-3.5 h-3.5 text-gray-300 mt-1 shrink-0" />
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                 )}
                             </ScrollArea>
-                        </Card>
+                        </div>
                     </div>
 
-                    {/* ─── Right Panel: Lead Detail ─────────────────────────────────────────────────────── */}
-                    <div className="col-span-12 lg:col-span-8 xl:col-span-9">
-                        {!selectedLead ? (
-                            <Card className="h-[calc(100vh-280px)] flex items-center justify-center border-0 shadow-xl shadow-gray-200/50 rounded-2xl bg-gradient-to-br from-white to-gray-50">
+                    {/* ─── Right: Lead Detail ─────────────────────────────── */}
+                    <div className="flex-1 min-w-0">
+                        {!lead ? (
+                            <div className="bg-white rounded-xl border shadow-sm h-[calc(100vh-280px)] flex items-center justify-center">
                                 <div className="text-center">
-                                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto mb-4">
-                                        <User className="w-10 h-10 text-amber-400" />
-                                    </div>
-                                    <p className="text-gray-500 font-medium">Select a lead to view details</p>
-                                    <p className="text-sm text-gray-400 mt-1">Click on any lead from the list</p>
+                                    <User className="w-12 h-12 text-gray-200 mx-auto mb-3" />
+                                    <p className="text-sm text-gray-400">Select a lead</p>
                                 </div>
-                            </Card>
+                            </div>
                         ) : (
-                            <Card className="border-0 shadow-xl shadow-gray-200/50 rounded-2xl overflow-hidden">
-                                {/* Lead Header */}
-                                <div className="p-6 bg-gradient-to-r from-white via-amber-50/30 to-orange-50/30 border-b border-gray-100">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div className="relative">
-                                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-orange-200">
-                                                    {selectedLead.firstName[0]}
-                                                </div>
-                                                <div className="absolute -bottom-1 -right-1">
-                                                    <ScoreRing score={selectedLead.qualificationScore} size={32} />
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h2 className="text-xl font-bold text-gray-900">
-                                                    {selectedLead.firstName} {selectedLead.lastName || ""}
-                                                </h2>
-                                                <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
-                                                    <span className="flex items-center gap-1.5">
-                                                        <Mail className="w-4 h-4" />
-                                                        {selectedLead.email}
-                                                    </span>
-                                                    {selectedLead.phone && (
-                                                        <span className="flex items-center gap-1.5">
-                                                            <Phone className="w-4 h-4" />
-                                                            {selectedLead.phone}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-3">
-                                            <Badge
-                                                className={`px-3 py-1.5 text-sm font-medium ${selectedLead.status === "converted"
-                                                        ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                                                        : selectedLead.status === "approved"
-                                                            ? "bg-blue-100 text-blue-700 border border-blue-200"
-                                                            : "bg-amber-100 text-amber-700 border border-amber-200"
-                                                    }`}
-                                            >
-                                                {selectedLead.status === "converted" && <CheckCircle2 className="w-4 h-4 mr-1.5" />}
-                                                {selectedLead.status.charAt(0).toUpperCase() + selectedLead.status.slice(1)}
-                                            </Badge>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Tabs */}
-                                <Tabs defaultValue="profile" className="flex-1">
-                                    <div className="px-6 pt-2 border-b border-gray-100">
-                                        <TabsList className="bg-transparent p-0 h-auto gap-6">
-                                            <TabsTrigger value="profile" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-amber-500 data-[state=active]:text-amber-600 rounded-none px-0 pb-3 font-medium">
-                                                <FileText className="w-4 h-4 mr-2" />
-                                                Profile
-                                            </TabsTrigger>
-                                            <TabsTrigger value="chat" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-amber-500 data-[state=active]:text-amber-600 rounded-none px-0 pb-3 font-medium">
-                                                <MessageCircle className="w-4 h-4 mr-2" />
-                                                Chat
-                                                {selectedLead.messages.length > 0 && (
-                                                    <span className="ml-2 px-1.5 py-0.5 rounded-full bg-gray-100 text-xs">{selectedLead.messages.length}</span>
-                                                )}
-                                            </TabsTrigger>
-                                            <TabsTrigger value="timeline" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-amber-500 data-[state=active]:text-amber-600 rounded-none px-0 pb-3 font-medium">
-                                                <Calendar className="w-4 h-4 mr-2" />
-                                                Timeline
-                                            </TabsTrigger>
-                                        </TabsList>
-                                    </div>
-
-                                    {/* Profile Tab */}
-                                    <TabsContent value="profile" className="p-6 m-0">
-                                        <ScrollArea className="h-[calc(100vh-500px)]">
-                                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                                                {/* Quick Info Cards */}
-                                                <div className="space-y-4">
-                                                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Quick Info</h3>
-                                                    <div className="grid grid-cols-2 gap-3">
-                                                        <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-100">
-                                                            <p className="text-xs text-purple-600 font-medium mb-1">Specialization</p>
-                                                            <p className="font-semibold text-gray-900">{selectedLead.specializationLabel}</p>
-                                                        </div>
-                                                        <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100">
-                                                            <p className="text-xs text-emerald-600 font-medium mb-1">Income Goal</p>
-                                                            <p className="font-semibold text-gray-900">{selectedLead.incomeGoalLabel}</p>
-                                                        </div>
-                                                        <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100">
-                                                            <p className="text-xs text-blue-600 font-medium mb-1">Background</p>
-                                                            <p className="font-semibold text-gray-900">{selectedLead.roleLabel}</p>
-                                                        </div>
-                                                        <div className="p-4 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100">
-                                                            <p className="text-xs text-amber-600 font-medium mb-1">Offered Amount</p>
-                                                            <p className="font-semibold text-gray-900">{selectedLead.offeredAmount || "Not selected"}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* Quiz Answers */}
-                                                <div className="space-y-4">
-                                                    <div className="flex items-center justify-between">
-                                                        <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider flex items-center gap-2">
-                                                            <Sparkles className="w-4 h-4 text-amber-500" />
-                                                            Quiz Answers ({selectedLead.answeredCount})
-                                                        </h3>
-                                                    </div>
-                                                    {Object.keys(selectedLead.quizAnswers).length > 0 ? (
-                                                        <div className="space-y-2">
-                                                            {Object.entries(selectedLead.quizAnswers).map(([key, value]) => (
-                                                                <div key={key} className="flex items-center justify-between p-3 rounded-xl bg-white border border-gray-100 hover:border-amber-200 hover:bg-amber-50/50 transition-all">
-                                                                    <span className="text-sm text-gray-600 capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</span>
-                                                                    <span className="text-sm font-medium text-gray-900 bg-gray-100 px-2.5 py-1 rounded-lg">{value}</span>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    ) : (
-                                                        <div className="p-8 rounded-xl bg-gray-50 border-2 border-dashed border-gray-200 text-center">
-                                                            <AlertCircle className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                                                            <p className="text-gray-500">Quiz data not available</p>
-                                                            <p className="text-xs text-gray-400 mt-1">Lead may have applied via direct link</p>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            {/* Drop-off Indicator */}
-                                            {selectedLead.dropOffStage && selectedLead.dropOffStage !== "converted" && (
-                                                <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-red-50 to-orange-50 border border-red-200">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="p-2 rounded-lg bg-red-100">
-                                                            <AlertCircle className="w-5 h-5 text-red-600" />
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-semibold text-red-800">Drop-off Stage</p>
-                                                            <p className="text-sm text-red-600">{selectedLead.dropOffStage}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </ScrollArea>
-                                    </TabsContent>
-
-                                    {/* Chat Tab */}
-                                    <TabsContent value="chat" className="p-0 m-0 flex flex-col h-[calc(100vh-500px)]">
-                                        <ScrollArea className="flex-1 p-6">
-                                            {selectedLead.messages.length > 0 ? (
-                                                <div className="space-y-4">
-                                                    {selectedLead.messages.map((msg) => (
-                                                        <div key={msg.id} className={`flex ${msg.isFromVisitor ? "justify-start" : "justify-end"}`}>
-                                                            <div className={`flex items-end gap-2 max-w-[75%] ${msg.isFromVisitor ? "" : "flex-row-reverse"}`}>
-                                                                {!msg.isFromVisitor && (
-                                                                    <Image src={SARAH_AVATAR} alt="Sarah" width={32} height={32} className="rounded-full flex-shrink-0 shadow-md" />
-                                                                )}
-                                                                <div
-                                                                    className={`rounded-2xl px-4 py-3 ${msg.isFromVisitor
-                                                                            ? "bg-gray-100 text-gray-800 rounded-bl-md"
-                                                                            : "bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-br-md shadow-lg shadow-orange-200"
-                                                                        }`}
-                                                                >
-                                                                    {msg.message.startsWith("data:audio") || msg.message.includes(".mp3") || msg.message.includes(".webm") ? (
-                                                                        <AudioPlayer url={msg.message} />
-                                                                    ) : (
-                                                                        <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
-                                                                    )}
-                                                                    <p className={`text-[10px] mt-1.5 ${msg.isFromVisitor ? "text-gray-400" : "text-white/70"}`}>
-                                                                        {formatDate(msg.createdAt)}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                    <div ref={messagesEndRef} />
-                                                </div>
-                                            ) : (
-                                                <div className="h-full flex items-center justify-center">
-                                                    <div className="text-center">
-                                                        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
-                                                            <MessageCircle className="w-8 h-8 text-gray-300" />
-                                                        </div>
-                                                        <p className="text-gray-500 font-medium">No chat messages yet</p>
-                                                        <p className="text-sm text-gray-400 mt-1">Start a conversation below</p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </ScrollArea>
-
-                                        {/* Reply Input */}
-                                        <div className="p-4 border-t border-gray-100 bg-white">
+                            <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+                                <ScrollArea className="h-[calc(100vh-280px)]">
+                                    {/* Lead Header */}
+                                    <div className="p-5 border-b border-gray-100">
+                                        <div className="flex items-start justify-between">
                                             <div className="flex items-center gap-3">
-                                                <Input
-                                                    placeholder="Type your message..."
-                                                    value={replyText}
-                                                    onChange={(e) => setReplyText(e.target.value)}
-                                                    onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendReply()}
-                                                    disabled={!selectedLead.visitorId}
-                                                    className="flex-1 rounded-xl border-gray-200 focus:border-amber-300 focus:ring-amber-100"
-                                                />
-                                                <Button
-                                                    onClick={sendReply}
-                                                    disabled={!replyText.trim() || sendingReply || !selectedLead.visitorId}
-                                                    className="rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-orange-200 transition-all"
-                                                >
-                                                    <Send className="w-4 h-4" />
-                                                </Button>
+                                                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-lg font-bold text-gray-600">
+                                                    {lead.firstName[0]}
+                                                </div>
+                                                <div>
+                                                    <h2 className="text-base font-bold text-gray-900">{lead.firstName} {lead.lastName || ""}</h2>
+                                                    <div className="flex items-center gap-3 text-xs text-gray-500 mt-0.5">
+                                                        <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{lead.email}</span>
+                                                        {lead.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{lead.phone}</span>}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            {!selectedLead.visitorId && (
-                                                <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
-                                                    <AlertCircle className="w-3 h-3" />
-                                                    No visitor session - use email to contact
-                                                </p>
-                                            )}
+                                            <div className="flex items-center gap-2">
+                                                {lead.status !== "approved" && lead.status !== "converted" && (
+                                                    <Button size="sm" variant="outline" disabled={updatingStatus} onClick={() => updateStatus("approved")}
+                                                        className="text-xs gap-1 text-blue-600 border-blue-200 hover:bg-blue-50">
+                                                        <CheckCircle2 className="w-3 h-3" /> Approve
+                                                    </Button>
+                                                )}
+                                                {lead.status !== "converted" && (
+                                                    <Button size="sm" variant="outline" disabled={updatingStatus} onClick={() => updateStatus("converted")}
+                                                        className="text-xs gap-1 text-emerald-600 border-emerald-200 hover:bg-emerald-50">
+                                                        <DollarSign className="w-3 h-3" /> Converted
+                                                    </Button>
+                                                )}
+                                                {lead.status !== "lost" && (
+                                                    <Button size="sm" variant="outline" disabled={updatingStatus} onClick={() => updateStatus("lost")}
+                                                        className="text-xs gap-1 text-red-500 border-red-200 hover:bg-red-50">
+                                                        <XCircle className="w-3 h-3" /> Lost
+                                                    </Button>
+                                                )}
+                                                <Badge className={`${sc!.bg} ${sc!.text} border ${sc!.border} text-xs`}>
+                                                    {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
+                                                </Badge>
+                                            </div>
                                         </div>
-                                    </TabsContent>
+                                    </div>
 
-                                    {/* Timeline Tab */}
-                                    <TabsContent value="timeline" className="p-6 m-0">
-                                        <ScrollArea className="h-[calc(100vh-500px)]">
-                                            <div className="relative">
-                                                <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gradient-to-b from-amber-300 via-orange-300 to-red-300" />
-                                                <div className="space-y-6">
-                                                    {selectedLead.timeline.map((event, idx) => (
-                                                        <div key={idx} className="flex items-start gap-4 relative">
-                                                            <div className="w-10 h-10 rounded-full bg-white border-4 border-amber-300 flex items-center justify-center z-10 shadow-md">
-                                                                <span className="text-lg">{event.icon}</span>
+                                    {/* Quick Info */}
+                                    <div className="p-5 border-b border-gray-100">
+                                        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
+                                            <div className="p-3 rounded-lg bg-purple-50 border border-purple-100">
+                                                <p className="text-[10px] text-purple-500 font-medium uppercase">Specialization</p>
+                                                <p className="text-sm font-semibold text-gray-900 mt-0.5">{lead.specializationLabel}</p>
+                                            </div>
+                                            <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
+                                                <p className="text-[10px] text-emerald-500 font-medium uppercase">Income Goal</p>
+                                                <p className="text-sm font-semibold text-gray-900 mt-0.5">{lead.incomeGoalLabel}</p>
+                                            </div>
+                                            <div className="p-3 rounded-lg bg-blue-50 border border-blue-100">
+                                                <p className="text-[10px] text-blue-500 font-medium uppercase">Background</p>
+                                                <p className="text-sm font-semibold text-gray-900 mt-0.5">{lead.roleLabel}</p>
+                                            </div>
+                                            <div className="p-3 rounded-lg bg-amber-50 border border-amber-100">
+                                                <p className="text-[10px] text-amber-500 font-medium uppercase">Offered</p>
+                                                <p className="text-sm font-semibold text-gray-900 mt-0.5">{lead.offeredAmount || "—"}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Drop-off */}
+                                    {lead.dropOffStage && !lead.hasConverted && (
+                                        <div className="mx-5 mt-4 p-3 rounded-lg bg-red-50 border border-red-100 flex items-center gap-2">
+                                            <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                                            <p className="text-xs text-red-600"><span className="font-medium">Drop-off:</span> {lead.dropOffStage}</p>
+                                        </div>
+                                    )}
+
+                                    {/* Quiz Answers */}
+                                    <div className="p-5 border-b border-gray-100">
+                                        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                                            <Sparkles className="w-3.5 h-3.5" /> Quiz Answers ({lead.answeredCount})
+                                        </h3>
+                                        {Object.keys(lead.quizAnswers).length > 0 ? (
+                                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-1.5">
+                                                {Object.entries(lead.quizAnswers).map(([key, value]) => (
+                                                    <div key={key} className="flex items-center justify-between py-1.5 px-2.5 rounded-md hover:bg-gray-50">
+                                                        <span className="text-xs text-gray-500 capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</span>
+                                                        <span className="text-xs font-medium text-gray-800 bg-gray-100 px-2 py-0.5 rounded">{value}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-xs text-gray-400">No quiz data available</p>
+                                        )}
+                                    </div>
+
+                                    {/* Chat Messages */}
+                                    <div className="p-5 border-b border-gray-100">
+                                        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                                            <MessageCircle className="w-3.5 h-3.5" /> Chat ({lead.messages.length})
+                                        </h3>
+                                        {lead.messages.length > 0 ? (
+                                            <div className="space-y-2.5 max-h-[400px] overflow-y-auto mb-3">
+                                                {lead.messages.map((msg) => (
+                                                    <div key={msg.id} className={`flex ${msg.isFromVisitor ? "justify-start" : "justify-end"}`}>
+                                                        <div className={`flex items-end gap-1.5 max-w-[80%] ${msg.isFromVisitor ? "" : "flex-row-reverse"}`}>
+                                                            {!msg.isFromVisitor && (
+                                                                <Image src={SARAH_AVATAR} alt="S" width={24} height={24} className="rounded-full shrink-0" />
+                                                            )}
+                                                            <div className={`rounded-xl px-3 py-2 ${msg.isFromVisitor ? "bg-gray-100 text-gray-800" : "bg-gray-800 text-white"}`}>
+                                                                {msg.message.startsWith("data:audio") || msg.message.includes(".mp3") || msg.message.includes(".webm") ? (
+                                                                    <AudioPlayer url={msg.message} />
+                                                                ) : (
+                                                                    <p className="text-xs whitespace-pre-wrap">{msg.message}</p>
+                                                                )}
+                                                                <p className={`text-[9px] mt-1 ${msg.isFromVisitor ? "text-gray-400" : "text-gray-400"}`}>{timeAgo(msg.createdAt)}</p>
                                                             </div>
-                                                            <div className="flex-1 pt-1">
-                                                                <p className="font-semibold text-gray-900">{event.label}</p>
-                                                                <p className="text-sm text-gray-500">{formatDate(event.timestamp)}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                <div ref={messagesEndRef} />
+                                            </div>
+                                        ) : (
+                                            <p className="text-xs text-gray-400 mb-3">No messages yet</p>
+                                        )}
+
+                                        {/* Reply */}
+                                        <div className="flex items-center gap-2">
+                                            <Input
+                                                placeholder={lead.visitorId ? "Type a reply..." : "No visitor session"}
+                                                value={replyText}
+                                                onChange={(e) => setReplyText(e.target.value)}
+                                                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendReply()}
+                                                disabled={!lead.visitorId}
+                                                className="flex-1 h-8 text-xs rounded-lg"
+                                            />
+                                            <Button size="sm" onClick={sendReply} disabled={!replyText.trim() || sendingReply || !lead.visitorId}
+                                                className="h-8 px-3 rounded-lg bg-gray-900 hover:bg-gray-800">
+                                                <Send className="w-3 h-3" />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    {/* Timeline */}
+                                    <div className="p-5">
+                                        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Timeline</h3>
+                                        {lead.timeline.length > 0 ? (
+                                            <div className="relative pl-6">
+                                                <div className="absolute left-2 top-1 bottom-1 w-px bg-gray-200" />
+                                                <div className="space-y-3">
+                                                    {lead.timeline.map((e, i) => (
+                                                        <div key={i} className="flex items-start gap-3 relative">
+                                                            <div className="absolute left-[-18px] w-5 h-5 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-xs z-10">
+                                                                {e.icon}
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs font-medium text-gray-800">{e.label}</p>
+                                                                <p className="text-[10px] text-gray-400">{formatDate(e.timestamp)}</p>
                                                             </div>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
-
-                                            {selectedLead.timeline.length === 0 && (
-                                                <div className="flex items-center justify-center h-full">
-                                                    <div className="text-center">
-                                                        <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                                                        <p className="text-gray-500">No timeline events</p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </ScrollArea>
-                                    </TabsContent>
-                                </Tabs>
-                            </Card>
+                                        ) : (
+                                            <p className="text-xs text-gray-400">No events</p>
+                                        )}
+                                    </div>
+                                </ScrollArea>
+                            </div>
                         )}
                     </div>
                 </div>

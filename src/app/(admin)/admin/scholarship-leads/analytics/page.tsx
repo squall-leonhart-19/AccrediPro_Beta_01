@@ -18,6 +18,8 @@ import {
     DollarSign,
     Calendar,
     CreditCard,
+    Eye,
+    ArrowRight,
 } from "lucide-react";
 
 // ─── Types ─────────────────────────────────────────────────────────
@@ -43,9 +45,11 @@ interface BreakdownItem {
 }
 
 interface AnalyticsData {
+    quizPageViews: number;
     totalStarts: number;
     totalCompletes: number;
     totalEnrolled: number;
+    quizToSubmissionRate: number;
     overallCompletionRate: number;
     enrollmentRate: number;
     funnel: QuestionFunnel[];
@@ -59,6 +63,10 @@ interface AnalyticsData {
     specializationBreakdown: BreakdownItem[];
     currentIncomeBreakdown: BreakdownItem[];
     daysFilter: string;
+    questionProgress: number[]; // [landed, answeredQ1, answeredQ2, ..., answeredQ11]
+    activeVariants: string[];
+    variantBreakdown: { variant: string; count: number; percentage: number }[];
+    variantFilter: string;
 }
 
 // ─── Constants ─────────────────────────────────────────────────────────
@@ -80,16 +88,19 @@ export default function ScholarshipAnalyticsPage() {
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
     const [daysFilter, setDaysFilter] = useState("30");
+    const [variantFilter, setVariantFilter] = useState("all");
     const [expandedQ, setExpandedQ] = useState<number | null>(null);
 
     useEffect(() => {
-        fetchAnalytics(daysFilter);
-    }, [daysFilter]);
+        fetchAnalytics(daysFilter, variantFilter);
+    }, [daysFilter, variantFilter]);
 
-    const fetchAnalytics = async (days: string) => {
+    const fetchAnalytics = async (days: string, variant: string = "all") => {
         setLoading(true);
         try {
-            const res = await fetch(`/api/admin/scholarship-leads/analytics?days=${days}`);
+            const params = new URLSearchParams({ days });
+            if (variant !== "all") params.set("variant", variant);
+            const res = await fetch(`/api/admin/scholarship-leads/analytics?${params.toString()}`);
             if (res.ok) {
                 const json = await res.json();
                 setData(json);
@@ -146,26 +157,66 @@ export default function ScholarshipAnalyticsPage() {
                             </button>
                         ))}
                     </div>
+                    {/* Variant Filter */}
+                    {data.activeVariants && data.activeVariants.length > 1 && (
+                        <div className="flex items-center gap-1.5 bg-white rounded-lg border p-1">
+                            <button
+                                onClick={() => setVariantFilter("all")}
+                                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                                    variantFilter === "all"
+                                        ? "text-white shadow-sm"
+                                        : "text-gray-500 hover:text-gray-700"
+                                }`}
+                                style={variantFilter === "all" ? { background: BRAND.gold } : {}}
+                            >
+                                All
+                            </button>
+                            {data.activeVariants.map(v => (
+                                <button
+                                    key={v}
+                                    onClick={() => setVariantFilter(v)}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                                        variantFilter === v
+                                            ? "text-white shadow-sm"
+                                            : "text-gray-500 hover:text-gray-700"
+                                    }`}
+                                    style={variantFilter === v ? { background: BRAND.gold } : {}}
+                                >
+                                    Variant {v}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
-                {/* Top Stats */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <Card>
-                        <CardContent className="pt-5 pb-4">
-                            <div className="flex items-center gap-3">
+                {/* Funnel Stats */}
+                <Card>
+                    <CardContent className="pt-5 pb-4">
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                            {/* Page Views */}
+                            <div className="flex items-center gap-3 min-w-[120px]">
                                 <div className="p-2.5 rounded-xl" style={{ background: `${BRAND.gold}20` }}>
-                                    <Users className="w-5 h-5" style={{ color: BRAND.gold }} />
+                                    <Eye className="w-5 h-5" style={{ color: BRAND.gold }} />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold" style={{ color: BRAND.burgundy }}>{data.totalStarts}</p>
-                                    <p className="text-xs text-gray-500">Quiz Starts</p>
+                                    <p className="text-2xl font-bold" style={{ color: BRAND.burgundy }}>{data.quizPageViews}</p>
+                                    <p className="text-xs text-gray-500">Page Views</p>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="pt-5 pb-4">
-                            <div className="flex items-center gap-3">
+                            <ArrowRight className="w-4 h-4 text-gray-300 hidden sm:block" />
+                            {/* Submissions */}
+                            <div className="flex items-center gap-3 min-w-[120px]">
+                                <div className="p-2.5 rounded-xl bg-amber-100">
+                                    <Users className="w-5 h-5 text-amber-600" />
+                                </div>
+                                <div>
+                                    <p className="text-2xl font-bold text-amber-600">{data.totalStarts}</p>
+                                    <p className="text-xs text-gray-500">Submissions ({data.quizToSubmissionRate}%)</p>
+                                </div>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-gray-300 hidden sm:block" />
+                            {/* Completed */}
+                            <div className="flex items-center gap-3 min-w-[120px]">
                                 <div className="p-2.5 rounded-xl bg-green-100">
                                     <CheckCircle className="w-5 h-5 text-green-600" />
                                 </div>
@@ -174,11 +225,9 @@ export default function ScholarshipAnalyticsPage() {
                                     <p className="text-xs text-gray-500">Completed ({data.overallCompletionRate}%)</p>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="pt-5 pb-4">
-                            <div className="flex items-center gap-3">
+                            <ArrowRight className="w-4 h-4 text-gray-300 hidden sm:block" />
+                            {/* Enrolled */}
+                            <div className="flex items-center gap-3 min-w-[120px]">
                                 <div className="p-2.5 rounded-xl bg-blue-100">
                                     <CreditCard className="w-5 h-5 text-blue-600" />
                                 </div>
@@ -187,31 +236,104 @@ export default function ScholarshipAnalyticsPage() {
                                     <p className="text-xs text-gray-500">Enrolled ({data.enrollmentRate}%)</p>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="pt-5 pb-4">
-                            <div className="flex items-center gap-3">
+                            <ArrowRight className="w-4 h-4 text-gray-300 hidden sm:block" />
+                            {/* Overall Conversion */}
+                            <div className="flex items-center gap-3 min-w-[120px]">
                                 <div className="p-2.5 rounded-xl bg-purple-100">
                                     <Target className="w-5 h-5 text-purple-600" />
                                 </div>
                                 <div>
                                     <p className="text-2xl font-bold text-purple-600">
-                                        {data.totalStarts > 0 ? Math.round((data.totalEnrolled / data.totalStarts) * 100 * 10) / 10 : 0}%
+                                        {data.quizPageViews > 0 ? Math.round((data.totalEnrolled / data.quizPageViews) * 100 * 10) / 10 : 0}%
                                     </p>
-                                    <p className="text-xs text-gray-500">Quiz → Enrolled</p>
+                                    <p className="text-xs text-gray-500">View → Enrolled</p>
                                 </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Live Quiz Drop-off Funnel */}
+                {data.questionProgress && data.questionProgress[0] > 0 && (
+                    <Card>
+                        <CardHeader className="pb-3">
+                            <CardTitle className="flex items-center gap-2 text-lg" style={{ color: BRAND.burgundy }}>
+                                <TrendingDown className="w-5 h-5" />
+                                Live Quiz Drop-off Funnel
+                            </CardTitle>
+                            <p className="text-xs text-gray-500 mt-1">Real-time tracking of where visitors abandon the quiz (tracks going forward)</p>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-1.5">
+                                {(() => {
+                                    const STEP_LABELS = [
+                                        "Landed on quiz",
+                                        "Q1: Specialization",
+                                        "Q2: Background",
+                                        "Q3: Experience",
+                                        "Q4: Motivation",
+                                        "Q5: Pain Point",
+                                        "Q6: Timeline",
+                                        "Q7: Income Goal",
+                                        "Q8: Time Stuck",
+                                        "Q9: Current Income",
+                                        "Q10: Dream Life",
+                                        "Q11: Commitment",
+                                    ];
+                                    const qp = data.questionProgress;
+                                    const max = qp[0] || 1;
+                                    return STEP_LABELS.map((label, i) => {
+                                        if (i >= qp.length) return null;
+                                        const count = qp[i];
+                                        const prev = i === 0 ? max : qp[i - 1];
+                                        const dropOff = prev > 0 ? prev - count : 0;
+                                        const dropPct = prev > 0 ? Math.round((dropOff / prev) * 100) : 0;
+                                        const pct = max > 0 ? Math.round((count / max) * 100) : 0;
+                                        return (
+                                            <div key={i} className="flex items-center gap-3">
+                                                <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
+                                                    style={{ background: i === 0 ? `${BRAND.gold}30` : `${BRAND.burgundy}15`, color: BRAND.burgundy }}>
+                                                    {i === 0 ? "★" : i}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between mb-0.5">
+                                                        <span className="font-medium text-xs text-gray-700">{label}</span>
+                                                        <div className="flex items-center gap-2 text-xs shrink-0 ml-2">
+                                                            <span className="font-semibold" style={{ color: BRAND.burgundy }}>{count}</span>
+                                                            <span className="text-gray-400">({pct}%)</span>
+                                                            {dropOff > 0 && i > 0 && (
+                                                                <span className={`flex items-center gap-0.5 font-medium ${dropPct > 30 ? "text-red-600" : dropPct > 15 ? "text-orange-500" : "text-gray-400"}`}>
+                                                                    <AlertTriangle className="w-3 h-3" />
+                                                                    -{dropOff} ({dropPct}%)
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full rounded-full transition-all duration-500"
+                                                            style={{
+                                                                width: `${pct}%`,
+                                                                background: dropPct > 30 ? '#ef4444' : dropPct > 15 ? BRAND.gold : '#22c55e'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    });
+                                })()}
                             </div>
                         </CardContent>
                     </Card>
-                </div>
+                )}
 
-                {/* Question Funnel */}
+                {/* Question Funnel (from submitted data) */}
                 <Card>
                     <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-2 text-lg" style={{ color: BRAND.burgundy }}>
                             <TrendingDown className="w-5 h-5" />
-                            Question-by-Question Drop-off
+                            Question-by-Question Drop-off (Submitted Only)
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -318,6 +440,29 @@ export default function ScholarshipAnalyticsPage() {
                         color="#8b5cf6"
                     />
                 </div>
+
+                {/* Variant Breakdown */}
+                {data.variantBreakdown && data.variantBreakdown.length > 1 && (
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="flex items-center gap-2 text-base" style={{ color: BRAND.burgundy }}>
+                                <BarChart3 className="w-5 h-5" />
+                                Quiz Variants
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                {data.variantBreakdown.map(v => (
+                                    <div key={v.variant} className="p-3 rounded-lg border text-center" style={{ borderColor: `${BRAND.gold}40` }}>
+                                        <p className="text-lg font-bold" style={{ color: BRAND.burgundy }}>Variant {v.variant}</p>
+                                        <p className="text-2xl font-bold" style={{ color: BRAND.gold }}>{v.count}</p>
+                                        <p className="text-xs text-gray-500">{v.percentage}% of total</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Top Patterns */}
                 {data.topPatterns.length > 0 && (
