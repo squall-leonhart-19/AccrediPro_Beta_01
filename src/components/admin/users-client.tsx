@@ -243,6 +243,12 @@ export function UsersClient({ courses }: UsersClientProps) {
   const [loadingTags, setLoadingTags] = useState(false);
   const [tagSearch, setTagSearch] = useState("");
 
+  // Bulk Onboard state
+  const [bulkOnboardDialogOpen, setBulkOnboardDialogOpen] = useState(false);
+  const [bulkOnboardTag, setBulkOnboardTag] = useState("fm_certification_purchased");
+  const [bulkOnboarding, setBulkOnboarding] = useState(false);
+  const [bulkOnboardResult, setBulkOnboardResult] = useState<any>(null);
+
   // Reset Mini Diploma state
   const [resettingMiniDiploma, setResettingMiniDiploma] = useState(false);
 
@@ -589,6 +595,33 @@ export function UsersClient({ courses }: UsersClientProps) {
       }
     } catch (error) {
       console.error("Failed to send bulk DM:", error);
+    }
+  };
+
+  // ─── Bulk Onboard Handler ─────────────────────────────────────────
+  const handleBulkOnboard = async () => {
+    if (selectedUsers.length === 0 || !bulkOnboardTag) return;
+    setBulkOnboarding(true);
+    setBulkOnboardResult(null);
+    try {
+      const res = await fetch("/api/admin/users/bulk-tag", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userIds: selectedUsers, tag: bulkOnboardTag, sendEmails: true }),
+      });
+      const result = await res.json();
+      if (result.success) {
+        setBulkOnboardResult(result.results);
+        toast.success(`Done! Tagged: ${result.results.tagged}, Enrolled: ${result.results.enrolled}, Emails: ${result.results.emailsSent}`);
+        fetchUsers(1);
+      } else {
+        toast.error("Bulk onboard failed: " + (result.error || "Unknown"));
+      }
+    } catch (err) {
+      toast.error("Bulk onboard failed");
+      console.error("[Bulk Onboard] Error:", err);
+    } finally {
+      setBulkOnboarding(false);
     }
   };
 
@@ -1326,6 +1359,14 @@ export function UsersClient({ courses }: UsersClientProps) {
                   {selectedUsers.length} user(s) selected
                 </p>
                 <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => { setBulkOnboardResult(null); setBulkOnboardDialogOpen(true); }}
+                    className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    <Tag className="w-4 h-4" />
+                    Bulk Onboard ({selectedUsers.length})
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
@@ -4323,6 +4364,132 @@ export function UsersClient({ courses }: UsersClientProps) {
             >
               Done
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* ─── Bulk Onboard Dialog ─────────────────────────────────────── */}
+      <Dialog open={bulkOnboardDialogOpen} onOpenChange={setBulkOnboardDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Tag className="w-5 h-5 text-emerald-600" />
+              Bulk Onboard — {selectedUsers.length} users
+            </DialogTitle>
+            <DialogDescription>
+              Apply a purchase tag to all selected users. This will auto-enroll them in the mapped courses, upgrade LEAD→STUDENT, and send enrollment emails.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-3">
+            {/* Tag Selector */}
+            <div className="space-y-2">
+              <Label>Purchase Tag</Label>
+              <Select value={bulkOnboardTag} onValueChange={setBulkOnboardTag}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select tag..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="fm_certification_purchased">FM Certification</SelectItem>
+                  <SelectItem value="fm_pro_accelerator_purchased">FM Pro Accelerator (3 courses)</SelectItem>
+                  <SelectItem value="fm_pro_advanced_clinical_purchased">FM Pro: Advanced Clinical</SelectItem>
+                  <SelectItem value="fm_pro_master_depth_purchased">FM Pro: Master Depth</SelectItem>
+                  <SelectItem value="fm_pro_practice_path_purchased">FM Pro: Practice Path</SelectItem>
+                  <SelectItem value="holistic_nutrition_coach_certification_purchased">HN Certification</SelectItem>
+                  <SelectItem value="hn_pro_accelerator_purchased">HN Pro Accelerator (3 courses)</SelectItem>
+                  <SelectItem value="narc_recovery_coach_certification_purchased">NARC Certification</SelectItem>
+                  <SelectItem value="narc_pro_accelerator_purchased">NARC Pro Accelerator (3 courses)</SelectItem>
+                  <SelectItem value="christian_life_coach_certification_purchased">Christian Life Coach</SelectItem>
+                  <SelectItem value="life_coach_certification_purchased">Life Coach</SelectItem>
+                  <SelectItem value="grief_loss_coach_certification_purchased">Grief & Loss Coach</SelectItem>
+                  <SelectItem value="dfy_purchased">DFY Website Package</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* What will happen */}
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 space-y-1.5">
+              <p className="text-xs font-semibold text-emerald-700">What will happen:</p>
+              <div className="space-y-1 text-xs text-emerald-600">
+                <p>1. Tag <code className="bg-emerald-100 px-1 rounded">{bulkOnboardTag}</code> applied to {selectedUsers.length} users</p>
+                <p>2. Auto-enroll in mapped course(s)</p>
+                <p>3. Upgrade LEAD → STUDENT (if paid course)</p>
+                <p>4. Send enrollment welcome email</p>
+              </div>
+            </div>
+
+            {/* Selected users preview */}
+            <div className="space-y-1.5">
+              <Label className="text-xs text-gray-500">Selected Users ({selectedUsers.length})</Label>
+              <div className="max-h-32 overflow-y-auto rounded-lg border p-2 space-y-1">
+                {users.filter(u => selectedUsers.includes(u.id)).slice(0, 20).map(u => (
+                  <div key={u.id} className="flex items-center justify-between text-xs">
+                    <span className="text-gray-700">{u.firstName} {u.lastName}</span>
+                    <span className="text-gray-400">{u.email}</span>
+                  </div>
+                ))}
+                {selectedUsers.length > 20 && (
+                  <p className="text-xs text-gray-400 text-center">...and {selectedUsers.length - 20} more</p>
+                )}
+              </div>
+            </div>
+
+            {/* Results */}
+            {bulkOnboardResult && (
+              <div className="rounded-lg border p-3 space-y-1.5 bg-gray-50">
+                <p className="text-xs font-semibold text-gray-700">Results:</p>
+                <div className="grid grid-cols-2 gap-1 text-xs">
+                  <span className="text-gray-500">Tagged:</span>
+                  <span className="font-medium text-emerald-600">{bulkOnboardResult.tagged}</span>
+                  <span className="text-gray-500">Already tagged:</span>
+                  <span className="text-gray-500">{bulkOnboardResult.alreadyTagged}</span>
+                  <span className="text-gray-500">Enrolled:</span>
+                  <span className="font-medium text-blue-600">{bulkOnboardResult.enrolled}</span>
+                  <span className="text-gray-500">Already enrolled:</span>
+                  <span className="text-gray-500">{bulkOnboardResult.alreadyEnrolled}</span>
+                  <span className="text-gray-500">Upgraded:</span>
+                  <span className="font-medium text-purple-600">{bulkOnboardResult.upgraded}</span>
+                  <span className="text-gray-500">Emails sent:</span>
+                  <span className="font-medium text-amber-600">{bulkOnboardResult.emailsSent}</span>
+                </div>
+                {bulkOnboardResult.errors?.length > 0 && (
+                  <div className="mt-2 text-xs text-red-600">
+                    <p className="font-medium">Errors:</p>
+                    {bulkOnboardResult.errors.map((e: string, i: number) => (
+                      <p key={i}>{e}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setBulkOnboardDialogOpen(false)}
+              disabled={bulkOnboarding}
+            >
+              {bulkOnboardResult ? "Close" : "Cancel"}
+            </Button>
+            {!bulkOnboardResult && (
+              <Button
+                onClick={handleBulkOnboard}
+                disabled={bulkOnboarding || !bulkOnboardTag || selectedUsers.length === 0}
+                className="bg-emerald-600 hover:bg-emerald-700 gap-2"
+              >
+                {bulkOnboarding ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Processing {selectedUsers.length} users...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    Onboard {selectedUsers.length} Users
+                  </>
+                )}
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
