@@ -48,10 +48,19 @@ const STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> =
     converted: { bg: "bg-purple-50", text: "text-purple-700", dot: "bg-purple-500" },
 };
 
+const STATUS_LABELS: Record<string, string> = {
+    pre_completion: "Learning",
+    post_completion: "Completed",
+    active: "Active",
+    waiting: "Waiting",
+    completed: "Completed",
+    converted: "Converted",
+};
+
 const STATUS_OPTIONS = [
     { label: "All", value: "all" },
     { label: "Learning", value: "pre_completion" },
-    { label: "Nurture", value: "post_completion" },
+    { label: "Completed", value: "post_completion" },
     { label: "Converted", value: "converted" },
 ];
 
@@ -243,6 +252,10 @@ export default function PodsDashboard() {
                                 {pods.filter(p => p.status === "pre_completion").length} learning
                             </span>
                             <span className="flex items-center gap-1">
+                                <MessageCircle className="w-3.5 h-3.5" />
+                                {pods.filter(p => p.status === "post_completion").length} completed
+                            </span>
+                            <span className="flex items-center gap-1">
                                 <Award className="w-3.5 h-3.5" />
                                 {pods.filter(p => p.status === "converted").length} converted
                             </span>
@@ -320,7 +333,7 @@ export default function PodsDashboard() {
                                                     <div className="flex items-center gap-1.5 mb-1">
                                                         <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${sc.bg} ${sc.text}`}>
                                                             <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
-                                                            {pod.status.replace(/_/g, " ")}
+                                                            {STATUS_LABELS[pod.status] || pod.status}
                                                         </span>
                                                         <span className="text-[10px] text-gray-400">Day {pod.masterclassDay}/30</span>
                                                     </div>
@@ -380,7 +393,7 @@ export default function PodsDashboard() {
                                             return (
                                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${sc.bg} ${sc.text}`}>
                                                     <span className={`w-2 h-2 rounded-full ${sc.dot}`} />
-                                                    {selectedPod.status.replace(/_/g, " ")}
+                                                    {STATUS_LABELS[selectedPod.status] || selectedPod.status}
                                                 </span>
                                             );
                                         })()}
