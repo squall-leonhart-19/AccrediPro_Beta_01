@@ -84,6 +84,7 @@ const navGroups: NavGroup[] = [
       { href: "/support", label: "Support Desk", icon: Ticket, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
       { href: "/admin/scholarship-leads", label: "Scholarship Leads", icon: GraduationCap, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/scholarship-leads/analytics", label: "Quiz Analytics", icon: BarChart3, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
     ],
   },
   {
